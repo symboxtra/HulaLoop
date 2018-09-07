@@ -1,3 +1,5 @@
+![HulaLoop Logo](res/logo/hulaloop-header-small.png)
+
 # Team 30 Project Charter #
 
 ### **Project Title:** ###
