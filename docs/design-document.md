@@ -5,22 +5,24 @@
 
 # Table of Contents #
 
-* ## **[Purpose](#purpose)** ##
-    * ### [Functional Requirements](#functional-requirements) ###
-    * ### [Non-Functional Requirements](#non-functional-requirements) ###
-* ## **[Design Outline](#design-outline)** ##
-    * ### [High-Level Overview](#high-level-overview) ###
-    * ### [Components](#components) ###
-* ## **[Design Issues](#design-issues)** ##
-    * ### [Functional Issues](#functional-issues) ###
-    * ### [Non-Functional Issues](#non-functional-issues) ###
-* ## **[Design Details](#design-details)** ##
-    * ### [Class Design](#class-design) ###
-    * ### [Class Description](#class-description) ###
-    * ### [Sequence Of Events](#sequence-of-events) ###
-    * ### [Activity Diagram](#activity-diagram) ###
-    * ### [State Diagram](#state-diagram) ###
-    * ### [UI  Mockups](#ui-mockups) ###
+## **[Purpose](#purpose-1)** ##
+#### [Functional Requirements](#functional-requirements-1) ####
+#### [Non-Functional Requirements](#non-functional-requirements-1) ####
+
+## **[Design Outline](#design-outline-1)** ##
+#### [High-Level Overview](#high-level-overview-1) ####
+
+## **[Design Issues](#design-issues-1)** ##
+#### [Functional Issues](#functional-issues-1) ####
+#### [Non-Functional Issues](#non-functional-issues-1) ####
+
+## **[Design Details](#design-details-1)** ##
+#### [Class Design](#class-design-1) ####
+#### [Class Description](#class-description-1) ####
+#### [Sequence Of Events](#sequence-of-events-1) ####
+#### [Activity Diagram](#activity-diagram-1) ####
+#### [State Diagram](#state-diagram-1) ####
+#### [UI Mockups](#ui-mockups-1) ####
 
 
 ## **Purpose** ##
@@ -253,7 +255,7 @@ The user interface and backend Controller form a one-to-one relationship, provid
 
 ![Class-Design](/docs/images/uml-class-diagram.png)
 
-### **Descriptions of Classes and Interaction Between Classes** ###
+### **Class Description** ###
 The application is broken up into a set of submodules and further refined to individual classes. The blue squares on the class diagram represent two of the distinct submodules (Audio and UI respectively). The other two are Filesystem and Transport, which are composed of some classes present on the class diagram but also others omitted as a result of the system domain model.
 
 #### UI ####
