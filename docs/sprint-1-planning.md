@@ -5,12 +5,12 @@ Team 30: Aneesh Gokhale, Emanuel Pituch, Jack McKernan, Neel Patel
 ## **Sprint Overview** ##
 During this sprint, we plan to work on the essential architecture and components of our application. We aim to first setup our development environments and dependencies (Qt Creator, GitHub, Jenkins, CMake, GoogleTest, JACK Audio, and PortAudio). Once setup, our goal is to begin the first interactions with the audio APIs of each of our targeted operating systems. This goal will lead us to develop the foundation for our audio backend. The sprint will also include the first workings of our user interfaces and the interconnection between the frontend and the backend. As a part of all this work, we will develop and adhere to coding standards and documentation.
 
-## **Scrum Master:** ##
+## **Scrum Master** ##
 
  Jack McKernan
 
 
-## **Meeting Plan:** ## 
+## **Meeting Plan** ## 
 
 Monday, Wednesday, Friday 5:00 PM - 7:00 PM
 ## **Risks and Challenges** ##
@@ -181,3 +181,156 @@ As a user, I would like to have a button to stop audio recording.
 Given that the stop button is styled, the button’s design matches the theme of the rest of the GUI.
 Given that the stop button is integrated, the backend can receive click events and respond accordingly.
 Given that the stop button is integrated, the user should receive visual feedback when the button is pressed.
+
+
+### **User Story #10:** ###
+
+As a user, I would like to have a button that starts playback of recorded audio.
+
+
+| Task # | Description | Time (hrs) | Owner |
+|:------:|:-----------|:----------:|:-----:|
+| 1 | Add styled play button to layout manager | 1 | Aneesh |
+| 2 | Integrate button with Transport backend | 1 | Aneesh |
+| 3 | Unit Test - Verify the button sends the expected signal | 0.25 | Aneesh |
+
+#### Acceptance Criteria: ####
+
+* Given that the play button is styled, the button’s design matches the theme of the rest of the GUI.
+* Given that the play button is integrated, the backend can receive click events and respond accordingly.
+* Given that the play button is integrated, the user should receive visual feedback when the button is pressed.
+
+
+### **User Story #11:** ###
+
+As a user, I would like to have a button that pauses playback of recorded audio.
+
+
+| Task # | Description | Time (hrs) | Owner |
+|:------:|:-----------|:----------:|:-----:|
+| 1 | Add styled pause button to layout manager | 1 | Aneesh |
+| 2 | Integrate button with Transport backend | 1 | Aneesh |
+| 3 | Unit Test - Verify the button sends the expected signal | 0.25 | Aneesh |
+
+#### Acceptance Criteria: ####
+
+* Given that the pause button is styled, the button’s design matches the theme of the rest of the GUI.
+* Given that the pause button is integrated, the backend can receive click events and respond accordingly.
+* Given that the pause button is integrated, the user should receive visual feedback when the button is pressed.
+
+### **User Story #12:** ###
+
+As a user, I would like to delay the start of a recording by a specified amount of time.
+
+| Task # | Description | Time (hrs) | Owner |
+|:------:|:-----------|:----------:|:-----:|
+| 1 | Add styled timer button to layout manager | 1 | Emanuel |
+| 2 | Add drop-down list with time options | 1 | Emanuel |
+| 3 | Add textfield to show remaining countdown time | 1 | Emanuel |
+| 4 | Integrate timer with Transport | 2 | Emanuel |
+| 5 | Unit Test - Verify the button sends the expected signal | 0.25 | Emanuel |
+| 6 | Unit Test - Various timer options successfully result in starting a recording |  0.25 | Emanuel
+
+#### Acceptance Criteria: ####
+
+* Given that the timer is implemented in the user interface, the user should be able to choose a countdown time.
+* Given that the user can select a countdown time, the delay should be passed to the Transport.
+* Given that the user selected a time and that time was sent to the Transport, there should be visual feedback indicating that the delay has started and how much time remains.
+* Given that the time was sent to the Transport, the record action should commence after the countdown has expired.
+
+### **User Story #13:** ###
+
+As a user, I would like to record audio for a specified amount of time.
+
+| Task # | Description | Time (hrs) | Owner |
+|:------:|:-----------|:----------:|:-----:|
+| 1 | Add styled timer button to layout manager | 1 | Aneesh |
+| 2 | Add drop-down list with time options | 1 | Aneesh |
+| 3 | Add textfield to show remaining recording time | 1 | Aneesh |
+| 4 | Integrate timer with Transport | 2 | Aneesh |
+| 5 | Unit Test - Verify the button sends the expected signal | 0.25 | Aneesh |
+| 6 | Unit Test - Various timer options successfully result in stopping a recording | 0.25 | Aneesh |
+
+#### Acceptance Criteria: ####
+
+* Given that the timer is implemented in the user interface, the user should be able to choose a recording time.
+* Given that the user can select a recording time, that limit should be passed to the Transport.
+* Given that the user selected a time and that time was sent to the Transport, there should be visual feedback indicating how much time remains.
+* Given that the time was sent to the Transport, the record action should complete after the recording time has expired.
+
+### **User Story #14:** ###
+
+As a developer, I would like a documented API so that third-party developers can use this system in their applications.
+
+
+| Task # | Description | Time (hrs) | Owner |
+|:------:|:-----------|:----------:|:-----:|
+| 1 | Perform code reviews and establish coding standards | 4 (1 per person) | Aneesh, Emanuel, Jack, Neel | 
+| 2 | Setup code quality and static analysis tools | 1 | Emanuel |
+| 3 | Act on results of code quality, static analysis, and code coverage to improve existing code | 12 (1 per person per week) | Aneesh, Emanuel, Jack, Neel |
+| 4 | Automatically generate documentation from code using Doxygen | 3 | Jack |
+| 5 | Host auto-updated and versioned documentation on readthedocs.io | 3 | Neel
+
+#### Acceptance Criteria: ####
+
+* Given that we perform code reviews, when we create a Pull Request on GitHub a code review will be required and performed before merging.
+* Given that we act on the results of code quality, static analysis, and code coverage, our statistics and code quality will improve over time.
+* Given that we automatically generate documentation from code using Doxygen, when we check code into GitHub, documentation is generated from the latest code.
+* Given that we employ versioned documentation, when a new version is released, the old versions of the documentation remain available.
+
+
+## Remaining Product Backlog ##
+
+### Functional Requirements ###
+
+1. ~~As a user, I would like to view all available audio devices.~~
+2. ~~As a user, I would like to choose an input device to record audio from.~~
+3. As a user, I would like to choose an output device to record audio from (loopback).
+4. As a user, I would like to choose the output device on which I hear monitored audio.
+5. ~~As a user, I would like to have a GUI.~~
+6. ~~As a user, I would like to have a button to start audio recording.~~
+7. ~~As a user, I would like to have a button to stop audio recording.~~
+8. ~~As a user, I would like to delay the start of a recording by a specified amount of time.~~
+9. As a user, I would like to record audio for a specified amount of time.
+10. As a user, I would like to record until I manually stop the recording.
+11. As a user, I would like the application to automatically write to a new file when file size limit is exceeded so that recording can continue seamlessly.
+12. As a user, I would like to pause the capture process.
+13. As a user, I would like to resume the capture process.
+14. As a user, I would like to  adjust the volume of monitored audio (if time allows).
+15. As a user, I would like to visualize audio from the selected device (if time allows).
+16. As a user, I would like to trim captured audio (if time allows).
+17. As a user, I would like to add audio filters (if time allows).
+18. As a user, I would like to play back what was most recently recorded.
+19. ~~As a user, I would like to have a button that starts playback of recorded audio.~~
+20. ~~As a user, I would like to have a button that pauses playback of recorded audio.~~
+21. As a user, I would like to export captured audio to a file.
+22. As a user, I would like to choose the bitrate for exported files.
+23. As a user, I would like to choose the bit-depth for exported files.
+24. As a user, I would like to export captured audio in WAV format.
+25. As a user, I would like to export captured audio in MP3 format.
+26. As a user, I would like to export my audio in other formats (if time allows).
+27. As a user, I would like to be able to link my Google Drive account (if time allows).
+28. As a user, I would like to be able to link my Dropbox account (if time allows).
+29. As a user, I would like to be able to upload captured audio to linked storage services (if time allows).
+30. ~~As a developer, I would like to get an audio sample from Windows.~~
+31. ~~As a developer, I would like to get an audio sample from Mac OS X.~~
+32. ~~As a developer, I would like to get an audio sample from Linux.~~
+33. As a third party developer, I would like to set the device from which I capture audio.
+
+### Non-Functional Requirements ###
+
+1. ~~As a developer, I would like the build system to be modular.~~
+2. ~~As a developer, I would like the build system to support cross-platform compilation.~~
+3. ~~As a developer, I would like to setup a continuous integration (CI) process so that each repository push triggers a build and runs tests.~~
+4. ~~As a developer, I would like a documented API so that third-party developers can use this system in their applications.~~
+5. As a developer, I would like the application to work on Windows, Mac OS X, and Debian-based Linux.
+6. As a third-party developer, I would like to easily use the project’s libraries in my application.
+7. As a developer, I would like the application to have a long MTBF.
+8. As a developer, I would like the system audio being recorded to be compressed on-the-fly to conserve disk space and extend maximum recording duration.
+9. As a developer, I would like at least 70% of our code to be covered by the test suites.
+10. As a user, I would like to be informed when the application is recording system audio.
+11. As a user, I would like my application to stay up-to-date.
+12. As a user, I would like the installation process to be both intuitive and take less than three minutes.
+13. As a user, I would like to be able to check for updates manually within the application.
+14. As a user, I would like the GUI to be intuitive and straightforward.
+15. As a user, I would like the CLI to provide the same feature set as the GUI.
