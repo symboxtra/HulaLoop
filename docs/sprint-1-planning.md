@@ -103,10 +103,10 @@ As a developer, I would like the build system to be modular and support cross-pl
 | Task # | Description | Time (hrs) | Owner |
 |:------:|:-----------|:----------:|:-----:|
 | 1 | Design CMake build script | 6 (3 per person) | Jack & Neel |
-| 3 | Build and customize additional libraries (GoogleTest, Qt, JACK Audio, PortAudio) | 4 (1 per lib) | Jack & Neel |
-| 4 | Configure and organize modules to compile as static or dynamic libraries (.so/.a, .lib/.dll) and link into the final application | 2 | Aneesh |
-| 5 | Add CMake flags to allow compiling only certain modules or configurations of the application | 2 | Aneesh |
-| 6 | Experiment with CPack to create a basic installer | 3 | Aneesh |
+| 2 | Build and customize additional libraries (GoogleTest, Qt, JACK Audio, PortAudio) | 4 (1 per lib) | Jack & Neel |
+| 3 | Configure and organize modules to compile as static or dynamic libraries (.so/.a, .lib/.dll) and link into the final application | 2 | Aneesh |
+| 4 | Add CMake flags to allow compiling only certain modules or configurations of the application | 2 | Aneesh |
+| 5 | Experiment with CPack to create a basic installer | 3 | Aneesh |
 
 #### Acceptance Criteria: ####
 
