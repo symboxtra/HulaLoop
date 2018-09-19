@@ -30,9 +30,9 @@ As a developer, I would like to get an audio sample from Windows.
 
 #### Acceptance Criteria: ####
 
-- Given that the WASAPI interface is implemented correctly, when a buffer of audio is available, it is stored in the OSAudio class and should contain the captured data.
-- Given that device/WASAPI errors are handled, when an error occurs then the application generates an error message.
-- Given that the application can successfully request samples, when a sample is received, the data is written to a temporary file and can be viewed.
+* Given that the WASAPI interface is implemented correctly, when a buffer of audio is available, it is stored in the OSAudio class and should contain the captured data.
+* Given that device/WASAPI errors are handled, when an error occurs then the application generates an error message.
+* Given that the application can successfully request samples, when a sample is received, the data is written to a temporary file and can be viewed.
 
 ### **User Story #2:** ###
 
@@ -49,9 +49,9 @@ As a developer, I would like to get an audio sample from Linux.
 
 #### Acceptance Criteria: ####
 
-Given that the JACK2 interface is implemented correctly, when a buffer of audio is available, it is stored in the OSAudio class and should contain the captured data.
-Given that device/JACK2 errors are handled, when an error occurs then the application generates an error message.
-Given that the application can successfully request samples, when a sample is received, the data is written to a temporary file and can be viewed.
+* Given that the JACK2 interface is implemented correctly, when a buffer of audio is available, it is stored in the OSAudio class and should contain the captured data.
+* Given that device/JACK2 errors are handled, when an error occurs then the application generates an error message.
+* Given that the application can successfully request samples, when a sample is received, the data is written to a temporary file and can be viewed.
 
 ### **User Story #3:** ###
 
@@ -68,9 +68,9 @@ As a developer, I would like to get an audio sample from Mac OS X.
 
 #### Acceptance Criteria: ####
 
-Given that the JACK2 interface is implemented correctly, when a buffer of audio is available, it is stored in the OSAudio class and should contain the captured data.
-Given that device/JACK2 errors are handled, when an error occurs then the application generates an error message.
-Given that the application can successfully request samples, when a sample is received, the data is written to a temporary file and can be viewed.
+* Given that the JACK2 interface is implemented correctly, when a buffer of audio is available, it is stored in the OSAudio class and should contain the captured data.
+* Given that device/JACK2 errors are handled, when an error occurs then the application generates an error message.
+* Given that the application can successfully request samples, when a sample is received, the data is written to a temporary file and can be viewed.
 
 ### **User Story #4:** ###
 
@@ -90,12 +90,12 @@ As a user, I would like to view all available audio devices.
 
 #### Acceptance Criteria: ####
 
-Given that retrieval of audio devices works, a correct list of input devices should be present in OSAudio.
-Given that retrieval of audio devices works, a correct list of output devices should be present in OSAudio.
-Given that the correct list of input devices are in the OSAudio list, a user should be able to see them in the GUI.
-Given that the correct list of output devices are in the OSAudio list, a user should be able to see them in the GUI.
-Given that the interface and controller are correctly bridged, our unit tests should pass.
-Given that the GUI displays the available devices, a confirmation of change can be displayed when a user changes the selected device.
+* Given that retrieval of audio devices works, a correct list of input devices should be present in OSAudio.
+* Given that retrieval of audio devices works, a correct list of output devices should be present in OSAudio.
+* Given that the correct list of input devices are in the OSAudio list, a user should be able to see them in the GUI.
+* Given that the correct list of output devices are in the OSAudio list, a user should be able to see them in the GUI.
+* Given that the interface and controller are correctly bridged, our unit tests should pass.
+* Given that the GUI displays the available devices, a confirmation of change can be displayed when a user changes the selected device.
 
 ### **User Story #5:** ###
 As a developer, I would like the build system to be modular and support cross-platform compilation.
@@ -110,11 +110,11 @@ As a developer, I would like the build system to be modular and support cross-pl
 
 #### Acceptance Criteria: ####
 
-Given that the modular build system works, a developer should successfully be able to compile the application and generate the necessary library files across all supportable platforms (Windows, OSX, Linux).
-Given that the additional libraries have been integrated, when the application is compiled, any required dependencies are also compiled.
-Given that the build system is modular, when a third-party developer wants to compile only the backend, a specific subset of the application is compiled.
-Given that the build process completes, a user should have access to generated binaries and packaged installers.
-Given that the build process completes, the generated binaries and executables should be in the bin folder.
+* Given that the modular build system works, a developer should successfully be able to compile the application and generate the necessary library files across all supportable platforms (Windows, OSX, Linux).
+* Given that the additional libraries have been integrated, when the application is compiled, any required dependencies are also compiled.
+* Given that the build system is modular, when a third-party developer wants to compile only the backend, a specific subset of the application is compiled.
+* Given that the build process completes, a user should have access to generated binaries and packaged installers.
+* Given that the build process completes, the generated binaries and executables should be in the bin folder.
 
 ### **User Story #6:** ###
 
@@ -129,9 +129,9 @@ As a developer, I would like to setup a continuous integration (CI) process so t
 
 #### Acceptance Criteria: ####
 
-Given that the Jenkins pipeline is stable, the Jenkins server has to have the necessary dependencies (e.g. Qt framework, JACK2 API, etc.) downloaded and configured properly in order to build and run the code.
-Given that the code compiles without errors, the CI process correctly triggers a build and runs the specified unit tests to ensure the code is working as intended.
-Given the test suites finish without errors, a code coverage report should be generated and uploaded to codecov.io.
+* Given that the Jenkins pipeline is stable, the Jenkins server has to have the necessary dependencies (e.g. Qt framework, JACK2 API, etc.) downloaded and configured properly in order to build and run the code.
+* Given that the code compiles without errors, the CI process correctly triggers a build and runs the specified unit tests to ensure the code is working as intended.
+* Given the test suites finish without errors, a code coverage report should be generated and uploaded to codecov.io.
 
 ### **User Story #7:** ###
 As a user, I would like to have a GUI.
@@ -145,10 +145,10 @@ As a user, I would like to have a GUI.
 
 #### Acceptance Criteria: ####
 
-Given that the bridge between C++ and QML is implemented, when we send data from the backend to the GUI then the GUI should be updated.
-Given that the bridge between C++ and QML is implemented, when we send signals from the GUI to the backend then the specified actions should be performed.
-Given that the GUI is laid out using a layout manager, when the GUI is resized, then the elements should resize and remain usable.
-Given that the color scheme and styles are designed, when we add components to the GUI, they should be styled accordingly.
+* Given that the bridge between C++ and QML is implemented, when we send data from the backend to the GUI then the GUI should be updated.
+* Given that the bridge between C++ and QML is implemented, when we send signals from the GUI to the backend then the specified actions should be performed.
+* Given that the GUI is laid out using a layout manager, when the GUI is resized, then the elements should resize and remain usable.
+* Given that the color scheme and styles are designed, when we add components to the GUI, they should be styled accordingly.
 
 ### **User Story #8:** ###
 
@@ -162,9 +162,9 @@ As a user, I would like to have a button to start audio recording.
 
 #### Acceptance Criteria: ####
 
-Given that the record button is styled, the button’s design matches the theme of the rest of the GUI.
-Given that the record button is integrated, the backend can receive click events and respond accordingly.
-Given that the record button is integrated, the user should receive visual feedback when the button is pressed.
+* Given that the record button is styled, the button’s design matches the theme of the rest of the GUI.
+* Given that the record button is integrated, the backend can receive click events and respond accordingly.
+* Given that the record button is integrated, the user should receive visual feedback when the button is pressed.
 
 ### **User Story #9:** ###
 
@@ -178,9 +178,9 @@ As a user, I would like to have a button to stop audio recording.
 
 #### Acceptance Criteria: ####
 
-Given that the stop button is styled, the button’s design matches the theme of the rest of the GUI.
-Given that the stop button is integrated, the backend can receive click events and respond accordingly.
-Given that the stop button is integrated, the user should receive visual feedback when the button is pressed.
+* Given that the stop button is styled, the button’s design matches the theme of the rest of the GUI.
+* Given that the stop button is integrated, the backend can receive click events and respond accordingly.
+* Given that the stop button is integrated, the user should receive visual feedback when the button is pressed.
 
 
 ### **User Story #10:** ###
