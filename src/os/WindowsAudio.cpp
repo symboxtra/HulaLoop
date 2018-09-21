@@ -2,37 +2,12 @@
 
 WindowsAudio::WindowsAudio()
 {
-
-}
-
-void WindowsAudio::setBufferSize(uint32_t size)
-{
-    this->captureBufferSize = size;
-}
-
-void WindowsAudio::addBufferReadyCallback(f_int_t callFunction)
-{
-    this->callbackList.push_back(callFunction);
-}
-
-vector<Device*> WindowsAudio::getAudioDevices()
-{
-    deviceList = NULL;
-
-    vector<Device*> temp = getInputDevices();
-    if(temp != NULL)
-        deviceList.insert(deviceList.end(), temp.begin(), temp.end());
-    
-    temp = getOutputDevices();
-    if(temp != NULL)
-        deviceList.insert(deviceList.end(), temp.begin(), temp.end());
-
-    return deviceList;
+    thread captureThread(capture);
 }
 
 vector<Device*> WindowsAudio::getInputDevices()
 {
-    vector<Device*> temp = NULL;
+    vector<Device*> temp;
 
     uint deviceCount = waveInGetNumDevs();
     if(deviceCount > 0)
@@ -51,7 +26,7 @@ vector<Device*> WindowsAudio::getInputDevices()
 
 vector<Device*> WindowsAudio::getOutputDevices()
 {
-    vector<Device*> temp = NULL;
+    vector<Device*> temp;
 
     // Create instance? don't exactly know what this does yet
     status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
@@ -87,18 +62,88 @@ Exit:
     SAFE_RELEASE(pEnumerator)
     SAFE_RELEASE(pp)
 
-    if(FAILED(hres))
+    if(FAILED(status))
         return NULL;
     else
         return temp;
 }
 
-void WindowsAudio::setActiveOutputDevice(Device* device)
+void WindowsAudio::capture()
 {
-    this->activeOutputDevice = device;
-}
+    IAudioCaptureClient *captureClient = NULL;
+    IAudioClient* audioClient = NULL;
+    WAVEFORMATEX* pwfx = NULL;
+    IMMDevice* audioDevice = NULL;
 
-void WindowsAudio::setActiveRecordDevice(Device* device)
-{
-    this->activeInputDevice = device;
+    uint32_t packetLength = 0;
+
+    REFERENCE_TIME duration;
+
+    status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
+    HANDLE_ERROR(status);
+
+    status = pEnumerator->GetDevice((LPCWSTR)(activeOutputDevice->getID()), &audioDevice);
+    HANDLE_ERROR(status);
+
+    status = audioDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void**)&audioClient);
+    HANDLE_ERROR(status);
+
+    status = audioClient->GetMixFormat(&pwfx);
+    HANDLE_ERROR(status);
+
+    status = audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, 0, REFTIMES_PER_SEC, 0, pwfx, NULL);
+    HANDLE_ERROR(status);
+
+    status = audioClient->GetService(IID_IAudioCaptureClient, (void**)*captureClient);
+    HANDLE_ERROR(status);
+
+    status = audioClient->Start();
+    HANDLE_ERROR(status);
+
+    duration = (double)REFTIMES_PER_SEC * captureBufferSize / pwfx->nSamplesPerSec;
+
+    // Continue loop under process ends
+    while(true)
+    {
+        while(callbackList.size() > 0)
+        {
+            Sleep(duration / (REFTIMES_PER_MILLISEC * 2));
+
+            status = captureClient->GetNextPacketSize(&packetLength);
+            HANDLE_ERROR(status);
+
+            while (packetLength != 0)
+            {
+                status = captureClient->GetBuffer(&pData, &numFramesAvailable, &flags, NULL, NULL);
+                HANDLE_ERROR(status);
+
+                if(flags & AUDCLNT_BUFFERFLAGS_SILENT)
+                    pData = NULL;
+                
+                // Execute callbacks
+                for(int i = 0;i < callbackList.size();i++)
+                {
+                    thread{callbackList[i], numFramesAvailable, pData}.detach();
+                }
+
+                status = captureClient->ReleaseBuffer(numFramesAvailable);
+                HANDLE_ERROR(status);
+
+                status = captureClient->GetNextPacketSize(&packetLength);
+                HANDLE_ERROR(status);
+            }
+        }
+
+        status = audioClient->Stop();
+        HANDLE_ERROR(status);
+    }
+
+Exit:
+    CoTaskMemFree(pwfx);
+    SAFE_RELEASE(pEnumerator);
+    SAFE_RELEASE(audioDevice);
+    SAFE_RELEASE(audioClient);
+    SAFE_RELEASE(captureClient);
+
+    //TODO: Handle error accordingly
 }
