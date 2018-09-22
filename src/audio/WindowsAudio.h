@@ -26,8 +26,12 @@
 
 #include <string>
 #include <vector>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <iostream>
+
+#include <fstream>
 
 #include <thread>
 
@@ -79,7 +83,8 @@ class WindowsAudio : public OSAudio
         vector<Device*> getInputDevices();
         vector<Device*> getOutputDevices();
 
-        static void test_capture(WindowsAudio* _this);
+        //static void test_capture(); //TODO: Figure out static context with comparison to Linux and thread creation
+        static DWORD __stdcall WindowsAudio::test_capture(LPVOID param);
         void capture();
 };
 

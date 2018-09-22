@@ -1,18 +1,18 @@
 #include "Device.h"
 
-Device::Device(uint32_t id, string name, DeviceType t)
+Device::Device(LPCWSTR id, string name, DeviceType t)
 {
     this->deviceID = id;
     this->deviceName = name;
     this->type = t;
 }
 
-void Device::setID(uint32_t id)
+void Device::setID(LPCWSTR id)
 {
     this->deviceID = id;
 }
 
-uint32_t Device::getID()
+LPCWSTR Device::getID()
 {
     return this->deviceID;
 }

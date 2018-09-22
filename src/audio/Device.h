@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <string>
 
+#include <windows.h>
+
 using namespace std;
 
 enum class DeviceType { RECORDING, PLAYBACK };
@@ -11,17 +13,17 @@ enum class DeviceType { RECORDING, PLAYBACK };
 class Device
 {
     private:
-        uint32_t deviceID;
+        LPCWSTR deviceID;
         string deviceName;
 
         DeviceType type;
 
     public:
-        Device(uint32_t id, string name, DeviceType t);
+        Device(LPCWSTR id, string name, DeviceType t);
         ~Device();
 
-        uint32_t getID();
-        void setID(uint32_t id);
+        LPCWSTR getID();
+        void setID(LPCWSTR id);
 
         string getName();
         void setName(string name);
