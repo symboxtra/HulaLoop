@@ -82,6 +82,59 @@ pipeline {
 
 
                 //************
+                //    OSX
+                //************
+                stage ('OSX') {
+                    agent {
+                        label 'osx'
+                    }
+                    environment {
+                        HL_OS = 'OSX'
+                    }
+
+                    stages {
+
+                        stage('Dependencies - OSX') {
+
+                            steps {
+
+                                powershell '''
+                                    echo "Building dependencies for ${HL_OS}..."
+                                '''
+
+                            }
+
+                        }
+
+                        stage('Build - OSX') {
+
+                            steps {
+
+                                powershell '''
+                                    echo "Building application for ${HL_OS}..."
+                                '''
+
+                            }
+
+                        }
+
+                        stage('Test - OSX') {
+
+                            steps {
+
+                                powershell '''
+                                    echo "Running test suite on ${HL_OS}..."
+                                '''
+
+                            }
+
+                        }
+                    } // END stages
+
+                } // END OSX
+
+
+                //************
                 //  WINDOWS
                 //************
                 stage ('Windows') {
