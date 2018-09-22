@@ -1,7 +1,9 @@
 ######## Config ########
 
 cmake_minimum_required (VERSION 3.5)
-set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD 14)
+
+include (cmake/Qt5.cmake)
 
 # Version
 set (VERSION_MAJOR 0)
