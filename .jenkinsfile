@@ -1,0 +1,78 @@
+pipeline {
+    agent none
+
+    environment {
+        HL_WEBHOOK_URL = credentials('HULALOOP_WEBHOOK_URL')
+    }
+
+    options {
+        timeout(time: 10, unit: 'MINUTES')
+        timestamps()
+    }
+
+    stages {
+
+        stage('Configuration') {
+
+            parallel {
+
+                stage('Linux') {
+                    agent {
+                        label 'linux'
+                    }
+                    environment {
+                        HL_OS = 'linux'
+                    }
+
+                    stages {
+
+                        // Generate CMake and build any required dependencies
+                        stage('Build dependencies - Linux') {
+
+                            steps {
+
+                                sh '''
+                                    echo "Building dependencies for ${HL_OS}..."
+                                '''
+
+                            }
+
+                        }
+
+                        // Build our application
+                        stage('Build - Linux') {
+
+                            steps {
+
+                                sh '''
+                                    echo "Building application for ${HL_OS}..."
+                                '''
+
+                            }
+
+                        }
+
+                        // Run the test suite
+                        stage('Test - Linux') {
+
+                            steps {
+
+                                sh '''
+                                    echo "Running test suite on ${HL_OS}..."
+                                '''
+
+                            }
+
+                        }
+
+                    } // END stages
+
+                } // END Linux
+
+            } // END parallel
+
+        } // END configuration
+
+    } // END stages
+
+} // END pipeline
