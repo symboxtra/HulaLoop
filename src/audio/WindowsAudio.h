@@ -9,6 +9,15 @@
 #include <strsafe.h>
 #include <functiondiscoverykeys_devpkey.h>
 #include <atlstr.h>
+#include <strmif.h>
+#include <dshow.h>
+#include <DShow.h>
+
+#include <atlbase.h>
+#include <combaseapi.h>
+#include <objbase.h>
+
+#include <initguid.h>
 
 #include <locale>
 #include <codecvt>
@@ -17,6 +26,8 @@
 
 #include <string>
 #include <vector>
+
+#include <iostream>
 
 #include <thread>
 
@@ -47,8 +58,6 @@ class WindowsAudio : public OSAudio
         const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
         const IID IID_IAudioClient = __uuidof(IAudioClient);
         const IID IID_IAudioCaptureClient = __uuidof(IAudioCaptureClient);
-
-        //TODO: Figure out device class
 
         // System necessary variables
         HRESULT status;

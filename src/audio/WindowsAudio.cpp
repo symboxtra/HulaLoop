@@ -3,25 +3,32 @@
 WindowsAudio::WindowsAudio()
 {
     //thread captureThread(&WindowsAudio::capture, this);
+
+    status = CoInitialize(NULL);
+    // Handle error if unacceptable result
 }
 
 vector<Device*> WindowsAudio::getInputDevices()
 {
-    vector<Device*> temp;
+    vector<Device*> temp2;
 
     uint16_t deviceCount = waveInGetNumDevs();
     if(deviceCount > 0)
     {
         for(int i = 0;i < deviceCount;i++)
         {
-            WAVEINCAPSW waveInCaps;
-            waveInGetDevCapsW(i, &waveInCaps, sizeof(WAVEINCAPS));
+            WAVEINCAPSW waveInCaps;    
+            waveInGetDevCapsW( i, &waveInCaps, sizeof( WAVEINCAPSW ) );
+            wstring temp(waveInCaps.szPname);   
+            string str(temp.begin(), temp.end());
 
-            //temp.push_back(new Device()); //TODO: Figure out Device Class
+            Device* audio = new Device((uint32_t)waveInCaps.wPid, str, DeviceType::RECORDING);
+            temp2.push_back(audio);
+            deviceList.push_back(audio);
         }
     }
 
-    return temp;
+    return temp2;
 }
 
 vector<Device*> WindowsAudio::getOutputDevices()
@@ -29,9 +36,6 @@ vector<Device*> WindowsAudio::getOutputDevices()
     
     vector<Device*> temp;
     IMMDevice* pp;
-
-    status = CoInitialize(NULL);
-    HANDLE_ERROR(status);
 
     // Create instance? don't exactly know what this does yet
     status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
@@ -73,10 +77,13 @@ vector<Device*> WindowsAudio::getOutputDevices()
         status = propKey->GetValue(PKEY_Device_FriendlyName, &varName);
         HANDLE_ERROR(status);
 
-        char* buffer = (char*)malloc(500);
-        wcstombs(buffer, varName.pwszVal, 500);
+        //char* buffer = (char*)malloc(500);
+        //wcstombs(buffer, varName.pwszVal, 500);
 
-        Device* audio = new Device((uint32_t)id, buffer);
+        wstring fun(varName.pwszVal);
+        string str(fun.begin(), fun.end());
+
+        Device* audio = new Device((uint32_t)id, str, DeviceType::PLAYBACK);
         temp.push_back(audio);
         
         bool flag = true;

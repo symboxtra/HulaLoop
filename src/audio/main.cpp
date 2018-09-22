@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
+#include <iostream>
 
 #include "OSAudio.h"
 #include "WindowsAudio.h"
@@ -11,8 +12,10 @@ int main()
     OSAudio* audio = new WindowsAudio();
 
     vector<Device*> deviceList = audio->getOutputDevices();
+    audio->getInputDevices();
+    deviceList = audio->getAudioDevices();
 
-    printf("** Audio Device List **\nCount: %d\n", deviceList.size());
+    cout << "** Audio Device List **\tCount: " << deviceList.size() << endl;
     for(int i = 0;i < deviceList.size();i++)
-        printf("Device %d : ID = %d\tNAME = %s\n", i, deviceList[i]->getID(), deviceList[i]->getName());
+        cout << "Device " << i << " : ID = " << deviceList[i]->getID() << "\tNAME = " << deviceList[i]->getName() << "\t TYPE = " << int(deviceList[i]->getType()) << endl;
 }
