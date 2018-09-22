@@ -8,17 +8,17 @@ class Device
 {
     private:
         uint32_t deviceID;
-        //string deviceName;
+        char* deviceName;
 
     public:
-        Device(uint32_t id);
+        Device(uint32_t id, char* name);
         ~Device();
 
         uint32_t getID();
         void setID(uint32_t id);
 
-        //string getDeviceName();
-        //void setDeviceName(string name);
+        char* getName();
+        void setName(char* name);
 };
 
 #endif

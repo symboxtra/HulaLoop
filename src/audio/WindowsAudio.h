@@ -10,6 +10,9 @@
 #include <functiondiscoverykeys_devpkey.h>
 #include <atlstr.h>
 
+#include <locale>
+#include <codecvt>
+
 #include <comdef.h>
 
 #include <string>

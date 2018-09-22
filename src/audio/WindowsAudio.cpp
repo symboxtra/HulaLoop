@@ -73,22 +73,34 @@ vector<Device*> WindowsAudio::getOutputDevices()
         status = propKey->GetValue(PKEY_Device_FriendlyName, &varName);
         HANDLE_ERROR(status);
 
-        wstring deviceName(varName.pwszVal);
+        char* buffer = (char*)malloc(500);
+        wcstombs(buffer, varName.pwszVal, 500);
 
-        printf("Device Name: %S\n", deviceName);
+        Device* audio = new Device((uint32_t)id, buffer);
+        temp.push_back(audio);
+        
+        bool flag = true;
+        for(int j = 0;j < deviceList.size();j++)
+        {
+            if(deviceList[j]->getID() == (uint32_t)id)
+                flag = false;
+        }
 
-        temp.push_back(new Device((uint32_t)id));
+        if(flag)
+            deviceList.push_back(audio);
     }
 
 Exit:
     SAFE_RELEASE(pEnumerator)
     //SAFE_RELEASE(pp)
-    _com_error err(status);
-    LPCTSTR errMsg = err.ErrorMessage();
-    printf("\nError: %s\n", errMsg);
 
     if(FAILED(status))
+    {
+        _com_error err(status);
+        LPCTSTR errMsg = err.ErrorMessage();
+        printf("\nError: %s\n", errMsg);
         return {};
+    }
     else
         return temp;
 }
