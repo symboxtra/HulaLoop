@@ -78,6 +78,24 @@ pipeline {
 
                     } // END stages
 
+                    post {
+                        always {
+                            sh '''
+                                curl https://raw.githubusercontent.com/symboxtra/universal-ci-discord-webhook/master/send.sh > send.sh && chmod +x send.sh
+                            '''
+                        }
+                        success {
+                            sh '''
+                                ./send.sh success $HL_WEBHOOK_URL
+                            '''
+                        }
+                        failure {
+                            sh '''
+                                ./send.sh failure $HL_WEBHOOK_URL
+                            '''
+                        }
+                    } // END post
+
                 } // END Linux
 
 
@@ -98,7 +116,7 @@ pipeline {
 
                             steps {
 
-                                powershell '''
+                                sh '''
                                     echo "Building dependencies for ${HL_OS}..."
                                 '''
 
@@ -110,7 +128,7 @@ pipeline {
 
                             steps {
 
-                                powershell '''
+                                sh '''
                                     echo "Building application for ${HL_OS}..."
                                 '''
 
@@ -122,7 +140,7 @@ pipeline {
 
                             steps {
 
-                                powershell '''
+                                sh '''
                                     echo "Running test suite on ${HL_OS}..."
                                 '''
 
@@ -130,6 +148,24 @@ pipeline {
 
                         }
                     } // END stages
+
+                    post {
+                        always {
+                            sh '''
+                                curl https://raw.githubusercontent.com/symboxtra/universal-ci-discord-webhook/master/send.sh > send.sh && chmod +x send.sh
+                            '''
+                        }
+                        success {
+                            sh '''
+                                ./send.sh success $HL_WEBHOOK_URL
+                            '''
+                        }
+                        failure {
+                            sh '''
+                                ./send.sh failure $HL_WEBHOOK_URL
+                            '''
+                        }
+                    } // END post
 
                 } // END OSX
 
@@ -183,6 +219,24 @@ pipeline {
 
                         }
                     } // END stages
+
+                    post {
+                        always {
+                            powershell '''
+                                Invoke-RestMethod https://raw.githubusercontent.com/symboxtra/universal-ci-discord-webhook/master/send.ps1 -o send.ps1
+                            '''
+                        }
+                        success {
+                            powershell '''
+                                ./send.ps1 success $env:HL_WEBHOOK_URL
+                            '''
+                        }
+                        failure {
+                            powershell '''
+                                ./send.ps1 failure $env:HL_WEBHOOK_URL
+                            '''
+                        }
+                    } // END post
 
                 } // END Windows
 
