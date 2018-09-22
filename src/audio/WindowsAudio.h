@@ -2,13 +2,22 @@
 #define WIN_AUDIO
 
 #include <windows.h>
+#include <mmdeviceapi.h>
+#include <endpointvolume.h>
+#include <Audioclient.h>
 #include <tchar.h>
+#include <strsafe.h>
+#include <functiondiscoverykeys_devpkey.h>
+#include <atlstr.h>
+
+#include <comdef.h>
 
 #include <string>
 #include <vector>
 
 #include <thread>
 
+#include "OSAudio.h"
 #include "Device.h"
 
 using namespace std;
@@ -26,15 +35,15 @@ using f_int_t = int(*)(int);
             if ((punk) != NULL) \
                 { (punk)->Release(); (punk) = NULL; }
 
-const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
-const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
-const IID IID_IAudioClient = __uuidof(IAudioClient);
-const IID IID_IAudioCaptureClient = __uuidof(IAudioCaptureClient);
-
 class WindowsAudio : public OSAudio
 {
 
     private:
+
+        const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
+        const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
+        const IID IID_IAudioClient = __uuidof(IAudioClient);
+        const IID IID_IAudioCaptureClient = __uuidof(IAudioCaptureClient);
 
         //TODO: Figure out device class
 
@@ -43,8 +52,8 @@ class WindowsAudio : public OSAudio
         REFERENCE_TIME requestDuration = REFTIMES_PER_SEC;
         REFERENCE_TIME bufferDuration;
 
-        IMMDeviceEnumerator *pEnumerator = NULL;
-        IMMDeviceCollecton *deviceCollection = NULL;
+        IMMDeviceEnumerator* pEnumerator = NULL;
+        IMMDeviceCollection* deviceCollection = NULL;
 
         byte* pData;
 
@@ -58,6 +67,7 @@ class WindowsAudio : public OSAudio
         vector<Device*> getInputDevices();
         vector<Device*> getOutputDevices();
 
+        static void test_capture(WindowsAudio* _this);
         void capture();
 };
 

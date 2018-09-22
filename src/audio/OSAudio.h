@@ -14,8 +14,6 @@ using namespace std;
 
 class OSAudio
 {
-    private:
-        OSAudio();
 
     protected:
         Device* activeInputDevice;

@@ -2,14 +2,14 @@
 
 WindowsAudio::WindowsAudio()
 {
-    thread captureThread(capture);
+    //thread captureThread(&WindowsAudio::capture, this);
 }
 
 vector<Device*> WindowsAudio::getInputDevices()
 {
     vector<Device*> temp;
 
-    uint deviceCount = waveInGetNumDevs();
+    uint16_t deviceCount = waveInGetNumDevs();
     if(deviceCount > 0)
     {
         for(int i = 0;i < deviceCount;i++)
@@ -17,7 +17,7 @@ vector<Device*> WindowsAudio::getInputDevices()
             WAVEINCAPSW waveInCaps;
             waveInGetDevCapsW(i, &waveInCaps, sizeof(WAVEINCAPS));
 
-            temp.push_back(new Device()); //TODO: Figure out Device Class
+            //temp.push_back(new Device()); //TODO: Figure out Device Class
         }
     }
 
@@ -26,54 +26,83 @@ vector<Device*> WindowsAudio::getInputDevices()
 
 vector<Device*> WindowsAudio::getOutputDevices()
 {
+    
     vector<Device*> temp;
+    IMMDevice* pp;
+
+    status = CoInitialize(NULL);
+    HANDLE_ERROR(status);
 
     // Create instance? don't exactly know what this does yet
     status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
     HANDLE_ERROR(status);
 
     // Get Device Collection
-    status = pEnumerator->EnumAudioEndpoints(eCapture, eConsole, &deviceCollection);
+    status = pEnumerator->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, &deviceCollection);
     HANDLE_ERROR(status);
 
     // Store all devices as Device instances into vector
-    int count = 0;
+    UINT count = 0;
     status = deviceCollection->GetCount(&count);
     HANDLE_ERROR(status);
-
-    IMMDevice* pp = NULL;
+    
     for(int i = 0;i < count;i++)
     {
-        pp = NULL;
+        
+        IMMDevice* device;
         DWORD state = NULL;
 
-        status = deviceCollection->Item(i, &pp);
+        status = deviceCollection->Item(i, &device);
         HANDLE_ERROR(status);
 
-        status = pp->GetState(&state);
+
+        status = device->GetState(&state);
         HANDLE_ERROR(status);
 
-        if(state == DEVICE_STATE_ACTIVE)
-            // Add device to devicelist
-            temp.push_back(new Device()) //TODO: Figure out Device Class
+        LPWSTR id = NULL;
+        status = device->GetId(&id);
+        HANDLE_ERROR(status);
+
+        // Add device to devicelist
+        IPropertyStore* propKey;
+        PROPVARIANT varName;
+        PropVariantInit(&varName);
+
+        status = device->OpenPropertyStore(STGM_READ, &propKey);
+        HANDLE_ERROR(status);
+        status = propKey->GetValue(PKEY_Device_FriendlyName, &varName);
+        HANDLE_ERROR(status);
+
+        wstring deviceName(varName.pwszVal);
+
+        printf("Device Name: %S\n", deviceName);
+
+        temp.push_back(new Device((uint32_t)id));
     }
 
 Exit:
     SAFE_RELEASE(pEnumerator)
-    SAFE_RELEASE(pp)
+    //SAFE_RELEASE(pp)
+    _com_error err(status);
+    LPCTSTR errMsg = err.ErrorMessage();
+    printf("\nError: %s\n", errMsg);
 
     if(FAILED(status))
-        return NULL;
+        return {};
     else
         return temp;
 }
 
+void WindowsAudio::test_capture(WindowsAudio* _this) { _this->capture(); }
+
 void WindowsAudio::capture()
 {
-    IAudioCaptureClient *captureClient = NULL;
+    IAudioCaptureClient* captureClient = NULL;
     IAudioClient* audioClient = NULL;
     WAVEFORMATEX* pwfx = NULL;
     IMMDevice* audioDevice = NULL;
+    UINT32 numFramesAvailable;
+    DWORD flags;
 
     uint32_t packetLength = 0;
 
@@ -94,7 +123,7 @@ void WindowsAudio::capture()
     status = audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, 0, REFTIMES_PER_SEC, 0, pwfx, NULL);
     HANDLE_ERROR(status);
 
-    status = audioClient->GetService(IID_IAudioCaptureClient, (void**)*captureClient);
+    status = audioClient->GetService(IID_IAudioCaptureClient, (void**)&captureClient);
     HANDLE_ERROR(status);
 
     status = audioClient->Start();
@@ -123,7 +152,7 @@ void WindowsAudio::capture()
                 // Execute callbacks
                 for(int i = 0;i < callbackList.size();i++)
                 {
-                    thread{callbackList[i], numFramesAvailable, pData}.detach();
+                    //thread{callbackList[i], numFramesAvailable, pData}.detach();
                 }
 
                 status = captureClient->ReleaseBuffer(numFramesAvailable);

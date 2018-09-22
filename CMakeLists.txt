@@ -1,7 +1,10 @@
 ######## Config ########
 
 cmake_minimum_required (VERSION 3.5)
-set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD 11)
+
+include (cmake/Qt5.cmake)
+include (cmake/Utility.cmake)
 
 # Version
 set (VERSION_MAJOR 0)
@@ -60,7 +63,7 @@ set (HL_LIBRARIES)
 
 # Link Windows specific libraries
 if (WIN32)
-    set (HL_LIBRARIES ${HL_LIBRARIES} ) # TODO: Add required windows libraries
+    set (HL_LIBRARIES ${HL_LIBRARIES} winmm.lib ) # TODO: Add required windows libraries
 endif ()
 
 
@@ -118,6 +121,7 @@ set (HL_LIBRARIES
 ######## Libraries ########
 
 # TODO: add subdirectories here
+add_subdirectory(src/audio)
 
 
 
