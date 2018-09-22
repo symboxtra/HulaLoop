@@ -44,6 +44,9 @@ pipeline {
 
                                 sh '''
                                     echo "Building dependencies for ${HL_OS}..."
+                                    mkdir build-linux
+                                    cd build-linux
+                                    cmake ..
                                 '''
 
                             }
@@ -57,6 +60,7 @@ pipeline {
 
                                 sh '''
                                     echo "Building application for ${HL_OS}..."
+                                    cmake --build .
                                 '''
 
                             }
@@ -70,6 +74,7 @@ pipeline {
 
                                 sh '''
                                     echo "Running test suite on ${HL_OS}..."
+                                    # TODO: ctest -V
                                 '''
 
                             }
@@ -118,6 +123,9 @@ pipeline {
 
                                 sh '''
                                     echo "Building dependencies for ${HL_OS}..."
+                                    mkdir build-osx
+                                    cd build-osx
+                                    cmake ..
                                 '''
 
                             }
@@ -130,6 +138,7 @@ pipeline {
 
                                 sh '''
                                     echo "Building application for ${HL_OS}..."
+                                    cmake --build .
                                 '''
 
                             }
@@ -142,6 +151,7 @@ pipeline {
 
                                 sh '''
                                     echo "Running test suite on ${HL_OS}..."
+                                    # TODO: ctest -V
                                 '''
 
                             }
@@ -189,6 +199,9 @@ pipeline {
 
                                 powershell '''
                                     echo "Building dependencies for ${HL_OS}..."
+                                    mkdir build-win
+                                    cd build-win
+                                    cmake .. -A x64
                                 '''
 
                             }
@@ -201,6 +214,7 @@ pipeline {
 
                                 powershell '''
                                     echo "Building application for ${HL_OS}..."
+                                    cmake --build .
                                 '''
 
                             }
@@ -213,6 +227,7 @@ pipeline {
 
                                 powershell '''
                                     echo "Running test suite on ${HL_OS}..."
+                                    # TODO: ctest -C Debug -V
                                 '''
 
                             }
