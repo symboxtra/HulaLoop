@@ -16,12 +16,15 @@ pipeline {
 
             parallel {
 
+                //************
+                //   LINUX
+                //************
                 stage('Linux') {
                     agent {
                         label 'linux'
                     }
                     environment {
-                        HL_OS = 'linux'
+                        HL_OS = 'Linux'
                     }
 
                     stages {
@@ -69,6 +72,59 @@ pipeline {
 
                 } // END Linux
 
+
+                //************
+                //  WINDOWS
+                //************
+                stage ('Windows') {
+                    agent {
+                        label 'windows'
+                    }
+                    environment {
+                        HL_OS = 'Windows'
+                    }
+
+                    stages {
+
+                        stage('Build dependencies - Windows') {
+
+                            steps {
+
+                                powershell '''
+                                    echo "Building dependencies for ${HL_OS}..."
+                                '''
+
+                            }
+
+                        }
+
+                        stage('Build - Windows') {
+
+                            steps {
+
+                                powershell '''
+                                    echo "Building application for ${HL_OS}..."
+                                '''
+
+                            }
+
+                        }
+
+                        stage('Test - Windows') {
+
+                            steps {
+
+                                powershell '''
+                                    echo "Running test suite on ${HL_OS}..."
+                                '''
+
+                            }
+
+                        }
+                    } // END stages
+
+                } // END Windows
+
             } // END parallel
 
         } // END configuration
@@ -76,3 +132,4 @@ pipeline {
     } // END stages
 
 } // END pipeline
+
