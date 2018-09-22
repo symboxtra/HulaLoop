@@ -102,15 +102,17 @@ message (STATUS "Qt5_DIR: ${Qt5_DIR}")
 # Required Qt packages
 find_package (Qt5 REQUIRED
     Core
-    Widgets
     Gui
+	Qml
+	QuickControls2
 )
 
 set (HL_LIBRARIES
     ${HL_LIBRARIES}
     Qt5::Core
-    Qt5::Widgets
     Qt5::Gui
+	Qt5::Qml
+	Qt5::QuickControls2
 )
 
 
@@ -118,7 +120,7 @@ set (HL_LIBRARIES
 ######## Libraries ########
 
 # TODO: add subdirectories here
-
+add_subdirectory(src/ui)
 
 
 ######## Executable ########
