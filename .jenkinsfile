@@ -12,9 +12,17 @@ pipeline {
 
     stages {
 
-        stage('Configuration') {
+        stage('Initialization') {
 
             parallel {
+
+                stage('Configuration') {
+                    steps {
+                        script {
+                            currentBuild.displayName = env.BRANCH_NAME + " - #" + env.BUILD_NUMBER
+                        }
+                    }
+                }
 
                 //************
                 //   LINUX
@@ -30,7 +38,7 @@ pipeline {
                     stages {
 
                         // Generate CMake and build any required dependencies
-                        stage('Build dependencies - Linux') {
+                        stage('Dependencies - Linux') {
 
                             steps {
 
@@ -86,7 +94,7 @@ pipeline {
 
                     stages {
 
-                        stage('Build dependencies - Windows') {
+                        stage('Dependencies - Windows') {
 
                             steps {
 
