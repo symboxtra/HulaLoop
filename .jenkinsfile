@@ -58,6 +58,7 @@ pipeline {
                                     qmake -v
                                     echo "Using Qt ${HL_QT_VERSION}"
 
+                                    rm -rf build-linux
                                     mkdir build-linux
                                     cd build-linux
                                     cmake ..
@@ -142,6 +143,7 @@ pipeline {
 
                                     qmake -v
 
+                                    rm -rf build-osx
                                     mkdir build-osx
                                     cd build-osx
                                     cmake ..
@@ -224,6 +226,7 @@ pipeline {
                                     # Not on path
                                     # qmake -v
 
+                                    Remove-Item -Recurse -Force -ErrorAction Ignore build-win
                                     mkdir build-win
                                     cd build-win
                                     cmake .. -DQT_ROOT=$ENV:HL_QT_PREFIX -A x64
