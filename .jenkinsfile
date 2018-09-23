@@ -128,8 +128,10 @@ pipeline {
                     }
                     environment {
                         HL_OS = "OSX"
+
+                        // Jenkins does not load default /etc/paths
                         // Qt bin must be on PATH to link properly
-                        PATH = "/usr/local/opt/qt/bin:${PATH}"
+                        PATH = "/usr/local/bin:/usr/local/opt/qt/bin:${PATH}"
                     }
 
                     stages {
@@ -141,8 +143,8 @@ pipeline {
                                 sh '''
                                     echo "Configuring dependencies for ${HL_OS}..."
 
+                                    echo "Path: ${PATH}"
                                     qmake -v
-                                    echo ${PATH}
 
                                     rm -rf build-osx
                                     mkdir build-osx
