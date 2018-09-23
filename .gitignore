@@ -1,3 +1,7 @@
+build*
+.*.swp
+CMakeLists.txt.user
+
 # Prerequisites
 *.d
 

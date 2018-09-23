@@ -1,0 +1,296 @@
+pipeline {
+    agent none
+
+    environment {
+        HL_WEBHOOK_URL = credentials('HULALOOP_WEBHOOK_URL')
+    }
+
+    options {
+        timeout(time: 10, unit: 'MINUTES')
+        timestamps()
+    }
+
+    stages {
+
+        stage('Initialization') {
+
+            parallel {
+
+                stage('Configuration') {
+                    steps {
+                        script {
+                            currentBuild.displayName = env.BRANCH_NAME + " - #" + env.BUILD_NUMBER
+                        }
+                    }
+                }
+
+                //************
+                //   LINUX
+                //************
+                stage('Linux') {
+                    agent {
+                        label 'linux'
+                    }
+                    environment {
+                        HL_OS = "Linux"
+                        HL_QT_VERSION = "5.10.1" // Only symbox-server is on 5.10 right now
+                        HL_QT_PREFIX = "/home/symboxtra"
+
+                        PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/bin:${PATH}"
+                        LD_LIBRARY_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/lib"
+                        QT_PLUGIN_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/plugins"
+                        QML_IMPORT_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/qml"
+                        QML2_IMPORT_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/qml"
+                        QT_DEBUG_PLUGINS = 1
+                        QT_IMPORT_TRACE = 1
+                    }
+
+                    stages {
+
+                        // Generate CMake and build any required dependencies
+                        stage('Dependencies - Linux') {
+
+                            steps {
+
+                                sh '''
+                                    echo "Configuring dependencies for ${HL_OS}..."
+
+                                    qmake -v
+                                    echo "Using Qt ${HL_QT_VERSION}"
+
+                                    rm -rf build-linux
+                                    mkdir build-linux
+                                    cd build-linux
+                                    cmake ..
+                                '''
+
+                            }
+
+                        }
+
+                        // Build our application
+                        stage('Build - Linux') {
+
+                            steps {
+
+                                sh '''
+                                    echo "Building application for ${HL_OS}..."
+                                    cmake --build ./build-linux
+                                '''
+
+                            }
+
+                        }
+
+                        // Run the test suite
+                        stage('Test - Linux') {
+
+                            steps {
+
+                                sh '''
+                                    echo "Running test suite on ${HL_OS}..."
+                                    # TODO: ctest -V
+                                '''
+
+                            }
+
+                        }
+
+                    } // END stages
+
+                    post {
+                        always {
+                            sh '''
+                                curl https://raw.githubusercontent.com/symboxtra/universal-ci-discord-webhook/master/send.sh > send.sh && chmod +x send.sh
+                            '''
+                        }
+                        success {
+                            sh '''
+                                ./send.sh success $HL_WEBHOOK_URL
+                            '''
+                        }
+                        failure {
+                            sh '''
+                                ./send.sh failure $HL_WEBHOOK_URL
+                            '''
+                        }
+                    } // END post
+
+                } // END Linux
+
+
+                //************
+                //    OSX
+                //************
+                stage ('OSX') {
+                    agent {
+                        label 'osx'
+                    }
+                    environment {
+                        HL_OS = "OSX"
+
+                        // Jenkins does not load default /etc/paths
+                        // Qt bin must be on PATH to link properly
+                        PATH = "/usr/local/bin:/usr/local/opt/qt/bin:${PATH}"
+                    }
+
+                    stages {
+
+                        stage('Dependencies - OSX') {
+
+                            steps {
+
+                                sh '''
+                                    echo "Configuring dependencies for ${HL_OS}..."
+
+                                    echo "Path: ${PATH}"
+                                    qmake -v
+
+                                    rm -rf build-osx
+                                    mkdir build-osx
+                                    cd build-osx
+                                    cmake ..
+                                '''
+
+                            }
+
+                        }
+
+                        stage('Build - OSX') {
+
+                            steps {
+
+                                sh '''
+                                    echo "Building application for ${HL_OS}..."
+                                    cmake --build ./build-osx
+                                '''
+
+                            }
+
+                        }
+
+                        stage('Test - OSX') {
+
+                            steps {
+
+                                sh '''
+                                    echo "Running test suite on ${HL_OS}..."
+                                    # TODO: ctest -V
+                                '''
+
+                            }
+
+                        }
+                    } // END stages
+
+                    post {
+                        always {
+                            sh '''
+                                curl https://raw.githubusercontent.com/symboxtra/universal-ci-discord-webhook/master/send.sh > send.sh && chmod +x send.sh
+                            '''
+                        }
+                        success {
+                            sh '''
+                                ./send.sh success $HL_WEBHOOK_URL
+                            '''
+                        }
+                        failure {
+                            sh '''
+                                ./send.sh failure $HL_WEBHOOK_URL
+                            '''
+                        }
+                    } // END post
+
+                } // END OSX
+
+
+                //************
+                //  WINDOWS
+                //************
+                stage ('Windows') {
+                    agent {
+                        label 'windows'
+                    }
+                    environment {
+                        HL_OS = "Windows"
+                        HL_QT_VERSION = "5.11.2"
+                        HL_QT_PREFIX = "C:\\Qt\\${HL_QT_VERSION}"
+                    }
+
+                    stages {
+
+                        stage('Dependencies - Windows') {
+
+                            steps {
+
+                                powershell '''
+                                    echo "Configuring dependencies for ${ENV:HL_OS}..."
+
+                                    # Not on path
+                                    # qmake -v
+
+                                    Remove-Item -Recurse -Force -ErrorAction Ignore build-win
+                                    mkdir build-win
+                                    cd build-win
+                                    cmake .. -DQT_ROOT="${ENV:HL_QT_PREFIX}" -A x64
+                                '''
+
+                            }
+
+                        }
+
+                        stage('Build - Windows') {
+
+                            steps {
+
+                                powershell '''
+                                    echo "Building application for ${HL_OS}..."
+                                    cmake --build ./build-win
+                                '''
+
+                            }
+
+                        }
+
+                        stage('Test - Windows') {
+
+                            steps {
+
+                                powershell '''
+                                    echo "Running test suite on ${HL_OS}..."
+                                    # TODO: ctest -C Debug -V
+                                '''
+
+                            }
+
+                        }
+                    } // END stages
+
+                    post {
+                        always {
+                            powershell '''
+                                Invoke-RestMethod https://raw.githubusercontent.com/symboxtra/universal-ci-discord-webhook/master/send.ps1 -o send.ps1
+                            '''
+                        }
+                        success {
+                            powershell '''
+                                ./send.ps1 success $env:HL_WEBHOOK_URL
+                            '''
+                        }
+                        failure {
+                            powershell '''
+                                ./send.ps1 failure $env:HL_WEBHOOK_URL
+                            '''
+                        }
+                    } // END post
+
+                } // END Windows
+
+            } // END parallel
+
+        } // END configuration
+
+    } // END stages
+
+} // END pipeline
+
