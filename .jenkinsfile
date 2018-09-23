@@ -32,7 +32,17 @@ pipeline {
                         label 'linux'
                     }
                     environment {
-                        HL_OS = 'Linux'
+                        HL_OS = "Linux"
+                        HL_QT_VERSION = "5.10.1" // Only symbox-server is on 5.10 right now
+                        HL_QT_PREFIX = "/home/symboxtra"
+
+                        PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/bin:${PATH}"
+                        LD_LIBRARY_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/lib"
+                        QT_PLUGIN_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/plugins"
+                        QML_IMPORT_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/qml"
+                        QML2_IMPORT_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/qml"
+                        QT_DEBUG_PLUGINS = 1
+                        QT_IMPORT_TRACE = 1
                     }
 
                     stages {
@@ -43,7 +53,11 @@ pipeline {
                             steps {
 
                                 sh '''
-                                    echo "Building dependencies for ${HL_OS}..."
+                                    echo "Configuring dependencies for ${HL_OS}..."
+
+                                    qmake -v
+                                    echo "Using Qt ${HL_QT_VERSION}"
+
                                     mkdir build-linux
                                     cd build-linux
                                     cmake ..
@@ -60,7 +74,7 @@ pipeline {
 
                                 sh '''
                                     echo "Building application for ${HL_OS}..."
-                                    cmake --build .
+                                    cmake --build ./build-linux
                                 '''
 
                             }
@@ -112,7 +126,9 @@ pipeline {
                         label 'osx'
                     }
                     environment {
-                        HL_OS = 'OSX'
+                        HL_OS = "OSX"
+                        // Qt bin must be on PATH to link properly
+                        PATH = "/usr/local/opt/qt/bin:${PATH}"
                     }
 
                     stages {
@@ -122,7 +138,10 @@ pipeline {
                             steps {
 
                                 sh '''
-                                    echo "Building dependencies for ${HL_OS}..."
+                                    echo "Configuring dependencies for ${HL_OS}..."
+
+                                    qmake -v
+
                                     mkdir build-osx
                                     cd build-osx
                                     cmake ..
@@ -138,7 +157,7 @@ pipeline {
 
                                 sh '''
                                     echo "Building application for ${HL_OS}..."
-                                    cmake --build .
+                                    cmake --build ./build-osx
                                 '''
 
                             }
@@ -188,7 +207,9 @@ pipeline {
                         label 'windows'
                     }
                     environment {
-                        HL_OS = 'Windows'
+                        HL_OS = "Windows"
+                        HL_QT_VERSION = "5.11.2"
+                        HL_QT_PREFIX = "C:\\Qt\\$ENV:HL_QT_VERSION"
                     }
 
                     stages {
@@ -198,10 +219,14 @@ pipeline {
                             steps {
 
                                 powershell '''
-                                    echo "Building dependencies for ${HL_OS}..."
+                                    echo "Configuring dependencies for ${HL_OS}..."
+
+                                    # Not on path
+                                    # qmake -v
+
                                     mkdir build-win
                                     cd build-win
-                                    cmake .. -A x64
+                                    cmake .. -DQT_ROOT=$ENV:HL_QT_PREFIX -A x64
                                 '''
 
                             }
@@ -214,7 +239,7 @@ pipeline {
 
                                 powershell '''
                                     echo "Building application for ${HL_OS}..."
-                                    cmake --build .
+                                    cmake --build ./build-win
                                 '''
 
                             }
