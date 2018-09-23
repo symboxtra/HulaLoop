@@ -142,6 +142,7 @@ pipeline {
                                     echo "Configuring dependencies for ${HL_OS}..."
 
                                     qmake -v
+                                    echo ${PATH}
 
                                     rm -rf build-osx
                                     mkdir build-osx
@@ -211,7 +212,7 @@ pipeline {
                     environment {
                         HL_OS = "Windows"
                         HL_QT_VERSION = "5.11.2"
-                        HL_QT_PREFIX = "C:\\Qt\\$ENV:HL_QT_VERSION"
+                        HL_QT_PREFIX = "C:\\Qt\\${HL_QT_VERSION}"
                     }
 
                     stages {
@@ -221,7 +222,7 @@ pipeline {
                             steps {
 
                                 powershell '''
-                                    echo "Configuring dependencies for ${HL_OS}..."
+                                    echo "Configuring dependencies for ${ENV:HL_OS}..."
 
                                     # Not on path
                                     # qmake -v
@@ -229,7 +230,7 @@ pipeline {
                                     Remove-Item -Recurse -Force -ErrorAction Ignore build-win
                                     mkdir build-win
                                     cd build-win
-                                    cmake .. -DQT_ROOT=$ENV:HL_QT_PREFIX -A x64
+                                    cmake .. -DQT_ROOT="${ENV:HL_QT_PREFIX}" -A x64
                                 '''
 
                             }
