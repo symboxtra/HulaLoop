@@ -106,5 +106,51 @@ Rectangle {
 				radius: pauseBtn.width / 2
 			}
 		}
+
+        RoundButton {
+            id: timerBtn
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            display: AbstractButton.TextOnly
+
+            contentItem: Text {
+                font.family: "Material Design Icons"
+                font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                text: MDFont.Icon.timer
+                color: "white"
+
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            background: Rectangle {
+                opacity: enabled ? 1 : 0.15
+                color: timerBtn.pressed ? "grey" : "darkgrey"
+                radius: timerBtn.width / 2
+            }
+
+            onClicked: timerPopup.open()
+        }
 	}
+
+    Popup {
+        id: timerPopup
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        width: 400
+        height: 200
+
+        modal: true
+        focus: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+
+        ComboBox {
+            editable: true
+            model: ListModel {
+                id: model
+                ListElement { text: "1 sec" }
+                ListElement { text: "5 sec" }
+                ListElement { text: "10 sec" }
+            }
+        }
+    }
 }
