@@ -106,6 +106,7 @@ find_package (Qt5 REQUIRED
     Core
     Gui
 	Qml
+	Quick
 	QuickControls2
 )
 
@@ -114,6 +115,7 @@ set (HL_LIBRARIES
     Qt5::Core
     Qt5::Gui
 	Qt5::Qml
+	Qt5::Quick
 	Qt5::QuickControls2
 )
 
