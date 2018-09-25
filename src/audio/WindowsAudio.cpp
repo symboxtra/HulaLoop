@@ -48,7 +48,6 @@ vector<Device*> WindowsAudio::getOutputDevices()
 {
     
     vector<Device*> temp;
-    IMMDevice* pp;
 
     // Create instance? don't exactly know what this does yet
     status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
@@ -63,7 +62,7 @@ vector<Device*> WindowsAudio::getOutputDevices()
     status = deviceCollection->GetCount(&count);
     HANDLE_ERROR(status);
     
-    for(int i = 0;i < count;i++)
+    for(UINT i = 0;i < count;i++)
     {
         
         IMMDevice* device;
@@ -167,6 +166,8 @@ void WindowsAudio::capture(future<void> futureObj)
     IMMDevice* audioDevice = NULL;
     UINT32 numFramesAvailable;
     DWORD flags;
+    char* buffer = (char*)malloc(500);
+
 
     uint32_t packetLength = 0;
 
@@ -183,7 +184,17 @@ void WindowsAudio::capture(future<void> futureObj)
 
     cout << "Test I1'm here!" << endl;
     //status = pEnumerator->GetDevice(reinterpret_cast<LPCWSTR>(activeOutputDevice->getID()), &audioDevice);
-    status = pEnumerator->GetDefaultAudioEndpoint(eCapture, eConsole, &audioDevice);
+    status = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &audioDevice);
+    // Add device to devicelist
+        IPropertyStore* propKey;
+        PROPVARIANT varName;
+        PropVariantInit(&varName);
+
+        status = audioDevice->OpenPropertyStore(STGM_READ, &propKey);
+        status = propKey->GetValue(PKEY_Device_FriendlyName, &varName);
+        wcstombs(buffer, varName.pwszVal, 500);
+        cout << buffer << endl;
+    
     cout << "Test I'm here1!" << endl;
     HANDLE_ERROR(status);
     cout << "Test I'm here!" << endl;
@@ -199,7 +210,7 @@ void WindowsAudio::capture(future<void> futureObj)
     REFERENCE_TIME req = REFTIMES_PER_SEC;
     status = audioClient->Initialize(
                          AUDCLNT_SHAREMODE_SHARED,
-                         0,
+                         AUDCLNT_STREAMFLAGS_LOOPBACK,
                          req,
                          0,
                          pwfx,
@@ -244,7 +255,12 @@ void WindowsAudio::capture(future<void> futureObj)
                 {
                     //thread{callbackList[i], numFramesAvailable, pData}.detach();
                 }
-                cout << "Frames Captured: " << numFramesAvailable << endl;
+
+                //string str(reinterpret_cast<char const*>(pData), numFramesAvailable);
+                cout << numFramesAvailable << endl;
+                ofstream outputFile("file", ios::binary | ios::out);
+                outputFile.write((char*)pData, numFramesAvailable);
+                outputFile.close();
 
                 status = captureClient->ReleaseBuffer(numFramesAvailable);
                 HANDLE_ERROR(status);
