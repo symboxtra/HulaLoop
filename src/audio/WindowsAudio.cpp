@@ -3,15 +3,24 @@
 WindowsAudio::WindowsAudio()
 {
     //thread captureThread(&WindowsAudio::capture, this);
-    DWORD threadID;
+    // DWORD threadID;
+
+    // status = CoInitialize(NULL);
+    // _com_error err(status);
+    // LPCTSTR errMsg = err.ErrorMessage();
+    // cout << "\nError: " << errMsg << "\n" << endl;
+
+    // vector<Device*> tee = getOutputDevices();
+    // activeOutputDevice = tee[0];
     
-    int a = 4;
-    status = CoInitialize(NULL);
-    _com_error err(status);
-    LPCTSTR errMsg = err.ErrorMessage();
-    cout << "\nError: " << errMsg << "\n" << endl;
     
-    HANDLE myHandle = CreateThread(0, 0, WindowsAudio::test_capture, this, 0, &threadID);
+    // int a = 4;
+    
+    // //HANDLE myHandle = CreateThread(0, 0, WindowsAudio::test_capture, this, 0, &threadID);
+    promise<void> e1;
+    thread captureThread(&WindowsAudio::test_capture, this, move(e1.get_future()));
+
+     captureThread.join();
     // Handle error if unacceptable result
 
 }
@@ -29,10 +38,6 @@ vector<Device*> WindowsAudio::getInputDevices()
             waveInGetDevCapsW( i, &waveInCaps, sizeof( WAVEINCAPSW ) );
             wstring temp(waveInCaps.szPname);   
             string str(temp.begin(), temp.end());
-
-            //Device* audio = new Device(waveInCaps.wPid, str, DeviceType::RECORDING);
-            //temp2.push_back(audio);
-            //deviceList.push_back(audio);
         }
     }
 
@@ -91,13 +96,13 @@ vector<Device*> WindowsAudio::getOutputDevices()
         wstring fun(varName.pwszVal);
         string str(fun.begin(), fun.end());
 
-        Device* audio = new Device(id, str, DeviceType::PLAYBACK);
+        Device* audio = new Device(reinterpret_cast<uint32_t*>(id), str, DeviceType::PLAYBACK);
         temp.push_back(audio);
         
         bool flag = true;
         for(int j = 0;j < deviceList.size();j++)
         {
-            if(deviceList[j]->getID() == id)
+            if(reinterpret_cast<LPCWSTR>(deviceList[j]->getID()) == id)
                 flag = false;
         }
 
@@ -120,18 +125,42 @@ Exit:
         return temp;
 }
 
-DWORD __stdcall WindowsAudio::test_capture(LPVOID param)
+void WindowsAudio::setActiveOutputDevice(Device* device)
 {
-    cout << "Hello" << endl;
-    WindowsAudio* winAud = reinterpret_cast<WindowsAudio*>(param);
-    winAud->capture();
+    // this->activeOutputDevice = device;
 
-    return 0;
+    // // Interrupt all threads and make sure they stop 
+    // for(auto& t : execThreads)
+    // {
+    //     t.second.set_value();
+    //     t.first.join();
+    // }
+
+    // execThreads.clear();
+    // // Start up new threads with new selected device info
+    // promise<void> e1;
+    // //thread t1(&WindowsAudio::test_capture, this, move(e1.get_future()));
+    // //execThreads.push_back(make_pair(t1, e1));
+
+    // // Add playback thread later
 }
 
-void WindowsAudio::capture()
+void WindowsAudio::test_capture(WindowsAudio* param, future<void> futureObj)
+{
+    cout << "Hello" << endl;
+    //WindowsAudio* winAud = reinterpret_cast<WindowsAudio*>(param);
+    param->capture(move(futureObj));
+
+    //return 0;
+}
+
+/**
+ * Execution loop for loopback capture
+ */
+void WindowsAudio::capture(future<void> futureObj)
 {
     cout << "Temp hello" << endl;
+    
     IAudioCaptureClient* captureClient = NULL;
     IAudioClient* audioClient = NULL;
     WAVEFORMATEX* pwfx = NULL;
@@ -153,7 +182,7 @@ void WindowsAudio::capture()
     cout << "Test I'm here!" << endl;
 
     cout << "Test I1'm here!" << endl;
-    //status = pEnumerator->GetDevice(activeOutputDevice->getID(), &audioDevice);
+    //status = pEnumerator->GetDevice(reinterpret_cast<LPCWSTR>(activeOutputDevice->getID()), &audioDevice);
     status = pEnumerator->GetDefaultAudioEndpoint(eCapture, eConsole, &audioDevice);
     cout << "Test I'm here1!" << endl;
     HANDLE_ERROR(status);
@@ -162,12 +191,11 @@ void WindowsAudio::capture()
     status = audioDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void**)&audioClient);
     HANDLE_ERROR(status);
     cout << "Test I'm here00!" << endl;
-
+    
+    
     status = audioClient->GetMixFormat(&pwfx);
     HANDLE_ERROR(status);
-    cout << pwfx << endl;
 
-    //status = audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, 0, REFTIMES_PER_SEC, 0, pwfx, NULL);
     REFERENCE_TIME req = REFTIMES_PER_SEC;
     status = audioClient->Initialize(
                          AUDCLNT_SHAREMODE_SHARED,
@@ -190,8 +218,7 @@ void WindowsAudio::capture()
     duration = (double)REFTIMES_PER_SEC * captureBufferSize / pwfx->nSamplesPerSec;
 
     // Continue loop under process ends
-    return;
-    while(true)
+    while(futureObj.wait_for(std::chrono::milliseconds(1)) == std::future_status::timeout)
     {
         cout << "\n\nAm I on?\n\n" << endl;
         while(callbackList.size() > 0)
@@ -239,4 +266,5 @@ Exit:
     cout << "\nError: " << errMsg << "\n" << endl;
 
     //TODO: Handle error accordingly
+    
 }

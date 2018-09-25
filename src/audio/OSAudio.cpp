@@ -17,17 +17,12 @@ void OSAudio::removeBufferReadyCallback(f_int_t callFunction)
         this->callbackList.erase(remove(callbackList.begin(), callbackList.end(), callFunction), callbackList.end());
 }
 
-void OSAudio::setActiveOutputDevice(Device* device)
-{
-    this->activeOutputDevice = device;
-}
-
-vector<Device*> OSAudio::getAudioDevices()
-{
-    return deviceList;
-}
-
 void OSAudio::setActiveRecordDevice(Device* device)
 {
-    this->activeInputDevice = device;
+
+}
+
+void OSAudio::setActiveOutputDevice(Device* device)
+{
+
 }

@@ -7,6 +7,12 @@
 #include <mmdeviceapi.h>
 #include <endpointvolume.h>
 #include <vector>
+#include <thread>
+#include <iostream>
+#include <assert.h>
+#include <chrono>
+#include <future>
+
 
 #include "Device.h"
 
@@ -28,6 +34,7 @@ class OSAudio
         vector<f_int_t> callbackList;
 
         vector<Device*> deviceList;
+        vector<pair<thread, promise<void>>> execThreads;
 
     public:
         void setBufferSize(uint32_t size);
@@ -35,14 +42,13 @@ class OSAudio
         void addBufferReadyCallback(f_int_t func);
         void removeBufferReadyCallback(f_int_t func);
         
-        vector<Device*> getAudioDevices();
         virtual vector<Device*> getInputDevices() = 0;
         virtual vector<Device*> getOutputDevices() = 0;
 
-        virtual void capture() = 0;
+        virtual void capture(future<void> futureObj) = 0;
 
         void setActiveRecordDevice(Device* device);
-        void setActiveOutputDevice(Device* device);
+        virtual void setActiveOutputDevice(Device* device) = 0;
          
 };
 

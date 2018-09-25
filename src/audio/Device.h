@@ -13,17 +13,17 @@ enum class DeviceType { RECORDING, PLAYBACK };
 class Device
 {
     private:
-        LPCWSTR deviceID;
+        uint32_t* deviceID;
         string deviceName;
 
         DeviceType type;
 
     public:
-        Device(LPCWSTR id, string name, DeviceType t);
+        Device(uint32_t* id, string name, DeviceType t);
         ~Device();
 
-        LPCWSTR getID();
-        void setID(LPCWSTR id);
+        uint32_t* getID();
+        void setID(uint32_t* id);
 
         string getName();
         void setName(string name);
