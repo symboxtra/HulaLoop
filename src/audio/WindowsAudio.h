@@ -84,7 +84,7 @@ class WindowsAudio : public OSAudio
         vector<Device*> getOutputDevices();
 
         //static void test_capture(); //TODO: Figure out static context with comparison to Linux and thread creation
-        static DWORD __stdcall WindowsAudio::test_capture(LPVOID param);
+        static DWORD __stdcall test_capture(LPVOID param);
         void capture();
 };
 

@@ -4,130 +4,16 @@ WindowsAudio::WindowsAudio()
 {
     //thread captureThread(&WindowsAudio::capture, this);
     DWORD threadID;
-
     
     int a = 4;
-
-    //HANDLE myHandle = CreateThread(0, 0, WindowsAudio::test_capture, this, 0, &threadID);
-    // Handle error if unacceptable result
-
-    //status = CoInitialize(NULL);
-
-    IAudioCaptureClient* captureClient = NULL;
-    IAudioClient* audioClient = NULL;
-    WAVEFORMATEX* pwfx = NULL;
-    IMMDevice* audioDevice = NULL;
-    UINT32 numFramesAvailable;
-    DWORD flags;
-    BYTE* pData;
-    ofstream fout;
-
-    uint32_t packetLength = 0;
-
-    REFERENCE_TIME duration;
-
     status = CoInitialize(NULL);
-    HANDLE_ERROR(status);
-    cout << "Test I'm here!" << endl;
-
-    status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
-    HANDLE_ERROR(status);
-    cout << "Test I'm here!" << endl;
-
-    cout << "Test I1'm here!" << endl;
-    //status = pEnumerator->GetDevice(activeOutputDevice->getID(), &audioDevice);
-    status = pEnumerator->GetDefaultAudioEndpoint(eCapture, eConsole, &audioDevice);
-    cout << "Test I'm here1!" << endl;
-    HANDLE_ERROR(status);
-    cout << "Test I'm here!" << endl;
-
-    status = audioDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void**)&audioClient);
-    HANDLE_ERROR(status);
-    cout << "Test I'm here00!" << endl;
-
-    status = audioClient->GetMixFormat(&pwfx);
-    HANDLE_ERROR(status);
-    cout << pwfx << endl;
-
-    //status = audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, 0, REFTIMES_PER_SEC, 0, pwfx, NULL);
-    REFERENCE_TIME req = REFTIMES_PER_SEC;
-    status = audioClient->Initialize(
-                         AUDCLNT_SHAREMODE_SHARED,
-                         0,
-                         req,
-                         0,
-                         pwfx,
-                         NULL);
-    HANDLE_ERROR(status);
-    cout << "Test I'm here1!" << endl;
-
-    status = audioClient->GetBufferSize(&captureBufferSize);
-    HANDLE_ERROR(status);
-
-    status = audioClient->GetService(IID_IAudioCaptureClient, (void**)&captureClient);
-    HANDLE_ERROR(status);
-    cout << "Test I'm here2!" << endl;
-
-    status = audioClient->Start();
-    HANDLE_ERROR(status);
-    cout << "Test I'm here3!" << endl;
-
-    duration = (double)REFTIMES_PER_SEC * captureBufferSize / pwfx->nSamplesPerSec;
-
-    // Continue loop under process ends
-    while(true)
-    {
-        //cout << "\n\nAm I on?\n\n" << endl;
-        //while(callbackList.size() > 0)
-        //{
-            cout << "Time: " << duration / (REFTIMES_PER_MILLISEC * 2) << endl;
-            Sleep(duration / (REFTIMES_PER_MILLISEC * 2));
-            cout << "G" << endl;
-
-            status = captureClient->GetNextPacketSize(&packetLength);
-            HANDLE_ERROR(status);
-
-            while (packetLength != 0)
-            {
-                status = captureClient->GetBuffer(&pData, &numFramesAvailable, &flags, NULL, NULL);
-                HANDLE_ERROR(status);
-
-                if(flags & AUDCLNT_BUFFERFLAGS_SILENT)
-                    pData = NULL;
-                
-                // Execute callbacks
-                fout.open("file.wav", ios::binary | ios::out);
-                fout.write((char*)&pData, sizeof(pData));
-                fout.close();
-                return;
-                cout << pData << endl;
-                for(int i = 0;i < callbackList.size();i++)
-                {
-                    //thread{callbackList[i], numFramesAvailable, pData}.detach();
-                }
-
-                status = captureClient->ReleaseBuffer(numFramesAvailable);
-                HANDLE_ERROR(status);
-
-                status = captureClient->GetNextPacketSize(&packetLength);
-                HANDLE_ERROR(status);
-            }
-        //}
-
-        //status = audioClient->Stop();
-       // HANDLE_ERROR(status);
-    }
-
-Exit:
-    CoTaskMemFree(pwfx);
-    SAFE_RELEASE(pEnumerator);
-    SAFE_RELEASE(audioDevice);
-    SAFE_RELEASE(audioClient);
-    SAFE_RELEASE(captureClient);
-
     _com_error err(status);
     LPCTSTR errMsg = err.ErrorMessage();
     cout << "\nError: " << errMsg << "\n" << endl;
+    
+    HANDLE myHandle = CreateThread(0, 0, WindowsAudio::test_capture, this, 0, &threadID);
+    // Handle error if unacceptable result
+
 }
 
 vector<Device*> WindowsAudio::getInputDevices()
@@ -236,6 +122,7 @@ Exit:
 
 DWORD __stdcall WindowsAudio::test_capture(LPVOID param)
 {
+    cout << "Hello" << endl;
     WindowsAudio* winAud = reinterpret_cast<WindowsAudio*>(param);
     winAud->capture();
 
@@ -244,6 +131,7 @@ DWORD __stdcall WindowsAudio::test_capture(LPVOID param)
 
 void WindowsAudio::capture()
 {
+    cout << "Temp hello" << endl;
     IAudioCaptureClient* captureClient = NULL;
     IAudioClient* audioClient = NULL;
     WAVEFORMATEX* pwfx = NULL;
@@ -255,9 +143,10 @@ void WindowsAudio::capture()
 
     REFERENCE_TIME duration;
 
+    cout << "Test I'm here!" << endl;
     status = CoInitialize(NULL);
     HANDLE_ERROR(status);
-    cout << "Test I'm here!" << endl;
+    
 
     status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
     HANDLE_ERROR(status);
