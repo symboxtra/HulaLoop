@@ -207,6 +207,9 @@ void WindowsAudio::capture(future<void> futureObj)
     HANDLE_ERROR(status);
     cout << "Test I'm here1!" << endl;
 
+    status = audioClient->GetBufferSize(&captureBufferSize);
+    HANDLE_ERROR(status)
+
     status = audioClient->GetService(IID_IAudioCaptureClient, (void**)&captureClient);
     HANDLE_ERROR(status);
     cout << "Test I'm here2!" << endl;
@@ -220,9 +223,9 @@ void WindowsAudio::capture(future<void> futureObj)
     // Continue loop under process ends
     while(futureObj.wait_for(std::chrono::milliseconds(1)) == std::future_status::timeout)
     {
-        cout << "\n\nAm I on?\n\n" << endl;
-        while(callbackList.size() > 0)
-        {
+        //cout << "\n\nAm I on?\n\n" << endl;
+        //while(callbackList.size() > 0)
+        //{
             Sleep(duration / (REFTIMES_PER_MILLISEC * 2));
 
             status = captureClient->GetNextPacketSize(&packetLength);
@@ -241,6 +244,7 @@ void WindowsAudio::capture(future<void> futureObj)
                 {
                     //thread{callbackList[i], numFramesAvailable, pData}.detach();
                 }
+                cout << "Frames Captured: " << numFramesAvailable << endl;
 
                 status = captureClient->ReleaseBuffer(numFramesAvailable);
                 HANDLE_ERROR(status);
@@ -248,11 +252,11 @@ void WindowsAudio::capture(future<void> futureObj)
                 status = captureClient->GetNextPacketSize(&packetLength);
                 HANDLE_ERROR(status);
             }
-        }
-
-        status = audioClient->Stop();
-        HANDLE_ERROR(status);
+        //}
     }
+
+    status = audioClient->Stop();
+    HANDLE_ERROR(status);
 
 Exit:
     CoTaskMemFree(pwfx);
