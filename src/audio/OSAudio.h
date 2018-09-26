@@ -17,7 +17,7 @@
 #include "Device.h"
 
 using byte = uint8_t;
-using f_int_t = int(*)(int);
+using f_int_t = int(*)(uint32_t, byte*);
 
 using namespace std;
 

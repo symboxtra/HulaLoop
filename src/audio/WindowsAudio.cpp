@@ -2,25 +2,11 @@
 
 WindowsAudio::WindowsAudio()
 {
-    //thread captureThread(&WindowsAudio::capture, this);
-    // DWORD threadID;
-
-    // status = CoInitialize(NULL);
-    // _com_error err(status);
-    // LPCTSTR errMsg = err.ErrorMessage();
-    // cout << "\nError: " << errMsg << "\n" << endl;
-
-    // vector<Device*> tee = getOutputDevices();
-    // activeOutputDevice = tee[0];
-    
-    
-    // int a = 4;
-    
-    // //HANDLE myHandle = CreateThread(0, 0, WindowsAudio::test_capture, this, 0, &threadID);
     promise<void> e1;
-    thread captureThread(&WindowsAudio::test_capture, this, move(e1.get_future()));
+    thread captureThread(test_capture, this, move(e1.get_future()));
 
-     captureThread.join();
+    // Temporarily joining thread so that app continues
+    captureThread.join();
     // Handle error if unacceptable result
 
 }
@@ -147,10 +133,7 @@ void WindowsAudio::setActiveOutputDevice(Device* device)
 void WindowsAudio::test_capture(WindowsAudio* param, future<void> futureObj)
 {
     cout << "Hello" << endl;
-    //WindowsAudio* winAud = reinterpret_cast<WindowsAudio*>(param);
     param->capture(move(futureObj));
-
-    //return 0;
 }
 
 /**
@@ -235,8 +218,8 @@ void WindowsAudio::capture(future<void> futureObj)
     while(futureObj.wait_for(std::chrono::milliseconds(1)) == std::future_status::timeout)
     {
         //cout << "\n\nAm I on?\n\n" << endl;
-        //while(callbackList.size() > 0)
-        //{
+       // while(callbackList.size() > 0)
+       // {
             Sleep(duration / (REFTIMES_PER_MILLISEC * 2));
 
             status = captureClient->GetNextPacketSize(&packetLength);
@@ -254,13 +237,12 @@ void WindowsAudio::capture(future<void> futureObj)
                 for(int i = 0;i < callbackList.size();i++)
                 {
                     //thread{callbackList[i], numFramesAvailable, pData}.detach();
-                }
+                    //thread callback(callbackList[i], numFramesAvailable, pData);
+                    //callback.detach();
 
-                //string str(reinterpret_cast<char const*>(pData), numFramesAvailable);
-                cout << numFramesAvailable << endl;
-                ofstream outputFile("file", ios::binary | ios::out);
-                outputFile.write((char*)pData, numFramesAvailable);
-                outputFile.close();
+                    // TODO: Make these calls asynchronous so it does not delay run process
+                    callbackList[i](numFramesAvailable, pData);
+                }
 
                 status = captureClient->ReleaseBuffer(numFramesAvailable);
                 HANDLE_ERROR(status);
@@ -268,7 +250,7 @@ void WindowsAudio::capture(future<void> futureObj)
                 status = captureClient->GetNextPacketSize(&packetLength);
                 HANDLE_ERROR(status);
             }
-        //}
+       // }
     }
 
     status = audioClient->Stop();
