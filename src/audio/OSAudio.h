@@ -13,6 +13,8 @@
 #include <chrono>
 #include <future>
 
+#include <map>
+
 
 #include "Device.h"
 
@@ -34,7 +36,8 @@ class OSAudio
         vector<f_int_t> callbackList;
 
         vector<Device*> deviceList;
-        vector<pair<thread, promise<void>>> execThreads;
+        vector<thread> execThreads;
+        //map<thread, promise<void>> execThreads;
 
     public:
         void setBufferSize(uint32_t size);

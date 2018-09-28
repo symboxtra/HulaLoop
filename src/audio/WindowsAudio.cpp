@@ -5,9 +5,7 @@ WindowsAudio::WindowsAudio()
     promise<void> e1;
     thread captureThread(test_capture, this, move(e1.get_future()));
 
-    // Temporarily joining thread so that app continues
     captureThread.join();
-    // Handle error if unacceptable result
 
 }
 
@@ -112,19 +110,22 @@ Exit:
 
 void WindowsAudio::setActiveOutputDevice(Device* device)
 {
-    // this->activeOutputDevice = device;
+    this->activeOutputDevice = device;
 
-    // // Interrupt all threads and make sure they stop 
-    // for(auto& t : execThreads)
-    // {
-    //     t.second.set_value();
-    //     t.first.join();
-    // }
+    // Interrupt all threads and make sure they stop 
+    for(auto& t : execThreads)
+    {
+        //t.second.set_value();
+        //t.first.join();
+        t.detach();
+        t.~thread();
+    }
 
-    // execThreads.clear();
-    // // Start up new threads with new selected device info
-    // promise<void> e1;
-    // //thread t1(&WindowsAudio::test_capture, this, move(e1.get_future()));
+    execThreads.clear();
+    // Start up new threads with new selected device info
+    promise<void> e1;
+    thread t1(&WindowsAudio::test_capture, this, move(e1.get_future()));
+    //execThreads.insert(t1, e1);
     // //execThreads.push_back(make_pair(t1, e1));
 
     // // Add playback thread later
