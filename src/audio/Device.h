@@ -4,8 +4,6 @@
 #include <cstdint>
 #include <string>
 
-#include <windows.h>
-
 using namespace std;
 
 enum class DeviceType { RECORDING, PLAYBACK };
@@ -33,7 +31,7 @@ class Device
         void setType(DeviceType t);
 
         uint32_t getState();
-        void setState(); 
+        void setState(uint32_t s); 
 };
 
 #endif

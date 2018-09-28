@@ -2,14 +2,15 @@
 #include <stdlib.h>
 #include <iostream>
 
-#include "OSAudio.h"
-#include "WindowsAudio.h"
+#include "Controller.h"
 
 #include "Device.h"
 
 int main()
 {
-    OSAudio* audio = new WindowsAudio();
+    //OSAudio* audio = new WindowsAudio();
+
+    Controller* cp = new Controller();
 
     //vector<Device*> deviceList = audio->getOutputDevices();
     //audio->getInputDevices();

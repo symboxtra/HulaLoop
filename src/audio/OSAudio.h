@@ -3,9 +3,6 @@
 
 #include <stdlib.h>
 #include <algorithm>
-#include <windows.h>
-#include <mmdeviceapi.h>
-#include <endpointvolume.h>
 #include <vector>
 #include <thread>
 #include <iostream>
@@ -30,7 +27,7 @@ class OSAudio
         Device* activeInputDevice;
         Device* activeOutputDevice;
 
-        IMMDevice* testOutput;
+        //IMMDevice* testOutput;
         uint32_t captureBufferSize;
 
         vector<f_int_t> callbackList;

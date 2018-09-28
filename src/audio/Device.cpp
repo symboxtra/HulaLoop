@@ -38,12 +38,12 @@ void Device::setType(DeviceType t)
     this->type = t;
 }
 
-uint32_t Device::getType()
+uint32_t Device::getState()
 {
     return state;
 }
 
-void Device::setType(uint32_t s)
+void Device::setState(uint32_t s)
 {
     this->state = s;
 }
