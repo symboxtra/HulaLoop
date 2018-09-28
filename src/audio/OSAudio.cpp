@@ -19,7 +19,6 @@ void OSAudio::removeBufferReadyCallback(f_int_t callFunction)
 
 void OSAudio::setActiveRecordDevice(Device* device)
 {
-
 }
 
 void OSAudio::setActiveOutputDevice(Device* device)

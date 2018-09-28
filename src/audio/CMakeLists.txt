@@ -2,15 +2,16 @@ add_include_dir (.)
 
 file (GLOB AUDIO_SRC_FILES *.cpp)
 
-if(NOT WIN32)
-    list(REMOVE_ITEM AUDIO_SRC_FILES "/mnt/c/Users/patel/Documents/GitHub/SplitSound/HulaLoop/src/audio/WindowsAudio.cpp")
+# Remove source files that do not pertain to the current OS
+#TODO: Remove extra source files once they have been initialized
+if(WIN32)
+elseif(OSX)
+    list(REMOVE_ITEM AUDIO_SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/WindowsAudio.cpp")
+else()
+    list(REMOVE_ITEM AUDIO_SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/WindowsAudio.cpp")
 endif()
 
-
-
-include_directories (Device.h)
-set (TEST_FILE Device.cpp)
-#MESSAGE (STATUS ${AUDIO_SRC_FILES})
+#TODO: Change this to better apply with the parent CMake
 add_executable(test_windows ${AUDIO_SRC_FILES})
 if(WIN32)
     target_link_libraries(test_windows winmm Ole32)

@@ -3,9 +3,9 @@
 Controller::Controller()
 {
     #if defined(__unix__)
-        cout << "Hello" << endl;
+        cout << "UNIX" << endl;
     #elif defined(__APPLE__)
-
+        cout << "APPLE" << endl;
     #elif _WIN32
         audio = new WindowsAudio();
     #endif
@@ -13,7 +13,18 @@ Controller::Controller()
     if(audio == NULL){}//TODO: Handle error
 }
 
+void Controller::addBufferReadyCallback(f_int_t callFunction)
+{
+    if(find(callbackList.begin(), callbackList.end(), callFunction) == callbackList.end())
+        this->callbackList.push_back(callFunction);
+}
+
+void Controller::removeBufferReadyCallback(f_int_t callFunction)
+{
+    if(find(callbackList.begin(), callbackList.end(), callFunction) != callbackList.end())
+        this->callbackList.erase(remove(callbackList.begin(), callbackList.end(), callFunction), callbackList.end());
+}
+
 Controller::~Controller()
 {
-
 }
