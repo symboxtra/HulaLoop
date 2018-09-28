@@ -6,6 +6,10 @@
 
 #include "../control/transport.h"
 
+/**
+ * \brief Bridge for handling signals between C++ and QML.
+ * This class is intended to be registered as a QML type and used in QML.
+ */
 class QMLBridge : public QObject
 {
 	Q_OBJECT
@@ -15,6 +19,9 @@ class QMLBridge : public QObject
 		QString state;
 
 	public:
+		/**
+		 * \brief Construct a QMLBridge.
+		 */
 		explicit QMLBridge(QObject *parent = nullptr);
 
 		QString getState();
