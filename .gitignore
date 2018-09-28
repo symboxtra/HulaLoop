@@ -3,6 +3,9 @@ build*
 *.autosave
 CMakeLists.txt.user
 
+# Generated doxygen files
+docs/build-doxygen
+
 # Prerequisites
 *.d
 
