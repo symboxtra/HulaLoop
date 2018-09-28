@@ -2,10 +2,13 @@
 
 WindowsAudio::WindowsAudio()
 {
-    promise<void> e1;
-    thread captureThread(test_capture, this, move(e1.get_future()));
+    //thread captureThread(test_capture, this);
 
-    captureThread.join();
+    //captureThread.join();
+
+    vector<Device*> t = getOutputDevices();
+
+    setActiveOutputDevice(t[0]);
 
 }
 
@@ -32,6 +35,9 @@ vector<Device*> WindowsAudio::getOutputDevices()
 {
     
     vector<Device*> temp;
+
+    status = CoInitialize(NULL);
+    HANDLE_ERROR(status);
 
     // Create instance? don't exactly know what this does yet
     status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
@@ -114,33 +120,31 @@ void WindowsAudio::setActiveOutputDevice(Device* device)
 
     // Interrupt all threads and make sure they stop 
     for(auto& t : execThreads)
-    {
-        //t.second.set_value();
-        //t.first.join();
+    {  
+        //TODO: Find better way of safely terminating thread
         t.detach();
         t.~thread();
     }
 
     execThreads.clear();
     // Start up new threads with new selected device info
-    promise<void> e1;
-    thread t1(&WindowsAudio::test_capture, this, move(e1.get_future()));
-    //execThreads.insert(t1, e1);
-    // //execThreads.push_back(make_pair(t1, e1));
+    thread t1(&WindowsAudio::test_capture, this);
+
+    t1.join();
 
     // // Add playback thread later
 }
 
-void WindowsAudio::test_capture(WindowsAudio* param, future<void> futureObj)
+void WindowsAudio::test_capture(WindowsAudio* param)
 {
     cout << "Hello" << endl;
-    param->capture(move(futureObj));
+    param->capture();
 }
 
 /**
  * Execution loop for loopback capture
  */
-void WindowsAudio::capture(future<void> futureObj)
+void WindowsAudio::capture()
 {
     cout << "Temp hello" << endl;
     
@@ -216,7 +220,7 @@ void WindowsAudio::capture(future<void> futureObj)
     duration = (double)REFTIMES_PER_SEC * captureBufferSize / pwfx->nSamplesPerSec;
 
     // Continue loop under process ends
-    while(futureObj.wait_for(std::chrono::milliseconds(1)) == std::future_status::timeout)
+    while(true)
     {
         //cout << "\n\nAm I on?\n\n" << endl;
        // while(callbackList.size() > 0)

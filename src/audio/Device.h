@@ -17,6 +17,7 @@ class Device
         string deviceName;
 
         DeviceType type;
+        uint32_t state;
 
     public:
         Device(uint32_t* id, string name, DeviceType t);
@@ -30,6 +31,9 @@ class Device
 
         DeviceType getType();
         void setType(DeviceType t);
+
+        uint32_t getState();
+        void setState(); 
 };
 
 #endif

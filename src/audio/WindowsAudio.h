@@ -83,9 +83,9 @@ class WindowsAudio : public OSAudio
         vector<Device*> getInputDevices();
         vector<Device*> getOutputDevices();
 
-        //static void test_capture(); //TODO: Figure out static context with comparison to Linux and thread creation
-        static void test_capture(WindowsAudio* param, future<void> futureObj);
-        void capture(future<void> futureObj);
+        //TODO: Static wrapper for thread creation
+        static void test_capture(WindowsAudio* param);
+        void capture();
 
         void setActiveOutputDevice(Device* device);
 };

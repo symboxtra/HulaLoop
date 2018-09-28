@@ -37,7 +37,6 @@ class OSAudio
 
         vector<Device*> deviceList;
         vector<thread> execThreads;
-        //map<thread, promise<void>> execThreads;
 
     public:
         void setBufferSize(uint32_t size);
@@ -48,7 +47,7 @@ class OSAudio
         virtual vector<Device*> getInputDevices() = 0;
         virtual vector<Device*> getOutputDevices() = 0;
 
-        virtual void capture(future<void> futureObj) = 0;
+        virtual void capture() = 0;
 
         void setActiveRecordDevice(Device* device);
         virtual void setActiveOutputDevice(Device* device) = 0;
