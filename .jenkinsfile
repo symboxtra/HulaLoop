@@ -287,7 +287,7 @@ pipeline {
                                     ctest -C Debug -V
                                     cd ..
 
-                                    OpenCppCoverage --export_type=cobertura:cobertura.xml (Get-Item build-win/bin/test/*.exe)>$null 2>$null
+                                    OpenCppCoverage --export_type=cobertura:build-win/cobertura.xml (Get-Item build-win/bin/test/*.exe)>$null 2>$null
                                 '''
 
                             }
