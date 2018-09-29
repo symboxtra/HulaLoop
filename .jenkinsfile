@@ -91,7 +91,7 @@ pipeline {
                                 sh '''
                                     echo "Running test suite on ${HL_OS}..."
 
-                                    lcov -c -i -d build -o build-linux/coverage.base
+                                    lcov -c -i -d build-linux -o build-linux/coverage.base
 
                                     cd ./build-linux
                                     ctest -V
@@ -188,7 +188,7 @@ pipeline {
                                 sh '''
                                     echo "Running test suite on ${HL_OS}..."
 
-                                    lcov -c -i -d build -o build-osx/coverage.base
+                                    lcov -c -i -d build-osx -o build-osx/coverage.base
 
                                     cd ./build-osx
                                     ctest -V
