@@ -34,7 +34,7 @@ pipeline {
                     environment {
                         HL_OS = "Linux"
                         HL_QT_VERSION = "5.10.1" // Only symbox-server is on 5.10 right now
-                        HL_QT_PREFIX = "/home/symboxtra"
+                        HL_QT_PREFIX = ""
 
                         PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/bin:${PATH}"
                         LD_LIBRARY_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/lib"
