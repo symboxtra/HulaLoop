@@ -36,7 +36,10 @@ if (WIN32 AND CMAKE_GENERATOR_PLATFORM MATCHES "x64")
 endif ()
 
 # Disable coverage flags by default
-# TODO: Coverage flags
+option (HL_ADD_COVERAGE_FLAGS "Add coverage options to compiler flags" OFF)
+if (CMAKE_BUILD_TYPE MATCHES "Debug" AND (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+    set (HL_ADD_COVERAGE_FLAGS ON)
+endif ()
 
 # Set output for binaries
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -129,9 +132,13 @@ add_subdirectory(src/ui)
 
 ######## Executable ########
 
-# TODO: Add coverage flags for GCC
+# Add coverage flags for GCC
+set (CXX_FLAGS_NOCOV "${CMAKE_CXX_FLAGS}")
+if (HL_ADD_COVERAGE_FLAGS)
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+endif ()
 
-# TODO: Add final executale here
+# TODO: Add final executable here
 
 
 
@@ -141,9 +148,9 @@ add_subdirectory(src/ui)
 # Build settings for DEBUG builds only
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
-    # Remove after googletest submodule has been added
-    #include (cmake/Testing.cmake)
+    include (cmake/Testing.cmake)
 
     # Add more tests here using create_test()
+    create_test("src/test/TestSimpleMath.cpp" "" -1)
 
 endif ()

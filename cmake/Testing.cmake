@@ -21,11 +21,18 @@ if (WIN32)
     set (gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 endif ()
 
+# Turn off coverage flags
+set (CMAKE_CXX_FLAGS "${CXX_FLAGS_NOCOV}")
+
 # Enable testing and build googletest submodule
 enable_testing ()
 add_subdirectory (src/libs/googletest)
 
-# TODO: Add coverage flags
+# Add coverage flags
+set (CXX_FLAGS_NOCOV "${CMAKE_CXX_FLAGS}")
+if (HL_ADD_COVERAGE_FLAGS)
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+endif ()
 
 # Include directories needed for testing
 include_directories (
