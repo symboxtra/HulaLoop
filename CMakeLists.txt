@@ -138,7 +138,7 @@ if (HL_ADD_COVERAGE_FLAGS)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
 endif ()
 
-# TODO: Add final executale here
+# TODO: Add final executable here
 
 
 
@@ -148,7 +148,6 @@ endif ()
 # Build settings for DEBUG builds only
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
-    # Remove after googletest submodule has been added
     include (cmake/Testing.cmake)
 
     # Add more tests here using create_test()
