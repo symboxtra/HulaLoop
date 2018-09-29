@@ -149,8 +149,9 @@ endif ()
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
     # Remove after googletest submodule has been added
-    #include (cmake/Testing.cmake)
+    include (cmake/Testing.cmake)
 
     # Add more tests here using create_test()
+    create_test("src/test/TestSimpleMath.cpp" "" -1)
 
 endif ()

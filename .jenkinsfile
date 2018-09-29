@@ -90,7 +90,15 @@ pipeline {
 
                                 sh '''
                                     echo "Running test suite on ${HL_OS}..."
-                                    # TODO: ctest -V
+
+                                    lcov -c -i -d build -o build-linux/coverage.base
+
+                                    cd ./build-linux
+                                    ctest -V
+                                    cd ..
+
+                                    lcov -c -d build-linux -o build-linux/coverage.actual
+                                    lcov -a build-linux/coverage.base -a build-linux/coverage.actual -o build-linux/coverage.info
                                 '''
 
                             }
@@ -179,7 +187,15 @@ pipeline {
 
                                 sh '''
                                     echo "Running test suite on ${HL_OS}..."
-                                    # TODO: ctest -V
+
+                                    lcov -c -i -d build -o build-osx/coverage.base
+
+                                    cd ./build-osx
+                                    ctest -V
+                                    cd ..
+
+                                    lcov -c -d build-osx -o build-osx/coverage.actual
+                                    lcov -a build-osx/coverage.base -a build-osx/coverage.actual -o build-osx/coverage.info
                                 '''
 
                             }
@@ -265,8 +281,12 @@ pipeline {
 
                                 powershell '''
                                     echo "Running test suite on ${ENV:HL_OS}..."
-                                    # TODO: ctest -C Debug -V
-                                    # TODO: OpenCppCoverage --export_type=cobertura:cobertura.xml (Get-Item build-win/bin/test/*.exe)>$null 2>$null
+
+                                    cd build-win
+                                    ctest -C Debug -V
+                                    cd ..
+
+                                    OpenCppCoverage --export_type=cobertura:cobertura.xml (Get-Item build-win/bin/test/*.exe)>$null 2>$null
                                 '''
 
                             }
