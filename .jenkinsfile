@@ -274,12 +274,12 @@ pipeline {
                         }
                         success {
                             powershell '''
-                                ./send.ps1 success $env:HL_WEBHOOK_URL
+                                ./send.ps1 success $env:HL_WEBHOOK_URL -ErrorAction Ignore
                             '''
                         }
                         failure {
                             powershell '''
-                                ./send.ps1 failure $env:HL_WEBHOOK_URL
+                                ./send.ps1 failure $env:HL_WEBHOOK_URL -ErrorAction Ignore
                             '''
                         }
                     } // END post
