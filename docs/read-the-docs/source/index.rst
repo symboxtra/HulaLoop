@@ -14,6 +14,9 @@ Simple cross-platform audio capture tool
 
 Guide:
 ^^^^^^
+.. raw:: html
+
+    <iframe src="_static/doxygen/index.html" style="height: 345px; width: 100%; border: 0;"></iframe>
 
 .. toctree::
    :maxdepth: 3
