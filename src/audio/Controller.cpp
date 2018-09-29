@@ -3,7 +3,7 @@
 Controller::Controller()
 {
     #if defined(__unix__)
-        cout << "UNIX" << endl;
+        audio = new LinuxAudio();
     #elif defined(__APPLE__)
         cout << "APPLE" << endl;
     #elif _WIN32

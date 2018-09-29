@@ -16,6 +16,6 @@ add_executable(test_windows ${AUDIO_SRC_FILES})
 if(WIN32)
     target_link_libraries(test_windows winmm Ole32)
 else()
-    target_link_libraries(test_windows)
+    target_link_libraries(test_windows asound pthread)
 
 endif()
