@@ -55,8 +55,9 @@ pipeline {
                                 sh '''
                                     echo "Configuring dependencies for ${HL_OS}..."
 
+                                    env
+                                    echo "Path: ${PATH}"
                                     qmake -v
-                                    echo "Using Qt ${HL_QT_VERSION}"
 
                                     rm -rf build-linux
                                     mkdir build-linux
