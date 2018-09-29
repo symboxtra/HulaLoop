@@ -117,7 +117,7 @@ pipeline {
                             sh '''
                                 ./send.sh success ${HL_WEBHOOK_URL}
                                 curl -X PUT -d status=passing http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${HL_OS}-${GIT_BRANCH} || true
-                                bash <(curl -s https://codecov.io/bash) -t ${HL_CODECOV_TOKEN}
+                                bash <(curl -s https://codecov.io/bash) -X gcov -t ${HL_CODECOV_TOKEN}
                             '''
                         }
                         failure {
@@ -213,7 +213,7 @@ pipeline {
                             sh '''
                                 ./send.sh success ${HL_WEBHOOK_URL}
                                 curl -X PUT -d status=passing http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${HL_OS}-${GIT_BRANCH} || true
-                                bash <(curl -s https://codecov.io/bash) -t ${HL_CODECOV_TOKEN}
+                                bash <(curl -s https://codecov.io/bash) -X gcov -t ${HL_CODECOV_TOKEN}
                             '''
                         }
                         failure {
