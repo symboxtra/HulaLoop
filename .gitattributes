@@ -1,0 +1,2 @@
+# Ignore when calculating language stats
+src/ui/fonts/* linguist-vendored

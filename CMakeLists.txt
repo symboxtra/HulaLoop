@@ -105,16 +105,18 @@ message (STATUS "Qt5_DIR: ${Qt5_DIR}")
 find_package (Qt5 REQUIRED
     Core
     Gui
-	Qml
-	QuickControls2
+    Qml
+    Quick
+    QuickControls2
 )
 
 set (HL_LIBRARIES
     ${HL_LIBRARIES}
     Qt5::Core
     Qt5::Gui
-	Qt5::Qml
-	Qt5::QuickControls2
+    Qt5::Qml
+    Qt5::Quick
+    Qt5::QuickControls2
 )
 
 

@@ -107,11 +107,13 @@ pipeline {
                         success {
                             sh '''
                                 ./send.sh success $HL_WEBHOOK_URL
+                                curl -X PUT -d status=passing http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${HL_OS}-${GIT_BRANCH} || true
                             '''
                         }
                         failure {
                             sh '''
                                 ./send.sh failure $HL_WEBHOOK_URL
+                                curl -X PUT -d status=failing http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${HL_OS}-${GIT_BRANCH} || true
                             '''
                         }
                     } // END post
@@ -192,11 +194,13 @@ pipeline {
                         success {
                             sh '''
                                 ./send.sh success $HL_WEBHOOK_URL
+                                curl -X PUT -d status=passing http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${HL_OS}-${GIT_BRANCH} || true
                             '''
                         }
                         failure {
                             sh '''
                                 ./send.sh failure $HL_WEBHOOK_URL
+                                curl -X PUT -d status=failing http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${HL_OS}-${GIT_BRANCH} || true
                             '''
                         }
                     } // END post
@@ -244,7 +248,7 @@ pipeline {
                             steps {
 
                                 powershell '''
-                                    echo "Building application for ${HL_OS}..."
+                                    echo "Building application for ${ENV:HL_OS}..."
                                     cmake --build ./build-win
                                 '''
 
@@ -257,7 +261,7 @@ pipeline {
                             steps {
 
                                 powershell '''
-                                    echo "Running test suite on ${HL_OS}..."
+                                    echo "Running test suite on ${ENV:HL_OS}..."
                                     # TODO: ctest -C Debug -V
                                 '''
 
@@ -275,11 +279,13 @@ pipeline {
                         success {
                             powershell '''
                                 ./send.ps1 success $env:HL_WEBHOOK_URL -ErrorAction Ignore
+                                Invoke-WebRequest -Uri http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${ENV:HL_OS}-${ENV:GIT_BRANCH} -Method PUT -Body (@{"status"="passing"} | ConvertTo-Json) -ContentType "application/json"
                             '''
                         }
                         failure {
                             powershell '''
                                 ./send.ps1 failure $env:HL_WEBHOOK_URL -ErrorAction Ignore
+                                Invoke-WebRequest -Uri http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${ENV:HL_OS}-${ENV:GIT_BRANCH} -Method PUT -Body (@{"status"="failing"} | ConvertTo-Json) -ContentType "application/json"
                             '''
                         }
                     } // END post
