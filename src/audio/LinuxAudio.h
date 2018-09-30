@@ -6,7 +6,6 @@
 #include <vector>
 #include "stdlib.h"
 
-
 #include "OSAudio.h"
 #include "Device.h"
 
@@ -20,7 +19,7 @@ class LinuxAudio : public OSAudio
 {
     private:
         int bitrate;
-    
+
     public:
         LinuxAudio();
         ~LinuxAudio();
