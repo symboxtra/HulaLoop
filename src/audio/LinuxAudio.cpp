@@ -18,8 +18,8 @@ LinuxAudio::LinuxAudio()
 vector<Device*> LinuxAudio::getInputDevices()
 {
     vector<Device*> devices;
-    int err;  //check err from function
-    int cardNumber = -1;  //to keep track of audio device
+    int err;  // check err from function
+    int cardNumber = -1;  // to keep track of audio device
 
     while(true)
     {
@@ -66,8 +66,8 @@ vector<Device*> LinuxAudio::getInputDevices()
 vector<Device*> LinuxAudio::getOutputDevices()
 {
     vector<Device*> devices;
-    int err;  //check err from function
-    int cardNumber = -1;  //to keep track of audio device
+    int err;  // check err from function
+    int cardNumber = -1;  // to keep track of audio device
 
     while(true)
     {
@@ -117,7 +117,7 @@ void LinuxAudio::setActiveOutputDevice(Device* device)
     cout << "HERE" << endl;
     // Interrupt all threads and make sure they stop
     for(auto& t : execThreads)
-    { 
+    {
         // TODO: Find better way of safely terminating thread
         t.detach();
         t.~thread();
@@ -180,7 +180,7 @@ void LinuxAudio::capture()
     snd_pcm_uframes_t frame = FRAME_TIME;
     snd_pcm_hw_params_set_period_size_near(pcmHandle, param, &frame, NULL);
 
-    //send the param to the the pcm device
+    // send the param to the the pcm device
     err = snd_pcm_hw_params(pcmHandle, param);
     if (err < 0)
     {
