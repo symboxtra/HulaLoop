@@ -1,9 +1,9 @@
-#include "LinuxAudio.h"
+#include "src/audio/LinuxAudio.h"
 
 LinuxAudio::LinuxAudio()
 {
     vector<Device*> t = getOutputDevices();
-    //setActiveOutputDevice(t[0]);
+    // setActiveOutputDevice(t[0]);
 
     for(int i = 0; i < t.size(); i++){
         cout << reinterpret_cast<uintptr_t>(t[i]->getID()) << " " << t[i]->getName() << endl;
@@ -18,15 +18,15 @@ LinuxAudio::LinuxAudio()
 vector<Device*> LinuxAudio::getInputDevices()
 {
     vector<Device*> devices;
-    int err; //check err from function
-    int cardNumber = -1; //to keep track of audio device
+    int err;  //check err from function
+    int cardNumber = -1;  //to keep track of audio device
 
     while(true)
     {
         snd_ctl_t * soundCard;
         snd_ctl_card_info_t *cardInfo;
 
-        //get the next sound card number 
+        // get the next sound card number
         err = snd_card_next(&cardNumber);
         if(err < 0)
         {
@@ -34,13 +34,13 @@ vector<Device*> LinuxAudio::getInputDevices()
             break;
         }
 
-        //check to see if card is -1, which means that it has went through all the devices
+        // check to see if card is -1, which means that it has went through all the devices
         if(cardNumber < 0)
         {
             break;
         }
 
-        //initialize the sound card
+        // initialize the sound card
         char str[64];
         sprintf(str, "hw:%i", cardNumber);
         err = snd_ctl_open(&soundCard, str, 0);
@@ -50,12 +50,12 @@ vector<Device*> LinuxAudio::getInputDevices()
             continue;
         }
 
-        //get the card info
+        // get the card info
         snd_ctl_card_info_alloca(&cardInfo);
         snd_ctl_card_info(soundCard, cardInfo);
         string deviceName = snd_ctl_card_info_get_name(cardInfo);
-        
-        //create a new device and push it into the vector
+
+        // create a new device and push it into the vector
         devices.push_back(new Device(reinterpret_cast<uint32_t*>(cardNumber), deviceName, DeviceType::PLAYBACK));
         snd_ctl_close(soundCard);
     }
@@ -66,15 +66,15 @@ vector<Device*> LinuxAudio::getInputDevices()
 vector<Device*> LinuxAudio::getOutputDevices()
 {
     vector<Device*> devices;
-    int err; //check err from function
-    int cardNumber = -1; //to keep track of audio device
+    int err;  //check err from function
+    int cardNumber = -1;  //to keep track of audio device
 
     while(true)
     {
         snd_ctl_t * soundCard;
         snd_ctl_card_info_t *cardInfo;
 
-        //get the next sound card number 
+        // get the next sound card number
         err = snd_card_next(&cardNumber);
         if(err < 0)
         {
@@ -82,13 +82,13 @@ vector<Device*> LinuxAudio::getOutputDevices()
             break;
         }
 
-        //check to see if card is -1, which means that it has went through all the devices
+        // check to see if card is -1, which means that it has went through all the devices
         if(cardNumber < 0)
         {
             break;
         }
 
-        //initialize the sound card
+        // initialize the sound card
         char str[64];
         sprintf(str, "hw:%i", cardNumber);
         err = snd_ctl_open(&soundCard, str, 0);
@@ -98,12 +98,12 @@ vector<Device*> LinuxAudio::getOutputDevices()
             continue;
         }
 
-        //get the card info
+        // get the card info
         snd_ctl_card_info_alloca(&cardInfo);
         snd_ctl_card_info(soundCard, cardInfo);
         string deviceName = snd_ctl_card_info_get_name(cardInfo);
-        
-        //create a new device and push it into the vector
+
+        // create a new device and push it into the vector
         devices.push_back(new Device(reinterpret_cast<uint32_t*>(cardNumber), deviceName, DeviceType::RECORDING));
         snd_ctl_close(soundCard);
     }
@@ -115,10 +115,10 @@ void LinuxAudio::setActiveOutputDevice(Device* device)
 {
     this->activeOutputDevice = device;
     cout << "HERE" << endl;
-    // Interrupt all threads and make sure they stop 
+    // Interrupt all threads and make sure they stop
     for(auto& t : execThreads)
-    {  
-        //TODO: Find better way of safely terminating thread
+    { 
+        // TODO: Find better way of safely terminating thread
         t.detach();
         t.~thread();
     }
@@ -128,7 +128,7 @@ void LinuxAudio::setActiveOutputDevice(Device* device)
     thread t1(&LinuxAudio::test_capture, this);
 
     t1.join();
-    //execThreads.push_back(t1);
+    // execThreads.push_back(t1);
 }
 
 void LinuxAudio::test_capture(LinuxAudio* param)
@@ -137,24 +137,24 @@ void LinuxAudio::test_capture(LinuxAudio* param)
 }
 
 /* 
-   lengthOfRecording is in ms
-   Device * recordingDevice is already formatted as hw:(int),(int)
-   if Device is NULL then it chooses the default
-   */
+lengthOfRecording is in ms
+Device * recordingDevice is already formatted as hw:(int),(int)
+if Device is NULL then it chooses the default
+*/
 void LinuxAudio::capture()
 {
-    int err; //return for commands that might return an error
-    snd_pcm_t * pcmHandle; //default pcm handle
-    string defaultDevice; //default hw id for the device
-    snd_pcm_hw_params_t * param; //object to store our paramets (they are just the default ones for now)
-    int audioBufferSize; // size of the buffer for the audio
-    char * audioBuffer; // buffer for the audio
-    snd_pcm_uframes_t * temp = NULL; //useless parameter because the api requires it
+    int err;  // return for commands that might return an error
+    snd_pcm_t * pcmHandle;  // default pcm handle
+    string defaultDevice;  // default hw id for the device
+    snd_pcm_hw_params_t * param;  // object to store our paramets (they are just the default ones for now)
+    int audioBufferSize;  // size of the buffer for the audio
+    char * audioBuffer;  // buffer for the audio
+    snd_pcm_uframes_t * temp = NULL;  // useless parameter because the api requires it
 
-    //just writing to a buffer for now 
+    // just writing to a buffer for now
     defaultDevice = "default";
 
-    //open the pcm device
+    // open the pcm device
     err = snd_pcm_open(&pcmHandle, defaultDevice.c_str(), SND_PCM_STREAM_CAPTURE, 0);
     if(err < 0)
     {
@@ -162,42 +162,42 @@ void LinuxAudio::capture()
         exit(1);
     }
 
-    //allocate hw params object and fill the pcm device with the default params
+    // allocate hw params object and fill the pcm device with the default params
     snd_pcm_hw_params_alloca(&param);
     snd_pcm_hw_params_any(pcmHandle, param);
 
-    //set to interleaved mode, 16-bit little endian, 2 channels
+    // set to interleaved mode, 16-bit little endian, 2 channels
     snd_pcm_hw_params_set_access(pcmHandle, param, SND_PCM_ACCESS_RW_INTERLEAVED);
     snd_pcm_hw_params_set_format(pcmHandle, param, SND_PCM_FORMAT_S16_LE);
     snd_pcm_hw_params_set_channels(pcmHandle, param, 2);
 
-    //we set the sampling rate to whatever the user or device wants
-    //TODO insert sample rate
+    // we set the sampling rate to whatever the user or device wants
+    // TODO insert sample rate
     unsigned int sampleRate = 44100;
     snd_pcm_hw_params_set_rate_near(pcmHandle, param, &sampleRate , NULL);
 
-    //set the period size to 32 TODO
-    snd_pcm_uframes_t frame = FRAME_TIME; 
+    // set the period size to 32 TODO
+    snd_pcm_uframes_t frame = FRAME_TIME;
     snd_pcm_hw_params_set_period_size_near(pcmHandle, param, &frame, NULL);
 
-    //send the param to the the pcm device 
+    //send the param to the the pcm device
     err = snd_pcm_hw_params(pcmHandle, param);
-    if (err < 0) 
+    if (err < 0)
     {
         cerr << "Unable to set parameters: " << defaultDevice << " exiting..." << endl;
         exit(1);
     }
 
-    //get the size of one period
+    // get the size of one period
     snd_pcm_hw_params_get_period_size(param, &frame, NULL);
 
-    //allocate memory for the buffer
+    // allocate memory for the buffer
     audioBufferSize = frame * 4;
     audioBuffer = (char*) malloc(audioBufferSize);
 
     while(true)
     {
-        //read frames from the pcm
+        // read frames from the pcm
         err = snd_pcm_readi(pcmHandle, audioBuffer, frame);
         if(err == -EPIPE)
         {
@@ -210,21 +210,21 @@ void LinuxAudio::capture()
         }
         else if(err != (int) frame)
         {
-            cerr << "Read short, only read " << err << " bytes" << endl; 
+            cerr << "Read short, only read " << err << " bytes" << endl;
         }
-        //write to standard output for now
-        //TODO change to not standard output
+        // write to standard output for now
+        // TODO change to not standard output
         err = write(1, audioBuffer, audioBufferSize);
         if(err != audioBufferSize)
         {
-            cerr << "Write short, only wrote " << err << " bytes" << endl; 
+            cerr << "Write short, only wrote " << err << " bytes" << endl;
         }
     }
 
-    //cleanup stuff
-    //TODO fix this mem leak?
+    // cleanup stuff
+    // TODO fix this mem leak?
     snd_pcm_drain(pcmHandle);
     snd_pcm_close(pcmHandle);
     free(audioBuffer);
-    
+
 }

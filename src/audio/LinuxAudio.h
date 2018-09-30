@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <iostream>
 #include <thread>
+#include <string>
 #include <vector>
 #include "stdlib.h"
 
