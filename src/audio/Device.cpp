@@ -5,13 +5,12 @@ Device::Device(uint32_t* id, string name, DeviceType t)
     this->deviceID = id;
     this->deviceName = name;
     this->type = t;
-    this->state = 1;
 }
 
 /**
  * Set the ID of a system audio device
  *
- * @param id Pointer to ID value
+ * @param id Pointer to ID value due to Windows return values
  */
 void Device::setID(uint32_t* id)
 {
@@ -68,30 +67,9 @@ void Device::setType(DeviceType t)
     this->type = t;
 }
 
-/**
- * Get the state of system audio device
- *
- * @return type Integer value representing the state
- */
-uint32_t Device::getState()
-{
-    return state;
-}
-
-/**
- * Set the state of system audio device
- *
- * @return type Integer value representing the state
- */
-void Device::setState(uint32_t s)
-{
-    this->state = s;
-}
-
 Device::~Device()
 {
     delete deviceID;
 
     deviceName = "";
-    state = NULL;
 }

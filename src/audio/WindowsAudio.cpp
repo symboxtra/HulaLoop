@@ -99,7 +99,7 @@ vector<Device*> WindowsAudio::getOutputDevices()
         string str(fun.begin(), fun.end());
 
         // Create instance of Device using acquired data
-        Device* audio = new Device(reinterpret_cast<uint32_t*>(id), str, DeviceType::PLAYBACK);
+        Device* audio = new Device(reinterpret_cast<uint32_t*>(id), str, (DeviceType)(DeviceType::LOOPBACK | DeviceType::PLAYBACK));
 
         // Add to devicelist
         deviceList.push_back(audio);
@@ -148,11 +148,14 @@ void WindowsAudio::setActiveOutputDevice(Device* device)
 
     // Start up new threads with new selected device info
 
-    // Start capture thread
-    thread t1(&WindowsAudio::test_capture, this);
-    t1.detach();
+    // Start capture thread and add to thread vector
+    execThreads.emplace_back(thread(&WindowsAudio::test_capture, this));
 
     //TODO: Add playback thread later
+
+    // Detach new threads to run independently
+    for(auto& t : execThreads)
+        t.detach();
 }
 
 /**
@@ -251,8 +254,8 @@ void WindowsAudio::capture()
                 // Execute callbacks
                 for(int i = 0;i < callbackList.size();i++)
                 {
-                    // TODO: Make these calls asynchronous so it does not delay run process
-                    callbackList[i]->handleData(numFramesAvailable, pData);
+                    // TODO: Check if making it asynchronous will cause data overlap problems
+                    thread(&ICallback::handleData, callbackList[i], pData, numFramesAvailable).detach();
                 }
 
                 // Release buffer after data is captured and handled

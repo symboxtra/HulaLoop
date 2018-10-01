@@ -7,13 +7,13 @@ using byte = uint8_t;
  * Callback "Interface" used to add and remove to callback list
  */
 // TODO: Add a better public description
-class iCallback
+class ICallback
 {
     public:
-        iCallback(){};
-        ~iCallback(){};
+        ICallback(){};
+        ~ICallback(){};
 
-        virtual void handleData(uint32_t size, byte* data) = 0;
+        virtual void handleData(byte* data, uint32_t size) = 0;
 };
 
 #endif

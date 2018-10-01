@@ -2,7 +2,7 @@
 #define CONTROL
 
 #include "OSAudio.h"
-#include "iCallback.h"
+#include "ICallback.h"
 
 #if _WIN32
     #include "WindowsAudio.h"
@@ -17,23 +17,21 @@
 using byte = uint8_t;
 
 // TODO: Add public description of class
-class Controller : public iCallback
+class Controller : public ICallback
 {
     private:
         OSAudio* audio;
 
-        vector<iCallback*> callbackList;
+        vector<ICallback*> callbackList;
 
     public:
         Controller();
         ~Controller();
 
-        void handleIncomingData(uint32_t numFrames, byte* data);
+        void addBufferReadyCallback(ICallback* func);
+        void removeBufferReadyCallback(ICallback* func);
 
-        void addBufferReadyCallback(iCallback* func);
-        void removeBufferReadyCallback(iCallback* func);
-
-        void handleData(uint32_t size, byte* data);
+        void handleData(byte* data, uint32_t size);
 };
 
 #endif

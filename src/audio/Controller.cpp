@@ -29,13 +29,13 @@ Controller::Controller()
  * @param size Size of returned audio data (frames)
  * @param data Audio data in byte buffer
  */
-void Controller::handleData(uint32_t size, byte* data)
+void Controller::handleData(byte* data, uint32_t size)
 {
     cout << size << endl;
 
     // Trigger upper layer callback functions
     for(int i = 0;i < callbackList.size();i++)
-        callbackList[i]->handleData(size, data);
+        callbackList[i]->handleData(data, size);
 }
 
 /**
@@ -43,7 +43,7 @@ void Controller::handleData(uint32_t size, byte* data)
  *
  * @param func Derived instance of iCallback class
  */
-void Controller::addBufferReadyCallback(iCallback* func)
+void Controller::addBufferReadyCallback(ICallback* func)
 {
     // Add self to OSAudio callback when first callback is added
     if(this->callbackList.size() == 0)
@@ -59,11 +59,12 @@ void Controller::addBufferReadyCallback(iCallback* func)
  *
  * @param func Derived instance of iCallback class
  */
-void Controller::removeBufferReadyCallback(iCallback* func)
+void Controller::removeBufferReadyCallback(ICallback* func)
 {
     // Check if callback function exists to remove
-    if(find(callbackList.begin(), callbackList.end(), func) != callbackList.end())
-        this->callbackList.erase(remove(callbackList.begin(), callbackList.end(), func), callbackList.end());
+    vector<ICallback*>::iterator it = find(callbackList.begin(), callbackList.end(), func);
+    if(it != callbackList.end())
+        this->callbackList.erase(it);
 
     // Remove self from callback when last callback is removed
     if(this->callbackList.size() == 0)

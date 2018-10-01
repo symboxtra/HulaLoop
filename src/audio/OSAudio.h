@@ -9,7 +9,7 @@
 #include <iostream>
 
 #include "Device.h"
-#include "iCallback.h"
+#include "ICallback.h"
 
 using namespace std;
 
@@ -19,7 +19,7 @@ class OSAudio
         Device* activeInputDevice;
         Device* activeOutputDevice;
 
-        vector<iCallback*> callbackList;
+        vector<ICallback*> callbackList;
         vector<thread> execThreads;
 
         uint32_t captureBufferSize;
@@ -29,8 +29,8 @@ class OSAudio
 
         void setBufferSize(uint32_t size);
 
-        void addBufferReadyCallback(iCallback* c);
-        void removeBufferReadyCallback(iCallback* func);
+        void addBufferReadyCallback(ICallback* c);
+        void removeBufferReadyCallback(ICallback* func);
 
         virtual vector<Device*> getInputDevices() = 0;
         virtual vector<Device*> getOutputDevices() = 0;
