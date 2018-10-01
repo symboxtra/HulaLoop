@@ -21,6 +21,8 @@ Rectangle {
 
 		RoundButton {
 			id: recordBtn
+			objectName: "recordBtn"
+
 			display: AbstractButton.TextOnly
 			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
@@ -47,6 +49,8 @@ Rectangle {
 
 		RoundButton {
 			id: stopBtn
+			objectName: "stopBtn"
+
 			display: AbstractButton.TextOnly
 			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
@@ -73,6 +77,8 @@ Rectangle {
 
 		RoundButton {
 			id: playBtn
+			objectName: "playBtn"
+
 			display: AbstractButton.TextOnly
 			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
@@ -99,6 +105,8 @@ Rectangle {
 
 		RoundButton {
 			id: pauseBtn
+			objectName: "pauseBtn"
+
 			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 			display: AbstractButton.TextOnly
 
@@ -125,6 +133,8 @@ Rectangle {
 
 		RoundButton {
 			id: timerBtn
+			objectName: "timerBtn"
+
 			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 			display: AbstractButton.TextOnly
 

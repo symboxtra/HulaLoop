@@ -4,6 +4,7 @@ cmake_minimum_required (VERSION 3.5)
 set (CMAKE_CXX_STANDARD 14)
 
 include (cmake/Qt5.cmake)
+include (cmake/Utility.cmake)
 
 # Version
 set (VERSION_MAJOR 0)
@@ -86,7 +87,7 @@ if (WIN32 AND NOT DEFINED QT_ROOT)
         message (FATAL_ERROR "QT_ROOT environment variable not set. Add the environment variable in Windows Environment Variables or cmake with -DQT_ROOT=C:\\path\\to\\qt\\5.XX.X")
     endif ()
 elseif (NOT DEFINED QT_ROOT)
-	set (QT_ROOT $ENV{QT_ROOT} CACHE STRING "Path to Qt Installation")
+    set (QT_ROOT $ENV{QT_ROOT} CACHE STRING "Path to Qt Installation")
 endif ()
 
 message (STATUS "QT_ROOT: " ${QT_ROOT} "\n")
@@ -99,7 +100,7 @@ if (WIN32 AND NOT DEFINED Qt5_DIR)
     endif ()
 
 elseif (NOT DEFINED Qt5_DIR)
-	set (Qt5_DIR "${QT_ROOT}/gcc_64/lib/cmake/Qt5")
+    set (Qt5_DIR "${QT_ROOT}/gcc_64/lib/cmake/Qt5")
 endif ()
 
 message (STATUS "Qt5_DIR: ${Qt5_DIR}")
@@ -129,6 +130,8 @@ set (HL_LIBRARIES
 # TODO: add subdirectories here
 add_subdirectory(src/ui)
 
+include_directories(${INCLUDE_DIRS})
+
 
 ######## Executable ########
 
@@ -144,6 +147,7 @@ endif ()
 
 
 ######## Testing ########
+# GUI tests are in Testing.cmake
 
 # Build settings for DEBUG builds only
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
