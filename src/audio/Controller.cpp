@@ -13,12 +13,17 @@ Controller::Controller()
 
     if(audio == NULL){}//TODO: Handle error
 
-    audio->addBufferReadyCallback(this, &Controller::handleIncomingData);
+    audio->addBufferReadyCallback(this);
 }
 
 void Controller::handleIncomingData(uint32_t numFrames, byte* data)
 {
 
+}
+
+void Controller::handleData(uint32_t size, byte* data)
+{
+    cout << "Test2" << endl;
 }
 
 void Controller::addBufferReadyCallback(f_int_t callFunction)

@@ -246,7 +246,7 @@ void WindowsAudio::capture()
                     //callback.detach();
 
                     // TODO: Make these calls asynchronous so it does not delay run process
-                    callbackList[i](numFramesAvailable, pData);
+                    //callbackList[i](numFramesAvailable, pData);
                 }
 
                 status = captureClient->ReleaseBuffer(numFramesAvailable);

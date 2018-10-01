@@ -14,6 +14,7 @@
 
 
 #include "Device.h"
+#include "iCallback.h"
 
 using byte = uint8_t;
 using f_int_t = int(*)(uint32_t, byte*);
@@ -30,7 +31,7 @@ class OSAudio
         //IMMDevice* testOutput;
         uint32_t captureBufferSize;
 
-        vector<f_int_t> callbackList;
+        vector<iCallback*> callbackList;
 
         vector<Device*> deviceList;
         vector<thread> execThreads;
@@ -38,11 +39,8 @@ class OSAudio
     public:
         void setBufferSize(uint32_t size);
 
-        template <typename T> void addBufferReadyCallback(const T *c, void(T::* func)(uint32_t, byte*))
-        {
-            cout << "Test" << endl;
-        };
-        void removeBufferReadyCallback(f_int_t func);
+        void addBufferReadyCallback(iCallback* c);
+        void removeBufferReadyCallback(iCallback* func);
 
         virtual vector<Device*> getInputDevices() = 0;
         virtual vector<Device*> getOutputDevices() = 0;

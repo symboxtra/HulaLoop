@@ -2,6 +2,7 @@
 #define CONTROL
 
 #include "OSAudio.h"
+#include "iCallback.h"
 
 #if _WIN32
     #include "WindowsAudio.h"
@@ -16,7 +17,7 @@
 using f_int_t = int(*)(uint32_t, byte*);
 using byte = uint8_t;
 
-class Controller
+class Controller : public iCallback
 {
     private:
         OSAudio* audio;
@@ -30,6 +31,8 @@ class Controller
 
         void addBufferReadyCallback(f_int_t func);
         void removeBufferReadyCallback(f_int_t callFunction);
+
+        void handleData(uint32_t size, byte* data);
 };
 
 #endif

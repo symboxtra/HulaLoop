@@ -5,7 +5,13 @@ void OSAudio::setBufferSize(uint32_t size)
     this->captureBufferSize = size;
 }
 
-void OSAudio::removeBufferReadyCallback(f_int_t callFunction)
+void OSAudio::addBufferReadyCallback(iCallback* func)
+{
+    if(find(callbackList.begin(), callbackList.end(), func) == callbackList.end())
+        this->callbackList.push_back(func);
+}
+
+void OSAudio::removeBufferReadyCallback(iCallback* callFunction)
 {
     if(find(callbackList.begin(), callbackList.end(), callFunction) != callbackList.end())
         this->callbackList.erase(remove(callbackList.begin(), callbackList.end(), callFunction), callbackList.end());
