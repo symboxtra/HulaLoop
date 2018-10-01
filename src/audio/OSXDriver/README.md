@@ -1,3 +1,13 @@
+# HulaLoopHAL #
+
+## Attribution: ##
+The files under this directory (OSXDriver) are derivatives of [madhatter68's](https://github.com/madhatter68) JackRouter implementation which in turn was a modifications of Apple's SampleAudioDriver.
+
+The full source is available [here](https://github.com/madhatter68/JackRouter) and is licensed under [MIT](https://github.com/madhatter68/JackRouter/blob/master/LICENSE).
+
+---------
+
+Apple:
 AudioDriverExamples
 
 This project has two examples of writing user land audio drivers that conform to the plug-in API in <CoreAudio/AudioServerPlugIn.h>. Each example is documented with commentary inline with the code.
@@ -25,6 +35,8 @@ This translates to /System/Library/Extensions and should be the location of the 
 
 Use kextload to load the .kext:
 
-audiobox:Extensions stumpyjoe$ sudo chown -R root:wheel SimpleAudioDriver.kextPassword:audiobox:Extensions stumpyjoe$ sudo kextload SimpleAudioDriver.kext
+audiobox:Extensions stumpyjoe$ sudo chown -R root:wheel SimpleAudioDriver.kext
+Password:
+audiobox:Extensions stumpyjoe$ sudo kextload SimpleAudioDriver.kext
 
 Note: To build the SimpleAudioDriver target for deployment on OS X 10.8 you will need to change the Base SDK setting in the target build settings to "OS X 10.8".
