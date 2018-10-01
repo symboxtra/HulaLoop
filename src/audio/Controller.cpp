@@ -10,7 +10,10 @@ Controller::Controller()
         audio = new WindowsAudio();
     #endif
 
-    if(audio == NULL){}//TODO: Handle error
+    if(audio == NULL)
+    {
+        cout << "OS Audio error !" << endl;
+    }//TODO: Handle error
 
     audio->addBufferReadyCallback(this);
 }

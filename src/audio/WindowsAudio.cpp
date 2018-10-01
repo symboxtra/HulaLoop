@@ -195,8 +195,8 @@ void WindowsAudio::capture()
     HANDLE_ERROR(status);
 
     // Select the current active output device
-    //status = pEnumerator->GetDevice(reinterpret_cast<LPCWSTR>(activeOutputDevice->getID()), &audioDevice);
-    status = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &audioDevice);
+    status = pEnumerator->GetDevice(reinterpret_cast<LPCWSTR>(activeOutputDevice->getID()), &audioDevice);
+    //status = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &audioDevice);
     HANDLE_ERROR(status);
     cout << "Selected Device: " << activeOutputDevice->getName() << endl;
 
