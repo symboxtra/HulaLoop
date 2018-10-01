@@ -2,7 +2,6 @@
 
 Controller::Controller()
 {
-
     #if defined(__unix__)
         audio = new LinuxAudio();
     #elif defined(__APPLE__)
@@ -35,4 +34,6 @@ void Controller::removeBufferReadyCallback(iCallback* func)
 
 Controller::~Controller()
 {
+    delete audio;
+    callbackList.clear();
 }

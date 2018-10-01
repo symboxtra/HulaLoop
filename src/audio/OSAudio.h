@@ -37,6 +37,8 @@ class OSAudio
         vector<thread> execThreads;
 
     public:
+        virtual ~OSAudio() = 0;
+
         void setBufferSize(uint32_t size);
 
         void addBufferReadyCallback(iCallback* c);

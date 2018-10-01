@@ -20,3 +20,7 @@ void OSAudio::removeBufferReadyCallback(iCallback* callFunction)
 void OSAudio::setActiveRecordDevice(Device* device)
 {
 }
+
+OSAudio::~OSAudio()
+{
+}

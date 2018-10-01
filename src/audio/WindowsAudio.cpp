@@ -268,3 +268,17 @@ Exit:
     //TODO: Handle error accordingly
 
 }
+
+WindowsAudio::~WindowsAudio()
+{
+    delete activeInputDevice;
+    delete activeOutputDevice;
+
+    callbackList.clear();
+    execThreads.clear();
+
+    delete pEnumerator;
+    delete deviceCollection;
+
+    delete pData;
+}
