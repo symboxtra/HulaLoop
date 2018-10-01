@@ -37,7 +37,6 @@ class Device
 
         DeviceType getType();
         void setType(DeviceType t);
-
 };
 
 #endif
