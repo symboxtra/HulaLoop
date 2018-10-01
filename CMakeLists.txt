@@ -120,9 +120,31 @@ set (HL_LIBRARIES
 
 ######## Libraries ########
 
-# TODO: add subdirectories here
-add_subdirectory(src/audio)
+if (OSX)
+    # Build PortAudio
+    add_subdirectory (${CMAKE_SOURCE_DIR}/src/libs/portaudio)
 
+    # Find what we built
+    find_library (
+        PORTAUDIO_LIB
+        NAMES "portaudio"
+        HINTS ${CMAKE_BINARY_DIR}/lib/lib
+    )
+
+    if (NOT PORTAUDIO_LIB)
+	    message (FATAL_ERROR "Could not find library: PortAudio")
+    else ()
+        message (STATUS "PortAudio Location: ${PORTAUDIO_LIB}")
+    endif()
+
+    # Add the include path
+    include_directories(${CMAKE_SOURCE_DIR}/src/libs/portaudio/include)
+endif ()
+
+add_subdirectory (src/audio)
+
+# Include any directories that lower level CMakeLists added
+include_directories (${INCLUDE_DIRS})
 
 
 ######## Executable ########
