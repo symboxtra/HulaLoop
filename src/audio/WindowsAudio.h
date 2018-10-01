@@ -40,9 +40,7 @@ using f_int_t = int(*)(uint32_t, byte*);
  */
 class WindowsAudio : public OSAudio
 {
-
     private:
-
         const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
         const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
         const IID IID_IAudioClient = __uuidof(IAudioClient);
@@ -60,7 +58,6 @@ class WindowsAudio : public OSAudio
         byte* pData;
 
     public:
-
         WindowsAudio();
         ~WindowsAudio();
 

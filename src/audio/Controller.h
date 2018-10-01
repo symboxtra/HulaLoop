@@ -17,10 +17,12 @@
 using f_int_t = int(*)(uint32_t, byte*);
 using byte = uint8_t;
 
+// TODO: Add public description of class
 class Controller : public iCallback
 {
     private:
         OSAudio* audio;
+
         vector<iCallback*> callbackList;
 
     public:

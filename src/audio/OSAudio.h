@@ -1,17 +1,12 @@
 #ifndef OS_AUDIO
 #define OS_AUDIO
 
+// System
 #include <stdlib.h>
 #include <algorithm>
 #include <vector>
 #include <thread>
 #include <iostream>
-#include <assert.h>
-#include <chrono>
-#include <future>
-
-#include <map>
-
 
 #include "Device.h"
 #include "iCallback.h"
@@ -23,18 +18,14 @@ using namespace std;
 
 class OSAudio
 {
-
     protected:
         Device* activeInputDevice;
         Device* activeOutputDevice;
 
-        //IMMDevice* testOutput;
-        uint32_t captureBufferSize;
-
         vector<iCallback*> callbackList;
-
-        vector<Device*> deviceList;
         vector<thread> execThreads;
+
+        uint32_t captureBufferSize;
 
     public:
         virtual ~OSAudio() = 0;
@@ -49,9 +40,8 @@ class OSAudio
 
         virtual void capture() = 0;
 
-        void setActiveRecordDevice(Device* device);
+        void setActiveRecordDevice(Device* device); //TODO: Make virtual or maybe remove if can combine into one function
         virtual void setActiveOutputDevice(Device* device) = 0;
-
 };
 
 #endif

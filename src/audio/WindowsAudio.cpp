@@ -68,7 +68,6 @@ vector<Device*> WindowsAudio::getOutputDevices()
     // the device vector
     for(UINT i = 0;i < count;i++)
     {
-
         // Initialize variables for current loop
         IMMDevice* device;
         DWORD state = NULL;
@@ -241,7 +240,6 @@ void WindowsAudio::capture()
 
             while (packetLength != 0)
             {
-
                 // Get the captured buffer
                 status = captureClient->GetBuffer(&pData, &numFramesAvailable, &flags, NULL, NULL);
                 HANDLE_ERROR(status);
@@ -285,7 +283,6 @@ Exit:
     cout << "\nError: " << errMsg << "\n" << endl;
 
     //TODO: Handle error accordingly
-
 }
 
 /**
