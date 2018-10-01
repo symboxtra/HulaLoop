@@ -1,5 +1,8 @@
 #include "qmlbridge.h"
 
+/**
+ * Construct a QMLBridge.
+ */
 QMLBridge::QMLBridge(QObject *parent) : QObject(parent) {}
 
 QString QMLBridge::getState()
