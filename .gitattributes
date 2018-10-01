@@ -1,0 +1,2 @@
+# Ignore CoreAudio when calculating language stats
+src/audio/OSXDriver/PublicUtility/* linguist-vendored
