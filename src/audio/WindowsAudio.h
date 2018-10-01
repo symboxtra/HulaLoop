@@ -1,58 +1,43 @@
 #ifndef WIN_AUDIO
 #define WIN_AUDIO
 
+// System
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <thread>
+
+// Windows Audio
 #include <windows.h>
 #include <mmdeviceapi.h>
 #include <endpointvolume.h>
 #include <Audioclient.h>
-#include <tchar.h>
-#include <strsafe.h>
 #include <functiondiscoverykeys_devpkey.h>
-#include <atlstr.h>
-#include <strmif.h>
-#include <dshow.h>
-#include <DShow.h>
-
-#include <atlbase.h>
-#include <combaseapi.h>
-#include <objbase.h>
-
-#include <initguid.h>
-
-#include <locale>
-#include <codecvt>
-
 #include <comdef.h>
-
-#include <string>
-#include <vector>
-#include <stdio.h>
-#include <stdlib.h>
-
-#include <iostream>
-
-#include <fstream>
-
-#include <thread>
 
 #include "OSAudio.h"
 #include "Device.h"
 
 using namespace std;
 
-using byte = uint8_t; 
-
+using byte = uint8_t;
 using f_int_t = int(*)(uint32_t, byte*);
 
 #define REFTIMES_PER_SEC  10000000
 #define REFTIMES_PER_MILLISEC  10000
 
+// Error handling
 #define HANDLE_ERROR(hres) \
             if (FAILED(hres)) { goto Exit; }
 #define SAFE_RELEASE(punk) \
             if ((punk) != NULL) \
                 { (punk)->Release(); (punk) = NULL; }
 
+/**
+ * A audio class that captures system wide audio on Windows
+ */
 class WindowsAudio : public OSAudio
 {
 
@@ -71,9 +56,8 @@ class WindowsAudio : public OSAudio
         IMMDeviceEnumerator* pEnumerator = NULL;
         IMMDeviceCollection* deviceCollection = NULL;
 
+        // Audio data
         byte* pData;
-
-
 
     public:
 
@@ -83,7 +67,6 @@ class WindowsAudio : public OSAudio
         vector<Device*> getInputDevices();
         vector<Device*> getOutputDevices();
 
-        //TODO: Static wrapper for thread creation
         static void test_capture(WindowsAudio* param);
         void capture();
 

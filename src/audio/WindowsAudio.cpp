@@ -6,18 +6,26 @@ WindowsAudio::WindowsAudio()
     vector<Device*> t = getOutputDevices();
 
     setActiveOutputDevice(t[0]);
-
 }
 
+/**
+ * Receive the list of available input audio devices connected to the OS
+ * and return them as Device instances
+ *
+ * @return vector of Device instances
+ */
 vector<Device*> WindowsAudio::getInputDevices()
 {
-    vector<Device*> temp2;
+    // Vector to store acquired list of input audio devices
+    vector<Device*> deviceList;
 
+    // Make a system call to the OS to receive device list
     uint16_t deviceCount = waveInGetNumDevs();
     if(deviceCount > 0)
     {
         for(int i = 0;i < deviceCount;i++)
         {
+            // Get each device, create Device object and add to the device list
             WAVEINCAPSW waveInCaps;
             waveInGetDevCapsW( i, &waveInCaps, sizeof( WAVEINCAPSW ) );
             wstring temp(waveInCaps.szPname);
@@ -25,81 +33,87 @@ vector<Device*> WindowsAudio::getInputDevices()
         }
     }
 
-    return temp2;
+    return deviceList;
 }
 
+/**
+ * Receive the list of available output audio devices connected to the OS
+ * and return them as Device instances
+ *
+ * @return vector of Device instances
+ */
 vector<Device*> WindowsAudio::getOutputDevices()
 {
+    // Vector to store acquired list of output devices
+    vector<Device*> deviceList;
 
-    vector<Device*> temp;
-
+    // Setup capture environment
     status = CoInitialize(NULL);
     HANDLE_ERROR(status);
 
-    // Create instance? don't exactly know what this does yet
+    // Creates a system instance of the device enumerator
     status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
     HANDLE_ERROR(status);
 
-    // Get Device Collection
+    // Get the collection of all devices
     status = pEnumerator->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, &deviceCollection);
     HANDLE_ERROR(status);
 
-    // Store all devices as Device instances into vector
+    // Get the size of the collection
     UINT count = 0;
     status = deviceCollection->GetCount(&count);
     HANDLE_ERROR(status);
 
+    // Iterate through the collection and store the necessary information into
+    // the device vector
     for(UINT i = 0;i < count;i++)
     {
 
+        // Initialize variables for current loop
         IMMDevice* device;
         DWORD state = NULL;
-
-        status = deviceCollection->Item(i, &device);
-        HANDLE_ERROR(status);
-
-
-        status = device->GetState(&state);
-        HANDLE_ERROR(status);
-
         LPWSTR id = NULL;
-        status = device->GetId(&id);
-        HANDLE_ERROR(status);
-
-        // Add device to devicelist
         IPropertyStore* propKey;
         PROPVARIANT varName;
         PropVariantInit(&varName);
 
+        // Get the IMMDevice at the specified index
+        status = deviceCollection->Item(i, &device);
+        HANDLE_ERROR(status);
+
+        // Get the state of the IMMDevice
+        status = device->GetState(&state);
+        HANDLE_ERROR(status);
+
+        // Get the ID of the IMMDevice
+        status = device->GetId(&id);
+        HANDLE_ERROR(status);
+
+        // Get device name using PropertyStore
         status = device->OpenPropertyStore(STGM_READ, &propKey);
         HANDLE_ERROR(status);
         status = propKey->GetValue(PKEY_Device_FriendlyName, &varName);
         HANDLE_ERROR(status);
 
-        //char* buffer = (char*)malloc(500);
-        //wcstombs(buffer, varName.pwszVal, 500);
-
+        // Convert wide-char string to std::string
         wstring fun(varName.pwszVal);
         string str(fun.begin(), fun.end());
 
+        // Create instance of Device using acquired data
         Device* audio = new Device(reinterpret_cast<uint32_t*>(id), str, DeviceType::PLAYBACK);
-        temp.push_back(audio);
 
-        bool flag = true;
-        for(int j = 0;j < deviceList.size();j++)
-        {
-            if(reinterpret_cast<LPCWSTR>(deviceList[j]->getID()) == id)
-                flag = false;
-        }
+        // Add to devicelist
+        deviceList.push_back(audio);
 
-        if(flag)
-            deviceList.push_back(audio);
+        SAFE_RELEASE(device);
     }
 
+// goto label for exiting loop in-case of error
 Exit:
     SAFE_RELEASE(pEnumerator)
-    //SAFE_RELEASE(pp)
 
+    // Output error to stdout
+    // TODO: Handle error accordingly
     if(FAILED(status))
     {
         _com_error err(status);
@@ -108,11 +122,18 @@ Exit:
         return {};
     }
     else
-        return temp;
+        return deviceList;
 }
 
+/**
+ * Set the selected output device and restart capture threads with
+ * new device
+ *
+ * @param device Instance of Device that corresponds to the desired system device
+ */
 void WindowsAudio::setActiveOutputDevice(Device* device)
 {
+    // Set the active output device
     this->activeOutputDevice = device;
 
     // Interrupt all threads and make sure they stop
@@ -123,8 +144,12 @@ void WindowsAudio::setActiveOutputDevice(Device* device)
         t.~thread();
     }
 
+    // Clean the threads after stopping all threads
     execThreads.clear();
+
     // Start up new threads with new selected device info
+
+    // Start capture thread
     thread t1(&WindowsAudio::test_capture, this);
     t1.detach();
 
@@ -133,10 +158,15 @@ void WindowsAudio::setActiveOutputDevice(Device* device)
     //TODO: Add playback thread later
 }
 
-void WindowsAudio::test_capture(WindowsAudio* param)
+/**
+ * Static function in the current instance of the class
+ * to allow thread execution
+ *
+ * @param _this Instance of the current object
+ */
+void WindowsAudio::test_capture(WindowsAudio* _this)
 {
-    cout << "Hello" << endl;
-    param->capture();
+    _this->capture();
 }
 
 /**
@@ -144,8 +174,9 @@ void WindowsAudio::test_capture(WindowsAudio* param)
  */
 void WindowsAudio::capture()
 {
-    cout << "Temp hello" << endl;
+    cout << "In Capture Mode" << endl;
 
+    // Instantiate clients and services for audio capture
     IAudioCaptureClient* captureClient = NULL;
     IAudioClient* audioClient = NULL;
     WAVEFORMATEX* pwfx = NULL;
@@ -153,85 +184,71 @@ void WindowsAudio::capture()
     UINT32 numFramesAvailable;
     DWORD flags;
     char* buffer = (char*)malloc(500);
-
-
     uint32_t packetLength = 0;
-
     REFERENCE_TIME duration;
+    REFERENCE_TIME req = REFTIMES_PER_SEC;
 
-    cout << "Test I'm here!" << endl;
+    // Setup capture environment
     status = CoInitialize(NULL);
     HANDLE_ERROR(status);
 
-
+    // Creates a system instance of the device enumerator
     status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
     HANDLE_ERROR(status);
-    cout << "Test I'm here!" << endl;
 
-    cout << "Test I1'm here!" << endl;
+    // Select the current active output device
     //status = pEnumerator->GetDevice(reinterpret_cast<LPCWSTR>(activeOutputDevice->getID()), &audioDevice);
     status = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &audioDevice);
-    // Add device to devicelist
-        IPropertyStore* propKey;
-        PROPVARIANT varName;
-        PropVariantInit(&varName);
-
-        status = audioDevice->OpenPropertyStore(STGM_READ, &propKey);
-        status = propKey->GetValue(PKEY_Device_FriendlyName, &varName);
-        wcstombs(buffer, varName.pwszVal, 500);
-        cout << buffer << endl;
-
-    cout << "Test I'm here1!" << endl;
     HANDLE_ERROR(status);
-    cout << "Test I'm here!" << endl;
+    cout << "Selected Device: " << activeOutputDevice->getName() << endl;
 
+    // Activate the IMMDevice
     status = audioDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void**)&audioClient);
     HANDLE_ERROR(status);
-    cout << "Test I'm here00!" << endl;
 
-
+    // Not sure what this does yet!?
     status = audioClient->GetMixFormat(&pwfx);
     HANDLE_ERROR(status);
 
-    REFERENCE_TIME req = REFTIMES_PER_SEC;
-    status = audioClient->Initialize(
-                         AUDCLNT_SHAREMODE_SHARED,
-                         AUDCLNT_STREAMFLAGS_LOOPBACK,
-                         req,
-                         0,
-                         pwfx,
-                         NULL);
+    // Initialize the audio client in loopback mode and set audio engine format
+    status = audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_LOOPBACK, req, 0, pwfx, NULL);
     HANDLE_ERROR(status);
-    cout << "Test I'm here1!" << endl;
 
+    // Gets the maximum capacity of the endpoint buffer (audio frames)
     status = audioClient->GetBufferSize(&captureBufferSize);
     HANDLE_ERROR(status)
 
+    // Gets the capture client service under the audio client instance
     status = audioClient->GetService(IID_IAudioCaptureClient, (void**)&captureClient);
     HANDLE_ERROR(status);
-    cout << "Test I'm here2!" << endl;
 
+    // Start the audio stream
     status = audioClient->Start();
     HANDLE_ERROR(status);
-    cout << "Test I'm here3!" << endl;
 
+    // Sleep duration
     duration = (double)REFTIMES_PER_SEC * captureBufferSize / pwfx->nSamplesPerSec;
 
     // Continue loop under process ends
     while(true)
     {
+        // Only capture data if anyone has listening callbacks
         while(callbackList.size() > 0)
        {
             Sleep(duration / (REFTIMES_PER_MILLISEC * 2));
 
+            // Get the packet size of the next captured buffer
             status = captureClient->GetNextPacketSize(&packetLength);
             HANDLE_ERROR(status);
 
             while (packetLength != 0)
             {
+
+                // Get the captured buffer
                 status = captureClient->GetBuffer(&pData, &numFramesAvailable, &flags, NULL, NULL);
                 HANDLE_ERROR(status);
 
+                // Detect silent noise
                 if(flags & AUDCLNT_BUFFERFLAGS_SILENT)
                     pData = NULL;
 
@@ -242,18 +259,22 @@ void WindowsAudio::capture()
                     callbackList[i]->handleData(numFramesAvailable, pData);
                 }
 
+                // Release buffer after data is captured and handled
                 status = captureClient->ReleaseBuffer(numFramesAvailable);
                 HANDLE_ERROR(status);
 
+                // Get next packet size of captured buffer
                 status = captureClient->GetNextPacketSize(&packetLength);
                 HANDLE_ERROR(status);
             }
        }
     }
 
+    // Stop the client capture once process exits
     status = audioClient->Stop();
     HANDLE_ERROR(status);
 
+// goto label for exiting loop in-case of error
 Exit:
     CoTaskMemFree(pwfx);
     SAFE_RELEASE(pEnumerator);
@@ -269,6 +290,9 @@ Exit:
 
 }
 
+/**
+ * Clear all global pointers
+ */
 WindowsAudio::~WindowsAudio()
 {
     delete activeInputDevice;
