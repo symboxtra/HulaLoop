@@ -4,7 +4,6 @@
 # Doxygen configuration
 DOXOPTS       =
 DOXBUILD      = doxygen
-BUILDDIR      = build-docs
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
@@ -21,7 +20,12 @@ help:
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
-	rm -r read-the-docs/source/_static/doxygen
-	$(DOXBUILD)
+	rm -rf read-the-docs/source/_static/doxygen
+
+	echo "Building Doxygen..."
+	echo
+	$(DOXBUILD) $(DOXOPTS)
 	mv build-doxygen/html read-the-docs/source/_static/doxygen
+	echo "\nMoved Doxygen html to Sphinx _static.\n"
+
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
