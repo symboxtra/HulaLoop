@@ -21,9 +21,18 @@ ApplicationWindow {
 
 	QMLBridge {
 		id: qmlbridge
+		onStateChanged: {
+			transportState.text = qmlbridge.getTransportState()
+		}
 	}
 
 	ButtonPanel {
 		id: btnPanel
+	}
+
+	Label {
+		id: transportState
+		anchors.top: btnPanel.bottom
+		text: "Initial State"
 	}
 }

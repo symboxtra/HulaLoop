@@ -39,6 +39,10 @@ Rectangle {
 				horizontalAlignment: Text.AlignHCenter
 				verticalAlignment: Text.AlignVCenter
 			}
+
+			onClicked: {
+				qmlbridge.record()
+			}
 		}
 
 		RoundButton {
@@ -60,6 +64,10 @@ Rectangle {
 
 				horizontalAlignment: Text.AlignHCenter
 				verticalAlignment: Text.AlignVCenter
+			}
+
+			onClicked: {
+				qmlbridge.stop()
 			}
 		}
 
@@ -83,6 +91,10 @@ Rectangle {
 				color: playBtn.pressed ? "grey" : "darkgrey"
 				radius: playBtn.width / 2
 			}
+
+			onClicked: {
+				qmlbridge.play()
+			}
 		}
 
 		RoundButton {
@@ -105,52 +117,63 @@ Rectangle {
 				color: pauseBtn.pressed ? "grey" : "darkgrey"
 				radius: pauseBtn.width / 2
 			}
+
+			onClicked: {
+				qmlbridge.pause()
+			}
 		}
 
-        RoundButton {
-            id: timerBtn
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            display: AbstractButton.TextOnly
+		RoundButton {
+			id: timerBtn
+			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+			display: AbstractButton.TextOnly
 
-            contentItem: Text {
-                font.family: "Material Design Icons"
-                font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                text: MDFont.Icon.timer
-                color: "white"
+			contentItem: Text {
+				font.family: "Material Design Icons"
+				font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+				text: MDFont.Icon.timer
+				color: "white"
 
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
+				horizontalAlignment: Text.AlignHCenter
+				verticalAlignment: Text.AlignVCenter
+			}
 
-            background: Rectangle {
-                opacity: enabled ? 1 : 0.15
-                color: timerBtn.pressed ? "grey" : "darkgrey"
-                radius: timerBtn.width / 2
-            }
+			background: Rectangle {
+				opacity: enabled ? 1 : 0.15
+				color: timerBtn.pressed ? "grey" : "darkgrey"
+				radius: timerBtn.width / 2
+			}
 
-            onClicked: timerPopup.open()
-        }
+			onClicked: timerPopup.open()
+		}
 	}
 
-    Popup {
-        id: timerPopup
-        x: (parent.width - width) / 2
-        y: (parent.height - height) / 2
-        width: 400
-        height: 200
+	Popup {
+		id: timerPopup
 
-        modal: true
-        focus: true
-        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+		x: Math.round((window.width - width) / 2)
+		y: Math.round((window.height - height) / 2)
+		width: Math.round(window.width * 0.5)
+		height: Math.round(window.height * 0.3)
 
-        ComboBox {
-            editable: true
-            model: ListModel {
-                id: model
-                ListElement { text: "1 sec" }
-                ListElement { text: "5 sec" }
-                ListElement { text: "10 sec" }
-            }
-        }
-    }
+		modal: true
+		focus: true
+		closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+
+		ComboBox {
+			editable: true
+			model: ListModel {
+				id: model
+				ListElement {
+					text: "1 sec"
+				}
+				ListElement {
+					text: "5 sec"
+				}
+				ListElement {
+					text: "10 sec"
+				}
+			}
+		}
+	}
 }

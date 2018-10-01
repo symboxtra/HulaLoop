@@ -1,4 +1,4 @@
-add_executable(hulaloop main.cpp qmlbridge.cpp qml.qrc)
+add_executable(hulaloop main.cpp qmlbridge.cpp ../control/transport.cpp qml.qrc)
 
 target_link_libraries(hulaloop ${HL_LIBRARIES})
 
