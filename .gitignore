@@ -1,5 +1,7 @@
 build*
 .*.swp
+*.autosave
+CMakeLists.txt.user
 
 # Prerequisites
 *.d
