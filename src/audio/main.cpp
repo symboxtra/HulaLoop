@@ -19,4 +19,5 @@ int main()
     //cout << "** Audio Device List **\tCount: " << deviceList.size() << endl;
     //for(int i = 0;i < deviceList.size();i++)
       //  cout << "Device " << i << " : ID = " << deviceList[i]->getID() << "\tNAME = " << deviceList[i]->getName() << "\t TYPE = " << int(deviceList[i]->getType()) << endl;
+    while(true);
 }

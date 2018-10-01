@@ -16,26 +16,21 @@ Controller::Controller()
     audio->addBufferReadyCallback(this);
 }
 
-void Controller::handleIncomingData(uint32_t numFrames, byte* data)
-{
-
-}
-
 void Controller::handleData(uint32_t size, byte* data)
 {
-    cout << "Test2" << endl;
+    cout << size << endl;
 }
 
-void Controller::addBufferReadyCallback(f_int_t callFunction)
+void Controller::addBufferReadyCallback(iCallback* func)
 {
-    if(find(callbackList.begin(), callbackList.end(), callFunction) == callbackList.end())
-        this->callbackList.push_back(callFunction);
+    if(find(callbackList.begin(), callbackList.end(), func) == callbackList.end())
+        this->callbackList.push_back(func);
 }
 
-void Controller::removeBufferReadyCallback(f_int_t callFunction)
+void Controller::removeBufferReadyCallback(iCallback* func)
 {
-    if(find(callbackList.begin(), callbackList.end(), callFunction) != callbackList.end())
-        this->callbackList.erase(remove(callbackList.begin(), callbackList.end(), callFunction), callbackList.end());
+    if(find(callbackList.begin(), callbackList.end(), func) != callbackList.end())
+        this->callbackList.erase(remove(callbackList.begin(), callbackList.end(), func), callbackList.end());
 }
 
 Controller::~Controller()

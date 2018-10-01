@@ -2,13 +2,10 @@
 
 WindowsAudio::WindowsAudio()
 {
-    //thread captureThread(test_capture, this);
-
-    //captureThread.join();
-
+    // TODO: Remove this once triggered from upper layers
     vector<Device*> t = getOutputDevices();
 
-    //setActiveOutputDevice(t[0]);
+    setActiveOutputDevice(t[0]);
 
 }
 
@@ -129,8 +126,9 @@ void WindowsAudio::setActiveOutputDevice(Device* device)
     execThreads.clear();
     // Start up new threads with new selected device info
     thread t1(&WindowsAudio::test_capture, this);
+    t1.detach();
 
-    t1.join();//TODO: Remove after integrated with UI
+    //t1.join();//TODO: Remove after integrated with UI
 
     //TODO: Add playback thread later
 }
@@ -222,9 +220,8 @@ void WindowsAudio::capture()
     // Continue loop under process ends
     while(true)
     {
-        //cout << "\n\nAm I on?\n\n" << endl;
-       // while(callbackList.size() > 0)
-       // {
+        while(callbackList.size() > 0)
+       {
             Sleep(duration / (REFTIMES_PER_MILLISEC * 2));
 
             status = captureClient->GetNextPacketSize(&packetLength);
@@ -241,12 +238,8 @@ void WindowsAudio::capture()
                 // Execute callbacks
                 for(int i = 0;i < callbackList.size();i++)
                 {
-                    //thread{callbackList[i], numFramesAvailable, pData}.detach();
-                    //thread callback(callbackList[i], numFramesAvailable, pData);
-                    //callback.detach();
-
                     // TODO: Make these calls asynchronous so it does not delay run process
-                    //callbackList[i](numFramesAvailable, pData);
+                    callbackList[i]->handleData(numFramesAvailable, pData);
                 }
 
                 status = captureClient->ReleaseBuffer(numFramesAvailable);
@@ -255,7 +248,7 @@ void WindowsAudio::capture()
                 status = captureClient->GetNextPacketSize(&packetLength);
                 HANDLE_ERROR(status);
             }
-       // }
+       }
     }
 
     status = audioClient->Stop();

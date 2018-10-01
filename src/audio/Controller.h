@@ -21,7 +21,7 @@ class Controller : public iCallback
 {
     private:
         OSAudio* audio;
-        vector<f_int_t> callbackList;
+        vector<iCallback*> callbackList;
 
     public:
         Controller();
@@ -29,8 +29,8 @@ class Controller : public iCallback
 
         void handleIncomingData(uint32_t numFrames, byte* data);
 
-        void addBufferReadyCallback(f_int_t func);
-        void removeBufferReadyCallback(f_int_t callFunction);
+        void addBufferReadyCallback(iCallback* func);
+        void removeBufferReadyCallback(iCallback* func);
 
         void handleData(uint32_t size, byte* data);
 };
