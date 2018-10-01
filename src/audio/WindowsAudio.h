@@ -23,7 +23,6 @@
 using namespace std;
 
 using byte = uint8_t;
-using f_int_t = int(*)(uint32_t, byte*);
 
 #define REFTIMES_PER_SEC  10000000
 #define REFTIMES_PER_MILLISEC  10000

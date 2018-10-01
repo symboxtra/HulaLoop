@@ -4,7 +4,8 @@ Controller::Controller()
 {
     // Initialize OSAudio based on host OS
     #if defined(__unix__)
-        audio = new LinuxAudio();
+        //audio = new LinuxAudio();
+        cout << "LINUX" << endl;
     #elif defined(__APPLE__)
         cout << "APPLE" << endl;
     #elif _WIN32

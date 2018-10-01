@@ -9,7 +9,6 @@
 // TODO: Remove after integration with UI
 int main()
 {
-
   Controller* cp = new Controller();
   while(true);
 }

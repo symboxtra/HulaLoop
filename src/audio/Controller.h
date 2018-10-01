@@ -7,14 +7,13 @@
 #if _WIN32
     #include "WindowsAudio.h"
 #elif __unix__
-    #include "LinuxAudio.h"
+    // #include "LinuxAudio.h" // TODO: Remove comment once LinuxAudio is complete
 #elif __APPLE__
-    #include "OSXAudio.h"
+    // #include "OSXAudio.h" // TODO: Remove comment once OSXAudio is complete
 #endif
 
 #include <iostream>
 
-using f_int_t = int(*)(uint32_t, byte*);
 using byte = uint8_t;
 
 // TODO: Add public description of class
