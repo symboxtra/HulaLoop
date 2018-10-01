@@ -2,6 +2,7 @@
 #define CONTROL
 
 #include "OSAudio.h"
+
 #if _WIN32
     #include "WindowsAudio.h"
 #elif __unix__
@@ -13,6 +14,7 @@
 #include <iostream>
 
 using f_int_t = int(*)(uint32_t, byte*);
+using byte = uint8_t;
 
 class Controller
 {
@@ -23,6 +25,8 @@ class Controller
     public:
         Controller();
         ~Controller();
+
+        void handleIncomingData(uint32_t numFrames, byte* data);
 
         void addBufferReadyCallback(f_int_t func);
         void removeBufferReadyCallback(f_int_t callFunction);

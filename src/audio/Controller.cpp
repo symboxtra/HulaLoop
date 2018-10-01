@@ -2,6 +2,7 @@
 
 Controller::Controller()
 {
+
     #if defined(__unix__)
         audio = new LinuxAudio();
     #elif defined(__APPLE__)
@@ -11,6 +12,13 @@ Controller::Controller()
     #endif
 
     if(audio == NULL){}//TODO: Handle error
+
+    audio->addBufferReadyCallback(this, &Controller::handleIncomingData);
+}
+
+void Controller::handleIncomingData(uint32_t numFrames, byte* data)
+{
+
 }
 
 void Controller::addBufferReadyCallback(f_int_t callFunction)

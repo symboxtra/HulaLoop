@@ -8,7 +8,7 @@ WindowsAudio::WindowsAudio()
 
     vector<Device*> t = getOutputDevices();
 
-    setActiveOutputDevice(t[0]);
+    //setActiveOutputDevice(t[0]);
 
 }
 
@@ -21,9 +21,9 @@ vector<Device*> WindowsAudio::getInputDevices()
     {
         for(int i = 0;i < deviceCount;i++)
         {
-            WAVEINCAPSW waveInCaps;    
+            WAVEINCAPSW waveInCaps;
             waveInGetDevCapsW( i, &waveInCaps, sizeof( WAVEINCAPSW ) );
-            wstring temp(waveInCaps.szPname);   
+            wstring temp(waveInCaps.szPname);
             string str(temp.begin(), temp.end());
         }
     }
@@ -33,7 +33,7 @@ vector<Device*> WindowsAudio::getInputDevices()
 
 vector<Device*> WindowsAudio::getOutputDevices()
 {
-    
+
     vector<Device*> temp;
 
     status = CoInitialize(NULL);
@@ -51,10 +51,10 @@ vector<Device*> WindowsAudio::getOutputDevices()
     UINT count = 0;
     status = deviceCollection->GetCount(&count);
     HANDLE_ERROR(status);
-    
+
     for(UINT i = 0;i < count;i++)
     {
-        
+
         IMMDevice* device;
         DWORD state = NULL;
 
@@ -87,7 +87,7 @@ vector<Device*> WindowsAudio::getOutputDevices()
 
         Device* audio = new Device(reinterpret_cast<uint32_t*>(id), str, DeviceType::PLAYBACK);
         temp.push_back(audio);
-        
+
         bool flag = true;
         for(int j = 0;j < deviceList.size();j++)
         {
@@ -118,9 +118,9 @@ void WindowsAudio::setActiveOutputDevice(Device* device)
 {
     this->activeOutputDevice = device;
 
-    // Interrupt all threads and make sure they stop 
+    // Interrupt all threads and make sure they stop
     for(auto& t : execThreads)
-    {  
+    {
         //TODO: Find better way of safely terminating thread
         t.detach();
         t.~thread();
@@ -147,7 +147,7 @@ void WindowsAudio::test_capture(WindowsAudio* param)
 void WindowsAudio::capture()
 {
     cout << "Temp hello" << endl;
-    
+
     IAudioCaptureClient* captureClient = NULL;
     IAudioClient* audioClient = NULL;
     WAVEFORMATEX* pwfx = NULL;
@@ -164,7 +164,7 @@ void WindowsAudio::capture()
     cout << "Test I'm here!" << endl;
     status = CoInitialize(NULL);
     HANDLE_ERROR(status);
-    
+
 
     status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
     HANDLE_ERROR(status);
@@ -182,7 +182,7 @@ void WindowsAudio::capture()
         status = propKey->GetValue(PKEY_Device_FriendlyName, &varName);
         wcstombs(buffer, varName.pwszVal, 500);
         cout << buffer << endl;
-    
+
     cout << "Test I'm here1!" << endl;
     HANDLE_ERROR(status);
     cout << "Test I'm here!" << endl;
@@ -190,8 +190,8 @@ void WindowsAudio::capture()
     status = audioDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void**)&audioClient);
     HANDLE_ERROR(status);
     cout << "Test I'm here00!" << endl;
-    
-    
+
+
     status = audioClient->GetMixFormat(&pwfx);
     HANDLE_ERROR(status);
 
@@ -237,7 +237,7 @@ void WindowsAudio::capture()
 
                 if(flags & AUDCLNT_BUFFERFLAGS_SILENT)
                     pData = NULL;
-                
+
                 // Execute callbacks
                 for(int i = 0;i < callbackList.size();i++)
                 {
@@ -273,5 +273,5 @@ Exit:
     cout << "\nError: " << errMsg << "\n" << endl;
 
     //TODO: Handle error accordingly
-    
+
 }

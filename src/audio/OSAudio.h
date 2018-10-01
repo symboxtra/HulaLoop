@@ -38,9 +38,12 @@ class OSAudio
     public:
         void setBufferSize(uint32_t size);
 
-        void addBufferReadyCallback(f_int_t func);
+        template <typename T> void addBufferReadyCallback(const T *c, void(T::* func)(uint32_t, byte*))
+        {
+            cout << "Test" << endl;
+        };
         void removeBufferReadyCallback(f_int_t func);
-        
+
         virtual vector<Device*> getInputDevices() = 0;
         virtual vector<Device*> getOutputDevices() = 0;
 
@@ -48,7 +51,7 @@ class OSAudio
 
         void setActiveRecordDevice(Device* device);
         virtual void setActiveOutputDevice(Device* device) = 0;
-         
+
 };
 
 #endif
