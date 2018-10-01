@@ -43,7 +43,7 @@ class TestGUI : public ::testing::Test {
 
             QObject *btn = engine->rootObjects()[0]->findChild<QObject *>(objName);
             QObject *label = engine->rootObjects()[0]->findChild<QObject *>(QString::fromStdString("transportState"));
-            QVariant property = NULL;
+            QVariant property;
 
             if(btn && label)
             {
@@ -51,7 +51,7 @@ class TestGUI : public ::testing::Test {
                 QMetaObject::invokeMethod(btn, "clicked");
                 property = QQmlProperty::read(label, QString::fromStdString("text"));
 
-                if(property != NULL)
+                if(!property.isNull())
                     return property.toString() == state;
 
             }
