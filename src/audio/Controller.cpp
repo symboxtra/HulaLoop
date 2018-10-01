@@ -18,6 +18,9 @@ Controller::Controller()
 void Controller::handleData(uint32_t size, byte* data)
 {
     cout << size << endl;
+
+    for(int i = 0;i < callbackList.size();i++)
+        callbackList[i]->handleData(size, data);
 }
 
 void Controller::addBufferReadyCallback(iCallback* func)
@@ -30,6 +33,9 @@ void Controller::removeBufferReadyCallback(iCallback* func)
 {
     if(find(callbackList.begin(), callbackList.end(), func) != callbackList.end())
         this->callbackList.erase(remove(callbackList.begin(), callbackList.end(), func), callbackList.end());
+
+    if(this->callbackList.size() == 0)
+        audio->removeBufferReadyCallback(this);
 }
 
 Controller::~Controller()

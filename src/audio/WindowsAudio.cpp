@@ -153,8 +153,6 @@ void WindowsAudio::setActiveOutputDevice(Device* device)
     thread t1(&WindowsAudio::test_capture, this);
     t1.detach();
 
-    //t1.join();//TODO: Remove after integrated with UI
-
     //TODO: Add playback thread later
 }
 
