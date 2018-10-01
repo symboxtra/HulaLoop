@@ -127,7 +127,7 @@ if (OSX)
     # Find what we built
     find_library (
         PORTAUDIO_LIB
-        NAMES "portaudio"
+        NAMES portaudio
         HINTS ${CMAKE_BINARY_DIR}/lib/lib
     )
 
