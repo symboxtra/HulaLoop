@@ -22,7 +22,7 @@
  be used to endorse or promote products derived from the Apple Software 
  without specific prior written permission from Apple.  Except as 
  expressly stated in this notice, no other rights or licenses, express or 
- implied, are granted by Apple herein, including but not limited to any 
+ implied, are granted by Apple herein, including but not limited to any
  patent rights that may be infringed by your derivative works or by other 
  works in which the Apple Software may be incorporated. 
   

@@ -50,7 +50,7 @@
 		2D4DE41315EDF8D500E96F0D /* CAVolumeCurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAVolumeCurve.h; sourceTree = "<group>"; };
 		2D7477AC1578168D00412279 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		2D7477EC157823CF00412279 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
-		2D76D96015E48B2000FF0F33 /* JackBridgePlugIn.driver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JackBridgePlugIn.driver; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D76D96015E48B2000FF0F33 /* HulaLoopHAL.driver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HulaLoopHAL.driver; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D76D97415E48B6400FF0F33 /* SA_PlugIn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SA_PlugIn.cpp; sourceTree = "<group>"; };
 		2D76D97515E48B6400FF0F33 /* SA_PlugIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SA_PlugIn.h; sourceTree = "<group>"; };
 		2D76D97815E498EB00FF0F33 /* SA_Object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SA_Object.cpp; sourceTree = "<group>"; };
@@ -102,7 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				2DA8FA1515FEAAB000F04B50 /* ReadMe.txt */,
-				2DED182215C356BA0091BE97 /* JackBridge */,
+				2DED182215C356BA0091BE97 /* HulaLoop */,
 				2DD7AA0D15EAFD3300C67AE1 /* PublicUtility */,
 				2D7477AB1578168D00412279 /* Frameworks */,
 				2D7477AA1578168D00412279 /* Products */,
@@ -112,7 +112,7 @@
 		2D7477AA1578168D00412279 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2D76D96015E48B2000FF0F33 /* JackBridgePlugIn.driver */,
+				2D76D96015E48B2000FF0F33 /* HulaLoopHAL.driver */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -167,12 +167,12 @@
 			path = PublicUtility;
 			sourceTree = "<group>";
 		};
-		2DED182215C356BA0091BE97 /* JackBridge */ = {
+		2DED182215C356BA0091BE97 /* HulaLoop */ = {
 			isa = PBXGroup;
 			children = (
 				2DED182C15C356BA0091BE97 /* Plug-In */,
 			);
-			path = JackBridge;
+			path = HulaLoop;
 			sourceTree = "<group>";
 		};
 		2DED182C15C356BA0091BE97 /* Plug-In */ = {
@@ -222,22 +222,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		2D76D95F15E48B2000FF0F33 /* JackBridgePlugIn */ = {
+		2D76D95F15E48B2000FF0F33 /* HulaLoopHAL */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D76D97215E48B2000FF0F33 /* Build configuration list for PBXNativeTarget "JackBridgePlugIn" */;
+			buildConfigurationList = 2D76D97215E48B2000FF0F33 /* Build configuration list for PBXNativeTarget "HulaLoopHAL" */;
 			buildPhases = (
 				2D76D95E15E48B2000FF0F33 /* Headers */,
 				2D76D95C15E48B2000FF0F33 /* Sources */,
 				2D76D95D15E48B2000FF0F33 /* Frameworks */,
 				2DA8FA4B15FEABE000F04B50 /* Resources */,
+				23E0724B21627AF900A4CB4E /* ShellScript */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = JackBridgePlugIn;
+			name = HulaLoopHAL;
 			productName = SimpleAudioPlugIn;
-			productReference = 2D76D96015E48B2000FF0F33 /* JackBridgePlugIn.driver */;
+			productReference = 2D76D96015E48B2000FF0F33 /* HulaLoopHAL.driver */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -246,9 +247,9 @@
 		2D74779D1578162B00412279 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 1000;
 			};
-			buildConfigurationList = 2D7477A01578162B00412279 /* Build configuration list for PBXProject "JackBridgePlugIn" */;
+			buildConfigurationList = 2D7477A01578162B00412279 /* Build configuration list for PBXProject "HulaLoopHAL" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -261,7 +262,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2D76D95F15E48B2000FF0F33 /* JackBridgePlugIn */,
+				2D76D95F15E48B2000FF0F33 /* HulaLoopHAL */,
 			);
 		};
 /* End PBXProject section */
@@ -276,6 +277,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		23E0724B21627AF900A4CB4E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/bash;
+			shellScript = "# Install the built HAL plug-in to /Library/Audio/Plug-Ins/HAL and restart CoreAudio\n${SOURCE_ROOT}/install.sh\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		2D76D95C15E48B2000FF0F33 /* Sources */ = {
@@ -317,17 +339,32 @@
 		2D7477A21578162B00412279 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
@@ -339,6 +376,7 @@
 				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
@@ -353,17 +391,33 @@
 		2D7477A31578162B00412279 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
@@ -375,12 +429,14 @@
 				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -388,17 +444,33 @@
 		2D7477A41578164E00412279 /* Debug-Opt */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
@@ -410,12 +482,14 @@
 				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
 			name = "Debug-Opt";
@@ -423,15 +497,17 @@
 		2D76D96F15E48B2000FF0F33 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"CoreAudio_Debug=0",
 					"CoreAudio_UseSysLog=1",
 				);
-				INFOPLIST_FILE = "$(SRCROOT)/JackBridge/Plug-In/SA_PlugIn-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Audio/Plug-Ins/HAL";
-				PRODUCT_BUNDLE_IDENTIFIER = "jp.ne.ivory.linux-dtm.JackBridge";
+				INFOPLIST_FILE = "$(SRCROOT)/HulaLoop/Plug-In/SA_PlugIn-Info.plist";
+				INSTALL_PATH = "${LOCAL_LIBRARY_DIR}/Audio/Plug-Ins/HAL";
+				"INSTALL_PATH[sdk=*]" = "/Library/Audio/Plug-Ins/HAL";
+				PRODUCT_BUNDLE_IDENTIFIER = symboxtra.HulaLoop;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = driver;
 			};
@@ -440,15 +516,16 @@
 		2D76D97015E48B2000FF0F33 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"CoreAudio_Debug=1",
 					"CoreAudio_UseSysLog=1",
 				);
-				INFOPLIST_FILE = "$(SRCROOT)/JackBridge/Plug-In/SA_PlugIn-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Audio/Plug-Ins/HAL";
-				PRODUCT_BUNDLE_IDENTIFIER = "jp.ne.ivory.linux-dtm.JackBridge";
+				INFOPLIST_FILE = "$(SRCROOT)/HulaLoop/Plug-In/SA_PlugIn-Info.plist";
+				INSTALL_PATH = "${LOCAL_LIBRARY_DIR}/Audio/Plug-Ins/HAL";
+				PRODUCT_BUNDLE_IDENTIFIER = symboxtra.HulaLoop;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = driver;
 			};
@@ -457,15 +534,16 @@
 		2D76D97115E48B2000FF0F33 /* Debug-Opt */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"CoreAudio_Debug=1",
 					"CoreAudio_UseSysLog=1",
 				);
-				INFOPLIST_FILE = "$(SRCROOT)/JackBridge/Plug-In/SA_PlugIn-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Audio/Plug-Ins/HAL";
-				PRODUCT_BUNDLE_IDENTIFIER = "jp.ne.ivory.linux-dtm.JackBridge";
+				INFOPLIST_FILE = "$(SRCROOT)/HulaLoop/Plug-In/SA_PlugIn-Info.plist";
+				INSTALL_PATH = "${LOCAL_LIBRARY_DIR}/Audio/Plug-Ins/HAL";
+				PRODUCT_BUNDLE_IDENTIFIER = symboxtra.HulaLoop;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = driver;
 			};
@@ -474,7 +552,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2D7477A01578162B00412279 /* Build configuration list for PBXProject "JackBridgePlugIn" */ = {
+		2D7477A01578162B00412279 /* Build configuration list for PBXProject "HulaLoopHAL" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D7477A21578162B00412279 /* Release */,
@@ -484,7 +562,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D76D97215E48B2000FF0F33 /* Build configuration list for PBXNativeTarget "JackBridgePlugIn" */ = {
+		2D76D97215E48B2000FF0F33 /* Build configuration list for PBXNativeTarget "HulaLoopHAL" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D76D96F15E48B2000FF0F33 /* Release */,
