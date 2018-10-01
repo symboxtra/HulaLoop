@@ -5,6 +5,7 @@ file (GLOB AUDIO_SRC_FILES *.cpp)
 # Remove source files that do not pertain to the current OS
 #TODO: Remove extra source files once they have been initialized
 if(WIN32)
+    list(REMOVE_ITEM AUDIO_SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/LinuxAudio.cpp")
 elseif(OSX)
     list(REMOVE_ITEM AUDIO_SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/WindowsAudio.cpp")
 else()
