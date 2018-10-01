@@ -1,6 +1,10 @@
 build*
 .*.swp
 
+
+# Since we have global schemes, this is safe to ignore
+xcuserdata
+
 # Prerequisites
 *.d
 
