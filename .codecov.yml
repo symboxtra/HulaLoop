@@ -1,0 +1,12 @@
+coverage:
+  status:
+    project: off
+    patch: off
+
+codecov:
+  ci:
+    - jenkins.symboxtra.dynu.net
+
+ignore:
+    - "src/libs/"
+    - "**/main.cpp"
