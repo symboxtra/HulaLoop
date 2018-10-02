@@ -45,19 +45,19 @@
 
 */
 /*==================================================================================================
-	SA_Device.h
+    SA_Device.h
 ==================================================================================================*/
 #if !defined(__SA_Device_h__)
 #define __SA_Device_h__
 
 //==================================================================================================
-//	Includes
+//  Includes
 //==================================================================================================
 
-//	SuperClass Includes
+//  SuperClass Includes
 #include "SA_Object.h"
 
-//	PublicUtility Includes
+//  PublicUtility Includes
 #include "CACFString.h"
 #include "CAMutex.h"
 
@@ -74,74 +74,74 @@
 #include "JackBridge.h"
 
 //==================================================================================================
-//	SA_Device
+//  SA_Device
 //==================================================================================================
 
 class SA_Device
-:
-	public SA_Object, JackBridgeDriverIF
+    :
+    public SA_Object, JackBridgeDriverIF
 {
 
 #pragma mark Construction/Destruction
 public:
-								SA_Device(AudioObjectID inObjectID, UInt32 instance);
+    SA_Device(AudioObjectID inObjectID, UInt32 instance);
 
-	virtual void				Activate();
-	virtual void				Deactivate();
+    virtual void                Activate();
+    virtual void                Deactivate();
 
 protected:
-	virtual						~SA_Device();
+    virtual                     ~SA_Device();
 
 #pragma mark Property Operations
 public:
-	virtual bool				HasProperty(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress) const;
-	virtual bool				IsPropertySettable(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress) const;
-	virtual UInt32				GetPropertyDataSize(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData) const;
-	virtual void				GetPropertyData(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData, UInt32 inDataSize, UInt32& outDataSize, void* outData) const;
-	virtual void				SetPropertyData(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData, UInt32 inDataSize, const void* inData);
+    virtual bool                HasProperty(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress) const;
+    virtual bool                IsPropertySettable(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress) const;
+    virtual UInt32              GetPropertyDataSize(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData) const;
+    virtual void                GetPropertyData(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData, UInt32 inDataSize, UInt32& outDataSize, void* outData) const;
+    virtual void                SetPropertyData(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData, UInt32 inDataSize, const void* inData);
 
 #pragma mark Device Property Operations
 private:
-	bool						Device_HasProperty(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress) const;
-	bool						Device_IsPropertySettable(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress) const;
-	UInt32						Device_GetPropertyDataSize(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData) const;
-	void						Device_GetPropertyData(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData, UInt32 inDataSize, UInt32& outDataSize, void* outData) const;
-	void						Device_SetPropertyData(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData, UInt32 inDataSize, const void* inData);
+    bool                        Device_HasProperty(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress) const;
+    bool                        Device_IsPropertySettable(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress) const;
+    UInt32                      Device_GetPropertyDataSize(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData) const;
+    void                        Device_GetPropertyData(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData, UInt32 inDataSize, UInt32& outDataSize, void* outData) const;
+    void                        Device_SetPropertyData(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData, UInt32 inDataSize, const void* inData);
 
 #pragma mark Stream Property Operations
 private:
-	bool						Stream_HasProperty(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress) const;
-	bool						Stream_IsPropertySettable(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress) const;
-	UInt32						Stream_GetPropertyDataSize(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData) const;
-	void						Stream_GetPropertyData(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData, UInt32 inDataSize, UInt32& outDataSize, void* outData) const;
-	void						Stream_SetPropertyData(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData, UInt32 inDataSize, const void* inData);
+    bool                        Stream_HasProperty(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress) const;
+    bool                        Stream_IsPropertySettable(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress) const;
+    UInt32                      Stream_GetPropertyDataSize(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData) const;
+    void                        Stream_GetPropertyData(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData, UInt32 inDataSize, UInt32& outDataSize, void* outData) const;
+    void                        Stream_SetPropertyData(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData, UInt32 inDataSize, const void* inData);
 
 #pragma mark IO Operations
 public:
-	void						StartIO();
-	void						StopIO();
-	void						GetZeroTimeStamp(Float64& outSampleTime, UInt64& outHostTime, UInt64& outSeed);
+    void                        StartIO();
+    void                        StopIO();
+    void                        GetZeroTimeStamp(Float64& outSampleTime, UInt64& outHostTime, UInt64& outSeed);
 
-	void						WillDoIOOperation(UInt32 inOperationID, bool& outWillDo, bool& outWillDoInPlace) const;
-	void						BeginIOOperation(UInt32 inOperationID, UInt32 inIOBufferFrameSize, const AudioServerPlugInIOCycleInfo& inIOCycleInfo);
-	void						DoIOOperation(AudioObjectID inStreamObjectID, UInt32 inOperationID, UInt32 inIOBufferFrameSize, const AudioServerPlugInIOCycleInfo& inIOCycleInfo, void* ioMainBuffer, void* ioSecondaryBuffer);
-	void						EndIOOperation(UInt32 inOperationID, UInt32 inIOBufferFrameSize, const AudioServerPlugInIOCycleInfo& inIOCycleInfo);
+    void                        WillDoIOOperation(UInt32 inOperationID, bool& outWillDo, bool& outWillDoInPlace) const;
+    void                        BeginIOOperation(UInt32 inOperationID, UInt32 inIOBufferFrameSize, const AudioServerPlugInIOCycleInfo& inIOCycleInfo);
+    void                        DoIOOperation(AudioObjectID inStreamObjectID, UInt32 inOperationID, UInt32 inIOBufferFrameSize, const AudioServerPlugInIOCycleInfo& inIOCycleInfo, void* ioMainBuffer, void* ioSecondaryBuffer);
+    void                        EndIOOperation(UInt32 inOperationID, UInt32 inIOBufferFrameSize, const AudioServerPlugInIOCycleInfo& inIOCycleInfo);
 
 private:
-	void						ReadInputData(int streadmd, UInt32 inIOBufferFrameSize, Float64 inSampleTime, void* outBuffer);
-	void						WriteOutputData(int streamId, UInt32 inIOBufferFrameSize, Float64 inSampleTime, const void* inBuffer);
+    void                        ReadInputData(int streadmd, UInt32 inIOBufferFrameSize, Float64 inSampleTime, void* outBuffer);
+    void                        WriteOutputData(int streamId, UInt32 inIOBufferFrameSize, Float64 inSampleTime, const void* inBuffer);
 
 #pragma mark Hardware Accessors
 public:
-	static CFStringRef			HW_CopyDeviceUID();
+    static CFStringRef          HW_CopyDeviceUID();
 
 private:
-	void						_HW_Open();
-	void						_HW_Close();
-	kern_return_t				_HW_StartIO();
-	void						_HW_StopIO();
-	UInt64						_HW_GetSampleRate() const;
-	kern_return_t				_HW_SetSampleRate(UInt64 inNewSampleRate);
+    void                        _HW_Open();
+    void                        _HW_Close();
+    kern_return_t               _HW_StartIO();
+    void                        _HW_StopIO();
+    UInt64                      _HW_GetSampleRate() const;
+    kern_return_t               _HW_SetSampleRate(UInt64 inNewSampleRate);
 
 #pragma mark Implementation
 #define kDeviceUIDPattern   "HulaLoopDevice-%d"
@@ -149,39 +149,41 @@ private:
 #define kDeviceModelUID     "HulaLoopDeviceModelUID"
 
 public:
-    CFStringRef					CopyDeviceUID() const	{ return CFSTR(kDeviceUID); };
-	void						PerformConfigChange(UInt64 inChangeAction, void* inChangeInfo);
-	void						AbortConfigChange(UInt64 inChangeAction, void* inChangeInfo);
+    CFStringRef                 CopyDeviceUID() const   {
+        return CFSTR(kDeviceUID);
+    };
+    void                        PerformConfigChange(UInt64 inChangeAction, void* inChangeInfo);
+    void                        AbortConfigChange(UInt64 inChangeAction, void* inChangeInfo);
 
 private:
-	enum
-	{
-								kNumberOfSubObjects					= 3,
-								kNumberOfInputSubObjects			= 1,
-								kNumberOfOutputSubObjects			= 2,
+    enum
+    {
+        kNumberOfSubObjects                 = 3,
+        kNumberOfInputSubObjects            = 1,
+        kNumberOfOutputSubObjects           = 2,
 
-								kNumberOfStreams					= 3,
-								kNumberOfInputStreams				= 1,
-								kNumberOfOutputStreams				= 2,
+        kNumberOfStreams                    = 3,
+        kNumberOfInputStreams               = 1,
+        kNumberOfOutputStreams              = 2,
 
-								kNumberOfControls					= 0
-	};
+        kNumberOfControls                   = 0
+    };
 
-	CAMutex						mStateMutex;
-	CAMutex						mIOMutex;
-	UInt64						mStartCount;
-	UInt64						mSampleRateShadow;
-	UInt32						mRingBufferFrameSize;
-	UInt32                  	mDriverStatus;
+    CAMutex                     mStateMutex;
+    CAMutex                     mIOMutex;
+    UInt64                      mStartCount;
+    UInt64                      mSampleRateShadow;
+    UInt32                      mRingBufferFrameSize;
+    UInt32                      mDriverStatus;
 
-	AudioObjectID				mInputStreamObjectID;
-	bool						mInputStreamIsActive;
-	Byte*						mInputStreamRingBuffer;
+    AudioObjectID               mInputStreamObjectID;
+    bool                        mInputStreamIsActive;
+    Byte*                       mInputStreamRingBuffer;
 
-	AudioObjectID				mOutputStreamObjectID;
-	AudioObjectID				mOutputStreamObjectID2;
-	bool						mOutputStreamIsActive;
-	Byte*						mOutputStreamRingBuffer;
+    AudioObjectID               mOutputStreamObjectID;
+    AudioObjectID               mOutputStreamObjectID2;
+    bool                        mOutputStreamIsActive;
+    Byte*                       mOutputStreamRingBuffer;
 
 #pragma mark jackrouter interfaces
 private:
@@ -191,4 +193,4 @@ private:
     UInt64                   gDevice_AnchorHostTime;
 };
 
-#endif	//	__SA_Device_h__
+#endif  //  __SA_Device_h__
