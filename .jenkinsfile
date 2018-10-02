@@ -1,0 +1,363 @@
+pipeline {
+    agent none
+
+    environment {
+        HL_WEBHOOK_URL = credentials('HULALOOP_WEBHOOK_URL')
+        HL_CODECOV_TOKEN = credentials('HL_CODECOV_TOKEN')
+    }
+
+    options {
+        timeout(time: 10, unit: 'MINUTES')
+        timestamps()
+        ansiColor('xterm')
+    }
+
+    stages {
+
+        stage('Initialization') {
+
+            parallel {
+
+                stage('Configuration') {
+                    steps {
+                        script {
+                            currentBuild.displayName = env.BRANCH_NAME + " - #" + env.BUILD_NUMBER
+                        }
+                    }
+                }
+
+                //************
+                //   LINUX
+                //************
+                stage('Linux') {
+                    agent {
+                        label 'linux'
+                    }
+                    environment {
+                        HL_OS = "Linux"
+                        HL_QT_VERSION = "5.10.1" // Only symbox-server is on 5.10 right now
+                        HL_QT_PREFIX = ""
+
+                        PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/bin:${PATH}"
+                        LD_LIBRARY_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/lib"
+                        QT_PLUGIN_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/plugins"
+                        QML_IMPORT_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/qml"
+                        QML2_IMPORT_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/qml"
+                        QT_DEBUG_PLUGINS = 1
+                        QT_IMPORT_TRACE = 1
+                    }
+
+                    stages {
+
+                        // Generate CMake and build any required dependencies
+                        stage('Dependencies - Linux') {
+
+                            steps {
+
+                                sh '''
+                                    echo "Configuring dependencies for ${HL_OS}..."
+
+                                    env
+                                    echo "Path: ${PATH}"
+                                    qmake -v
+
+                                    rm -rf build-linux
+                                    mkdir build-linux
+                                    cd build-linux
+                                    cmake .. -DHL_INCLUDE_GUI_TESTS=false
+                                '''
+
+                            }
+
+                        }
+
+                        // Build our application
+                        stage('Build - Linux') {
+
+                            steps {
+
+                                sh '''
+                                    echo "Building application for ${HL_OS}..."
+                                    cmake --build ./build-linux
+                                '''
+
+                            }
+
+                        }
+
+                        // Run the test suite
+                        stage('Test - Linux') {
+
+                            steps {
+
+                                sh '''
+                                    echo "Running test suite on ${HL_OS}..."
+
+                                    lcov -c -i -d build-linux -o build-linux/coverage.base
+
+                                    cd ./build-linux
+                                    ctest -V
+                                    cd ..
+
+                                    lcov -c -d build-linux -o build-linux/coverage.actual
+                                    lcov -a build-linux/coverage.base -a build-linux/coverage.actual -o build-linux/coverage.info
+                                '''
+
+                            }
+
+                        }
+
+                    } // END stages
+
+                    post {
+                        always {
+                            sh '''
+                                curl https://raw.githubusercontent.com/symboxtra/universal-ci-discord-webhook/master/send.sh > send.sh && chmod +x send.sh
+                            '''
+                        }
+                        success {
+                            sh '''
+                                ./send.sh success ${HL_WEBHOOK_URL}
+                                curl -X PUT -d status=passing http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${HL_OS}-${GIT_BRANCH} || true
+                                bash <(curl -s https://codecov.io/bash) -X gcov -t ${HL_CODECOV_TOKEN}
+                            '''
+                        }
+                        failure {
+                            sh '''
+                                ./send.sh failure ${HL_WEBHOOK_URL}
+                                curl -X PUT -d status=failing http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${HL_OS}-${GIT_BRANCH} || true
+                            '''
+                        }
+                    } // END post
+
+                } // END Linux
+
+
+                //************
+                //    OSX
+                //************
+                stage ('OSX') {
+                    agent {
+                        label 'osx'
+                    }
+                    environment {
+                        HL_OS = "OSX"
+
+                        // Jenkins does not load default /etc/paths
+                        // Qt bin must be on PATH to link properly
+                        PATH = "/usr/local/bin:/usr/local/opt/qt/bin:${PATH}"
+                    }
+
+                    stages {
+
+                        stage('Dependencies - OSX') {
+
+                            steps {
+
+                                sh '''
+                                    echo "Configuring dependencies for ${HL_OS}..."
+
+                                    echo "Path: ${PATH}"
+                                    qmake -v
+
+                                    rm -rf build-osx
+                                    mkdir build-osx
+                                    cd build-osx
+                                    cmake .. -DHL_INCLUDE_GUI_TESTS=false
+                                '''
+
+                            }
+
+                        }
+
+                        stage('Build - OSX') {
+
+                            steps {
+
+                                sh '''
+                                    echo "Building application for ${HL_OS}..."
+                                    cmake --build ./build-osx
+                                '''
+
+                            }
+
+                        }
+
+                        stage('Test - OSX') {
+
+                            steps {
+
+                                sh '''
+                                    echo "Running test suite on ${HL_OS}..."
+
+                                    lcov -c -i -d build-osx -o build-osx/coverage.base
+
+                                    cd ./build-osx
+                                    ctest -V
+                                    cd ..
+
+                                    lcov -c -d build-osx -o build-osx/coverage.actual
+                                    lcov -a build-osx/coverage.base -a build-osx/coverage.actual -o build-osx/coverage.info
+                                '''
+
+                            }
+
+                        }
+                    } // END stages
+
+                    post {
+                        always {
+                            sh '''
+                                curl https://raw.githubusercontent.com/symboxtra/universal-ci-discord-webhook/master/send.sh > send.sh && chmod +x send.sh
+                            '''
+                        }
+                        success {
+                            sh '''
+                                ./send.sh success ${HL_WEBHOOK_URL}
+                                curl -X PUT -d status=passing http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${HL_OS}-${GIT_BRANCH} || true
+                                bash <(curl -s https://codecov.io/bash) -X gcov -t ${HL_CODECOV_TOKEN}
+                            '''
+                        }
+                        failure {
+                            sh '''
+                                ./send.sh failure ${HL_WEBHOOK_URL}
+                                curl -X PUT -d status=failing http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${HL_OS}-${GIT_BRANCH} || true
+                            '''
+                        }
+                    } // END post
+
+                } // END OSX
+
+
+                //************
+                //  WINDOWS
+                //************
+                stage ('Windows') {
+                    agent {
+                        label 'windows'
+                    }
+                    environment {
+                        HL_OS = "Windows"
+                        HL_QT_VERSION = "5.11.2"
+                        HL_QT_PREFIX = "C:\\Qt\\${HL_QT_VERSION}"
+                        PATH = "C:\\Program Files\\OpenCppCoverage;${PATH}"
+                    }
+
+                    stages {
+
+                        stage('Dependencies - Windows') {
+
+                            steps {
+
+                                powershell '''
+                                    echo "Configuring dependencies for ${ENV:HL_OS}..."
+
+                                    # Not on path
+                                    # qmake -v
+
+                                    Remove-Item -Recurse -Force -ErrorAction Ignore build-win
+                                    mkdir build-win
+                                    cd build-win
+                                    cmake .. -DQT_ROOT="${ENV:HL_QT_PREFIX}" -A x64
+                                '''
+
+                            }
+
+                        }
+
+                        stage('Build - Windows') {
+
+                            steps {
+
+                                powershell '''
+                                    echo "Building application for ${ENV:HL_OS}..."
+                                    cmake --build ./build-win
+                                '''
+
+                            }
+
+                        }
+
+                        stage('Test - Windows') {
+
+                            steps {
+
+                                powershell '''
+                                    echo "Running test suite on ${ENV:HL_OS}..."
+
+                                    cd build-win
+                                    ctest -C Debug -V
+                                    cd ..
+
+                                    OpenCppCoverage --export_type=cobertura:build-win/cobertura.xml (Get-Item build-win/bin/test/*.exe)>$null 2>$null
+                                '''
+
+                            }
+
+                        }
+                    } // END stages
+
+                    post {
+                        always {
+                            powershell '''
+                                Invoke-RestMethod https://raw.githubusercontent.com/symboxtra/universal-ci-discord-webhook/master/send.ps1 -o send.ps1
+                            '''
+                        }
+                        success {
+                            powershell '''
+                                ./send.ps1 success ${ENV:HL_WEBHOOK_URL} -ErrorAction Ignore
+                                Invoke-WebRequest -Uri http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${ENV:HL_OS}-${ENV:GIT_BRANCH} -Method PUT -Body (@{"status"="passing"} | ConvertTo-Json) -ContentType "application/json"
+                                codecov --root . --disable gcov -f build-win/cobertura.xml -t ${ENV:HL_CODECOV_TOKEN}
+                            '''
+                        }
+                        failure {
+                            powershell '''
+                                ./send.ps1 failure ${ENV:HL_WEBHOOK_URL} -ErrorAction Ignore
+                                Invoke-WebRequest -Uri http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${ENV:HL_OS}-${ENV:GIT_BRANCH} -Method PUT -Body (@{"status"="failing"} | ConvertTo-Json) -ContentType "application/json"
+                            '''
+                        }
+                    } // END post
+
+                } // END Windows
+
+                stage ('Documentation') {
+                    agent {
+                        label 'linux'
+                    }
+                    environment {
+                        HL_OS = "Linux"
+                        HL_DOX_UNDOCUMENTED_LIMIT = 25
+                    }
+
+                    steps {
+                        sh '''
+                            # Turn off echoing all commands
+                            set +x
+
+                            echo -e "Building Doxygen"
+                            echo
+
+                            cd docs
+                            DOX_UNDOCUMENTED="$(doxygen 2>&1 | grep 'not documented')"
+                            DOX_ERR_COUNT=$(echo "${DOX_UNDOCUMENTED}" | wc -l)
+
+                            echo -e "Doxygen completed with ${DOX_ERR_COUNT} undocumented member(s)"
+                            echo ${DOX_UNDOCUMENTED}
+
+                            # Exit with error if Doxygen had too many undocumented members
+                            if [ "${DOX_ERR_COUNT}" -gt "${HL_DOX_UNDOCUMENTED_LIMIT}" ]; then
+                                exit 1
+                            fi
+                        '''
+                    }
+
+                } // END documentation
+
+            } // END parallel
+
+        } // END configuration
+
+    } // END stages
+
+} // END pipeline
+

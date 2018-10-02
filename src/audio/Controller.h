@@ -2,34 +2,39 @@
 #define CONTROL
 
 #include "OSAudio.h"
+#include "ICallback.h"
 
 #if _WIN32
     #include "WindowsAudio.h"
 #elif __unix__
-    #include "LinuxAudio.h"
+    // #include "LinuxAudio.h" // TODO: Remove comment once LinuxAudio is complete
 #elif __APPLE__
     #include "OSXAudio.h"
 #endif
 
 #include <iostream>
 
-using f_int_t = int(*)(uint32_t, byte*);
 using byte = uint8_t;
 
-class Controller
+// TODO: Add public description of class
+/**
+ * A class that structures the receival of audio from the OS framework
+ */
+class Controller : public ICallback
 {
     private:
         OSAudio* audio;
-        vector<f_int_t> callbackList;
+
+        vector<ICallback*> callbackList;
 
     public:
         Controller();
         ~Controller();
 
-        void handleIncomingData(uint32_t numFrames, byte* data);
+        void addBufferReadyCallback(ICallback* func);
+        void removeBufferReadyCallback(ICallback* func);
 
-        void addBufferReadyCallback(f_int_t func);
-        void removeBufferReadyCallback(f_int_t callFunction);
+        void handleData(byte* data, uint32_t size);
 };
 
 #endif

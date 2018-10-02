@@ -6,8 +6,17 @@
 
 using namespace std;
 
-enum class DeviceType { RECORDING, PLAYBACK };
+enum DeviceType
+{
+    RECORDING = 1,
+    PLAYBACK = 2,
+    LOOPBACK = 4
+};
 
+/**
+ * Defines a system audio device
+ */
+// TODO: Add better public description
 class Device
 {
     private:
@@ -15,7 +24,6 @@ class Device
         string deviceName;
 
         DeviceType type;
-        uint32_t state;
 
     public:
         Device(uint32_t* id, string name, DeviceType t);
@@ -29,9 +37,6 @@ class Device
 
         DeviceType getType();
         void setType(DeviceType t);
-
-        uint32_t getState();
-        void setState(uint32_t s); 
 };
 
 #endif

@@ -1,3 +1,6 @@
 [submodule "src/libs/portaudio"]
 	path = src/libs/portaudio
 	url = https://git.assembla.com/portaudio.git
+[submodule "src/libs/googletest"]
+	path = src/libs/googletest
+	url = https://github.com/symboxtra/googletest

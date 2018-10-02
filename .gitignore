@@ -1,5 +1,10 @@
 build*
 .*.swp
+*.autosave
+CMakeLists.txt.user
+
+# Doxygen
+docs/read-the-docs/source/_static/doxygen
 
 
 # Since we have global schemes, this is safe to ignore

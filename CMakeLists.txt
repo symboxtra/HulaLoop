@@ -1,7 +1,8 @@
 ######## Config ########
 
 cmake_minimum_required (VERSION 3.5)
-set (CMAKE_CXX_STANDARD 11)
+
+set (CMAKE_CXX_STANDARD 14)
 
 include (cmake/Qt5.cmake)
 include (cmake/Utility.cmake)
@@ -37,7 +38,10 @@ if (WIN32 AND CMAKE_GENERATOR_PLATFORM MATCHES "x64")
 endif ()
 
 # Disable coverage flags by default
-# TODO: Coverage flags
+option (HL_ADD_COVERAGE_FLAGS "Add coverage options to compiler flags" OFF)
+if (CMAKE_BUILD_TYPE MATCHES "Debug" AND (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+    set (HL_ADD_COVERAGE_FLAGS ON)
+endif ()
 
 # Set output for binaries
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -84,7 +88,7 @@ if (WIN32 AND NOT DEFINED QT_ROOT)
         message (FATAL_ERROR "QT_ROOT environment variable not set. Add the environment variable in Windows Environment Variables or cmake with -DQT_ROOT=C:\\path\\to\\qt\\5.XX.X")
     endif ()
 elseif (NOT DEFINED QT_ROOT)
-	set (QT_ROOT $ENV{QT_ROOT} CACHE STRING "Path to Qt Installation")
+    set (QT_ROOT $ENV{QT_ROOT} CACHE STRING "Path to Qt Installation")
 endif ()
 
 message (STATUS "QT_ROOT: " ${QT_ROOT} "\n")
@@ -97,7 +101,7 @@ if (WIN32 AND NOT DEFINED Qt5_DIR)
     endif ()
 
 elseif (NOT DEFINED Qt5_DIR)
-	set (Qt5_DIR "${QT_ROOT}/gcc_64/lib/cmake/Qt5")
+    set (Qt5_DIR "${QT_ROOT}/gcc_64/lib/cmake/Qt5")
 endif ()
 
 message (STATUS "Qt5_DIR: ${Qt5_DIR}")
@@ -105,15 +109,19 @@ message (STATUS "Qt5_DIR: ${Qt5_DIR}")
 # Required Qt packages
 find_package (Qt5 REQUIRED
     Core
-    Widgets
     Gui
+    Qml
+    Quick
+    QuickControls2
 )
 
 set (HL_LIBRARIES
     ${HL_LIBRARIES}
     Qt5::Core
-    Qt5::Widgets
     Qt5::Gui
+    Qt5::Qml
+    Qt5::Quick
+    Qt5::QuickControls2
 )
 
 
@@ -121,14 +129,10 @@ set (HL_LIBRARIES
 ######## Libraries ########
 
 if (OSX)
-    # Build PortAudio
-    add_subdirectory (${CMAKE_SOURCE_DIR}/src/libs/portaudio)
-
-    # Find what we built
+    # Find PortAudio
     find_library (
         PORTAUDIO_LIB
         NAMES portaudio
-        HINTS ${CMAKE_BINARY_DIR}/lib/lib
     )
 
     if (NOT PORTAUDIO_LIB)
@@ -136,34 +140,33 @@ if (OSX)
     else ()
         message (STATUS "PortAudio Location: ${PORTAUDIO_LIB}")
     endif()
-
-    # Add the include path
-    include_directories(${CMAKE_SOURCE_DIR}/src/libs/portaudio/include)
 endif ()
 
-add_subdirectory (src/audio)
+# Add coverage flags for GCC after 3rd party libs are built
+set (CXX_FLAGS_NOCOV "${CMAKE_CXX_FLAGS}")
+if (HL_ADD_COVERAGE_FLAGS)
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+endif ()
 
-# Include any directories that lower level CMakeLists added
+# Add subdirectories and include any headers from lower level CMakeLists
+add_subdirectory (src/audio)
 include_directories (${INCLUDE_DIRS})
 
-
-######## Executable ########
-
-# TODO: Add coverage flags for GCC
-
-# TODO: Add final executale here
+add_subdirectory (src/ui)
+include_directories (${INCLUDE_DIRS})
 
 
 
 
 ######## Testing ########
+# GUI tests are in Testing.cmake
 
 # Build settings for DEBUG builds only
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
-    # Remove after googletest submodule has been added
-    #include (cmake/Testing.cmake)
+    include (cmake/Testing.cmake)
 
     # Add more tests here using create_test()
+    create_test("src/test/TestSimpleMath.cpp" "" -1)
 
 endif ()

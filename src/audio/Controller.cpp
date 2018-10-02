@@ -1,38 +1,85 @@
 #include "Controller.h"
 
+/**
+ * Construct an instance of Controller class.
+ * Acts as a bridge between the higher levels and OS level functions
+ */
 Controller::Controller()
 {
-
+    // Initialize OSAudio based on host OS
     #if defined(__unix__)
-        audio = new LinuxAudio();
+        //audio = new LinuxAudio();
+        cout << "LINUX" << endl;
     #elif defined(__APPLE__)
         audio = new OSXAudio();
     #elif _WIN32
         audio = new WindowsAudio();
     #endif
 
-    if(audio == NULL){}//TODO: Handle error
+    if(audio == NULL)
+    {
+        cout << "OS Audio error !" << endl;
+    }//TODO: Handle error
 
-    audio->addBufferReadyCallback(this, &Controller::handleIncomingData);
+    // Add current Controller instance as buffercallback to
+    // OSAudio
+    audio->addBufferReadyCallback(this);
 }
 
-void Controller::handleIncomingData(uint32_t numFrames, byte* data)
+/**
+ * Callback function that is triggered when audio is captured
+ * by OSAudio
+ *
+ * @param size Size of returned audio data (frames)
+ * @param data Audio data in byte buffer
+ */
+void Controller::handleData(byte* data, uint32_t size)
 {
+    cout << size << endl;
 
+    // Trigger upper layer callback functions
+    for(int i = 0;i < callbackList.size();i++)
+        callbackList[i]->handleData(data, size);
 }
 
-void Controller::addBufferReadyCallback(f_int_t callFunction)
+/**
+ * Add upper layer functions to the callback list
+ *
+ * @param func Derived instance of iCallback class
+ */
+void Controller::addBufferReadyCallback(ICallback* func)
 {
-    if(find(callbackList.begin(), callbackList.end(), callFunction) == callbackList.end())
-        this->callbackList.push_back(callFunction);
+    // Add self to OSAudio callback when first callback is added
+    if(this->callbackList.size() == 0)
+        audio->addBufferReadyCallback(this);
+
+    // Check if callback function already exists
+    if(find(callbackList.begin(), callbackList.end(), func) == callbackList.end())
+        this->callbackList.push_back(func);
 }
 
-void Controller::removeBufferReadyCallback(f_int_t callFunction)
+/**
+ * Remove upper layer functions to the callback list
+ *
+ * @param func Derived instance of iCallback class
+ */
+void Controller::removeBufferReadyCallback(ICallback* func)
 {
-    if(find(callbackList.begin(), callbackList.end(), callFunction) != callbackList.end())
-        this->callbackList.erase(remove(callbackList.begin(), callbackList.end(), callFunction), callbackList.end());
+    // Check if callback function exists to remove
+    vector<ICallback*>::iterator it = find(callbackList.begin(), callbackList.end(), func);
+    if(it != callbackList.end())
+        this->callbackList.erase(it);
+
+    // Remove self from callback when last callback is removed
+    if(this->callbackList.size() == 0)
+        audio->removeBufferReadyCallback(this);
 }
 
+/**
+ * Deconstructs the current instance of the Controller class
+ */
 Controller::~Controller()
 {
+    delete audio;
+    callbackList.clear();
 }

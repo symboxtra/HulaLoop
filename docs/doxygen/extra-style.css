@@ -1,0 +1,7 @@
+/* Size the header image and hide the default title */
+#projectlogo img {
+    height:100px;
+}
+#projectname {
+    display: none;
+}
