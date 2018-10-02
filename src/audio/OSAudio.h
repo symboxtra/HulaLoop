@@ -21,10 +21,25 @@ using namespace std;
 class OSAudio
 {
     protected:
+
+        /**
+         * The selected input device
+         */
         Device* activeInputDevice;
+
+        /**
+         * The selected output device
+         */
         Device* activeOutputDevice;
 
+        /**
+         * List of all added callback function
+         */
         vector<ICallback*> callbackList;
+
+        /**
+         * List of all running threads
+         */
         vector<thread> execThreads;
 
         uint32_t captureBufferSize;

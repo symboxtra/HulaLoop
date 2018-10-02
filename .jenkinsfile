@@ -326,7 +326,7 @@ pipeline {
                     }
                     environment {
                         HL_OS = "Linux"
-                        HL_DOX_UNDOCUMENTED_LIMIT = 15
+                        HL_DOX_UNDOCUMENTED_LIMIT = 25
                     }
 
                     steps {
