@@ -64,9 +64,11 @@ void JackClient::_timebase_callback(jack_transport_state_t state, jack_nframes_t
 JackClient::JackClient(const char* name, uint32_t flags) {
     jack_status_t jst;
 
+    // TODO: Setting Jack optiosn here might be useful
+    // http://jackaudio.org/files/docs/html/types_8h.html#a396617de2ef101891c51346f408a375e
     client = jack_client_open(name, JackNullOption, &jst);
     if (!client) {
-        //fprintf(stderr, "jack_client_open failed with %x\n", jst);
+        // fprintf(stderr, "jack_client_open failed with %x\n", jst);
         return;
     }
     SampleRate = jack_get_sample_rate(client);
@@ -82,7 +84,7 @@ int JackClient::register_ports(const char *nameAin[], const char *nameAout[],
                                const char *nameMin[], const char *nameMout[]) {
     int i;
 
-    //create Audio input ports
+    // create Audio input ports
     nAudioIn=0;
     if (nameAin) {
         for(i=0; (nameAin[i] != NULL)&&(i<MAX_PORT_NUM); i++) {
@@ -92,7 +94,7 @@ int JackClient::register_ports(const char *nameAin[], const char *nameAout[],
         nAudioIn=i;
     }
 
-    //create Audio output ports
+    // create Audio output ports
     nAudioOut=0;
     if (nameAout) {
         for(i=0; (nameAout[i] != NULL)&&(i<MAX_PORT_NUM); i++) {
@@ -101,7 +103,7 @@ int JackClient::register_ports(const char *nameAin[], const char *nameAout[],
         }
         nAudioOut=i;
     }
-    //create MIDI input ports
+    // create MIDI input ports
 
     nMidiIn=0;
     if (nameMin) {
@@ -112,7 +114,7 @@ int JackClient::register_ports(const char *nameAin[], const char *nameAout[],
         nMidiIn=i;
     }
 
-    //create MIDI output ports
+    // create MIDI output ports
     nMidiOut=0;
     if (nameMout) {
         for(i=0; (nameMout[i] != NULL)&&(i<MAX_PORT_NUM); i++) {
@@ -128,8 +130,8 @@ void JackClient::activate() {
     if (cb_flags & JACK_PROCESS_CALLBACK) {
         jack_set_process_callback(client, _process_callback, this);
     }
-    //jack_set_freewheel_callback(client, _freewheel_callback, arg);
-    //jack_on_shutdown(client, _on_shutdown, arg);
+    // jack_set_freewheel_callback(client, _freewheel_callback, arg);
+    // jack_on_shutdown(client, _on_shutdown, arg);
 
     if (cb_flags & JACK_SYNC_CALLBACK) {
         if (jack_set_sync_callback(client, _sync_callback, this) != 0)

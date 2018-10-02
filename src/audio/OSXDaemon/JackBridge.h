@@ -74,7 +74,7 @@ typedef float sample_t;
 #define STRBUF_UP(i)        (0x10000*(i)+0x10000)
 #define STRBUF_DOWN(i)      (0x10000*(i)+0x18000)
 
-#define JACK_SHMPATH        "/JackBridge"
+#define JACK_SHMPATH        "/HulaLoop"
 
 #ifdef _ERROR_SYSLOG_
 #define ERROR(pri, str, code) syslog(pri, str, code);
@@ -104,7 +104,7 @@ protected:
 
     int create_shm() {
         struct stat stat;
-        ERROR(LOG_INFO, "JackBridge: Initializing shared memory to communicate with jack(%d).", 0);
+        ERROR(LOG_INFO, "HulaLoop: Initializing shared memory to communicate with jack(%d).", 0);
         shm_fd = shm_open(JACK_SHMPATH, O_CREAT|O_RDWR, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
         if (shm_fd < 0) {
             ERROR(LOG_ERR, "shm cannot be opened with %s.\n", strerror(errno));
@@ -153,7 +153,7 @@ protected:
         }
 
         char* shm_base = (char*)mmap(NULL, REGSMAP_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, shm_fd, instance*REGSMAP_BOUNDARY);
-        //char* shm_base = (char*)mmap(NULL, JACK_SHMSIZE, PROT_READ|PROT_WRITE, MAP_SHARED, shm_fd, 0);
+        // char* shm_base = (char*)mmap(NULL, JACK_SHMSIZE, PROT_READ|PROT_WRITE, MAP_SHARED, shm_fd, 0);
         if (shm_base == MAP_FAILED) {
             ERROR(LOG_ERR, "mmap() failed with %s\n", strerror(errno));
             return -1;

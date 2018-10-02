@@ -37,15 +37,15 @@ SOFTWARE.
 #endif // _WITH_MIDI_BRIDGE_
 
 /*
- * JackBridge.cpp
+ * HlOSXDaemon.cpp
  */
 
 static const char* nameAin[]= {"input_0", "input_1", "input_2", "input_3", NULL};
 static const char* nameAout[] = {"output_0", "output_1", "output_2", "output_3", NULL};
 
-class JackBridge : public JackClient, public JackBridgeDriverIF {
+class HlOSXDaemon : public JackClient, public JackBridgeDriverIF {
 public:
-    JackBridge(const char* name, int id) : JackClient(name, JACK_PROCESS_CALLBACK), JackBridgeDriverIF(id) {
+    HlOSXDaemon(const char* name, int id) : JackClient(name, JACK_PROCESS_CALLBACK), JackBridgeDriverIF(id) {
         if (attach_shm() < 0) {
             fprintf(stderr, "Attaching shared memory failed (id=%d)\n", id);
             exit(1);
@@ -53,7 +53,8 @@ public:
 
         isActive = false;
         isSyncMode = true; // FIXME: should be parameterized
-        isVerbose = (getenv("JACKBRIDGE_DEBUG")) ? true : false;
+        isVerbose = (getenv("HlOSXDaemon_DEBUG")) ? true : false;
+        printf("Is Verbose: %d", isVerbose);
         FrameNumber = 0;
         FramesPerBuffer = STRBUFNUM/2;
         *shmBufferSize = STRBUFSZ;
@@ -74,12 +75,12 @@ public:
         theHostClockFrequency *= 1000000000.0;
         HostTicksPerFrame = theHostClockFrequency / SampleRate;
         if (isVerbose) {
-            printf("JackBridge#%d: Start with samplerate:%d Hz, buffersize:%d bytes\n",
+            printf("HulaLoop#%d: Start with samplerate:%d Hz, buffersize:%d bytes\n",
                    instance, SampleRate, BufSize);
         }
     }
 
-    ~JackBridge() {
+    ~HlOSXDaemon() {
 #ifdef _WITH_MIDI_BRIDGE_
         release_midi_ports();
 #endif // _WITH_MIDI_BRIDGE_
@@ -116,7 +117,7 @@ public:
             }
 
             isActive = true;
-            printf("JackBridge#%d: Activated with SyncMode = %s, ZeroHostTime = %llx\n",
+            printf("HulaLoop#%d: Activated with SyncMode = %s, ZeroHostTime = %llx\n",
                    instance, isSyncMode ? "Yes" : "No", *shmZeroHostTime);
         }
 
@@ -129,7 +130,7 @@ public:
             }
 
             if ((!isSyncMode) && isVerbose && ((ncalls++) % 100) == 0) {
-                printf("JackBridge#%d: ZeroHostTime: %llx, %lld, diff:%d\n",
+                printf("HulaLoop#%d: ZeroHostTime: %llx, %lld, diff:%d\n",
                        instance,  *shmZeroHostTime, *shmNumberTimeStamps,
                        ((int)(mach_absolute_time()+1000000-(*shmZeroHostTime)))-1000000);
             }
@@ -173,7 +174,7 @@ private:
     }
 
     int receiveFromCoreAudio(float** out, int nframes) {
-        //unsigned int offset = FrameNumber % FramesPerBuffer;
+        // unsigned int offset = FrameNumber % FramesPerBuffer;
         unsigned int offset = (FrameNumber - nframes) % FramesPerBuffer;
         // FIXME: should be consider buffer overwrapping
         for(int i=0; i<nframes; i++) {
@@ -321,7 +322,7 @@ private:
     void check_progress() {
 #if 0
         if (isVerbose && ((ncalls++) % 500) == 0) {
-            printf("JackBridge#%d: FRAME %llu : Write0: %llu Read0: %llu Write1: %llu Read0: %llu\n",
+            printf("HulaLoop#%d: FRAME %llu : Write0: %llu Read0: %llu Write1: %llu Read0: %llu\n",
                    instance, FrameNumber,
                    *shmWriteFrameNumber[0], *shmReadFrameNumber[0],
                    *shmWriteFrameNumber[1], *shmReadFrameNumber[1]);
@@ -351,15 +352,16 @@ private:
 int
 main(int argc, char** argv)
 {
-    JackBridge*  jackBridge[4];
+    HlOSXDaemon*  osxDaemon[4];
 
     // Create instances of jack client
-    jackBridge[0] = new JackBridge("JackBridge #1", 0);
-    //jackBridge[1] = new JackBridge("JackBridge #2", 1);
+    // These are the names of the devices
+    osxDaemon[0] = new HlOSXDaemon("HulaLoop #1", 0);
+    // osxDaemon[1] = new HlOSXDaemon("HulaLoop #2", 1);
 
     // activate gateway from/to jack ports
-    jackBridge[0]->activate();
-    //jackBridge[1]->activate();
+    osxDaemon[0]->activate();
+    // osxDaemon[1]->activate();
 
     // Infinite loop until daemon is killed.
     while(1) {
