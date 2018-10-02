@@ -16,6 +16,12 @@ function (create_test _test_file _src_files _timeout)
 
 endfunction ()
 
+# Make gui tests opt-out
+# These tests can't be run on headless platforms
+if (NOT DEFINED HL_INCLUDE_GUI_TESTS)
+	set (HL_INCLUDE_GUI_TESTS true)
+endif ()
+
 # Prevent overriding of compiler/linker options
 if (WIN32)
 	set (gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -50,8 +56,13 @@ file (GLOB TEST_SRC_FILES ${CMAKE_SOURCE_DIR}/src/test/*/*.cpp)
 
 set (T_TEST_DIR "${CMAKE_SOURCE_DIR}/src/test")
 
-# GUI Tests
-create_test("src/test/TestGUI.cpp" "src/control/transport.cpp;src/ui/qmlbridge.cpp;src/ui/qml.qrc" -1)
+# Add the GUI tests to the bin directory instead of bin/test
+# GUI tests need the Qt DLLs in bin
+if (HL_INCLUDE_GUI_TESTS)
+	create_test("src/test/TestGUI.cpp" "src/control/transport.cpp;src/ui/qmlbridge.cpp;src/ui/qml.qrc" -1)
+else ()
+	message (STATUS "Ignoring GUI tests. Set HL_INCLUDE_GUI_TESTS=true to include.")
+endif ()
 
 # Output test executables to bin/test
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/test)

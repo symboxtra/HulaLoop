@@ -62,7 +62,7 @@ pipeline {
                                     rm -rf build-linux
                                     mkdir build-linux
                                     cd build-linux
-                                    cmake ..
+                                    cmake .. -DHL_INCLUDE_GUI_TESTS=false
                                 '''
 
                             }
@@ -161,7 +161,7 @@ pipeline {
                                     rm -rf build-osx
                                     mkdir build-osx
                                     cd build-osx
-                                    cmake ..
+                                    cmake .. -DHL_INCLUDE_GUI_TESTS=false
                                 '''
 
                             }
