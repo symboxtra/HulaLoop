@@ -20,3 +20,34 @@ elseif(OSX)
 else()
     target_link_libraries(test_windows asound pthread)
 endif()
+
+## Generate shared libraries
+
+add_library (hul SHARED
+    Controller.cpp
+    Device.cpp
+    OSAudio.cpp
+    WindowsAudio.cpp
+)
+
+set_target_properties(hul PROPERTIES
+    VERSION ${VERSION}
+    SOVERSION 1
+    PUBLIC_HEADER Controller.h
+)
+
+set(CMAKE_INSTALL_LIBDIR ${CMAKE_PROJECT})
+target_include_directories(hul PRIVATE .)
+install(TARGETS hul
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    PUBLIC_HEADER DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/includes
+    COMPONENT library
+)
+
+if(WIN32)
+    target_link_libraries(hul winmm Ole32)
+elseif(OSX)
+else()
+    target_link_libraries(test_windows asound pthread)
+endif()
