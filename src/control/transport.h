@@ -3,6 +3,9 @@
 
 #include <string>
 
+/**
+ * Available states for the recording/playback logic of the application.
+ */
 enum TransportState {
     RECORDING,
     STOPPED,
@@ -10,6 +13,9 @@ enum TransportState {
     PAUSED
 };
 
+/**
+ * Utility class for managing state of application and all audio related processes.
+ */
 class Transport
 {
     private:

@@ -1,22 +1,27 @@
 add_include_dir (.)
 
 file (GLOB AUDIO_SRC_FILES *.cpp)
+file (GLOB WIN_AUDIO_SRC_FILES Windows*.cpp)
+file (GLOB LINUX_AUDIO_SRC_FILES Linux*.cpp)
+file (GLOB OSX_AUDIO_SRC_FILES OSX*.cpp)
 
 # Remove source files that do not pertain to the current OS
-#TODO: Remove extra source files once they have been initialized
-if(WIN32)
-    list(REMOVE_ITEM AUDIO_SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/LinuxAudio.cpp")
-elseif(OSX)
-    list(REMOVE_ITEM AUDIO_SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/WindowsAudio.cpp")
-else()
-    list(REMOVE_ITEM AUDIO_SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/WindowsAudio.cpp")
-endif()
+if (WIN32)
+    list (REMOVE_ITEM AUDIO_SRC_FILES ${LINUX_AUDIO_SRC_FILES} ${OSX_AUDIO_SRC_FILES})
+elseif (OSX)
+    list (REMOVE_ITEM AUDIO_SRC_FILES ${LINUX_AUDIO_SRC_FILES} ${WIN_AUDIO_SRC_FILES})
+else ()
+    list (REMOVE_ITEM AUDIO_SRC_FILES ${WIN_AUDIO_SRC_FILES} ${OSX_AUDIO_SRC_FILES})
+endif ()
 
 #TODO: Change this to better apply with the parent CMake
-add_executable(test_windows ${AUDIO_SRC_FILES})
-if(WIN32)
-    target_link_libraries(test_windows winmm Ole32)
-elseif(OSX)
-else()
-    target_link_libraries(test_windows asound pthread)
-endif()
+add_executable(test_audio ${AUDIO_SRC_FILES})
+
+# Link OS libraries based on OS
+if (WIN32)
+    target_link_libraries(test_audio winmm Ole32)
+elseif (OSX)
+    target_link_libraries(test_audio portaudio pthread)
+else ()
+    target_link_libraries(test_audio asound pthread)
+endif ()

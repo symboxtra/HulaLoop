@@ -1,5 +1,9 @@
 #include "Controller.h"
 
+/**
+ * Construct an instance of Controller class.
+ * Acts as a bridge between the higher levels and OS level functions
+ */
 Controller::Controller()
 {
     // Initialize OSAudio based on host OS
@@ -7,7 +11,7 @@ Controller::Controller()
         //audio = new LinuxAudio();
         cout << "LINUX" << endl;
     #elif defined(__APPLE__)
-        cout << "APPLE" << endl;
+        audio = new OSXAudio();
     #elif _WIN32
         audio = new WindowsAudio();
     #endif
@@ -71,6 +75,9 @@ void Controller::removeBufferReadyCallback(ICallback* func)
         audio->removeBufferReadyCallback(this);
 }
 
+/**
+ * Deconstructs the current instance of the Controller class
+ */
 Controller::~Controller()
 {
     delete audio;

@@ -2,6 +2,7 @@
 
 # **Sprint 1 Planning Document** ##
 Team 30: Aneesh Gokhale, Emanuel Pituch, Jack McKernan, Neel Patel 
+
 ## **Sprint Overview** ##
 During this sprint, we plan to work on the essential architecture and components of our application. We aim to first setup our development environments and dependencies (Qt Creator, GitHub, Jenkins, CMake, GoogleTest, JACK Audio, and PortAudio). Once setup, our goal is to begin the first interactions with the audio APIs of each of our targeted operating systems. This goal will lead us to develop the foundation for our audio backend. The sprint will also include the first workings of our user interfaces and the interconnection between the frontend and the backend. As a part of all this work, we will develop and adhere to coding standards and documentation.
 
@@ -11,10 +12,11 @@ During this sprint, we plan to work on the essential architecture and components
 
 
 ## **Meeting Plan** ## 
-
 Monday, Wednesday, Friday 5:00 PM - 7:00 PM
+
 ## **Risks and Challenges** ##
 Since this is the first sprint, we will likely face many challenges, including ones that we cannot currently foresee. Some of the primary challenges that we do foresee, however, are configuring dependencies and environments for CI servers and each developer, using previously unexplored APIs and technologies, and setting coding standards and guidelines. Some of the risk that we associate with this sprint is directly linked to the challenge of using previously unexplored APIs and technologies. Since the system-level APIs and structures are complex and differ for each system, we anticipate a steep learning curve using these. As they form the basis for our application, we plan to dedicate great effort to optimally designing them. This may involve changing our initial assumptions about the structure or organization of our classes.
+
 ## **Current Sprint Detail** ##
 ### **User Story #1:** ###
 As a developer, I would like to get an audio sample from Windows.
@@ -277,6 +279,25 @@ As a developer, I would like a documented API so that third-party developers can
 * Given that we act on the results of code quality, static analysis, and code coverage, our statistics and code quality will improve over time.
 * Given that we automatically generate documentation from code using Doxygen, when we check code into GitHub, documentation is generated from the latest code.
 * Given that we employ versioned documentation, when a new version is released, the old versions of the documentation remain available.
+
+### **User Story #15:** ###
+
+As a user, I would like to have a visualizer.
+
+
+| Task # | Description | Time (hrs) | Owner |
+|:------:|:-----------|:----------:|:-----:|
+| 1 | Research and understand project/technology | 5 | Meriem (New Team Member) | 
+| 2 | Create separate QML window/layout | 2 | Meriem |
+| 3 | Create visualizer mockups | 3 | Meriem |
+| 4 | Implement mockup in QML | 4 | Meriem |
+| 5 | Make visualizer responsive with mocked data | 3 | Meriem |
+
+#### Acceptance Criteria: ####
+
+* Given that the project and technology have been understood, then I should be able to build the project.
+* Given that a separate QML window/layout has been created, then the visualizer should be visible upon execution.
+* Given that the visualizer is responsive and mock or real data is fed to it, it should represent the data by moving accordingly.
 
 
 ## Remaining Product Backlog ##
