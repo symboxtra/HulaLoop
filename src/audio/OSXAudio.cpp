@@ -16,7 +16,7 @@ void OSXAudio::capture()
 }
 
 /**
- * \brief Utility function for fetching the PortAudio devices of a given DeviceType.
+ * Utility function for fetching the PortAudio devices of a given DeviceType.
  *
  */
 vector<Device *> OSXAudio::getDevices(DeviceType type)
@@ -62,7 +62,7 @@ vector<Device *> OSXAudio::getDevices(DeviceType type)
 }
 
 /**
- * \brief Fetch all PortAudio devices that are eligible for recording.
+ * Fetch all PortAudio devices that are eligible for recording.
  * In our case, this includes all output devices since we want to do loopback.
  */
 vector<Device *> OSXAudio::getInputDevices()
@@ -71,7 +71,7 @@ vector<Device *> OSXAudio::getInputDevices()
 }
 
 /**
- * \brief Fetch all PortAudio devices that are eligible for playback.
+ * Fetch all PortAudio devices that are eligible for playback.
  *
  */
 vector<Device *> OSXAudio::getOutputDevices()
