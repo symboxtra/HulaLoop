@@ -16,9 +16,9 @@
                   <BuildableReference
                      BuildableIdentifier = "primary"
                      BlueprintIdentifier = "2D76D95F15E48B2000FF0F33"
-                     BuildableName = "HulaLoopHAL.driver"
-                     BlueprintName = "HulaLoopHAL"
-                     ReferencedContainer = "container:HulaLoopHAL.xcodeproj">
+                     BuildableName = "HulaLoop.driver"
+                     BlueprintName = "HulaLoop"
+                     ReferencedContainer = "container:HulaLoop.xcodeproj">
                   </BuildableReference>
                </EnvironmentBuildable>
             </ActionContent>
@@ -34,9 +34,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D76D95F15E48B2000FF0F33"
-               BuildableName = "HulaLoopHAL.driver"
-               BlueprintName = "HulaLoopHAL"
-               ReferencedContainer = "container:HulaLoopHAL.xcodeproj">
+               BuildableName = "HulaLoop.driver"
+               BlueprintName = "HulaLoop"
+               ReferencedContainer = "container:HulaLoop.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -65,9 +65,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D76D95F15E48B2000FF0F33"
-            BuildableName = "HulaLoopHAL.driver"
-            BlueprintName = "HulaLoopHAL"
-            ReferencedContainer = "container:HulaLoopHAL.xcodeproj">
+            BuildableName = "HulaLoop.driver"
+            BlueprintName = "HulaLoop"
+            ReferencedContainer = "container:HulaLoop.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -83,9 +83,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D76D95F15E48B2000FF0F33"
-            BuildableName = "HulaLoopHAL.driver"
-            BlueprintName = "HulaLoopHAL"
-            ReferencedContainer = "container:HulaLoopHAL.xcodeproj">
+            BuildableName = "HulaLoop.driver"
+            BlueprintName = "HulaLoop"
+            ReferencedContainer = "container:HulaLoop.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

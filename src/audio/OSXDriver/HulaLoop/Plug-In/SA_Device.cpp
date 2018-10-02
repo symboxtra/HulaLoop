@@ -1,48 +1,48 @@
 /*
-     File: SA_Device.cpp 
- Abstract:  Part of SimpleAudioDriver Plug-In Example  
-  Version: 1.0.1 
-  
- Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
- Inc. ("Apple") in consideration of your agreement to the following 
- terms, and your use, installation, modification or redistribution of 
- this Apple software constitutes acceptance of these terms.  If you do 
- not agree with these terms, please do not use, install, modify or 
- redistribute this Apple software. 
-  
- In consideration of your agreement to abide by the following terms, and 
- subject to these terms, Apple grants you a personal, non-exclusive 
- license, under Apple's copyrights in this original Apple software (the 
- "Apple Software"), to use, reproduce, modify and redistribute the Apple 
- Software, with or without modifications, in source and/or binary forms; 
- provided that if you redistribute the Apple Software in its entirety and 
- without modifications, you must retain this notice and the following 
- text and disclaimers in all such redistributions of the Apple Software. 
- Neither the name, trademarks, service marks or logos of Apple Inc. may 
- be used to endorse or promote products derived from the Apple Software 
- without specific prior written permission from Apple.  Except as 
- expressly stated in this notice, no other rights or licenses, express or 
- implied, are granted by Apple herein, including but not limited to any 
- patent rights that may be infringed by your derivative works or by other 
- works in which the Apple Software may be incorporated. 
-  
- The Apple Software is provided by Apple on an "AS IS" basis.  APPLE 
- MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION 
- THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS 
- FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND 
- OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. 
-  
- IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL 
- OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, 
- MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED 
- AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), 
- STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
- POSSIBILITY OF SUCH DAMAGE. 
-  
- Copyright (C) 2013 Apple Inc. All Rights Reserved. 
-  
+     File: SA_Device.cpp
+ Abstract:  Part of SimpleAudioDriver Plug-In Example
+  Version: 1.0.1
+
+ Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
+ Inc. ("Apple") in consideration of your agreement to the following
+ terms, and your use, installation, modification or redistribution of
+ this Apple software constitutes acceptance of these terms.  If you do
+ not agree with these terms, please do not use, install, modify or
+ redistribute this Apple software.
+
+ In consideration of your agreement to abide by the following terms, and
+ subject to these terms, Apple grants you a personal, non-exclusive
+ license, under Apple's copyrights in this original Apple software (the
+ "Apple Software"), to use, reproduce, modify and redistribute the Apple
+ Software, with or without modifications, in source and/or binary forms;
+ provided that if you redistribute the Apple Software in its entirety and
+ without modifications, you must retain this notice and the following
+ text and disclaimers in all such redistributions of the Apple Software.
+ Neither the name, trademarks, service marks or logos of Apple Inc. may
+ be used to endorse or promote products derived from the Apple Software
+ without specific prior written permission from Apple.  Except as
+ expressly stated in this notice, no other rights or licenses, express or
+ implied, are granted by Apple herein, including but not limited to any
+ patent rights that may be infringed by your derivative works or by other
+ works in which the Apple Software may be incorporated.
+
+ The Apple Software is provided by Apple on an "AS IS" basis.  APPLE
+ MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION
+ THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS
+ FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND
+ OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS.
+
+ IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL
+ OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION,
+ MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED
+ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
+ STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
+ POSSIBILITY OF SUCH DAMAGE.
+
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
+
 */
 /*==================================================================================================
 	SA_Device.cpp
@@ -99,7 +99,7 @@ void	SA_Device::Activate()
 	SA_ObjectMap::MapObject(mInputStreamObjectID, this);
 	SA_ObjectMap::MapObject(mOutputStreamObjectID, this);
 	SA_ObjectMap::MapObject(mOutputStreamObjectID2, this);
-	
+
 	//	call the super-class, which just marks the object as active
 	SA_Object::Activate();
 
@@ -118,15 +118,15 @@ void	SA_Device::Deactivate()
 	//	locks.
 	CAMutex::Locker theStateLocker(mStateMutex);
 	CAMutex::Locker theIOLocker(mIOMutex);
-	
+
 	//	mark the object inactive by calling the super-class
 	SA_Object::Deactivate();
-	
+
 	//	unmap the subobject IDs
 	SA_ObjectMap::UnmapObject(mInputStreamObjectID, this);
 	SA_ObjectMap::UnmapObject(mOutputStreamObjectID, this);
 	SA_ObjectMap::UnmapObject(mOutputStreamObjectID2, this);
-	
+
 	//	close the connection to the driver
 	_HW_Close();
 }
@@ -196,7 +196,7 @@ UInt32	SA_Device::GetPropertyDataSize(AudioObjectID inObjectID, pid_t inClientPI
 
 void	SA_Device::GetPropertyData(AudioObjectID inObjectID, pid_t inClientPID, const AudioObjectPropertyAddress& inAddress, UInt32 inQualifierDataSize, const void* inQualifierData, UInt32 inDataSize, UInt32& outDataSize, void* outData) const
 {
-    //syslog(LOG_WARNING, "JackBridge: Call GetPropertyData %d. ", instance);
+    syslog(LOG_WARNING, "HulaLoop: Call GetPropertyData %d. ", instance);
 	if(inObjectID == mObjectID)
 	{
 		Device_GetPropertyData(inObjectID, inClientPID, inAddress, inQualifierDataSize, inQualifierData, inDataSize, outDataSize, outData);
@@ -234,7 +234,7 @@ bool	SA_Device::Device_HasProperty(AudioObjectID inObjectID, pid_t inClientPID, 
 	//	For each object, this driver implements all the required properties plus a few extras that
 	//	are useful but not required. There is more detailed commentary about each property in the
 	//	Device_GetPropertyData() method.
-	
+
 	bool theAnswer = false;
 	switch(inAddress.mSelector)
 	{
@@ -255,7 +255,7 @@ bool	SA_Device::Device_HasProperty(AudioObjectID inObjectID, pid_t inClientPID, 
 		case kAudioDevicePropertyStreams:
 			theAnswer = true;
 			break;
-			
+
 		case kAudioDevicePropertyLatency:
 		case kAudioDevicePropertySafetyOffset:
 		case kAudioDevicePropertyPreferredChannelsForStereo:
@@ -264,7 +264,7 @@ bool	SA_Device::Device_HasProperty(AudioObjectID inObjectID, pid_t inClientPID, 
 		case kAudioDevicePropertyDeviceCanBeDefaultSystemDevice:
 			theAnswer = (inAddress.mScope == kAudioObjectPropertyScopeInput) || (inAddress.mScope == kAudioObjectPropertyScopeOutput);
 			break;
-			
+
 		default:
 			theAnswer = SA_Object::HasProperty(inObjectID, inClientPID, inAddress);
 			break;
@@ -277,7 +277,7 @@ bool	SA_Device::Device_IsPropertySettable(AudioObjectID inObjectID, pid_t inClie
 	//	For each object, this driver implements all the required properties plus a few extras that
 	//	are useful but not required. There is more detailed commentary about each property in the
 	//	Device_GetPropertyData() method.
-	
+
 	bool theAnswer = false;
 	switch(inAddress.mSelector)
 	{
@@ -303,11 +303,11 @@ bool	SA_Device::Device_IsPropertySettable(AudioObjectID inObjectID, pid_t inClie
 		case kAudioDevicePropertyZeroTimeStampPeriod:
 			theAnswer = false;
 			break;
-		
+
 		case kAudioDevicePropertyNominalSampleRate:
 			theAnswer = true;
 			break;
-		
+
 		default:
 			theAnswer = SA_Object::IsPropertySettable(inObjectID, inClientPID, inAddress);
 			break;
@@ -320,29 +320,29 @@ UInt32	SA_Device::Device_GetPropertyDataSize(AudioObjectID inObjectID, pid_t inC
 	//	For each object, this driver implements all the required properties plus a few extras that
 	//	are useful but not required. There is more detailed commentary about each property in the
 	//	Device_GetPropertyData() method.
-	
+
 	UInt32 theAnswer = 0;
 	switch(inAddress.mSelector)
 	{
 		case kAudioObjectPropertyName:
 			theAnswer = sizeof(CFStringRef);
 			break;
-			
+
 		case kAudioObjectPropertyManufacturer:
 			theAnswer = sizeof(CFStringRef);
 			break;
-			
+
 		case kAudioObjectPropertyOwnedObjects:
 			switch(inAddress.mScope)
 			{
 				case kAudioObjectPropertyScopeGlobal:
 					theAnswer = kNumberOfSubObjects * sizeof(AudioObjectID);
 					break;
-					
+
 				case kAudioObjectPropertyScopeInput:
 					theAnswer = kNumberOfInputSubObjects * sizeof(AudioObjectID);
 					break;
-					
+
 				case kAudioObjectPropertyScopeOutput:
 					theAnswer = kNumberOfOutputSubObjects * sizeof(AudioObjectID);
 					break;
@@ -395,11 +395,11 @@ UInt32	SA_Device::Device_GetPropertyDataSize(AudioObjectID inObjectID, pid_t inC
 				case kAudioObjectPropertyScopeGlobal:
 					theAnswer = kNumberOfStreams * sizeof(AudioObjectID);
 					break;
-					
+
 				case kAudioObjectPropertyScopeInput:
 					theAnswer = kNumberOfInputStreams * sizeof(AudioObjectID);
 					break;
-					
+
 				case kAudioObjectPropertyScopeOutput:
 					theAnswer = kNumberOfOutputStreams * sizeof(AudioObjectID);
 					break;
@@ -421,7 +421,7 @@ UInt32	SA_Device::Device_GetPropertyDataSize(AudioObjectID inObjectID, pid_t inC
 		case kAudioDevicePropertyAvailableNominalSampleRates:
 			theAnswer = 2 * sizeof(AudioValueRange);
 			break;
-		
+
 		case kAudioDevicePropertyIsHidden:
 			theAnswer = sizeof(UInt32);
 			break;
@@ -464,7 +464,7 @@ void	SA_Device::Device_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
             *reinterpret_cast<CFStringRef*>(outData) = CFSTR("DeviceName");
 			outDataSize = sizeof(CFStringRef);
 			break;
-			
+
 		case kAudioObjectPropertyManufacturer:
 			//	This is the human readable name of the maker of the plug-in. Note that in this case
 			//	we return a value that is a key into the localizable strings in this bundle. This
@@ -473,13 +473,13 @@ void	SA_Device::Device_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 			*reinterpret_cast<CFStringRef*>(outData) = CFSTR("ManufacturerName");
 			outDataSize = sizeof(CFStringRef);
 			break;
-			
+
 		case kAudioObjectPropertyOwnedObjects:
 			//	Calculate the number of items that have been requested. Note that this
 			//	number is allowed to be smaller than the actual size of the list. In such
 			//	case, only that number of items will be returned
 			theNumberItemsToFetch = inDataSize / sizeof(AudioObjectID);
-			
+
 			//	The device owns its streams and controls. Note that what is returned here
 			//	depends on the scope requested.
 			switch(inAddress.mScope)
@@ -490,7 +490,7 @@ void	SA_Device::Device_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 					{
 						theNumberItemsToFetch = kNumberOfSubObjects;
 					}
-					
+
 					//	fill out the list with as many objects as requested, which is everything
 					if(theNumberItemsToFetch > 0)
 					{
@@ -505,28 +505,28 @@ void	SA_Device::Device_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 						reinterpret_cast<AudioObjectID*>(outData)[2] = mOutputStreamObjectID2;
 					}
 					break;
-					
+
 				case kAudioObjectPropertyScopeInput:
 					//	input scope means just the objects on the input side
 					if(theNumberItemsToFetch > kNumberOfInputSubObjects)
 					{
 						theNumberItemsToFetch = kNumberOfInputSubObjects;
 					}
-					
+
 					//	fill out the list with the right objects
 					if(theNumberItemsToFetch > 0)
 					{
 						reinterpret_cast<AudioObjectID*>(outData)[0] = mInputStreamObjectID;
 					}
 					break;
-					
+
 				case kAudioObjectPropertyScopeOutput:
 					//	output scope means just the objects on the output side
 					if(theNumberItemsToFetch > kNumberOfOutputSubObjects)
 					{
 						theNumberItemsToFetch = kNumberOfOutputSubObjects;
 					}
-					
+
 					//	fill out the list with the right objects
 					if(theNumberItemsToFetch > 0)
 					{
@@ -538,7 +538,7 @@ void	SA_Device::Device_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 					}
 					break;
 			};
-			
+
 			//	report how much we wrote
 			outDataSize = theNumberItemsToFetch * sizeof(AudioObjectID);
 			break;
@@ -583,19 +583,19 @@ void	SA_Device::Device_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 			//	number is allowed to be smaller than the actual size of the list. In such
 			//	case, only that number of items will be returned
 			theNumberItemsToFetch = inDataSize / sizeof(AudioObjectID);
-			
+
 			//	we only have the one device...
 			if(theNumberItemsToFetch > 1)
 			{
 				theNumberItemsToFetch = 1;
 			}
-			
+
 			//	Write the devices' object IDs into the return value
 			if(theNumberItemsToFetch > 0)
 			{
 				reinterpret_cast<AudioObjectID*>(outData)[0] = GetObjectID();
 			}
-			
+
 			//	report how much we wrote
 			outDataSize = theNumberItemsToFetch * sizeof(AudioObjectID);
 			break;
@@ -625,10 +625,10 @@ void	SA_Device::Device_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 			//	This property returns whether or not IO is running for the device.
 			{
 				ThrowIf(inDataSize < sizeof(UInt32), CAException(kAudioHardwareBadPropertySizeError), "SA_Device::Device_GetPropertyData: not enough space for the return value of kAudioDevicePropertyDeviceIsRunning for the device");
-				
+
 				//	The IsRunning state is protected by the state lock
 				CAMutex::Locker theStateLocker(mStateMutex);
-				
+
 				//	return the state and how much data we are touching
 				*reinterpret_cast<UInt32*>(outData) = mStartCount > 0;
 				outDataSize = sizeof(UInt32);
@@ -668,7 +668,7 @@ void	SA_Device::Device_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 			//	number is allowed to be smaller than the actual size of the list. In such
 			//	case, only that number of items will be returned
 			theNumberItemsToFetch = inDataSize / sizeof(AudioObjectID);
-			
+
 			//	Note that what is returned here depends on the scope requested.
 			switch(inAddress.mScope)
 			{
@@ -678,7 +678,7 @@ void	SA_Device::Device_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 					{
 						theNumberItemsToFetch = kNumberOfStreams;
 					}
-					
+
 					//	fill out the list with as many objects as requested
 					if(theNumberItemsToFetch > 0)
 					{
@@ -693,28 +693,28 @@ void	SA_Device::Device_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 						reinterpret_cast<AudioObjectID*>(outData)[2] = mOutputStreamObjectID2;
 					}
 					break;
-					
+
 				case kAudioObjectPropertyScopeInput:
 					//	input scope means just the objects on the input side
 					if(theNumberItemsToFetch > kNumberOfInputStreams)
 					{
 						theNumberItemsToFetch = kNumberOfInputStreams;
 					}
-					
+
 					//	fill out the list with as many objects as requested
 					if(theNumberItemsToFetch > 0)
 					{
 						reinterpret_cast<AudioObjectID*>(outData)[0] = mInputStreamObjectID;
 					}
 					break;
-					
+
 				case kAudioObjectPropertyScopeOutput:
 					//	output scope means just the objects on the output side
 					if(theNumberItemsToFetch > kNumberOfOutputStreams)
 					{
 						theNumberItemsToFetch = kNumberOfOutputStreams;
 					}
-					
+
 					//	fill out the list with as many objects as requested
 					if(theNumberItemsToFetch > 0)
 					{
@@ -726,7 +726,7 @@ void	SA_Device::Device_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 					}
 					break;
 			};
-			
+
 			//	report how much we wrote
 			outDataSize = theNumberItemsToFetch * sizeof(AudioObjectID);
 			break;
@@ -751,10 +751,10 @@ void	SA_Device::Device_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 			//	only need to take the state lock to get this value.
 			{
 				ThrowIf(inDataSize < sizeof(Float64), CAException(kAudioHardwareBadPropertySizeError), "SA_Device::Device_GetPropertyData: not enough space for the return value of kAudioDevicePropertyNominalSampleRate for the device");
-			
+
 				//	The sample rate is protected by the state lock
 				CAMutex::Locker theStateLocker(mStateMutex);
-					
+
 				//	need to lock around fetching the sample rate
 				*reinterpret_cast<Float64*>(outData) = static_cast<Float64>(_HW_GetSampleRate());
 				outDataSize = sizeof(Float64);
@@ -765,18 +765,18 @@ void	SA_Device::Device_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 			//	This returns all nominal sample rates the device supports as an array of
 			//	AudioValueRangeStructs. Note that for discrete sampler rates, the range
 			//	will have the minimum value equal to the maximum value.
-			
+
 			//	Calculate the number of items that have been requested. Note that this
 			//	number is allowed to be smaller than the actual size of the list. In such
 			//	case, only that number of items will be returned
 			theNumberItemsToFetch = inDataSize / sizeof(AudioValueRange);
-			
+
 			//	clamp it to the number of items we have
 			if(theNumberItemsToFetch > 2)
 			{
 				theNumberItemsToFetch = 2;
 			}
-			
+
 			//	fill out the return array
 			if(theNumberItemsToFetch > 0)
 			{
@@ -788,11 +788,11 @@ void	SA_Device::Device_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 				((AudioValueRange*)outData)[1].mMinimum = 48000.0;
 				((AudioValueRange*)outData)[1].mMaximum = 48000.0;
 			}
-			
+
 			//	report how much we wrote
 			outDataSize = theNumberItemsToFetch * sizeof(AudioValueRange);
 			break;
-		
+
 		case kAudioDevicePropertyIsHidden:
 			//	This returns whether or not the device is visible to clients.
 			ThrowIf(inDataSize < sizeof(UInt32), CAException(kAudioHardwareBadPropertySizeError), "SA_Device::Device_GetPropertyData: not enough space for the return value of kAudioDevicePropertyIsHidden for the device");
@@ -850,7 +850,7 @@ void	SA_Device::Device_SetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 	//	For each object, this driver implements all the required properties plus a few extras that
 	//	are useful but not required. There is more detailed commentary about each property in the
 	//	Device_GetPropertyData() method.
-	
+
 	switch(inAddress.mSelector)
 	{
 		case kAudioDevicePropertyNominalSampleRate:
@@ -859,14 +859,14 @@ void	SA_Device::Device_SetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 				//	check the arguments
 				ThrowIf(inDataSize != sizeof(Float64), CAException(kAudioHardwareBadPropertySizeError), "SA_Device::Device_SetPropertyData: wrong size for the data for kAudioDevicePropertyNominalSampleRate");
 				ThrowIf((*((const Float64*)inData) != 44100.0) && (*((const Float64*)inData) != 48000.0), CAException(kAudioHardwareIllegalOperationError), "SA_Device::Device_SetPropertyData: unsupported value for kAudioDevicePropertyNominalSampleRate");
-				
+
 				//	we need to lock around getting the current sample rate to compare against the new rate
 				UInt64 theOldSampleRate = 0;
 				{
 					CAMutex::Locker theStateLocker(mStateMutex);
 					theOldSampleRate = _HW_GetSampleRate();
 				}
-				
+
 				//	make sure that the new value is different than the old value
 				UInt64 theNewSampleRate = static_cast<UInt64>(*reinterpret_cast<const Float64*>(inData));
 				if(theNewSampleRate != theOldSampleRate)
@@ -879,7 +879,7 @@ void	SA_Device::Device_SetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 				}
 			}
 			break;
-		
+
 		default:
 			SA_Object::SetPropertyData(inObjectID, inClientPID, inAddress, inQualifierDataSize, inQualifierData, inDataSize, inData);
 			break;
@@ -893,7 +893,7 @@ bool	SA_Device::Stream_HasProperty(AudioObjectID inObjectID, pid_t inClientPID, 
 	//	For each object, this driver implements all the required properties plus a few extras that
 	//	are useful but not required. There is more detailed commentary about each property in the
 	//	Stream_GetPropertyData() method.
-	
+
 	bool theAnswer = false;
 	switch(inAddress.mSelector)
 	{
@@ -908,7 +908,7 @@ bool	SA_Device::Stream_HasProperty(AudioObjectID inObjectID, pid_t inClientPID, 
 		case kAudioStreamPropertyAvailablePhysicalFormats:
 			theAnswer = true;
 			break;
-			
+
 		default:
 			theAnswer = SA_Object::HasProperty(inObjectID, inClientPID, inAddress);
 			break;
@@ -921,7 +921,7 @@ bool	SA_Device::Stream_IsPropertySettable(AudioObjectID inObjectID, pid_t inClie
 	//	For each object, this driver implements all the required properties plus a few extras that
 	//	are useful but not required. There is more detailed commentary about each property in the
 	//	Stream_GetPropertyData() method.
-	
+
 	bool theAnswer = false;
 	switch(inAddress.mSelector)
 	{
@@ -933,13 +933,13 @@ bool	SA_Device::Stream_IsPropertySettable(AudioObjectID inObjectID, pid_t inClie
 		case kAudioStreamPropertyAvailablePhysicalFormats:
 			theAnswer = false;
 			break;
-		
+
 		case kAudioStreamPropertyIsActive:
 		case kAudioStreamPropertyVirtualFormat:
 		case kAudioStreamPropertyPhysicalFormat:
 			theAnswer = true;
 			break;
-		
+
 		default:
 			theAnswer = SA_Object::IsPropertySettable(inObjectID, inClientPID, inAddress);
 			break;
@@ -952,7 +952,7 @@ UInt32	SA_Device::Stream_GetPropertyDataSize(AudioObjectID inObjectID, pid_t inC
 	//	For each object, this driver implements all the required properties plus a few extras that
 	//	are useful but not required. There is more detailed commentary about each property in the
 	//	Stream_GetPropertyData() method.
-	
+
 	UInt32 theAnswer = 0;
 	switch(inAddress.mSelector)
 	{
@@ -971,7 +971,7 @@ UInt32	SA_Device::Stream_GetPropertyDataSize(AudioObjectID inObjectID, pid_t inC
 		case kAudioStreamPropertyStartingChannel:
 			theAnswer = sizeof(UInt32);
 			break;
-		
+
 		case kAudioStreamPropertyLatency:
 			theAnswer = sizeof(UInt32);
 			break;
@@ -999,7 +999,7 @@ void	SA_Device::Stream_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 	//	are useful but not required.
 	//	Also, since most of the data that will get returned is static, there are few instances where
 	//	it is necessary to lock the state mutex.
-	
+
 	UInt32 theNumberItemsToFetch;
 	switch(inAddress.mSelector)
 	{
@@ -1009,31 +1009,31 @@ void	SA_Device::Stream_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 			*reinterpret_cast<AudioClassID*>(outData) = kAudioObjectClassID;
 			outDataSize = sizeof(AudioClassID);
 			break;
-			
+
 		case kAudioObjectPropertyClass:
 			//	Streams are of the class, kAudioStreamClassID
 			ThrowIf(inDataSize < sizeof(AudioClassID), CAException(kAudioHardwareBadPropertySizeError), "SA_Device::Stream_GetPropertyData: not enough space for the return value of kAudioObjectPropertyClass for the volume control");
 			*reinterpret_cast<AudioClassID*>(outData) = kAudioStreamClassID;
 			outDataSize = sizeof(AudioClassID);
 			break;
-			
+
 		case kAudioObjectPropertyOwner:
 			//	The stream's owner is the device object
 			ThrowIf(inDataSize < sizeof(AudioObjectID), CAException(kAudioHardwareBadPropertySizeError), "SA_Device::Stream_GetPropertyData: not enough space for the return value of kAudioObjectPropertyOwner for the volume control");
 			*reinterpret_cast<AudioObjectID*>(outData) = GetObjectID();
 			outDataSize = sizeof(AudioObjectID);
 			break;
-			
+
 		case kAudioStreamPropertyIsActive:
 			//	This property tells the device whether or not the given stream is going to
 			//	be used for IO. Note that we need to take the state lock to examine this
 			//	value.
 			{
 				ThrowIf(inDataSize < sizeof(UInt32), CAException(kAudioHardwareBadPropertySizeError), "SA_Device::Stream_GetPropertyData: not enough space for the return value of kAudioStreamPropertyIsActive for the stream");
-				
+
 				//	lock the state mutex
 				CAMutex::Locker theStateLocker(mStateMutex);
-				
+
 				//	return the requested value
 				*reinterpret_cast<UInt32*>(outData) = (inAddress.mScope == kAudioObjectPropertyScopeInput) ? mInputStreamIsActive : mOutputStreamIsActive;
 				outDataSize = sizeof(UInt32);
@@ -1081,10 +1081,10 @@ void	SA_Device::Stream_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 			//	same as the physical format.
 			{
 				ThrowIf(inDataSize < sizeof(AudioStreamBasicDescription), CAException(kAudioHardwareBadPropertySizeError), "SA_Device::Stream_GetPropertyData: not enough space for the return value of kAudioStreamPropertyVirtualFormat for the stream");
-				
+
 				//	lock the state mutex
 				CAMutex::Locker theStateLocker(mStateMutex);
-				
+
 				//	This particular device always vends  16 bit native endian signed integers
 				reinterpret_cast<AudioStreamBasicDescription*>(outData)->mSampleRate = static_cast<Float64>(_HW_GetSampleRate());
 				reinterpret_cast<AudioStreamBasicDescription*>(outData)->mFormatID = kAudioFormatLinearPCM;
@@ -1107,13 +1107,13 @@ void	SA_Device::Stream_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 			//	number is allowed to be smaller than the actual size of the list. In such
 			//	case, only that number of items will be returned
 			theNumberItemsToFetch = inDataSize / sizeof(AudioStreamRangedDescription);
-			
+
 			//	clamp it to the number of items we have
 			if(theNumberItemsToFetch > 2)
 			{
 				theNumberItemsToFetch = 2;
 			}
-			
+
 			//	fill out the return array
 			if(theNumberItemsToFetch > 0)
 			{
@@ -1141,7 +1141,7 @@ void	SA_Device::Stream_GetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 				((AudioStreamRangedDescription*)outData)[1].mSampleRateRange.mMinimum = 48000.0;
 				((AudioStreamRangedDescription*)outData)[1].mSampleRateRange.mMaximum = 48000.0;
 			}
-			
+
 			//	report how much we wrote
 			outDataSize = theNumberItemsToFetch * sizeof(AudioStreamRangedDescription);
 			break;
@@ -1157,7 +1157,7 @@ void	SA_Device::Stream_SetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 	//	For each object, this driver implements all the required properties plus a few extras that
 	//	are useful but not required. There is more detailed commentary about each property in the
 	//	Stream_GetPropertyData() method.
-	
+
 	switch(inAddress.mSelector)
 	{
 		case kAudioStreamPropertyIsActive:
@@ -1166,7 +1166,7 @@ void	SA_Device::Stream_SetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 				//	so we can just save the state and send the notification.
 				ThrowIf(inDataSize != sizeof(UInt32), CAException(kAudioHardwareBadPropertySizeError), "SA_Device::Stream_SetPropertyData: wrong size for the data for kAudioDevicePropertyNominalSampleRate");
 				bool theNewIsActive = *reinterpret_cast<const UInt32*>(inData) != 0;
-				
+
 				CAMutex::Locker theStateLocker(mStateMutex);
 				if(inObjectID == mInputStreamObjectID)
 				{
@@ -1184,7 +1184,7 @@ void	SA_Device::Stream_SetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 				}
 			}
 			break;
-			
+
 		case kAudioStreamPropertyVirtualFormat:
 		case kAudioStreamPropertyPhysicalFormat:
 			{
@@ -1193,7 +1193,7 @@ void	SA_Device::Stream_SetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 				//	device only supports 2 channel 32 bit float data, the only thing that can
 				//	change is the sample rate.
 				ThrowIf(inDataSize != sizeof(AudioStreamBasicDescription), CAException(kAudioHardwareBadPropertySizeError), "SA_Device::Stream_SetPropertyData: wrong size for the data for kAudioStreamPropertyPhysicalFormat");
-				
+
 				const AudioStreamBasicDescription* theNewFormat = reinterpret_cast<const AudioStreamBasicDescription*>(inData);
 				ThrowIf(theNewFormat->mFormatID != kAudioFormatLinearPCM, CAException(kAudioDeviceUnsupportedFormatError), "SA_Device::Stream_SetPropertyData: unsupported format ID for kAudioStreamPropertyPhysicalFormat");
 				ThrowIf(theNewFormat->mFormatFlags != (kAudioFormatFlagIsFloat | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked), CAException(kAudioDeviceUnsupportedFormatError), "SA_Device::Stream_SetPropertyData: unsupported format flags for kAudioStreamPropertyPhysicalFormat");
@@ -1203,14 +1203,14 @@ void	SA_Device::Stream_SetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 				ThrowIf(theNewFormat->mChannelsPerFrame != 2, CAException(kAudioDeviceUnsupportedFormatError), "SA_Device::Stream_SetPropertyData: unsupported channels per frame for kAudioStreamPropertyPhysicalFormat");
 				ThrowIf(theNewFormat->mBitsPerChannel != 32, CAException(kAudioDeviceUnsupportedFormatError), "SA_Device::Stream_SetPropertyData: unsupported bits per channel for kAudioStreamPropertyPhysicalFormat");
 				ThrowIf((theNewFormat->mSampleRate != 44100.0) && (theNewFormat->mSampleRate != 48000.0), CAException(kAudioDeviceUnsupportedFormatError), "SA_Device::Stream_SetPropertyData: unsupported sample rate for kAudioStreamPropertyPhysicalFormat");
-			
+
 				//	we need to lock around getting the current sample rate to compare against the new rate
 				UInt64 theOldSampleRate = 0;
 				{
 					CAMutex::Locker theStateLocker(mStateMutex);
 					theOldSampleRate = _HW_GetSampleRate();
 				}
-				
+
 				//	make sure that the new value is different than the old value
 				UInt64 theNewSampleRate = static_cast<UInt64>(*reinterpret_cast<const Float64*>(inData));
 				if(theNewSampleRate != theOldSampleRate)
@@ -1223,7 +1223,7 @@ void	SA_Device::Stream_SetPropertyData(AudioObjectID inObjectID, pid_t inClientP
 				}
 			}
 			break;
-		
+
 		default:
 			SA_Object::SetPropertyData(inObjectID, inClientPID, inAddress, inQualifierDataSize, inQualifierData, inDataSize, inData);
 			break;
@@ -1236,10 +1236,10 @@ void	SA_Device::StartIO()
 {
 	//	Starting/Stopping IO needs to be reference counted due to the possibility of multiple clients starting IO
 	CAMutex::Locker theStateLocker(mStateMutex);
-	
+
 	//	make sure we can start
 	ThrowIf(mStartCount == UINT64_MAX, CAException(kAudioHardwareIllegalOperationError), "SA_Device::StartIO: failed to start because the ref count was maxxed out already");
-	
+
 	//	we only tell the hardware to start if this is the first time IO has been started
 	if(mStartCount == 0)
 	{
@@ -1256,7 +1256,7 @@ void	SA_Device::StopIO()
 {
 	//	Starting/Stopping IO needs to be reference counted due to the possibility of multiple clients starting IO
 	CAMutex::Locker theStateLocker(mStateMutex);
-	
+
 	//	we tell the hardware to stop if this is the last stop call
 	if(mStartCount == 1)
 	{
@@ -1283,7 +1283,7 @@ void	SA_Device::GetZeroTimeStamp(Float64& outSampleTime, UInt64& outHostTime, UI
     {
         ++gDevice_NumberTimeStamps;
     }
-    
+
     //  set the return values
     if (*shmSyncMode == 1) {
         outSampleTime = (*shmNumberTimeStamps) * mRingBufferFrameSize;
@@ -1306,7 +1306,7 @@ void	SA_Device::WillDoIOOperation(UInt32 inOperationID, bool& outWillDo, bool& o
 			outWillDo = true;
 			outWillDoInPlace = true;
 			break;
-			
+
 		case kAudioServerPlugInIOOperationThread:
 		case kAudioServerPlugInIOOperationCycle:
 		case kAudioServerPlugInIOOperationConvertInput:
@@ -1319,7 +1319,7 @@ void	SA_Device::WillDoIOOperation(UInt32 inOperationID, bool& outWillDo, bool& o
 			outWillDo = false;
 			outWillDoInPlace = true;
 			break;
-			
+
 	};
 }
 
@@ -1337,7 +1337,7 @@ void	SA_Device::DoIOOperation(AudioObjectID inStreamObjectID, UInt32 inOperation
 		case kAudioServerPlugInIOOperationReadInput:
             ReadInputData(streamId, inIOBufferFrameSize, inIOCycleInfo.mInputTime.mSampleTime, ioMainBuffer);
 			break;
-			
+
 		case kAudioServerPlugInIOOperationWriteMix:
 			WriteOutputData(streamId, inIOBufferFrameSize, inIOCycleInfo.mOutputTime.mSampleTime, ioMainBuffer);
 			break;
@@ -1355,11 +1355,11 @@ void	SA_Device::ReadInputData(int streamId, UInt32 inIOBufferFrameSize, Float64 
 	CAMutex::Locker theIOLocker(mIOMutex);
     sample_t *RingBuffer = buf_down[streamId];
     volatile uint64_t *frameNum = shmReadFrameNumber[streamId];
-	
+
 	//	figure out where we are starting
 	UInt64 theSampleTime = static_cast<UInt64>(inSampleTime);
 	UInt32 theStartFrameOffset = theSampleTime % mRingBufferFrameSize;
-	
+
 	//	figure out how many frames we need to copy
 	UInt32 theNumberFramesToCopy1 = inIOBufferFrameSize;
 	UInt32 theNumberFramesToCopy2 = 0;
@@ -1368,7 +1368,7 @@ void	SA_Device::ReadInputData(int streamId, UInt32 inIOBufferFrameSize, Float64 
 		theNumberFramesToCopy1 = mRingBufferFrameSize - theStartFrameOffset;
 		theNumberFramesToCopy2 = inIOBufferFrameSize - theNumberFramesToCopy1;
 	}
-	
+
 	//	do the copying (the byte sizes here assume a 16 bit stereo sample format)
     Byte* theDestination = reinterpret_cast<Byte*>(outBuffer);
     memcpy(theDestination, RingBuffer+theStartFrameOffset*2, theNumberFramesToCopy1 * 8);
@@ -1385,11 +1385,11 @@ void	SA_Device::WriteOutputData(int streamId, UInt32 inIOBufferFrameSize, Float6
 	CAMutex::Locker theIOLocker(mIOMutex);
     sample_t *RingBuffer = buf_up[streamId];
     volatile uint64_t *frameNum = shmWriteFrameNumber[streamId];
-	
+
 	//	figure out where we are starting
 	UInt64 theSampleTime = static_cast<UInt64>(inSampleTime);
 	UInt32 theStartFrameOffset = theSampleTime % mRingBufferFrameSize;
-	
+
 	//	figure out how many frames we need to copy
 	UInt32 theNumberFramesToCopy1 = inIOBufferFrameSize;
 	UInt32 theNumberFramesToCopy2 = 0;
@@ -1398,7 +1398,7 @@ void	SA_Device::WriteOutputData(int streamId, UInt32 inIOBufferFrameSize, Float6
 		theNumberFramesToCopy1 = mRingBufferFrameSize - theStartFrameOffset;
 		theNumberFramesToCopy2 = inIOBufferFrameSize - theNumberFramesToCopy1;
 	}
-	
+
 	//	do the copying (the byte sizes here assume a 16 bit stereo sample format)
     const Byte* theSource = reinterpret_cast<const Byte*>(inBuffer);
     memcpy(RingBuffer+theStartFrameOffset*2, theSource, theNumberFramesToCopy1 * 8);
@@ -1419,16 +1419,16 @@ CFStringRef	SA_Device::HW_CopyDeviceUID()
 
 void	SA_Device::_HW_Open()
 {
-    // Initialize shared memory to communicate JackBridge daemon
+    // Initialize shared memory to communicate HulaLoopOSXDaemon daemon
     int rc = create_shm();
     if (rc < 0) {
-        //syslog(LOG_ERR, "JackBridge: Creating shared memory failed (%d)\n", rc);
+        syslog(LOG_ERR, "HulaLoop: Creating shared memory failed (%d)\n", rc);
         Throw(CAException(kAudioHardwareBadDeviceError));
         return;
     }
 
     if (attach_shm() < 0) {
-        //syslog(LOG_ERR, "JackBridge: Attaching shared memory failed (id=%d)\n", instance);
+        syslog(LOG_ERR, "HulaLoop: Attaching shared memory failed (id=%d)\n", instance);
         Throw(CAException(kAudioHardwareBadDeviceError));
         return;
     }
@@ -1436,8 +1436,8 @@ void	SA_Device::_HW_Open()
     *shmSyncMode = 0;
     *shmDriverStatus = mDriverStatus = JB_DRV_STATUS_ACTIVE;
     mRingBufferFrameSize = STRBUFNUM / 2;
-  
-    syslog(LOG_WARNING, "JackBridge: Device #%d initialized. ", instance);
+
+    syslog(LOG_WARNING, "HulaLoop: Device #%d initialized. ", instance);
 }
 
 void	SA_Device::_HW_Close()
@@ -1448,7 +1448,7 @@ void	SA_Device::_HW_Close()
 
 kern_return_t	SA_Device::_HW_StartIO()
 {
-    syslog(LOG_WARNING, "JackBridge: Starting IO Device. ");
+    syslog(LOG_WARNING, "HulaLoop: Starting IO Device. ");
     if (mDriverStatus == JB_DRV_STATUS_INIT) {
         return kAudioHardwareNotRunningError;
     }
@@ -1459,7 +1459,7 @@ kern_return_t	SA_Device::_HW_StartIO()
 
 void	SA_Device::_HW_StopIO()
 {
-    syslog(LOG_WARNING, "JackBridge: Stopping IO Device. ");
+    syslog(LOG_WARNING, "HulaLoop: Stopping IO Device. ");
     *shmDriverStatus = mDriverStatus = JB_DRV_STATUS_ACTIVE;
 	return;
 }
@@ -1480,10 +1480,10 @@ kern_return_t	SA_Device::_HW_SetSampleRate(UInt64 inNewSampleRate)
 void	SA_Device::PerformConfigChange(UInt64 inChangeAction, void* inChangeInfo)
 {
 	#pragma unused(inChangeInfo)
-	
+
 	//	this device only supports chagning the sample rate, which is stored in inChangeAction
 	UInt64 theNewSampleRate = inChangeAction;
-	
+
 	//	make sure we support the new sample rate
 	if((theNewSampleRate == 44100) || (theNewSampleRate == 48000))
 	{
@@ -1503,7 +1503,7 @@ void	SA_Device::PerformConfigChange(UInt64 inChangeAction, void* inChangeInfo)
 void	SA_Device::AbortConfigChange(UInt64 inChangeAction, void* inChangeInfo)
 {
 	#pragma unused(inChangeAction, inChangeInfo)
-	
+
 	//	this device doesn't need to do anything special if a change request gets aborted
 }
 

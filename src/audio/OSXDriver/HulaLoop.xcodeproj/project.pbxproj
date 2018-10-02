@@ -50,7 +50,7 @@
 		2D4DE41315EDF8D500E96F0D /* CAVolumeCurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAVolumeCurve.h; sourceTree = "<group>"; };
 		2D7477AC1578168D00412279 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		2D7477EC157823CF00412279 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
-		2D76D96015E48B2000FF0F33 /* HulaLoopHAL.driver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HulaLoopHAL.driver; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D76D96015E48B2000FF0F33 /* HulaLoop.driver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HulaLoop.driver; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D76D97415E48B6400FF0F33 /* SA_PlugIn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SA_PlugIn.cpp; sourceTree = "<group>"; };
 		2D76D97515E48B6400FF0F33 /* SA_PlugIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SA_PlugIn.h; sourceTree = "<group>"; };
 		2D76D97815E498EB00FF0F33 /* SA_Object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SA_Object.cpp; sourceTree = "<group>"; };
@@ -112,7 +112,7 @@
 		2D7477AA1578168D00412279 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2D76D96015E48B2000FF0F33 /* HulaLoopHAL.driver */,
+				2D76D96015E48B2000FF0F33 /* HulaLoop.driver */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -222,9 +222,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		2D76D95F15E48B2000FF0F33 /* HulaLoopHAL */ = {
+		2D76D95F15E48B2000FF0F33 /* HulaLoop */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D76D97215E48B2000FF0F33 /* Build configuration list for PBXNativeTarget "HulaLoopHAL" */;
+			buildConfigurationList = 2D76D97215E48B2000FF0F33 /* Build configuration list for PBXNativeTarget "HulaLoop" */;
 			buildPhases = (
 				2D76D95E15E48B2000FF0F33 /* Headers */,
 				2D76D95C15E48B2000FF0F33 /* Sources */,
@@ -236,9 +236,9 @@
 			);
 			dependencies = (
 			);
-			name = HulaLoopHAL;
+			name = HulaLoop;
 			productName = SimpleAudioPlugIn;
-			productReference = 2D76D96015E48B2000FF0F33 /* HulaLoopHAL.driver */;
+			productReference = 2D76D96015E48B2000FF0F33 /* HulaLoop.driver */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -249,7 +249,7 @@
 			attributes = {
 				LastUpgradeCheck = 1000;
 			};
-			buildConfigurationList = 2D7477A01578162B00412279 /* Build configuration list for PBXProject "HulaLoopHAL" */;
+			buildConfigurationList = 2D7477A01578162B00412279 /* Build configuration list for PBXProject "HulaLoop" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -262,7 +262,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2D76D95F15E48B2000FF0F33 /* HulaLoopHAL */,
+				2D76D95F15E48B2000FF0F33 /* HulaLoop */,
 			);
 		};
 /* End PBXProject section */
@@ -552,7 +552,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2D7477A01578162B00412279 /* Build configuration list for PBXProject "HulaLoopHAL" */ = {
+		2D7477A01578162B00412279 /* Build configuration list for PBXProject "HulaLoop" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D7477A21578162B00412279 /* Release */,
@@ -562,7 +562,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D76D97215E48B2000FF0F33 /* Build configuration list for PBXNativeTarget "HulaLoopHAL" */ = {
+		2D76D97215E48B2000FF0F33 /* Build configuration list for PBXNativeTarget "HulaLoop" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D76D96F15E48B2000FF0F33 /* Release */,

@@ -1,4 +1,4 @@
-# HulaLoopHAL #
+# HulaLoop OSXDriver #
 
 ## Attribution: ##
 The files under this directory (OSXDriver) are derivatives of [madhatter68's](https://github.com/madhatter68) JackRouter implementation which in turn was a modifications of Apple's SampleAudioDriver.

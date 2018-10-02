@@ -1,48 +1,48 @@
 /*
-     File: SA_PlugIn.cpp 
- Abstract:  Part of SimpleAudioDriver Plug-In Example  
-  Version: 1.0.1 
-  
- Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
- Inc. ("Apple") in consideration of your agreement to the following 
- terms, and your use, installation, modification or redistribution of 
- this Apple software constitutes acceptance of these terms.  If you do 
- not agree with these terms, please do not use, install, modify or 
- redistribute this Apple software. 
-  
- In consideration of your agreement to abide by the following terms, and 
- subject to these terms, Apple grants you a personal, non-exclusive 
- license, under Apple's copyrights in this original Apple software (the 
- "Apple Software"), to use, reproduce, modify and redistribute the Apple 
- Software, with or without modifications, in source and/or binary forms; 
- provided that if you redistribute the Apple Software in its entirety and 
- without modifications, you must retain this notice and the following 
- text and disclaimers in all such redistributions of the Apple Software. 
- Neither the name, trademarks, service marks or logos of Apple Inc. may 
- be used to endorse or promote products derived from the Apple Software 
- without specific prior written permission from Apple.  Except as 
- expressly stated in this notice, no other rights or licenses, express or 
+     File: SA_PlugIn.cpp
+ Abstract:  Part of SimpleAudioDriver Plug-In Example
+  Version: 1.0.1
+
+ Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
+ Inc. ("Apple") in consideration of your agreement to the following
+ terms, and your use, installation, modification or redistribution of
+ this Apple software constitutes acceptance of these terms.  If you do
+ not agree with these terms, please do not use, install, modify or
+ redistribute this Apple software.
+
+ In consideration of your agreement to abide by the following terms, and
+ subject to these terms, Apple grants you a personal, non-exclusive
+ license, under Apple's copyrights in this original Apple software (the
+ "Apple Software"), to use, reproduce, modify and redistribute the Apple
+ Software, with or without modifications, in source and/or binary forms;
+ provided that if you redistribute the Apple Software in its entirety and
+ without modifications, you must retain this notice and the following
+ text and disclaimers in all such redistributions of the Apple Software.
+ Neither the name, trademarks, service marks or logos of Apple Inc. may
+ be used to endorse or promote products derived from the Apple Software
+ without specific prior written permission from Apple.  Except as
+ expressly stated in this notice, no other rights or licenses, express or
  implied, are granted by Apple herein, including but not limited to any
- patent rights that may be infringed by your derivative works or by other 
- works in which the Apple Software may be incorporated. 
-  
- The Apple Software is provided by Apple on an "AS IS" basis.  APPLE 
- MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION 
- THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS 
- FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND 
- OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. 
-  
- IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL 
- OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, 
- MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED 
- AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), 
- STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
- POSSIBILITY OF SUCH DAMAGE. 
-  
- Copyright (C) 2013 Apple Inc. All Rights Reserved. 
-  
+ patent rights that may be infringed by your derivative works or by other
+ works in which the Apple Software may be incorporated.
+
+ The Apple Software is provided by Apple on an "AS IS" basis.  APPLE
+ MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION
+ THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS
+ FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND
+ OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS.
+
+ IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL
+ OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION,
+ MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED
+ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
+ STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
+ POSSIBILITY OF SUCH DAMAGE.
+
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
+
 */
 /*==================================================================================================
 	SA_PlugIn.cpp
@@ -101,7 +101,7 @@ void	SA_PlugIn::Deactivate()
 
 void	SA_PlugIn::StaticInitializer()
 {
-    syslog(LOG_WARNING, "JackBridge: intializing in StaticInitializer().");
+    syslog(LOG_WARNING, "HulaLoop: intializing in StaticInitializer().");
 	try
 	{
 		sInstance = new SA_PlugIn;
@@ -127,7 +127,7 @@ bool	SA_PlugIn::HasProperty(AudioObjectID inObjectID, pid_t inClientPID, const A
 		case kAudioPlugInPropertyResourceBundle:
 			theAnswer = true;
 			break;
-		
+
 		default:
 			theAnswer = SA_Object::HasProperty(inObjectID, inClientPID, inAddress);
 	};
@@ -145,7 +145,7 @@ bool	SA_PlugIn::IsPropertySettable(AudioObjectID inObjectID, pid_t inClientPID, 
 		case kAudioPlugInPropertyResourceBundle:
 			theAnswer = false;
 			break;
-		
+
 		default:
 			theAnswer = SA_Object::IsPropertySettable(inObjectID, inClientPID, inAddress);
 	};
@@ -160,7 +160,7 @@ UInt32	SA_PlugIn::GetPropertyDataSize(AudioObjectID inObjectID, pid_t inClientPI
 		case kAudioObjectPropertyManufacturer:
 			theAnswer = sizeof(CFStringRef);
 			break;
-			
+
 		case kAudioObjectPropertyOwnedObjects:
 		case kAudioPlugInPropertyDeviceList:
 			{
@@ -168,15 +168,15 @@ UInt32	SA_PlugIn::GetPropertyDataSize(AudioObjectID inObjectID, pid_t inClientPI
 				theAnswer = static_cast<UInt32>(mDeviceInfoList.size() * sizeof(AudioObjectID));
 			}
 			break;
-			
+
 		case kAudioPlugInPropertyTranslateUIDToDevice:
 			theAnswer = sizeof(AudioObjectID);
 			break;
-			
+
 		case kAudioPlugInPropertyResourceBundle:
 			theAnswer = sizeof(CFStringRef);
 			break;
-		
+
 		default:
 			theAnswer = SA_Object::GetPropertyDataSize(inObjectID, inClientPID, inAddress, inQualifierDataSize, inQualifierData);
 	};
@@ -193,7 +193,7 @@ void	SA_PlugIn::GetPropertyData(AudioObjectID inObjectID, pid_t inClientPID, con
 			*reinterpret_cast<CFStringRef*>(outData) = CFSTR("Apple Inc.");
 			outDataSize = sizeof(CFStringRef);
 			break;
-			
+
 		case kAudioObjectPropertyOwnedObjects:
 		case kAudioPlugInPropertyDeviceList:
 			//	The plug-in object only owns devices, so the the owned object list and the device
@@ -201,24 +201,24 @@ void	SA_PlugIn::GetPropertyData(AudioObjectID inObjectID, pid_t inClientPID, con
 			//	device info list.
 			{
 				CAMutex::Locker theLocker(mMutex);
-				
+
 				//	Calculate the number of items that have been requested. Note that this
 				//	number is allowed to be smaller than the actual size of the list. In such
 				//	case, only that number of items will be returned
 				UInt32 theNumberItemsToFetch = static_cast<UInt32>(std::min(inDataSize / sizeof(AudioObjectID), mDeviceInfoList.size()));
-				
+
 				//	go through the device list and copy out the devices' object IDs
 				AudioObjectID* theReturnedDeviceList = reinterpret_cast<AudioObjectID*>(outData);
 				for(UInt32 theDeviceIndex = 0; theDeviceIndex < theNumberItemsToFetch; ++theDeviceIndex)
 				{
 					theReturnedDeviceList[theDeviceIndex] = mDeviceInfoList[theDeviceIndex].mDeviceObjectID;
 				}
-				
+
 				//	say how much we returned
 				outDataSize = theNumberItemsToFetch * sizeof(AudioObjectID);
 			}
 			break;
-			
+
 		case kAudioPlugInPropertyTranslateUIDToDevice:
 			//	This property translates the UID passed in the qualifier as a CFString into the
 			//	AudioObjectID for the device the UID refers to or kAudioObjectUnknown if no device
@@ -227,7 +227,7 @@ void	SA_PlugIn::GetPropertyData(AudioObjectID inObjectID, pid_t inClientPID, con
 			ThrowIf(inDataSize < sizeof(AudioObjectID), CAException(kAudioHardwareBadPropertySizeError), "SA_PlugIn::GetPropertyData: not enough space for the return value of kAudioPlugInPropertyTranslateUIDToDevice");
 			outDataSize = sizeof(AudioObjectID);
 			break;
-			
+
 		case kAudioPlugInPropertyResourceBundle:
 			//	The resource bundle is a path relative to the path of the plug-in's bundle.
 			//	To specify that the plug-in bundle itself should be used, we just return the
@@ -236,7 +236,7 @@ void	SA_PlugIn::GetPropertyData(AudioObjectID inObjectID, pid_t inClientPID, con
 			*reinterpret_cast<CFStringRef*>(outData) = CFSTR("");
 			outDataSize = sizeof(CFStringRef);
 			break;
-		
+
 		default:
 			SA_Object::GetPropertyData(inObjectID, inClientPID, inAddress, inQualifierDataSize, inQualifierData, inDataSize, outDataSize, outData);
 			break;
@@ -255,7 +255,7 @@ void	SA_PlugIn::SetPropertyData(AudioObjectID inObjectID, pid_t inClientPID, con
 
 void    SA_PlugIn:: _CreateDevices(UInt32 numDevices)
 {
-    syslog(LOG_WARNING, "JackBridge: creating devices in _CreateDevices().");
+    syslog(LOG_WARNING, "HulaLoop: creating devices in _CreateDevices().");
 	//	Note that we catch all exceptions here so that we can finish processing the items in the notification
 	SA_Device* theNewDevice = NULL;
     for(UInt32 i=0; i<numDevices; i++) {
@@ -264,13 +264,13 @@ void    SA_PlugIn:: _CreateDevices(UInt32 numDevices)
             //	make the new device object
             AudioObjectID theNewDeviceObjectID = SA_ObjectMap::GetNextObjectID();
             theNewDevice = new SA_Device(theNewDeviceObjectID, i);
-            
+
             //	add it to the object map
             SA_ObjectMap::MapObject(theNewDeviceObjectID, theNewDevice);
-            
+
             //	add it to the device list
             AddDevice(theNewDevice);
-            
+
             //	activate the device
             theNewDevice->Activate();
         }
@@ -318,7 +318,7 @@ void	SA_PlugIn::_RemoveDevice(SA_Device* inDevice)
 			if(inDevice->GetObjectID() == theDeviceIterator->mDeviceObjectID)
 			{
 				wasFound = true;
-				
+
 				//  remove the device from the list
 				theDeviceIterator->mDeviceObjectID = 0;
 				mDeviceInfoList.erase(theDeviceIterator);
@@ -339,7 +339,7 @@ void	SA_PlugIn::_RemoveAllDevices()
 		//	remove the object from the list
 		AudioObjectID theDeadDeviceObjectID = theDeviceIterator->mDeviceObjectID;
 		theDeviceIterator->mDeviceObjectID = 0;
-		
+
 		//	asynchronously get rid of the device since we are holding the plug-in's state lock
 		CADispatchQueue::GetGlobalSerialQueue().Dispatch(false,	^{
 																	CATry;
@@ -349,7 +349,7 @@ void	SA_PlugIn::_RemoveAllDevices()
 																	{
 																		//	deactivate the device
 																		theDeadDevice->Deactivate();
-																		
+
 																		//	and release it
 																		SA_ObjectMap::ReleaseObject(theDeadDevice);
 																	}
@@ -434,7 +434,7 @@ void*	SA_Create(CFAllocatorRef inAllocator, CFUUIDRef inRequestedTypeUUID)
 	//	the IUnknown methods that are used to discover that actual interface to talk to the driver.
 	//	The majority of the driver's initilization should be handled in the Initialize() method of
 	//	the driver's AudioServerPlugInDriverInterface.
-	
+
 	#pragma unused(inAllocator)
     void* theAnswer = NULL;
     if(CFEqual(inRequestedTypeUUID, kAudioServerPlugInTypeUUID))
@@ -457,7 +457,7 @@ static HRESULT	SA_QueryInterface(void* inDriver, REFIID inUUID, LPVOID* outInter
 
 	//	declare the local variables
 	HRESULT theAnswer = 0;
-	
+
 	try
 	{
 		//	validate the arguments
@@ -473,7 +473,7 @@ static HRESULT	SA_QueryInterface(void* inDriver, REFIID inUUID, LPVOID* outInter
 		//	use).
 		ThrowIf(!CFEqual(theRequestedUUID.GetCFObject(), IUnknownUUID) && !CFEqual(theRequestedUUID.GetCFObject(), kAudioServerPlugInDriverInterfaceUUID), CAException(E_NOINTERFACE), "SA_QueryInterface: requested interface is unsupported");
 		ThrowIf(gAudioServerPlugInDriverRefCount == UINT32_MAX, CAException(E_NOINTERFACE), "SA_QueryInterface: the ref count is maxxed out");
-		
+
 		//	do the work
 		++gAudioServerPlugInDriverRefCount;
 		*outInterface = gAudioServerPlugInDriverRef;
@@ -486,17 +486,17 @@ static HRESULT	SA_QueryInterface(void* inDriver, REFIID inUUID, LPVOID* outInter
 	{
 		theAnswer = kAudioHardwareUnspecifiedError;
 	}
-		
+
 	return theAnswer;
 }
 
 static ULONG	SA_AddRef(void* inDriver)
 {
 	//	This call returns the resulting reference count after the increment.
-	
+
 	//	declare the local variables
 	ULONG theAnswer = 0;
-	
+
 	//	check the arguments
 	FailIf(inDriver != gAudioServerPlugInDriverRef, Done, "SA_AddRef: bad driver reference");
 	FailIf(gAudioServerPlugInDriverRefCount == UINT32_MAX, Done, "SA_AddRef: out of references");
@@ -515,7 +515,7 @@ static ULONG	SA_Release(void* inDriver)
 
 	//	declare the local variables
 	ULONG theAnswer = 0;
-	
+
 	//	check the arguments
 	FailIf(inDriver != gAudioServerPlugInDriverRef, Done, "SA_Release: bad driver reference");
 	FailIf(gAudioServerPlugInDriverRefCount == UINT32_MAX, Done, "SA_Release: out of references");
@@ -544,12 +544,12 @@ static OSStatus	SA_Initialize(AudioServerPlugInDriverRef inDriver, AudioServerPl
 
 	//	declare the local variables
 	OSStatus theAnswer = 0;
-	
+
 	try
 	{
 		//	check the arguments
 		ThrowIf(inDriver != gAudioServerPlugInDriverRef, CAException(kAudioHardwareBadObjectError), "SA_Initialize: bad driver reference");
-		
+
 		//	store the AudioServerPlugInHostRef
 		SA_PlugIn::GetInstance().SetHost(inHost);
 	}
@@ -570,9 +570,9 @@ static OSStatus	SA_CreateDevice(AudioServerPlugInDriverRef inDriver, CFDictionar
 	//	This method is used to tell a driver that implements the Transport Manager semantics to
 	//	create an AudioEndpointDevice from a set of AudioEndpoints. Since this driver is not a
 	//	Transport Manager, we just return kAudioHardwareUnsupportedOperationError.
-	
+
 	#pragma unused(inDriver, inDescription, inClientInfo, outDeviceObjectID)
-	
+
 	return kAudioHardwareUnsupportedOperationError;
 }
 
@@ -581,9 +581,9 @@ static OSStatus	SA_DestroyDevice(AudioServerPlugInDriverRef inDriver, AudioObjec
 	//	This method is used to tell a driver that implements the Transport Manager semantics to
 	//	destroy an AudioEndpointDevice. Since this driver is not a Transport Manager, we just check
 	//	the arguments and return kAudioHardwareUnsupportedOperationError.
-	
+
 	#pragma unused(inDriver, inDeviceObjectID)
-	
+
 	return kAudioHardwareUnsupportedOperationError;
 }
 
@@ -592,9 +592,9 @@ static OSStatus	SA_AddDeviceClient(AudioServerPlugInDriverRef inDriver, AudioObj
 	//	This method is used to inform the driver about a new client that is using the given device.
 	//	This allows the device to act differently depending on who the client is. This driver does
 	//	not need to track the clients using the device, so we just return successfully.
-	
+
 	#pragma unused(inDriver, inDeviceObjectID, inClientInfo)
-	
+
 	return 0;
 }
 
@@ -602,9 +602,9 @@ static OSStatus	SA_RemoveDeviceClient(AudioServerPlugInDriverRef inDriver, Audio
 {
 	//	This method is used to inform the driver about a client that is no longer using the given
 	//	device. This driver does not track clients, so we just return successfully.
-	
+
 	#pragma unused(inDriver, inDeviceObjectID, inClientInfo)
-	
+
 	return 0;
 }
 
@@ -619,19 +619,19 @@ static OSStatus	SA_PerformDeviceConfigurationChange(AudioServerPlugInDriverRef i
 	//	also handle figuring out exactly what changed for the non-control related properties. This
 	//	means that the only notifications that would need to be sent here would be for either
 	//	custom properties the HAL doesn't know about or for controls.
-	
+
 	//	declare the local variables
 	OSStatus theAnswer = 0;
-	
+
 	try
 	{
 		//	check the arguments
 		ThrowIf(inDriver != gAudioServerPlugInDriverRef, CAException(kAudioHardwareBadObjectError), "SA_PerformDeviceConfigurationChange: bad driver reference");
-		
+
 		//	get the device object
 		SA_ObjectReleaser<SA_Device> theDevice(SA_ObjectMap::CopyObjectOfClassByObjectID<SA_Device>(inDeviceObjectID));
 		ThrowIf(!theDevice.IsValid(), CAException(kAudioHardwareBadObjectError), "SA_PerformDeviceConfigurationChange: unknown device");
-		
+
 		//	tell it to do the work
 		theDevice->PerformConfigChange(inChangeAction, inChangeInfo);
 	}
@@ -643,7 +643,7 @@ static OSStatus	SA_PerformDeviceConfigurationChange(AudioServerPlugInDriverRef i
 	{
 		theAnswer = kAudioHardwareUnspecifiedError;
 	}
-	
+
 	return theAnswer;
 }
 
@@ -654,16 +654,16 @@ static OSStatus	SA_AbortDeviceConfigurationChange(AudioServerPlugInDriverRef inD
 
 	//	declare the local variables
 	OSStatus theAnswer = 0;
-	
+
 	try
 	{
 		//	check the arguments
 		ThrowIf(inDriver != gAudioServerPlugInDriverRef, CAException(kAudioHardwareBadObjectError), "SA_PerformDeviceConfigurationChange: bad driver reference");
-		
+
 		//	get the device object
 		SA_ObjectReleaser<SA_Device> theDevice(SA_ObjectMap::CopyObjectOfClassByObjectID<SA_Device>(inDeviceObjectID));
 		ThrowIf(!theDevice.IsValid(), CAException(kAudioHardwareBadObjectError), "SA_PerformDeviceConfigurationChange: unknown device");
-		
+
 		//	tell it to do the work
 		theDevice->AbortConfigChange(inChangeAction, inChangeInfo);
 	}
@@ -675,7 +675,7 @@ static OSStatus	SA_AbortDeviceConfigurationChange(AudioServerPlugInDriverRef inD
 	{
 		theAnswer = kAudioHardwareUnspecifiedError;
 	}
-	
+
 	return theAnswer;
 }
 
@@ -684,20 +684,20 @@ static OSStatus	SA_AbortDeviceConfigurationChange(AudioServerPlugInDriverRef inD
 static Boolean	SA_HasProperty(AudioServerPlugInDriverRef inDriver, AudioObjectID inObjectID, pid_t inClientProcessID, const AudioObjectPropertyAddress* inAddress)
 {
 	//	This method returns whether or not the given object has the given property.
-	
+
 	//	declare the local variables
 	Boolean theAnswer = false;
-	
+
 	try
 	{
 		//	check the arguments
 		ThrowIf(inDriver != gAudioServerPlugInDriverRef, CAException(kAudioHardwareBadObjectError), "SA_HasProperty: bad driver reference");
 		ThrowIfNULL(inAddress, CAException(kAudioHardwareIllegalOperationError), "SA_HasProperty: no address");
-		
+
 		//	get the object
 		SA_ObjectReleaser<SA_Object> theObject(SA_ObjectMap::CopyObjectByObjectID(inObjectID));
 		ThrowIf(!theObject.IsValid(), CAException(kAudioHardwareBadObjectError), "SA_HasProperty: unknown object");
-		
+
 		//	tell it to do the work
 		theAnswer = theObject->HasProperty(inObjectID, inClientProcessID, *inAddress);
 	}
@@ -717,21 +717,21 @@ static OSStatus	SA_IsPropertySettable(AudioServerPlugInDriverRef inDriver, Audio
 {
 	//	This method returns whether or not the given property on the object can have its value
 	//	changed.
-	
+
 	//	declare the local variables
 	OSStatus theAnswer = 0;
-	
+
 	try
 	{
 		//	check the arguments
 		ThrowIf(inDriver != gAudioServerPlugInDriverRef, CAException(kAudioHardwareBadObjectError), "SA_IsPropertySettable: bad driver reference");
 		ThrowIfNULL(inAddress, CAException(kAudioHardwareIllegalOperationError), "SA_IsPropertySettable: no address");
 		ThrowIfNULL(outIsSettable, CAException(kAudioHardwareIllegalOperationError), "SA_IsPropertySettable: no place to put the return value");
-		
+
 		//	get the object
 		SA_ObjectReleaser<SA_Object> theObject(SA_ObjectMap::CopyObjectByObjectID(inObjectID));
 		ThrowIf(!theObject.IsValid(), CAException(kAudioHardwareBadObjectError), "SA_IsPropertySettable: unknown object");
-		
+
 		//	tell it to do the work
 		if(theObject->HasProperty(inObjectID, inClientProcessID, *inAddress))
 		{
@@ -750,28 +750,28 @@ static OSStatus	SA_IsPropertySettable(AudioServerPlugInDriverRef inDriver, Audio
 	{
 		theAnswer = kAudioHardwareUnspecifiedError;
 	}
-	
+
 	return theAnswer;
 }
 
 static OSStatus	SA_GetPropertyDataSize(AudioServerPlugInDriverRef inDriver, AudioObjectID inObjectID, pid_t inClientProcessID, const AudioObjectPropertyAddress* inAddress, UInt32 inQualifierDataSize, const void* inQualifierData, UInt32* outDataSize)
 {
 	//	This method returns the byte size of the property's data.
-	
+
 	//	declare the local variables
 	OSStatus theAnswer = 0;
-	
+
 	try
 	{
 		//	check the arguments
 		ThrowIf(inDriver != gAudioServerPlugInDriverRef, CAException(kAudioHardwareBadObjectError), "SA_GetPropertyDataSize: bad driver reference");
 		ThrowIfNULL(inAddress, CAException(kAudioHardwareIllegalOperationError), "SA_GetPropertyDataSize: no address");
 		ThrowIfNULL(outDataSize, CAException(kAudioHardwareIllegalOperationError), "SA_GetPropertyDataSize: no place to put the return value");
-		
+
 		//	get the object
 		SA_ObjectReleaser<SA_Object> theObject(SA_ObjectMap::CopyObjectByObjectID(inObjectID));
 		ThrowIf(!theObject.IsValid(), CAException(kAudioHardwareBadObjectError), "SA_GetPropertyDataSize: unknown object");
-		
+
 		//	tell it to do the work
 		if(theObject->HasProperty(inObjectID, inClientProcessID, *inAddress))
 		{
@@ -797,10 +797,10 @@ static OSStatus	SA_GetPropertyDataSize(AudioServerPlugInDriverRef inDriver, Audi
 static OSStatus	SA_GetPropertyData(AudioServerPlugInDriverRef inDriver, AudioObjectID inObjectID, pid_t inClientProcessID, const AudioObjectPropertyAddress* inAddress, UInt32 inQualifierDataSize, const void* inQualifierData, UInt32 inDataSize, UInt32* outDataSize, void* outData)
 {
 	//	This method fetches the data for a given property
-	
+
 	//	declare the local variables
 	OSStatus theAnswer = 0;
-	
+
 	try
 	{
 		//	check the arguments
@@ -808,11 +808,11 @@ static OSStatus	SA_GetPropertyData(AudioServerPlugInDriverRef inDriver, AudioObj
 		ThrowIfNULL(inAddress, CAException(kAudioHardwareIllegalOperationError), "SA_GetPropertyData: no address");
 		ThrowIfNULL(outDataSize, CAException(kAudioHardwareIllegalOperationError), "SA_GetPropertyData: no place to put the return value size");
 		ThrowIfNULL(outData, CAException(kAudioHardwareIllegalOperationError), "SA_GetPropertyData: no place to put the return value");
-		
+
 		//	get the object
 		SA_ObjectReleaser<SA_Object> theObject(SA_ObjectMap::CopyObjectByObjectID(inObjectID));
 		ThrowIf(!theObject.IsValid(), CAException(kAudioHardwareBadObjectError), "SA_GetPropertyData: unknown object");
-		
+
 		//	tell it to do the work
 		if(theObject->HasProperty(inObjectID, inClientProcessID, *inAddress))
 		{
@@ -841,17 +841,17 @@ static OSStatus	SA_SetPropertyData(AudioServerPlugInDriverRef inDriver, AudioObj
 
 	//	declare the local variables
 	OSStatus theAnswer = 0;
-	
+
 	try
 	{
 		//	check the arguments
 		ThrowIf(inDriver != gAudioServerPlugInDriverRef, CAException(kAudioHardwareBadObjectError), "SA_SetPropertyData: bad driver reference");
 		ThrowIfNULL(inAddress, CAException(kAudioHardwareIllegalOperationError), "SA_SetPropertyData: no address");
-		
+
 		//	get the object
 		SA_ObjectReleaser<SA_Object> theObject(SA_ObjectMap::CopyObjectByObjectID(inObjectID));
 		ThrowIf(!theObject.IsValid(), CAException(kAudioHardwareBadObjectError), "SA_SetPropertyData: unknown object");
-		
+
 		//	tell it to do the work
 		if(theObject->HasProperty(inObjectID, inClientProcessID, *inAddress))
 		{
@@ -877,7 +877,7 @@ static OSStatus	SA_SetPropertyData(AudioServerPlugInDriverRef inDriver, AudioObj
 	{
 		theAnswer = kAudioHardwareUnspecifiedError;
 	}
-	
+
 	return theAnswer;
 }
 
@@ -890,21 +890,21 @@ static OSStatus	SA_StartIO(AudioServerPlugInDriverRef inDriver, AudioObjectID in
 	//	important to note that multiple clients can have IO running on the device at the same time.
 	//	So, work only needs to be done when the first client starts. All subsequent starts simply
 	//	increment the counter.
-	
+
 	#pragma unused(inClientID)
-	
+
 	//	declare the local variables
 	OSStatus theAnswer = 0;
-	
+
 	try
 	{
 		//	check the arguments
 		ThrowIf(inDriver != gAudioServerPlugInDriverRef, CAException(kAudioHardwareBadObjectError), "SA_StartIO: bad driver reference");
-		
+
 		//	get the object
 		SA_ObjectReleaser<SA_Device> theDevice(SA_ObjectMap::CopyObjectOfClassByObjectID<SA_Device>(inDeviceObjectID));
 		ThrowIf(!theDevice.IsValid(), CAException(kAudioHardwareBadObjectError), "SA_StartIO: unknown device");
-		
+
 		//	tell it to do the work
 		theDevice->StartIO();
 	}
@@ -916,7 +916,7 @@ static OSStatus	SA_StartIO(AudioServerPlugInDriverRef inDriver, AudioObjectID in
 	{
 		theAnswer = kAudioHardwareUnspecifiedError;
 	}
-	
+
 	return theAnswer;
 }
 
@@ -924,21 +924,21 @@ static OSStatus	SA_StopIO(AudioServerPlugInDriverRef inDriver, AudioObjectID inD
 {
 	//	This call tells the device that the client has stopped IO. The driver can stop the hardware
 	//	once all clients have stopped.
-	
+
 	#pragma unused(inClientID)
-	
+
 	//	declare the local variables
 	OSStatus theAnswer = 0;
-	
+
 	try
 	{
 		//	check the arguments
 		ThrowIf(inDriver != gAudioServerPlugInDriverRef, CAException(kAudioHardwareBadObjectError), "SA_StopIO: bad driver reference");
-		
+
 		//	get the object
 		SA_ObjectReleaser<SA_Device> theDevice(SA_ObjectMap::CopyObjectOfClassByObjectID<SA_Device>(inDeviceObjectID));
 		ThrowIf(!theDevice.IsValid(), CAException(kAudioHardwareBadObjectError), "SA_StopIO: unknown device");
-		
+
 		//	tell it to do the work
 		theDevice->StopIO();
 	}
@@ -950,7 +950,7 @@ static OSStatus	SA_StopIO(AudioServerPlugInDriverRef inDriver, AudioObjectID inD
 	{
 		theAnswer = kAudioHardwareUnspecifiedError;
 	}
-	
+
 	return theAnswer;
 }
 
@@ -961,12 +961,12 @@ static OSStatus	SA_GetZeroTimeStamp(AudioServerPlugInDriverRef inDriver, AudioOb
 	//	time stamps are spaced such that the sample times are the value of
 	//	kAudioDevicePropertyZeroTimeStampPeriod apart. This is often modeled using a ring buffer
 	//	where the zero time stamp is updated when wrapping around the ring buffer.
-	
+
 	#pragma unused(inClientID)
-	
+
 	//	declare the local variables
 	OSStatus theAnswer = 0;
-	
+
 	try
 	{
 		//	check the arguments
@@ -974,11 +974,11 @@ static OSStatus	SA_GetZeroTimeStamp(AudioServerPlugInDriverRef inDriver, AudioOb
 		ThrowIfNULL(outSampleTime, CAException(kAudioHardwareIllegalOperationError), "SA_GetZeroTimeStamp: no place to put the sample time");
 		ThrowIfNULL(outHostTime, CAException(kAudioHardwareIllegalOperationError), "SA_GetZeroTimeStamp: no place to put the host time");
 		ThrowIfNULL(outSeed, CAException(kAudioHardwareIllegalOperationError), "SA_GetZeroTimeStamp: no place to put the seed");
-		
+
 		//	get the object
 		SA_ObjectReleaser<SA_Device> theDevice(SA_ObjectMap::CopyObjectOfClassByObjectID<SA_Device>(inDeviceObjectID));
 		ThrowIf(!theDevice.IsValid(), CAException(kAudioHardwareBadObjectError), "SA_GetZeroTimeStamp: unknown device");
-		
+
 		//	tell it to do the work
 		theDevice->GetZeroTimeStamp(*outSampleTime, *outHostTime, *outSeed);
 	}
@@ -990,35 +990,35 @@ static OSStatus	SA_GetZeroTimeStamp(AudioServerPlugInDriverRef inDriver, AudioOb
 	{
 		theAnswer = kAudioHardwareUnspecifiedError;
 	}
-	
+
 	return theAnswer;
 }
 
 static OSStatus	SA_WillDoIOOperation(AudioServerPlugInDriverRef inDriver, AudioObjectID inDeviceObjectID, UInt32 inClientID, UInt32 inOperationID, Boolean* outWillDo, Boolean* outWillDoInPlace)
 {
 	//	This method returns whether or not the device will do a given IO operation.
-	
+
 	#pragma unused(inClientID)
-	
+
 	//	declare the local variables
 	OSStatus theAnswer = 0;
-	
+
 	try
 	{
 		//	check the arguments
 		ThrowIf(inDriver != gAudioServerPlugInDriverRef, CAException(kAudioHardwareBadObjectError), "SA_WillDoIOOperation: bad driver reference");
 		ThrowIfNULL(outWillDo, CAException(kAudioHardwareIllegalOperationError), "SA_WillDoIOOperation: no place to put the will-do return value");
 		ThrowIfNULL(outWillDoInPlace, CAException(kAudioHardwareIllegalOperationError), "SA_WillDoIOOperation: no place to put the in-place return value");
-		
+
 		//	get the object
 		SA_ObjectReleaser<SA_Device> theDevice(SA_ObjectMap::CopyObjectOfClassByObjectID<SA_Device>(inDeviceObjectID));
 		ThrowIf(!theDevice.IsValid(), CAException(kAudioHardwareBadObjectError), "SA_WillDoIOOperation: unknown device");
-		
+
 		//	tell it to do the work
 		bool willDo = false;
 		bool willDoInPlace = false;
 		theDevice->WillDoIOOperation(inOperationID, willDo, willDoInPlace);
-		
+
 		//	set the return values
 		*outWillDo = willDo;
 		*outWillDoInPlace = willDoInPlace;
@@ -1038,22 +1038,22 @@ static OSStatus	SA_WillDoIOOperation(AudioServerPlugInDriverRef inDriver, AudioO
 static OSStatus	SA_BeginIOOperation(AudioServerPlugInDriverRef inDriver, AudioObjectID inDeviceObjectID, UInt32 inClientID, UInt32 inOperationID, UInt32 inIOBufferFrameSize, const AudioServerPlugInIOCycleInfo* inIOCycleInfo)
 {
 	//	This is called at the beginning of an IO operation.
-	
+
 	#pragma unused(inClientID)
-	
+
 	//	declare the local variables
 	OSStatus theAnswer = 0;
-	
+
 	try
 	{
 		//	check the arguments
 		ThrowIf(inDriver != gAudioServerPlugInDriverRef, CAException(kAudioHardwareBadObjectError), "SA_BeginIOOperation: bad driver reference");
 		ThrowIfNULL(inIOCycleInfo, CAException(kAudioHardwareIllegalOperationError), "SA_BeginIOOperation: no cycle info");
-		
+
 		//	get the object
 		SA_ObjectReleaser<SA_Device> theDevice(SA_ObjectMap::CopyObjectOfClassByObjectID<SA_Device>(inDeviceObjectID));
 		ThrowIf(!theDevice.IsValid(), CAException(kAudioHardwareBadObjectError), "SA_BeginIOOperation: unknown device");
-		
+
 		//	tell it to do the work
 		theDevice->BeginIOOperation(inOperationID, inIOBufferFrameSize, *inIOCycleInfo);
 	}
@@ -1065,7 +1065,7 @@ static OSStatus	SA_BeginIOOperation(AudioServerPlugInDriverRef inDriver, AudioOb
 	{
 		theAnswer = kAudioHardwareUnspecifiedError;
 	}
-	
+
 	return theAnswer;
 }
 
@@ -1073,22 +1073,22 @@ static OSStatus	SA_DoIOOperation(AudioServerPlugInDriverRef inDriver, AudioObjec
 {
 	//	This is called to actuall perform a given operation. For this device, all we need to do is
 	//	clear the buffer for the ReadInput operation.
-	
+
 	#pragma unused(inClientID)
-	
+
 	//	declare the local variables
 	OSStatus theAnswer = 0;
-	
+
 	try
 	{
 		//	check the arguments
 		ThrowIf(inDriver != gAudioServerPlugInDriverRef, CAException(kAudioHardwareBadObjectError), "SA_EndIOOperation: bad driver reference");
 		ThrowIfNULL(inIOCycleInfo, CAException(kAudioHardwareIllegalOperationError), "SA_EndIOOperation: no cycle info");
-		
+
 		//	get the object
 		SA_ObjectReleaser<SA_Device> theDevice(SA_ObjectMap::CopyObjectOfClassByObjectID<SA_Device>(inDeviceObjectID));
 		ThrowIf(!theDevice.IsValid(), CAException(kAudioHardwareBadObjectError), "SA_EndIOOperation: unknown device");
-		
+
 		//	tell it to do the work
 		theDevice->DoIOOperation(inStreamObjectID, inOperationID, inIOBufferFrameSize, *inIOCycleInfo, ioMainBuffer, ioSecondaryBuffer);
 	}
@@ -1107,22 +1107,22 @@ static OSStatus	SA_DoIOOperation(AudioServerPlugInDriverRef inDriver, AudioObjec
 static OSStatus	SA_EndIOOperation(AudioServerPlugInDriverRef inDriver, AudioObjectID inDeviceObjectID, UInt32 inClientID, UInt32 inOperationID, UInt32 inIOBufferFrameSize, const AudioServerPlugInIOCycleInfo* inIOCycleInfo)
 {
 	//	This is called at the end of an IO operation.
-	
+
 	#pragma unused(inClientID)
-	
+
 	//	declare the local variables
 	OSStatus theAnswer = 0;
-	
+
 	try
 	{
 		//	check the arguments
 		ThrowIf(inDriver != gAudioServerPlugInDriverRef, CAException(kAudioHardwareBadObjectError), "SA_EndIOOperation: bad driver reference");
 		ThrowIfNULL(inIOCycleInfo, CAException(kAudioHardwareIllegalOperationError), "SA_EndIOOperation: no cycle info");
-		
+
 		//	get the object
 		SA_ObjectReleaser<SA_Device> theDevice(SA_ObjectMap::CopyObjectOfClassByObjectID<SA_Device>(inDeviceObjectID));
 		ThrowIf(!theDevice.IsValid(), CAException(kAudioHardwareBadObjectError), "SA_EndIOOperation: unknown device");
-		
+
 		//	tell it to do the work
 		theDevice->EndIOOperation(inOperationID, inIOBufferFrameSize, *inIOCycleInfo);
 	}
@@ -1134,6 +1134,6 @@ static OSStatus	SA_EndIOOperation(AudioServerPlugInDriverRef inDriver, AudioObje
 	{
 		theAnswer = kAudioHardwareUnspecifiedError;
 	}
-	
+
 	return theAnswer;
 }

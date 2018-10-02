@@ -2,19 +2,19 @@
  File: JackBridge.h
 
  MIT License
- 
+
  Copyright (c) 2018 Shunji Uno <madhatter68@linux-dtm.ivory.ne.jp>
- 
+
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
- 
+
  The above copyright notice and this permission notice shall be included in all
  copies or substantial portions of the Software.
- 
+
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -74,7 +74,7 @@ typedef float sample_t;
 #define STRBUF_UP(i)        (0x10000*(i)+0x10000)
 #define STRBUF_DOWN(i)      (0x10000*(i)+0x18000)
 
-#define JACK_SHMPATH        "/JackBridge"
+#define JACK_SHMPATH        "/HulaLoop"
 
 #ifdef _ERROR_SYSLOG_
 #define ERROR(pri, str, code) syslog(pri, str, code);
@@ -104,19 +104,19 @@ protected:
 
     int create_shm() {
         struct stat stat;
-        ERROR(LOG_INFO, "JackBridge: Initializing shared memory to communicate with jack(%d).", 0);
+        ERROR(LOG_INFO, "HulaLoop: Initializing shared memory to communicate with jack(%d).", 0);
         shm_fd = shm_open(JACK_SHMPATH, O_CREAT|O_RDWR, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
         if (shm_fd < 0) {
             ERROR(LOG_ERR, "shm cannot be opened with %s.\n", strerror(errno));
             return -1;
         }
-        
+
         if (fstat(shm_fd, &stat) < 0) {
             ERROR(LOG_ERR, "Couldn't get shm stat with %s.\n", strerror(errno));
             close(shm_fd);
             return -1;
         }
-        
+
         if (stat.st_size != JACK_SHMSIZE) {
             if (ftruncate(shm_fd, JACK_SHMSIZE) == -1) {
                 ERROR(LOG_INFO, "shm cannot be truncated with %s. Try to recreate shm.\n", strerror(errno));
@@ -133,16 +133,16 @@ protected:
         close(shm_fd);
         return 0;
     }
-    
+
     int attach_shm() {
         struct stat stat;
-        
+
         shm_fd = shm_open(JACK_SHMPATH, O_RDWR, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
         if (shm_fd < 0) {
             ERROR(LOG_ERR, "shm_open() failed with %s.\n", strerror(errno));
             return -1;
         }
-        
+
         if (fstat(shm_fd, &stat) < 0) {
             ERROR(LOG_ERR, "fstat() failed with %s.\n", strerror(errno));
             return -1;
@@ -151,19 +151,19 @@ protected:
                 ERROR(LOG_ERR, "does not match shmsize(%lld). May be driver version mismatch\n", stat.st_size);
             }
         }
-        
+
         char* shm_base = (char*)mmap(NULL, REGSMAP_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, shm_fd, instance*REGSMAP_BOUNDARY);
-        //char* shm_base = (char*)mmap(NULL, JACK_SHMSIZE, PROT_READ|PROT_WRITE, MAP_SHARED, shm_fd, 0);
+        // char* shm_base = (char*)mmap(NULL, JACK_SHMSIZE, PROT_READ|PROT_WRITE, MAP_SHARED, shm_fd, 0);
         if (shm_base == MAP_FAILED) {
             ERROR(LOG_ERR, "mmap() failed with %s\n", strerror(errno));
             return -1;
         }
-        
+
         buf_up[0]   = (sample_t*)(shm_base + STRBUF_UP(0));
         buf_down[0] = (sample_t*)(shm_base + STRBUF_DOWN(0));
         buf_up[1]   = (sample_t*)(shm_base + STRBUF_UP(1));
         buf_down[1] = (sample_t*)(shm_base + STRBUF_DOWN(1));
-        
+
         shmNumberTimeStamps = (uint64_t*)(shm_base+0x100);
         shmZeroHostTime = (uint64_t*)(shm_base+0x108);
         shmSeed = (uint64_t*)(shm_base+0x110);
@@ -176,7 +176,7 @@ protected:
         shmWriteFrameNumber[1] = (uint64_t*)(shm_base+0x198);
         return 0;
     }
-    
+
 public:
     JackBridgeDriverIF(uint32_t _instance) : instance(_instance) {
     }
