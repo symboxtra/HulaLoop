@@ -73,7 +73,7 @@ vector<Device *> OSXAudio::getDevices(DeviceType type)
  */
 vector<Device *> OSXAudio::getInputDevices()
 {
-    return getDevices(DeviceType::RECORDING);
+    return getDevices(DeviceType::RECORD);
 }
 
 /**
