@@ -59,7 +59,8 @@ set (T_TEST_DIR "${CMAKE_SOURCE_DIR}/src/test")
 # Add the GUI tests to the bin directory instead of bin/test
 # GUI tests need the Qt DLLs in bin
 if (HL_INCLUDE_GUI_TESTS)
-	create_test("src/test/TestGUI.cpp" "src/control/transport.cpp;src/ui/qmlbridge.cpp;src/ui/qml.qrc" -1)
+    create_test ("src/test/TestGUI.cpp" "${AUDIO_SRC_FILES};src/control/transport.cpp;src/ui/qmlbridge.cpp;src/ui/qml.qrc" -1)
+    target_link_libraries (TestGUI ${HL_LIBRARIES})
 else ()
 	message (STATUS "Ignoring GUI tests. Set HL_INCLUDE_GUI_TESTS=true to include.")
 endif ()

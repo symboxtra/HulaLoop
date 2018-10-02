@@ -9,8 +9,8 @@ LinuxAudio::LinuxAudio()
         cout << reinterpret_cast<uintptr_t>(t[i]->getID()) << " " << t[i]->getName() << endl;
     }*/
 
-    thread t1(&LinuxAudio::test_capture, this);
-    t1.join();
+    //thread t1(&LinuxAudio::test_capture, this);
+    //t1.join();
 
 
 }
@@ -104,7 +104,7 @@ vector<Device*> LinuxAudio::getOutputDevices()
         string deviceName = snd_ctl_card_info_get_name(cardInfo);
         
         //create a new device and push it into the vector
-        devices.push_back(new Device(reinterpret_cast<uint32_t*>(cardNumber), deviceName, DeviceType::RECORDING));
+        devices.push_back(new Device(reinterpret_cast<uint32_t*>(cardNumber), deviceName, DeviceType::RECORD));
         snd_ctl_close(soundCard);
     }
     snd_config_update_free_global();

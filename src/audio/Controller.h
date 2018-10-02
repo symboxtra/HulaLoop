@@ -1,18 +1,11 @@
 #ifndef CONTROL
 #define CONTROL
 
+#include <vector>
+#include <iostream>
+
 #include "OSAudio.h"
 #include "ICallback.h"
-
-#if _WIN32
-    #include "WindowsAudio.h"
-#elif __unix__
-    // #include "LinuxAudio.h" // TODO: Remove comment once LinuxAudio is complete
-#elif __APPLE__
-    #include "OSXAudio.h"
-#endif
-
-#include <iostream>
 
 using byte = uint8_t;
 
@@ -35,6 +28,8 @@ class Controller : public ICallback
         void removeBufferReadyCallback(ICallback* func);
 
         void handleData(byte* data, uint32_t size);
+        vector<Device*> getInputDevices();
+        vector<Device*> getOutputDevices();
 };
 
 #endif

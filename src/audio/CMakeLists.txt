@@ -14,14 +14,15 @@ else ()
     list (REMOVE_ITEM AUDIO_SRC_FILES ${WIN_AUDIO_SRC_FILES} ${OSX_AUDIO_SRC_FILES})
 endif ()
 
-#TODO: Change this to better apply with the parent CMake
-add_executable(test_audio ${AUDIO_SRC_FILES})
-
 # Link OS libraries based on OS
 if (WIN32)
-    target_link_libraries(test_audio winmm Ole32)
+    set (AUDIO_LIBS winmm Ole32)
 elseif (OSX)
-    target_link_libraries(test_audio portaudio pthread)
+    set (AUDIO_LIBS portaudio pthread)
 else ()
-    target_link_libraries(test_audio asound pthread)
+    set (AUDIO_LIBS asound pthread)
 endif ()
+
+# Make audio source and libs available in parent scope
+set (AUDIO_SRC_FILES ${AUDIO_SRC_FILES} PARENT_SCOPE)
+set (AUDIO_LIBS ${AUDIO_LIBS} PARENT_SCOPE)

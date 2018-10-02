@@ -151,6 +151,10 @@ endif ()
 # Add subdirectories and include any headers from lower level CMakeLists
 add_subdirectory (src/audio)
 include_directories (${INCLUDE_DIRS})
+set (HL_LIBRARIES ${HL_LIBRARIES} ${AUDIO_LIBS})
+
+add_subdirectory (src/control)
+include_directories (${INCLUDE_DIRS})
 
 add_subdirectory (src/ui)
 include_directories (${INCLUDE_DIRS})

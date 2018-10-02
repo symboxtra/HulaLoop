@@ -1,13 +1,13 @@
-#include "transport.h"
-
 #include <iostream>
+
+#include "transport.h"
 
 /**
  * Construct a new instance of the Transport class.
  */
 Transport::Transport()
 {
-
+    controller = new Controller();
 }
 
 /**
@@ -84,4 +84,12 @@ std::string Transport::stateToStr(const TransportState state) const
 
     }
 
+}
+
+/**
+ * Delete the controller we created
+ */
+Transport::~Transport()
+{
+    delete controller;
 }
