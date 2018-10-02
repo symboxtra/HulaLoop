@@ -3,4 +3,6 @@ Developer Documentation
 
 .. raw:: html
 
-	<iframe src="_static/doxygen/index.html" style="position: relative; top: 0; height: 100vw; width: 100vw; border: 0;"></iframe>
+	<div style="padding-bottom: 50px;">
+		<a href="_static/doxygen/index.html" target="_blank">Click here to access Developer Documentation</a>
+	</div>

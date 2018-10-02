@@ -6,26 +6,14 @@
 Welcome to HulaLoop's documentation!
 ====================================
 
-Simple cross-platform audio capture tool
-
-    print 'hello'
-
-    >> hello
+Simple cross-platform audio loopback and recording.
 
 Guide:
 ^^^^^^
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
-   license
-   help
+   readme
    documentation
-
-
-
-Indices and tables
-^^^^^^^^^^^^^^^^^^
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   help
+   license
