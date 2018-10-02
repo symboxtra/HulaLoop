@@ -17,6 +17,9 @@
 using byte = uint8_t;
 
 // TODO: Add public description of class
+/**
+ * A class that structures the receival of audio from the OS framework
+ */
 class Controller : public ICallback
 {
     private:

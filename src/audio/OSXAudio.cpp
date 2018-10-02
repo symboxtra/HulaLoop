@@ -4,12 +4,18 @@
 
 #include "OSXAudio.h"
 
+/**
+ * Constructs an instance of OSXAudio class
+ */
 OSXAudio::OSXAudio()
 {
     getInputDevices();
 
 }
 
+/**
+ * Execution loop for loopback capture
+ */
 void OSXAudio::capture()
 {
 
@@ -79,16 +85,31 @@ vector<Device *> OSXAudio::getOutputDevices()
     return getDevices(DeviceType::PLAYBACK);
 }
 
+/**
+ * Static function in the current instance of the class
+ * to allow thread execution
+ *
+ * @param _this Instance of the current object
+ */
 void OSXAudio::test_capture(OSXAudio * param)
 {
 
 }
 
+/**
+ * Set the selected output device and restart capture threads with
+ * new device
+ *
+ * @param device Instance of Device that corresponds to the desired system device
+ */
 void OSXAudio::setActiveOutputDevice(Device * device)
 {
 
 }
 
+/**
+ * Deconstructs the OSXAudio instance
+ */
 OSXAudio::~OSXAudio()
 {
 
