@@ -1,19 +1,37 @@
 #include "qmlbridge.h"
 
-QMLBridge::QMLBridge(QObject *parent) : QObject(parent) {}
+#include "../control/transport.h"
 
-QString QMLBridge::getState()
+QMLBridge::QMLBridge(QObject *parent) : QObject(parent)
 {
-	return state;
+    transport = new Transport;
 }
 
-void QMLBridge::setState(const QString &state)
+QString QMLBridge::getTransportState() const
 {
+    return QString::fromStdString(transport->stateToStr(transport->getState()));
+}
 
-	if(this->state == state)
-		return;
+void QMLBridge::record()
+{
+    transport->record();
+    emit stateChanged();
+}
 
-	this->state = state;
-	emit stateChanged();
+void QMLBridge::stop()
+{
+    transport->stop();
+    emit stateChanged();
+}
 
+void QMLBridge::play()
+{
+    transport->play();
+    emit stateChanged();
+}
+
+void QMLBridge::pause()
+{
+    transport->pause();
+    emit stateChanged();
 }
