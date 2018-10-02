@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         HL_WEBHOOK_URL = credentials('HULALOOP_WEBHOOK_URL')
+        HL_CODECOV_TOKEN = credentials('HL_CODECOV_TOKEN')
     }
 
     options {
@@ -63,7 +64,7 @@ pipeline {
                                     rm -rf build-linux
                                     mkdir build-linux
                                     cd build-linux
-                                    cmake ..
+                                    cmake .. -DHL_INCLUDE_GUI_TESTS=false
                                 '''
 
                             }
@@ -91,7 +92,15 @@ pipeline {
 
                                 sh '''
                                     echo "Running test suite on ${HL_OS}..."
-                                    # TODO: ctest -V
+
+                                    lcov -c -i -d build-linux -o build-linux/coverage.base
+
+                                    cd ./build-linux
+                                    ctest -V
+                                    cd ..
+
+                                    lcov -c -d build-linux -o build-linux/coverage.actual
+                                    lcov -a build-linux/coverage.base -a build-linux/coverage.actual -o build-linux/coverage.info
                                 '''
 
                             }
@@ -108,13 +117,14 @@ pipeline {
                         }
                         success {
                             sh '''
-                                ./send.sh success $HL_WEBHOOK_URL
+                                ./send.sh success ${HL_WEBHOOK_URL}
                                 curl -X PUT -d status=passing http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${HL_OS}-${GIT_BRANCH} || true
+                                bash <(curl -s https://codecov.io/bash) -X gcov -t ${HL_CODECOV_TOKEN}
                             '''
                         }
                         failure {
                             sh '''
-                                ./send.sh failure $HL_WEBHOOK_URL
+                                ./send.sh failure ${HL_WEBHOOK_URL}
                                 curl -X PUT -d status=failing http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${HL_OS}-${GIT_BRANCH} || true
                             '''
                         }
@@ -153,7 +163,7 @@ pipeline {
                                     rm -rf build-osx
                                     mkdir build-osx
                                     cd build-osx
-                                    cmake ..
+                                    cmake .. -DHL_INCLUDE_GUI_TESTS=false
                                 '''
 
                             }
@@ -179,7 +189,15 @@ pipeline {
 
                                 sh '''
                                     echo "Running test suite on ${HL_OS}..."
-                                    # TODO: ctest -V
+
+                                    lcov -c -i -d build-osx -o build-osx/coverage.base
+
+                                    cd ./build-osx
+                                    ctest -V
+                                    cd ..
+
+                                    lcov -c -d build-osx -o build-osx/coverage.actual
+                                    lcov -a build-osx/coverage.base -a build-osx/coverage.actual -o build-osx/coverage.info
                                 '''
 
                             }
@@ -195,13 +213,14 @@ pipeline {
                         }
                         success {
                             sh '''
-                                ./send.sh success $HL_WEBHOOK_URL
+                                ./send.sh success ${HL_WEBHOOK_URL}
                                 curl -X PUT -d status=passing http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${HL_OS}-${GIT_BRANCH} || true
+                                bash <(curl -s https://codecov.io/bash) -X gcov -t ${HL_CODECOV_TOKEN}
                             '''
                         }
                         failure {
                             sh '''
-                                ./send.sh failure $HL_WEBHOOK_URL
+                                ./send.sh failure ${HL_WEBHOOK_URL}
                                 curl -X PUT -d status=failing http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${HL_OS}-${GIT_BRANCH} || true
                             '''
                         }
@@ -221,6 +240,7 @@ pipeline {
                         HL_OS = "Windows"
                         HL_QT_VERSION = "5.11.2"
                         HL_QT_PREFIX = "C:\\Qt\\${HL_QT_VERSION}"
+                        PATH = "C:\\Program Files\\OpenCppCoverage;${PATH}"
                     }
 
                     stages {
@@ -264,7 +284,12 @@ pipeline {
 
                                 powershell '''
                                     echo "Running test suite on ${ENV:HL_OS}..."
-                                    # TODO: ctest -C Debug -V
+
+                                    cd build-win
+                                    ctest -C Debug -V
+                                    cd ..
+
+                                    OpenCppCoverage --export_type=cobertura:build-win/cobertura.xml (Get-Item build-win/bin/test/*.exe)>$null 2>$null
                                 '''
 
                             }
@@ -280,13 +305,14 @@ pipeline {
                         }
                         success {
                             powershell '''
-                                ./send.ps1 success $env:HL_WEBHOOK_URL
+                                ./send.ps1 success ${ENV:HL_WEBHOOK_URL} -ErrorAction Ignore
                                 Invoke-WebRequest -Uri http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${ENV:HL_OS}-${ENV:GIT_BRANCH} -Method PUT -Body (@{"status"="passing"} | ConvertTo-Json) -ContentType "application/json"
+                                codecov --root . --disable gcov -f build-win/cobertura.xml -t ${ENV:HL_CODECOV_TOKEN}
                             '''
                         }
                         failure {
                             powershell '''
-                                ./send.ps1 failure $env:HL_WEBHOOK_URL
+                                ./send.ps1 failure ${ENV:HL_WEBHOOK_URL} -ErrorAction Ignore
                                 Invoke-WebRequest -Uri http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${ENV:HL_OS}-${ENV:GIT_BRANCH} -Method PUT -Body (@{"status"="failing"} | ConvertTo-Json) -ContentType "application/json"
                             '''
                         }

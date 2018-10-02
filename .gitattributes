@@ -3,3 +3,6 @@ src/ui/fonts/* linguist-vendored
 
 # Allow CRLF for Windows batch files
 *.bat text eol=crlf
+
+# Convert all line endings to Unix-style LF
+text eol=lf

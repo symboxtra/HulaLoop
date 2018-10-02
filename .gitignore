@@ -38,3 +38,5 @@ docs/read-the-docs/source/_static/doxygen
 *.exe
 *.out
 *.app
+
+.vscode/
