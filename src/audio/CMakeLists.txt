@@ -21,9 +21,6 @@ add_executable(test_audio ${AUDIO_SRC_FILES})
 if (WIN32)
     target_link_libraries(test_audio winmm Ole32)
 elseif (OSX)
-    # Setting the linker flag is a hack and shouldn't stick around
-    # Couldn't get this to link any other way for the time being
-    set (CMAKE_EXE_LINKER_FLAGS "-lportaudio ${CMAKE_EXE_LINKER_FLAGS}")
     target_link_libraries(test_audio portaudio pthread)
 else ()
     target_link_libraries(test_audio asound pthread)

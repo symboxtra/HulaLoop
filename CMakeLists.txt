@@ -129,14 +129,10 @@ set (HL_LIBRARIES
 ######## Libraries ########
 
 if (OSX)
-    # Build PortAudio
-    add_subdirectory (${CMAKE_SOURCE_DIR}/src/libs/portaudio)
-
-    # Find what we built
+    # Find PortAudio
     find_library (
         PORTAUDIO_LIB
         NAMES portaudio
-        HINTS ${CMAKE_BINARY_DIR}/lib/lib
     )
 
     if (NOT PORTAUDIO_LIB)
@@ -144,9 +140,6 @@ if (OSX)
     else ()
         message (STATUS "PortAudio Location: ${PORTAUDIO_LIB}")
     endif()
-
-    # Add the include path
-    include_directories(${CMAKE_SOURCE_DIR}/src/libs/portaudio/include)
 endif ()
 
 add_subdirectory (src/audio)
