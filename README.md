@@ -34,6 +34,7 @@ sudo apt install g++ build-essential libgl1-mesa-dev cmake libasound2 libasound2
 If you want to compile documentation:
 ```bash
 sudo apt install python3-sphinx doxygen graphviz
+python -m pip install recommonmark
 ```
 
 
@@ -44,11 +45,16 @@ Install ```brew```:
 ```
 
 ```bash
-brew install g++ qt build-essential cmake portaudio sphinx-doc doxygen graphviz
+brew install g++ qt build-essential cmake portaudio
 ```
 
 **IMPORTANT:** JACK2 must be installed using the [GUI installer](http://jackaudio.org/downloads/) since ```brew``` only includes JACK1.
 
+If you want to compile documentation:
+```bash
+brew install sphinx-doc doxygen graphviz
+python -m pip install recommonmark
+```
 
 #### Windows ####
 - Install Qt
