@@ -9,7 +9,7 @@
 #elif __unix__
     // #include "LinuxAudio.h" // TODO: Remove comment once LinuxAudio is complete
 #elif __APPLE__
-    // #include "OSXAudio.h" // TODO: Remove comment once OSXAudio is complete
+    #include "OSXAudio.h"
 #endif
 
 #include <iostream>

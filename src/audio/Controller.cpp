@@ -7,7 +7,7 @@ Controller::Controller()
         //audio = new LinuxAudio();
         cout << "LINUX" << endl;
     #elif defined(__APPLE__)
-        cout << "APPLE" << endl;
+        audio = new OSXAudio();
     #elif _WIN32
         audio = new WindowsAudio();
     #endif
