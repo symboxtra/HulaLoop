@@ -159,14 +159,104 @@ Rectangle {
 
             onClicked: timerPopup.open()
         }
-
         Label {
             id: timerLabel
 
             color: "black"
-            text: "HH:MM:SS"
+            text: "Timer:"
+        }
+        Timer {
+            id: countDownTimer
+            interval: 1000
+            running: false
+            repeat: true
+            onTriggered: {
+                if(textCountdown.time <= 1){
+                    countDownTimer.stop();
+                    qmlbridge.record();
+                    recordingTimer.start();
+                }
+                textCountdown.text = textCountdown.time;
+                textCountdown.time--;
+            }
+        }
+        Timer {
+            id: recordingTimer
+            interval: 1000
+            running: false
+            repeat: true
+            onTriggered: {
+                if(textCountdown.time >= textCountdown.time2){
+                    qmlbridge.stop();
+                    recordingTimer.stop();
+                }
+                textCountdown.text = textCountdown.time;
+                textCountdown.time++;
+            }
+        }
+        Text {
+            id: textCountdown
+            text: "0"
+            property int time: getTime()
+            property int time2: getTime2()
+            function getTime(){
+                let d = delayInput.text;
+                console.log(d);
+                let h = parseInt(d.substring(0,2));
+                let m = parseInt(d.substring(3,5));
+                let s = parseInt(d.substring(6,8));
+                let timeRem = h * 60 * 60 + m * 60 + s;
+                return timeRem;
+            }
+            function getTime2(){
+                let d = recordTimeInput.text;
+                console.log(d);
+                let h = parseInt(d.substring(0,2));
+                let m = parseInt(d.substring(3,5));
+                let s = parseInt(d.substring(6,8));
+                let timeRem = h * 60 * 60 + m * 60 + s;
+                return timeRem;
+            }
+        }
+
+        GridLayout {
+            anchors.leftMargin: buttonPanel.width * 0.9
+            rows: 2
+            columns: 2
+            Label {
+                id: inputDeviceLabel
+
+                color: "black"
+                text: "Input Device:"
+            }
+            ComboBox {
+                id: iDeviceInfoLabel
+                model: ListModel {
+                    id: iDeviceItems
+                    ListElement { text: "Device1";}
+                    ListElement { text: "Device2";}
+                    ListElement { text: "Device3";}
+                }
+            }
+            Label {
+                id: outputDeviceLabel
+
+                color: "black"
+                text: "Output Device:"
+            }
+            ComboBox {
+                id: oDeviceInfoLabel
+                model: ListModel {
+                    id: oDeviceItems
+                    ListElement { text: "Device1";}
+                    ListElement { text: "Device2";}
+                    ListElement { text: "Device3";}
+                }
+            }
+
         }
     }
+
 
     Popup {
         id: timerPopup
@@ -197,7 +287,14 @@ Rectangle {
                     verticalAlignment: Text.AlignVCenter
                 }
 
-                ComboBox {
+                TextInput {
+                    id: delayInput
+                    text: "00:00:00"
+                    inputMask: "00:00:00"
+                    color: "white"
+                }
+
+                /*ComboBox {
                     id: delayDropdown
 
                     editable: true
@@ -213,7 +310,7 @@ Rectangle {
                             text: "10"
                         }
                     }
-                }
+                }*/
 
                 Label {
                     font.family: "Roboto"
@@ -225,7 +322,13 @@ Rectangle {
                     verticalAlignment: Text.AlignVCenter
                 }
 
-                ComboBox {
+                TextInput {
+                    id: recordTimeInput
+                    text: "00:00:00"
+                    inputMask: "00:00:00"
+                    color: "white"
+                }
+                /*ComboBox {
                     editable: true
                     model: ListModel {
                         id: model1
@@ -239,7 +342,7 @@ Rectangle {
                             text: "10"
                         }
                     }
-                }
+                }*/
             }
 
             RowLayout {
@@ -250,6 +353,9 @@ Rectangle {
                 Button {
                     Layout.alignment: Qt.AlignLeft
                     id: cancelBtn
+                    onClicked: {
+                        timerPopup.close();
+                    }
                     Layout.preferredWidth: Math.round(buttonPanel.width * 0.15)
                     contentItem: Text {
                         font.family: "Roboto"
@@ -265,6 +371,11 @@ Rectangle {
                 Button {
                     Layout.alignment: Qt.AlignRight
                     id: okBtn
+                    onClicked: {
+                        countDownTimer.start();
+                        timerPopup.close();
+                    }
+
                     Layout.preferredWidth: Math.round(buttonPanel.width * 0.15)
                     contentItem: Text {
                         font.family: "Roboto"
