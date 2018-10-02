@@ -42,8 +42,11 @@ Install ```brew```:
 ```
 
 ```bash
-brew install g++ qt build-essential cmake sphinx-doc doxygen graphviz
+brew install g++ qt build-essential cmake portaudio sphinx-doc doxygen graphviz
 ```
+
+**IMPORTANT:** JACK2 must be installed using the [GUI installer](http://jackaudio.org/downloads/) since ```brew``` only includes JACK1.
+
 
 #### Windows ####
 - Install Qt
@@ -64,14 +67,23 @@ cmake --build .
 ### CTest ###
 
 ```bash
+cd build
 ctest -C Debug -V
 ```
 
-### Build Documentation ###
+### Build Tutorials and Documentation ###
+```bash
+cd docs
+make html # Runs Doxygen and Sphinx builds
+cd build-docs/html
+# python -m SimpleHTTPServer is a simple way to serve these
+# Open localhost:8000 in your browser to view
+```
+
+### Build Developer Documentation ###
+This is built with the first option. To build separetly, use:
 ```bash
 cd docs
 doxygen # Finds default Doxyfile
 cd build-doxygen/html
-# python -m SimpleHTTPServer is a simple way to serve these
-# Open localhost:8000 in your browser to view
 ```
