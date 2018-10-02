@@ -2,11 +2,17 @@
 
 #include <iostream>
 
+/**
+ * Construct a new instance of the Transport class.
+ */
 Transport::Transport()
 {
 
 }
 
+/**
+ * Start and handle the process of recording.
+ */
 bool Transport::record()
 {
     std::cout << "Record button clicked!" << std::endl;
@@ -14,6 +20,9 @@ bool Transport::record()
     return true;
 }
 
+/**
+ * Enter the stopped state for playback or recording.
+ */
 bool Transport::stop()
 {
     std::cout << "Stop button clicked!" << std::endl;
@@ -21,6 +30,9 @@ bool Transport::stop()
     return true;
 }
 
+/**
+ * Playback previously recorded audio.
+ */
 bool Transport::play()
 {
     std::cout << "Play button clicked!" << std::endl;
@@ -28,6 +40,9 @@ bool Transport::play()
     return true;
 }
 
+/**
+ * Enter the paused state for playback or recording.
+ */
 bool Transport::pause()
 {
     std::cout << "Pause button clicked!" << std::endl;
@@ -35,11 +50,21 @@ bool Transport::pause()
     return true;
 }
 
+/**
+ * Return the current state of the Transport object.
+ *
+ * @return state Current transport state.
+ */
 TransportState Transport::getState() const
 {
     return state;
 }
 
+/**
+ * Convert an enum of type TransportState to a presentable string.
+ *
+ * @return stateString String containing appropriate state descriptor.
+ */
 std::string Transport::stateToStr(const TransportState state) const
 {
 

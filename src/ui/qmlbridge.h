@@ -6,6 +6,10 @@
 
 #include "../control/transport.h"
 
+/**
+ * Class for communicating between QML and C++.
+ * This is designed to be added as a QML type and used in QML.
+ */
 class QMLBridge : public QObject
 {
 	Q_OBJECT
@@ -23,6 +27,11 @@ class QMLBridge : public QObject
 		Q_INVOKABLE void pause();
 
 	signals:
+
+		/**
+		 * Signal emmitted when the Transport changes states.
+		 * Keeps the UI's state machine on the same page.
+		 */
 		void stateChanged();
 };
 
