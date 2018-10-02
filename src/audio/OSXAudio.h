@@ -9,6 +9,9 @@
 
 using namespace std;
 
+/**
+ * A audio class that captures system wide audio on OSX
+ */
 class OSXAudio : public OSAudio
 {
     private:
