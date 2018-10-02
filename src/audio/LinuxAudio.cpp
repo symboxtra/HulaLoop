@@ -5,9 +5,9 @@ LinuxAudio::LinuxAudio()
     vector<Device*> t = getOutputDevices();
     //setActiveOutputDevice(t[0]);
 
-    for(int i = 0; i < t.size(); i++){
+    /*for(int i = 0; i < t.size(); i++){
         cout << reinterpret_cast<uintptr_t>(t[i]->getID()) << " " << t[i]->getName() << endl;
-    }
+    }*/
 
     thread t1(&LinuxAudio::test_capture, this);
     t1.join();
@@ -114,7 +114,7 @@ vector<Device*> LinuxAudio::getOutputDevices()
 void LinuxAudio::setActiveOutputDevice(Device* device)
 {
     this->activeOutputDevice = device;
-    cout << "HERE" << endl;
+
     // Interrupt all threads and make sure they stop 
     for(auto& t : execThreads)
     {  
@@ -128,7 +128,6 @@ void LinuxAudio::setActiveOutputDevice(Device* device)
     thread t1(&LinuxAudio::test_capture, this);
 
     t1.join();
-    //execThreads.push_back(t1);
 }
 
 void LinuxAudio::test_capture(LinuxAudio* param)
@@ -213,7 +212,7 @@ void LinuxAudio::capture()
             cerr << "Read short, only read " << err << " bytes" << endl; 
         }
         //write to standard output for now
-        //TODO change to not standard output
+        //TODO: change to not standard output
         err = write(1, audioBuffer, audioBufferSize);
         if(err != audioBufferSize)
         {
@@ -222,7 +221,6 @@ void LinuxAudio::capture()
     }
 
     //cleanup stuff
-    //TODO fix this mem leak?
     snd_pcm_drain(pcmHandle);
     snd_pcm_close(pcmHandle);
     free(audioBuffer);

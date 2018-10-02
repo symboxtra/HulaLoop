@@ -23,7 +23,7 @@ class LinuxAudio : public OSAudio
     public:
         LinuxAudio();
         ~LinuxAudio();
-        void capture();
+        void capture(int seconds);
         vector<Device*> getInputDevices();
         vector<Device*> getOutputDevices();
         static void test_capture(LinuxAudio* param);
