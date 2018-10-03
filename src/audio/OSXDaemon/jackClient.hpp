@@ -47,38 +47,38 @@ typedef jack_default_audio_sample_t sample_t;
  Jack functions
 **********************************************************************/
 class JackClient {
-protected:
-    jack_client_t* client;
-    jack_port_t *audioIn[MAX_PORT_NUM], *audioOut[MAX_PORT_NUM];
+    protected:
+        jack_client_t * client;
+        jack_port_t * audioIn[MAX_PORT_NUM], *audioOut[MAX_PORT_NUM];
 
-    int nAudioIn, nAudioOut;
-    int SampleRate;
-    jack_nframes_t BufSize;
-    bool is_master;
+        int nAudioIn, nAudioOut;
+        int SampleRate;
+        jack_nframes_t BufSize;
+        bool is_master;
 
-    virtual int process_callback(jack_nframes_t nframes);
-    virtual int sync_callback(jack_transport_state_t state, jack_position_t *pos);
-    virtual void timebase_callback(jack_transport_state_t state, jack_nframes_t nframes,
-                                   jack_position_t *pos, int new_pos);
+        virtual int process_callback(jack_nframes_t nframes);
+        virtual int sync_callback(jack_transport_state_t state, jack_position_t * pos);
+        virtual void timebase_callback(jack_transport_state_t state, jack_nframes_t nframes,
+                                       jack_position_t * pos, int new_pos);
 
-    // Transport API
-    void transport_start();
-    void transport_stop();
-    jack_transport_state_t transport_query(jack_position_t* pos);
-    int transport_reposition(const jack_position_t* pos);
+        // Transport API
+        void transport_start();
+        void transport_stop();
+        jack_transport_state_t transport_query(jack_position_t * pos);
+        int transport_reposition(const jack_position_t * pos);
 
-private:
-    uint32_t cb_flags;
-    static int _process_callback(jack_nframes_t nframes, void *arg);
-    static int _sync_callback(jack_transport_state_t state, jack_position_t *pos, void *arg);
-    static void _timebase_callback(jack_transport_state_t state, jack_nframes_t nframes,
-                                   jack_position_t *pos, int new_pos, void *arg);
+    private:
+        uint32_t cb_flags;
+        static int _process_callback(jack_nframes_t nframes, void * arg);
+        static int _sync_callback(jack_transport_state_t state, jack_position_t * pos, void * arg);
+        static void _timebase_callback(jack_transport_state_t state, jack_nframes_t nframes,
+                                       jack_position_t * pos, int new_pos, void * arg);
 
-public:
-    JackClient(const char* name, uint32_t cb_flags);
-    ~JackClient();
-    void activate();
+    public:
+        JackClient(const char * name, uint32_t cb_flags);
+        ~JackClient();
+        void activate();
 
-    int register_ports(const char* nameAin[], const char* nameAout[]);
+        int register_ports(const char * nameAin[], const char * nameAout[]);
 };
 #endif
