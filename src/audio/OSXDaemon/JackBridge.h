@@ -24,18 +24,19 @@
  SOFTWARE.
  */
 #pragma once
+
+#include <errno.h>
+#include <fcntl.h>
+#include <mach/mach_time.h>
+#include <stdint.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include <iostream>
 #include <cstdlib>
-#include <unistd.h>
-#include <string>
 #include <sstream>
-
-#include <sys/mman.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <sys/stat.h>
-#include <stdint.h>
-#include <mach/mach_time.h>
+#include <string>
 
 /******************************************************************************
  Audio functions (Generic/CoreAudio)

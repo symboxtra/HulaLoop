@@ -1,6 +1,7 @@
+#include <portaudio.h>
+
 #include <cstdint>
 #include <iostream>
-#include <portaudio.h>
 
 #include "OSXAudio.h"
 #include "OSXDaemon/OSXDaemon.h"

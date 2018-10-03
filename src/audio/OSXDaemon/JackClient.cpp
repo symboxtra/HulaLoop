@@ -22,11 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include <cstdio>
-#include <jack/jack.h>
 #include <errno.h>
-#include "JackClient.hpp"
+#include <jack/jack.h>
+
+#include <cstdio>
+
 #include "../HulaAudioError.h"
+#include "JackClient.hpp"
 
 /**********************************************************************
  private functions
