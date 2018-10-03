@@ -24,7 +24,6 @@ SOFTWARE.
 
 #include <cstdio>
 #include <jack/jack.h>
-#include <jack/midiport.h>
 #include "jackClient.hpp"
 
 /**********************************************************************
@@ -80,8 +79,7 @@ JackClient::~JackClient() {
     jack_client_close(client);
 }
 
-int JackClient::register_ports(const char *nameAin[], const char *nameAout[],
-                               const char *nameMin[], const char *nameMout[]) {
+int JackClient::register_ports(const char *nameAin[], const char *nameAout[]) {
     int i;
 
     // create Audio input ports
@@ -103,26 +101,7 @@ int JackClient::register_ports(const char *nameAin[], const char *nameAout[],
         }
         nAudioOut=i;
     }
-    // create MIDI input ports
 
-    nMidiIn=0;
-    if (nameMin) {
-        for(i=0; (nameMin[i] != NULL)&&(i<MAX_PORT_NUM); i++) {
-            midiIn[i] = jack_port_register(client, nameMin[i],
-                                           JACK_DEFAULT_MIDI_TYPE, JackPortIsInput, 0);
-        }
-        nMidiIn=i;
-    }
-
-    // create MIDI output ports
-    nMidiOut=0;
-    if (nameMout) {
-        for(i=0; (nameMout[i] != NULL)&&(i<MAX_PORT_NUM); i++) {
-            midiOut[i] = jack_port_register(client, nameMout[i],
-                                            JACK_DEFAULT_MIDI_TYPE, JackPortIsOutput, 0);
-        }
-        nMidiOut=i;
-    }
     return 0;
 }
 

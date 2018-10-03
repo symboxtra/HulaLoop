@@ -23,7 +23,6 @@ SOFTWARE.
 */
 
 #include <jack/jack.h>
-#include <jack/midiport.h>
 
 #ifndef __JACKCLIENT_HPP__
 #define __JACKCLIENT_HPP__
@@ -51,9 +50,8 @@ class JackClient {
 protected:
     jack_client_t* client;
     jack_port_t *audioIn[MAX_PORT_NUM], *audioOut[MAX_PORT_NUM];
-    jack_port_t *midiIn[MAX_PORT_NUM], *midiOut[MAX_PORT_NUM];
 
-    int nAudioIn, nAudioOut, nMidiIn, nMidiOut;
+    int nAudioIn, nAudioOut;
     int SampleRate;
     jack_nframes_t BufSize;
     bool is_master;
@@ -81,7 +79,6 @@ public:
     ~JackClient();
     void activate();
 
-    int register_ports(const char* nameAin[], const char* nameAout[],
-                       const char* nameMin[], const char* nameMout[]);
+    int register_ports(const char* nameAin[], const char* nameAout[]);
 };
 #endif
