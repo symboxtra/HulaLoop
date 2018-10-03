@@ -14,49 +14,34 @@ Rectangle {
     color: "lightsteelblue"
     y: 98
 
-    /*var request = new XMLHttpRequest()
-    var lines=""
-    request.open: ('GET', 'test.txt')
-    request.onreadystatechange:function(event) {
-        if (request.readyState == XMLHttpRequest.DONE) {
-            lines = request.responseText.split('\n')  // Assuming you've defined
-            printf(lines)
-        }
-    }*/
-
     Row {
         y: parent.height-50
         x: -40
-       // Repeater{
-           // id: refresh
-            //model:5
+        Item{
+            id: gennums
+            function generate(element){
+                for(var i =0;i<70;i++){
+                    element.itemAt(i).height=rand.randomNumber()
+                  }
+             }
+        }
+
         Item{
             id: rand
             function randomNumber() {
-                    return Math.random()*300 ;
-                }
+                    return Math.random()*200 ;
+            }
         }
-            //property int heightvar:2
-            Timer {
-                  interval: 1000; running: true; repeat: true
-                  triggeredOnStart: true
-                  onTriggered: testrec.height = rand.randomNumber()
-              }
-
-
-       // Repeater{
-
-          //  model: 70
+        Timer {
+            interval: 300; running: true; repeat: true
+            triggeredOnStart: true
+            onTriggered: gennums.generate(rectgen)
+        }
+        Repeater{
+            id:rectgen
+            model: 70
             Rectangle { id: testrec; color: "grey"; width: 10; border.width: 1; border.color: "black"; transform: Rotation { origin.x: 25; origin.y: 25; angle: 180} }
-       // }
-        /*Repeater{
-            model: 35
-            Rectangle { color: "grey"; width: 10; height: 170-5*index/(refresh.heightvar); border.width: 1; border.color: "black"; transform: Rotation { origin.x: 25; origin.y: 25; angle: 180}
         }
-        }*/
 
-       // }
     }
-
-
 }
