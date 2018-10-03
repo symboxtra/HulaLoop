@@ -4,6 +4,9 @@ build*
 *.autosave
 CMakeLists.txt.user
 
+# Doxygen
+docs/read-the-docs/source/_static/doxygen
+
 # Prerequisites
 *.d
 
@@ -36,3 +39,5 @@ CMakeLists.txt.user
 *.exe
 *.out
 *.app
+
+.vscode/

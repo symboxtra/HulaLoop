@@ -21,6 +21,9 @@ ApplicationWindow {
 
 	QMLBridge {
 		id: qmlbridge
+		onStateChanged: {
+			transportState.text = qmlbridge.getTransportState()
+		}
 	}
 
 	ButtonPanel {
@@ -31,5 +34,11 @@ ApplicationWindow {
         id: visualize
     }
 
+	Label {
+		id: transportState
+		objectName: "transportState"
 
+		anchors.top: btnPanel.bottom
+		text: "Initial State"
+	}
 }
