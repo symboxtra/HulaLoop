@@ -119,7 +119,7 @@ pipeline {
                             sh '''
                                 ./send.sh success ${HL_WEBHOOK_URL}
                                 curl -X PUT -d status=passing http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${HL_OS}-${GIT_BRANCH} || true
-                                bash <(curl -s https://codecov.io/bash) -X gcov -t ${HL_CODECOV_TOKEN}
+                                bash <(curl -s https://codecov.io/bash) -X gcov -t ${HL_CODECOV_TOKEN} -f build-linux/coverage.info
                             '''
                         }
                         failure {
@@ -198,6 +198,18 @@ pipeline {
 
                                     lcov -c -d build-osx -o build-osx/coverage.actual
                                     lcov -a build-osx/coverage.base -a build-osx/coverage.actual -o build-osx/coverage.info
+
+                                    # Strip mismarked function lines
+                                    # Ref: https://github.com/linux-test-project/lcov/issues/30#issuecomment-353799085
+                                    if [ ! -f ./remove-function-lines.py ]; then
+                                        curl https://raw.githubusercontent.com/symboxtra/lcov-llvm-function-mishit-filter/master/remove-function-lines.py > remove-function-lines.py && chmod +x remove-function-lines.py
+                                    fi
+
+                                    # Execute script if report was generated
+                                    if [ -f build-osx/coverage.info ]; then
+                                        python remove-function-lines.py build-osx/coverage.info build-osx/coverage.info
+                                        echo "Coverage report cleaned."
+                                    fi
                                 '''
 
                             }
@@ -215,7 +227,7 @@ pipeline {
                             sh '''
                                 ./send.sh success ${HL_WEBHOOK_URL}
                                 curl -X PUT -d status=passing http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${HL_OS}-${GIT_BRANCH} || true
-                                bash <(curl -s https://codecov.io/bash) -X gcov -t ${HL_CODECOV_TOKEN}
+                                bash <(curl -s https://codecov.io/bash) -X gcov -t ${HL_CODECOV_TOKEN} -f build-osx/coverage.info
                             '''
                         }
                         failure {
