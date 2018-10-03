@@ -188,6 +188,20 @@ pipeline {
 
                         }
 
+                        stage('Build Driver - OSX') {
+
+                            steps {
+
+                                sh '''
+                                    echo "Building ${HL_OS} HAL driver..."
+                                    cd src/audio/OSXDriver
+                                    xcodebuild clean build -scheme HulaLoop -configuration Release | xcpretty
+                                '''
+
+                            }
+
+                        }
+
                         stage('Test - OSX') {
 
                             steps {
@@ -212,7 +226,7 @@ pipeline {
 
                                     # Execute script if report was generated
                                     if [ -f build-osx/coverage.info ]; then
-                                        python remove-function-lines.py build-osx/coverage.info build/coverage.info
+                                        python remove-function-lines.py build-osx/coverage.info build-osx/coverage.info
                                         echo "Coverage report cleaned."
                                     fi
                                 '''
