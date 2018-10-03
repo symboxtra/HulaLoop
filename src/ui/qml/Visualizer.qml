@@ -27,24 +27,35 @@ Rectangle {
     Row {
         y: parent.height-50
         x: -40
-        Repeater{
-            id: refresh
-            model:5
+       // Repeater{
+           // id: refresh
+            //model:5
+        Item{
+            id: rand
             function randomNumber() {
-                    return Math.random()*3 ;
+                    return Math.random()*300 ;
                 }
-            //property int heightvar:2
-        Repeater{
-            model: 70
-            Rectangle { color: "grey"; width: 10; height: index*(refresh.randomNumber()); border.width: 1; border.color: "black"; transform: Rotation { origin.x: 25; origin.y: 25; angle: 180} }
         }
+            //property int heightvar:2
+            Timer {
+                  interval: 1000; running: true; repeat: true
+                  triggeredOnStart: true
+                  onTriggered: testrec.height = rand.randomNumber()
+              }
+
+
+       // Repeater{
+
+          //  model: 70
+            Rectangle { id: testrec; color: "grey"; width: 10; border.width: 1; border.color: "black"; transform: Rotation { origin.x: 25; origin.y: 25; angle: 180} }
+       // }
         /*Repeater{
             model: 35
             Rectangle { color: "grey"; width: 10; height: 170-5*index/(refresh.heightvar); border.width: 1; border.color: "black"; transform: Rotation { origin.x: 25; origin.y: 25; angle: 180}
         }
         }*/
 
-        }
+       // }
     }
 
 
