@@ -294,7 +294,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/bash;
-			shellScript = "# Install the built HAL plug-in to /Library/Audio/Plug-Ins/HAL and restart CoreAudio\n${SOURCE_ROOT}/install.sh\n";
+			shellScript = "# Install the built HAL plug-in to /Library/Audio/Plug-Ins/HAL and restart CoreAudio\n\"${SOURCE_ROOT}/install.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
