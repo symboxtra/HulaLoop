@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#if _WIN32
+    #include <windows.h>
+#endif
+
 #include <iostream>
 using namespace std;
 
@@ -12,11 +16,9 @@ class TestAudioOutput : public ICallback, public ::testing::Test
     public:
     vector<byte *> combinedData;
     Controller * controller = nullptr;
-    pthread_mutex_t mutex;
 
     virtual void SetUp()
     {
-        pthread_mutex_init(&mutex, NULL);
         controller = new Controller();
         controller->addBufferReadyCallback(this);
     }
@@ -29,14 +31,20 @@ class TestAudioOutput : public ICallback, public ::testing::Test
 
     void handleData(byte *data, uint32_t size)
     {
-        pthread_mutex_lock(&mutex);
         combinedData.push_back(data);
-        pthread_mutex_unlock(&mutex);
     }
 };
 
 TEST_F(TestAudioOutput, checkAudioOutput)
 {
-    system("play ../src/test/test.wav");
+    #if _WIN32
+        system("start powershell.exe -Wait  (New-Object Media.SoundPlayer (Resolve-Path ../src/test/test.wav)).PlaySync()");
+        Sleep(25000);
+    #elif __APPLE__
+
+    #elif __UNIX__
+        system("timeout 5 | play ../src/test/test.wav");
+    #endif
+
     ASSERT_FALSE(combinedData.empty());
 }
