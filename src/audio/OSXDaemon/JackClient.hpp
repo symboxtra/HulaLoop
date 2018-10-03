@@ -85,6 +85,7 @@ class JackClient {
         JackClient(const char * name, uint32_t cb_flags);
         ~JackClient();
         void activate();
+        void monitor();
 
         int register_ports(const char * nameAin[], const char * nameAout[]);
 };

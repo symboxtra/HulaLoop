@@ -4,6 +4,7 @@
 
 #include "OSXAudio.h"
 #include "OSXDaemon/OSXDaemon.h"
+#include "HulaAudioError.h"
 
 /**
  * Constructs an instance of OSXAudio class.
@@ -17,6 +18,9 @@ OSXAudio::OSXAudio()
     OSXDaemon * osxDaemon;
     osxDaemon = new OSXDaemon("HulaLoop #1", 0);
     osxDaemon->activate();
+    osxDaemon->monitor();
+
+    cout << endl << endl;
 
     getInputDevices();
 }

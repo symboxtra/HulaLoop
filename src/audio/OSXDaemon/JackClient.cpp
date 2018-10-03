@@ -169,6 +169,18 @@ void JackClient::activate()
     }
 }
 
+void JackClient::monitor()
+{
+    for (int i = 0; i < nAudioIn && i < nAudioOut; i++)
+    {
+        int ret = jack_connect(client, jack_port_name(audioOut[i]), (i % 2 == 0) ? "system:playback_1" : "system:playback_2");
+        if (ret != 0 && ret != EEXIST)
+        {
+            fprintf(stderr, "%sUnable to connect %s to %s. Error code: %d\n", HL_ERROR_PREFIX, jack_port_name(audioOut[i]), (i % 2 == 0) ? "system:playback_1" : "system:playback_2", ret);
+        }
+    }
+}
+
 // Jack APIs
 // Transport APIs
 void JackClient::transport_start()
