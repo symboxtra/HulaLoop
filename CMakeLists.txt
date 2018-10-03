@@ -172,5 +172,5 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
     # Add more tests here using create_test()
     create_test("src/test/TestSimpleMath.cpp" "" -1)
-    create_test("src/test/TestAudioOutput.cpp" "${AUDIO_SRC_FILES}" -1)
+    #create_test("src/test/TestAudioOutput.cpp" "${AUDIO_SRC_FILES}" -1)
 endif ()

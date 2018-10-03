@@ -171,13 +171,15 @@ Rectangle {
             running: false
             repeat: true
             onTriggered: {
-                if(textCountdown.time <= 1){
+                if(textCountdown.time <= 0){
                     countDownTimer.stop();
                     qmlbridge.record();
                     recordingTimer.start();
                 }
-                textCountdown.text = textCountdown.time;
-                textCountdown.time--;
+                else{
+                    textCountdown.text = textCountdown.time;
+                    textCountdown.time--;
+                }
             }
         }
         Timer {
@@ -201,7 +203,7 @@ Rectangle {
             property int time2: getTime2()
             function getTime(){
                 let d = delayInput.text;
-                console.log(d);
+                //console.log(d);
                 let h = parseInt(d.substring(0,2));
                 let m = parseInt(d.substring(3,5));
                 let s = parseInt(d.substring(6,8));
@@ -210,7 +212,7 @@ Rectangle {
             }
             function getTime2(){
                 let d = recordTimeInput.text;
-                console.log(d);
+                //console.log(d);
                 let h = parseInt(d.substring(0,2));
                 let m = parseInt(d.substring(3,5));
                 let s = parseInt(d.substring(6,8));

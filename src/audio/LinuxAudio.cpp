@@ -215,12 +215,10 @@ void LinuxAudio::capture()
             //TODO: change to not standard output
             for (int i = 0; i < callbackList.size(); i++)
             {
-                byte *audioBuffer2;  
-                memcpy(audioBuffer, audioBuffer2, audioBufferSize);
-                thread(&ICallback::handleData, callbackList[i], audioBuffer2, audioBufferSize).detach();
+                thread(&ICallback::handleData, callbackList[i], audioBuffer, audioBufferSize).detach();
             }
-            free(audioBuffer);
-            audioBuffer = nullptr;
+            //free(audioBuffer);
+            //audioBuffer = nullptr;
             /*err = write(1, audioBuffer, audioBufferSize);
         if(err != audioBufferSize)
         {
@@ -240,6 +238,11 @@ LinuxAudio::~LinuxAudio()
 {
     delete this->activeInputDevice;
     delete this->activeOutputDevice;
+    for (auto &t : execThreads)
+    {
+        t.detach();
+        t.~thread();
+    }
     callbackList.clear();
     execThreads.clear();
 }

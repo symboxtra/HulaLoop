@@ -44,7 +44,7 @@ Controller::Controller()
  */
 void Controller::handleData(byte* data, uint32_t size)
 {
-    cout << size << endl;
+    //cout << size << endl;
 
     // Trigger upper layer callback functions
     for(int i = 0;i < callbackList.size();i++)
