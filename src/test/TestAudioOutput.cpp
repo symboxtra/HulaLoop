@@ -24,7 +24,7 @@ class TestAudioOutput : public ICallback, public ::testing::Test
     virtual void TearDown()
     {
         controller->removeBufferReadyCallback(this);
-        delete controller;
+        //delete controller; //TODO: Fix garbage collection
     }
 
     void handleData(byte *data, uint32_t size)
@@ -38,6 +38,5 @@ class TestAudioOutput : public ICallback, public ::testing::Test
 TEST_F(TestAudioOutput, checkAudioOutput)
 {
     system("play ../src/test/test.wav");
-    //sleep(25);
     ASSERT_FALSE(combinedData.empty());
 }
