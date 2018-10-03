@@ -1,6 +1,7 @@
 #include "qmlbridge.h"
-
 #include "../control/transport.h"
+
+#include <string>
 
 /**
  * Construct a new instance of the QMLBridge class.
@@ -56,4 +57,28 @@ void QMLBridge::pause()
 {
     transport->pause();
     emit stateChanged();
+}
+
+QString QMLBridge::getInputDevices()
+{
+    string devices;
+    vector<Device*> vd = transport->controller->getInputDevices();
+    for(int i = 0; i < vd.size(); i++){
+        devices += vd[i]->getName();
+        if(i < vd.size()-1)
+            devices += ",";
+    }  
+    return QString::fromStdString(devices);
+}
+
+QString QMLBridge::getOutputDevices()
+{
+    string devices;
+    vector<Device*> vd = transport->controller->getOutputDevices();
+    for(int i = 0; i < vd.size(); i++){
+        devices += vd[i]->getName();
+        if(i < vd.size()-1)
+            devices += ",";
+    }  
+    return QString::fromStdString(devices);
 }

@@ -231,12 +231,20 @@ Rectangle {
             }
             ComboBox {
                 id: iDeviceInfoLabel
+                Layout.preferredWidth: Math.round(window.width * 0.2)
                 model: ListModel {
                     id: iDeviceItems
-                    ListElement { text: "Device1";}
-                    ListElement { text: "Device2";}
-                    ListElement { text: "Device3";}
+                    Component.onCompleted: {
+                        let idevices = qmlbridge.getInputDevices().split(',');
+                        let i;
+                        for(i = 0; i < idevices.length; i++){
+                            append({
+                                       text: idevices[i]
+                                   })
+                        }
+                    }
                 }
+                currentIndex: 0
             }
             Label {
                 id: outputDeviceLabel
@@ -246,12 +254,20 @@ Rectangle {
             }
             ComboBox {
                 id: oDeviceInfoLabel
+                Layout.preferredWidth: Math.round(window.width * 0.2)
                 model: ListModel {
                     id: oDeviceItems
-                    ListElement { text: "Device1";}
-                    ListElement { text: "Device2";}
-                    ListElement { text: "Device3";}
+                    Component.onCompleted: {
+                        let odevices = qmlbridge.getOutputDevices().split(',');
+                        let i;
+                        for(i = 0; i < odevices.length; i++){
+                            append({
+                                       text: odevices[i]
+                                   })
+                        }
+                    }
                 }
+                currentIndex: 0
             }
 
         }

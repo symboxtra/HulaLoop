@@ -22,8 +22,8 @@ class QMLBridge : public QObject
 	public:
 		explicit QMLBridge(QObject *parent = nullptr);
 
-		// Q_INVOKABLE QStringList getInputDevices();
-		// Q_INVOKABLE QStringList getOutputDevices();
+		Q_INVOKABLE QString getInputDevices();
+		Q_INVOKABLE QString getOutputDevices();
 
 		Q_INVOKABLE QString getTransportState() const;
 		Q_INVOKABLE void record();
