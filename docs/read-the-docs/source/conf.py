@@ -24,6 +24,7 @@ from recommonmark.parser import CommonMarkParser
 read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
 if read_the_docs_build:
     subprocess.call('cd ../../; doxygen', shell=True)
+    subprocess.call('mv ../../build-doxygen/html _static/doxygen', shell=True)
 
 
 # -- Project information -----------------------------------------------------
