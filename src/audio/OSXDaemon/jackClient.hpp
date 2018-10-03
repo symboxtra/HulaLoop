@@ -43,6 +43,13 @@ typedef jack_default_audio_sample_t sample_t;
 #define JACK_SYNC_CALLBACK         0x0800
 #define JACK_TIMEBASE_CALLBACK     0x1000
 
+#define HL_JACK_SERVER_NAME "HulaLoop_JACK_Server"
+
+// JACK ports for our client; we only need 2x2, but changing this leads to segfault
+// TODO: investigate bringing this down to 2x2
+static const char * nameAin[] = {"input_0", "input_1", "input_2", "input_3", NULL};
+static const char * nameAout[] = {"output_0", "output_1", "output_2", "output_3", NULL};
+
 /**********************************************************************
  Jack functions
 **********************************************************************/

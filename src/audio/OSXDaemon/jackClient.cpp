@@ -24,7 +24,9 @@ SOFTWARE.
 
 #include <cstdio>
 #include <jack/jack.h>
+#include <errno.h>
 #include "jackClient.hpp"
+#include "HulaAudioError.h"
 
 /**********************************************************************
  private functions
@@ -72,12 +74,24 @@ JackClient::JackClient(const char * name, uint32_t flags)
 
     // TODO: Setting Jack optiosn here might be useful
     // http://jackaudio.org/files/docs/html/types_8h.html#a396617de2ef101891c51346f408a375e
-    client = jack_client_open(name, JackNullOption, &jst);
+
+    // Try to open the default Jack server
+    // If the user already has it running, we should join gracefully
+    client = jack_client_open(name, JackNoStartServer, &jst);
     if (!client)
     {
-        // fprintf(stderr, "jack_client_open failed with %x\n", jst);
-        return;
+        fprintf(stderr, "\n%sCould not connect to default JACK server. Error code: %x\n", HL_ERROR_PREFIX, jst);
+        fprintf(stderr, "%sTrying again using name '%s'...\n\n", HL_ERROR_PREFIX, HL_JACK_SERVER_NAME);
+
+        // Try to open our own named server
+        client = jack_client_open(name, JackServerName, &jst, HL_JACK_SERVER_NAME);
+        if (!client)
+        {
+            fprintf(stderr, "%sFailed to connect/start JACK server '%s'. Error code: %x\n", HL_ERROR_PREFIX, HL_JACK_SERVER_NAME, jst);
+            return;
+        }
     }
+
     SampleRate = jack_get_sample_rate(client);
     BufSize = jack_get_buffer_size(client);
     cb_flags = flags;
@@ -98,8 +112,7 @@ int JackClient::register_ports(const char * nameAin[], const char * nameAout[])
     {
         for (i = 0; (nameAin[i] != NULL) && (i < MAX_PORT_NUM); i++)
         {
-            audioIn[i] = jack_port_register(client, nameAin[i],
-                                            JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
+            audioIn[i] = jack_port_register(client, nameAin[i], JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
         }
         nAudioIn = i;
     }
@@ -110,8 +123,7 @@ int JackClient::register_ports(const char * nameAin[], const char * nameAout[])
     {
         for (i = 0; (nameAout[i] != NULL) && (i < MAX_PORT_NUM); i++)
         {
-            audioOut[i] = jack_port_register(client, nameAout[i],
-                                             JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
+            audioOut[i] = jack_port_register(client, nameAout[i], JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
         }
         nAudioOut = i;
     }
@@ -132,7 +144,7 @@ void JackClient::activate()
     {
         if (jack_set_sync_callback(client, _sync_callback, this) != 0)
         {
-            fprintf(stderr, "jack_set_sync_callback() failed\n");
+            fprintf(stderr, "%sjack_set_sync_callback() failed\n", HL_ERROR_PREFIX);
         }
     }
 
@@ -140,11 +152,21 @@ void JackClient::activate()
     {
         if (jack_set_timebase_callback(client, 1, _timebase_callback, this) != 0)
         {
-            fprintf(stderr, "Unable to take over timebase.\n");
+            fprintf(stderr, "%sUnable to take over JACK timebase.\n", HL_ERROR_PREFIX);
         }
     }
 
     jack_activate(client);
+
+    // Automatically connect our outputs to our inputs so that we can loopback
+    for (int i = 0; i < nAudioIn && i < nAudioOut; i++)
+    {
+        int ret = jack_connect(client, jack_port_name(audioOut[i]), jack_port_name(audioIn[i]));
+        if (ret != 0 && ret != EEXIST)
+        {
+            fprintf(stderr, "%sUnable to connect %s to %s. Error code: %d\n", HL_ERROR_PREFIX, jack_port_name(audioOut[i]), jack_port_name(audioIn[i]), ret);
+        }
+    }
 }
 
 // Jack APIs

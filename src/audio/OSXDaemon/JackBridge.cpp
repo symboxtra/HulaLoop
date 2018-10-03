@@ -29,23 +29,23 @@ SOFTWARE.
 #include <string>
 #include <sstream>
 #include <cstdlib>
+
+#include "OSXDaemon.h"
 #include "jackClient.hpp"
 #include "JackBridge.h"
+#include "HulaAudioError.h"
 
 /*
- * HlOSXDaemon.cpp
+ * OSXDaemon.cpp
  */
 
-static const char * nameAin[] = {"input_0", "input_1", "input_2", "input_3", NULL};
-static const char * nameAout[] = {"output_0", "output_1", "output_2", "output_3", NULL};
-
-class HlOSXDaemon : public JackClient, public JackBridgeDriverIF {
+class OSXDaemon : public JackClient, public JackBridgeDriverIF {
     public:
-        HlOSXDaemon(const char * name, int id) : JackClient(name, JACK_PROCESS_CALLBACK), JackBridgeDriverIF(id)
+        OSXDaemon(const char * name, int id) : JackClient(name, JACK_PROCESS_CALLBACK), JackBridgeDriverIF(id)
         {
             if (attach_shm() < 0)
             {
-                fprintf(stderr, "Attaching shared memory failed (id=%d)\n", id);
+                fprintf(stderr, "%sAttaching shared memory failed (id=%d)\n", HL_ERROR_PREFIX, id);
                 exit(1);
             }
 
@@ -72,7 +72,7 @@ class HlOSXDaemon : public JackClient, public JackBridgeDriverIF {
             }
         }
 
-        ~HlOSXDaemon()
+        ~OSXDaemon()
         {
         }
 
@@ -228,12 +228,12 @@ class HlOSXDaemon : public JackClient, public JackBridgeDriverIF {
 
 int main(int argc, char ** argv)
 {
-    HlOSXDaemon * osxDaemon[4];
+    OSXDaemon * osxDaemon[4];
 
     // Create instances of jack client
     // These are the names of the device
-    osxDaemon[0] = new HlOSXDaemon("HulaLoop #1", 0);
-    // osxDaemon[1] = new HlOSXDaemon("HulaLoop #2", 1);
+    osxDaemon[0] = new OSXDaemon("HulaLoop #1", 0);
+    // osxDaemon[1] = new OSXDaemon("HulaLoop #2", 1);
 
     // activate gateway from/to jack ports
     osxDaemon[0]->activate();
