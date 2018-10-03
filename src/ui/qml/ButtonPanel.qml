@@ -11,7 +11,7 @@ Rectangle {
 
 	width: parent.width
 	height: parent.height * 0.15
-	color: "lightgrey"
+	color: "lightsteelblue"
 
 	RowLayout {
 
