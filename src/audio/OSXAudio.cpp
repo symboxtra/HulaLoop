@@ -3,14 +3,22 @@
 #include <portaudio.h>
 
 #include "OSXAudio.h"
+#include "OSXDaemon/OSXDaemon.h"
 
 /**
- * Constructs an instance of OSXAudio class
+ * Constructs an instance of OSXAudio class.
+ *
+ * This will initialize an OSXDaemon which will handle the virtual loopback.
+ * OSXDaemon will join or start a JACK server to get audio.
  */
 OSXAudio::OSXAudio()
 {
-    getInputDevices();
+    // Create the loopback daemon
+    OSXDaemon * osxDaemon;
+    osxDaemon = new OSXDaemon("HulaLoop #1", 0);
+    osxDaemon->activate();
 
+    getInputDevices();
 }
 
 /**
@@ -30,14 +38,14 @@ vector<Device *> OSXAudio::getDevices(DeviceType type)
     int ret = Pa_Initialize();
     if(ret != paNoError)
     {
-        fprintf(stderr, "Error: PortAudio failed to initialize.\nError code: 0x%x\n", ret);
+        fprintf(stderr, "%sPortAudio failed to initialize.\nError code: 0x%x\n", HL_ERROR_PREFIX, ret);
         exit(1);
     }
 
     int deviceCount = Pa_GetDeviceCount();
     if (deviceCount < 0)
     {
-        fprintf(stderr, "Error: No PortAudio devices were found.\nError code: 0x%x\n", deviceCount);
+        fprintf(stderr, "%sNo PortAudio devices were found.\nError code: 0x%x\n", HL_ERROR_PREFIX, deviceCount);
         exit(1);
     }
 

@@ -25,8 +25,8 @@ SOFTWARE.
 #include <cstdio>
 #include <jack/jack.h>
 #include <errno.h>
-#include "jackClient.hpp"
-#include "HulaAudioError.h"
+#include "JackClient.hpp"
+#include "../HulaAudioError.h"
 
 /**********************************************************************
  private functions
