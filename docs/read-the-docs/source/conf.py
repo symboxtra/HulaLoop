@@ -16,7 +16,8 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
-import subprocess, os
+import subprocess
+import os
 from recommonmark.parser import CommonMarkParser
 
 # -- Doxygen build -----------------------------------------------------
