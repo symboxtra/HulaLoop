@@ -48,3 +48,10 @@ TEST_F(TestAudioOutput, checkAudioOutput)
 
     ASSERT_FALSE(combinedData.empty());
 }
+
+TEST_F(TestAudioOutput, checkDeviceList)
+{
+    ASSERT_FALSE(controller->getOutputDevices().empty());
+
+    ASSERT_FALSE(controller->getInputDevices().empty());
+}
