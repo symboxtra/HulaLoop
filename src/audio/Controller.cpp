@@ -1,4 +1,5 @@
 #include "Controller.h"
+#include <fstream>
 
 /**
  * Construct an instance of Controller class.
@@ -18,7 +19,7 @@ Controller::Controller()
 
     if(audio == NULL)
     {
-        cout << "OS Audio error !" << endl;
+        cerr << "OS Audio error !" << endl;
     }//TODO: Handle error
 
     // Add current Controller instance as buffercallback to
@@ -36,6 +37,12 @@ Controller::Controller()
 void Controller::handleData(byte* data, uint32_t size)
 {
     cout << size << endl;
+
+    // TODO: Temporary to satisfy user requirement
+    ofstream tempout;
+    tempout.open("output.raw", ios::binary | ios::out | ios::app);
+    tempout << data;
+    tempout.close();
 
     // Trigger upper layer callback functions
     for(int i = 0;i < callbackList.size();i++)

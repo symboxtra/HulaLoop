@@ -13,21 +13,36 @@ list (REMOVE_ITEM OSX_DAEMON_SRC_FILES ${DAEMON_MAIN})
 # Remove source files that do not pertain to the current OS
 if (WIN32)
     list (REMOVE_ITEM AUDIO_SRC_FILES ${LINUX_AUDIO_SRC_FILES} ${OSX_AUDIO_SRC_FILES})
+    set (AUDIO_LIBS winmm Ole32)
 elseif (OSX)
     list (REMOVE_ITEM AUDIO_SRC_FILES ${LINUX_AUDIO_SRC_FILES} ${WIN_AUDIO_SRC_FILES})
     list (APPEND AUDIO_SRC_FILES ${OSX_DAEMON_SRC_FILES})
+    set (AUDIO_LIBS portaudio jack pthread)
 else ()
     list (REMOVE_ITEM AUDIO_SRC_FILES ${WIN_AUDIO_SRC_FILES} ${OSX_AUDIO_SRC_FILES})
+    set (AUDIO_LIBS asound pthread)
 endif ()
 
-#TODO: Change this to better apply with the parent CMake
-add_executable(test_audio ${AUDIO_SRC_FILES})
+# Generate shared libraries
+add_library (hlaudio SHARED ${AUDIO_SRC_FILES})
+set_target_properties (hlaudio PROPERTIES
+    VERSION ${VERSION}
+    SOVERSION 1
+    PUBLIC_HEADER Controller.h
+)
+configure_file (hlaudio.pc.in hlaudio.pc @ONLY)
+target_include_directories (hlaudio PRIVATE .)
+install (TARGETS hlaudio
+    DESTINATION ${CMAKE_BINARY_DIR}/bin
+    PUBLIC_HEADER DESTINATION ${CMAKE_BINARY_DIR}/include
+    COMPONENT library
+)
+install (FILES ${CMAKE_BINARY_DIR}/bin/hlaudio.pc
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
+)
 
-# Link OS libraries based on OS
-if (WIN32)
-    target_link_libraries(test_audio winmm Ole32)
-elseif (OSX)
-    target_link_libraries(test_audio portaudio jack pthread)# "-framework CoreAudio -framework CoreFoundation")
-else ()
-    target_link_libraries(test_audio asound pthread)
-endif ()
+# Link external libraries to new generated library
+target_link_libraries (hlaudio ${AUDIO_LIBS})
+
+set (AUDIO_SRC_FILES ${AUDIO_SRC_FILES} PARENT_SCOPE)
+set (AUDIO_LIBS ${AUDIO_LIBS} PARENT_SCOPE)
