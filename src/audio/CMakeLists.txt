@@ -11,7 +11,7 @@ if (WIN32)
     set (AUDIO_LIBS winmm Ole32)
 elseif (OSX)
     list (REMOVE_ITEM AUDIO_SRC_FILES ${LINUX_AUDIO_SRC_FILES} ${WIN_AUDIO_SRC_FILES})
-    set (AUDIO_LIBS portaudio pthread)
+    set (AUDIO_LIBS portaudio jack pthread)
 else ()
     list (REMOVE_ITEM AUDIO_SRC_FILES ${WIN_AUDIO_SRC_FILES} ${OSX_AUDIO_SRC_FILES})
     set (AUDIO_LIBS asound pthread)
@@ -28,24 +28,15 @@ configure_file (hlaudio.pc.in hlaudio.pc @ONLY)
 target_include_directories (hlaudio PRIVATE .)
 install (TARGETS hlaudio
     DESTINATION ${CMAKE_BINARY_DIR}/bin
-    PUBLIC_HEADER DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/include
+    PUBLIC_HEADER DESTINATION ${CMAKE_BINARY_DIR}/include
     COMPONENT library
 )
 install (FILES ${CMAKE_BINARY_DIR}/bin/hlaudio.pc
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
 )
 
-#TODO: Remove after lib integration with UI is successfull
-add_executable(test_audio ${AUDIO_SRC_FILES})
-
-# Link external libraries to test executable and new generated library
+# Link external libraries to new generated library
 target_link_libraries (hlaudio ${AUDIO_LIBS})
-target_link_libraries (test_audio ${AUDIO_LIBS})
 
-if (OSX)
-    # Setting the linker flag is a hack and shouldn't stick around
-    # Couldn't get this to link any other way for the time being
-    set (CMAKE_EXE_LINKER_FLAGS "-lportaudio ${CMAKE_EXE_LINKER_FLAGS}")
-    target_link_libraries(test_audio portaudio pthread)
-    target_link_libraries(hlaudio portaudio pthread)
-endif ()
+set (AUDIO_SRC_FILES ${AUDIO_SRC_FILES} PARENT_SCOPE)
+set (AUDIO_LIBS ${AUDIO_LIBS} PARENT_SCOPE)
