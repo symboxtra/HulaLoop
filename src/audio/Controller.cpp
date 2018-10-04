@@ -1,5 +1,15 @@
+#include <algorithm>
+
 #include "Controller.h"
 #include <fstream>
+
+#if _WIN32
+    #include "WindowsAudio.h"
+#elif __unix__
+    #include "LinuxAudio.h"
+#elif __APPLE__
+    #include "OSXAudio.h"
+#endif
 
 /**
  * Construct an instance of Controller class.
@@ -9,8 +19,7 @@ Controller::Controller()
 {
     // Initialize OSAudio based on host OS
     #if defined(__unix__)
-        //audio = new LinuxAudio();
-        cout << "LINUX" << endl;
+        audio = new LinuxAudio();
     #elif defined(__APPLE__)
         audio = new OSXAudio();
     #elif _WIN32
@@ -36,7 +45,7 @@ Controller::Controller()
  */
 void Controller::handleData(byte* data, uint32_t size)
 {
-    cout << size << endl;
+    //cout << size << endl;
 
     // TODO: Temporary to satisfy user requirement
     ofstream tempout;
@@ -80,6 +89,20 @@ void Controller::removeBufferReadyCallback(ICallback* func)
     // Remove self from callback when last callback is removed
     if(this->callbackList.size() == 0)
         audio->removeBufferReadyCallback(this);
+}
+
+/**
+ * Get input devices from OSAudio
+ */
+vector<Device*> Controller::getInputDevices(){
+    return audio->getInputDevices();
+}
+
+/**
+ * Get output devices from OSAudio
+ */
+vector<Device*> Controller::getOutputDevices(){
+    return audio->getOutputDevices();
 }
 
 /**

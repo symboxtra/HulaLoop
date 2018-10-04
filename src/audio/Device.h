@@ -8,7 +8,7 @@ using namespace std;
 
 enum DeviceType
 {
-    RECORDING = 1,
+    RECORD = 1,
     PLAYBACK = 2,
     LOOPBACK = 4
 };

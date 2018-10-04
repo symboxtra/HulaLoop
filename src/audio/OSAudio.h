@@ -3,10 +3,8 @@
 
 // System
 #include <stdlib.h>
-#include <algorithm>
 #include <vector>
 #include <thread>
-#include <iostream>
 
 #include "Device.h"
 #include "ICallback.h"

@@ -1,189 +1,419 @@
-import QtQuick 2.0
+import QtQuick 2.10
 import QtQuick.Layouts 1.3
 
-import QtQuick.Controls 2.2
+import QtQuick.Controls 2.3
 
 import "../fonts/Icon.js" as MDFont
 
 Rectangle {
 
-	id: buttonPanel
+    id: buttonPanel
 
-	width: parent.width
-	height: parent.height * 0.15
-	color: "lightsteelblue"
+    width: parent.width
+    height: transportLayout.height
+    color: "lightgrey"
 
-	RowLayout {
+    Timer {
+        id: countDownTimer
+        objectName: "countDownTimer"
 
-		id: rowLayout
-		anchors.rightMargin: buttonPanel.width * 0.7
-		anchors.fill: parent
+        interval: 1000
+        running: false
+        repeat: true
+        onTriggered: {
+            if (textCountdown.time == 0) {
+                textCountdown.text = 0
+                countDownTimer.stop()
+                qmlbridge.record()
+                recordingTimer.start()
+            } else {
+                textCountdown.text = textCountdown.time
+                textCountdown.time--
+            }
+        }
+    }
 
-		RoundButton {
-			id: recordBtn
-			objectName: "recordBtn"
+    Timer {
+        id: recordingTimer
+        objectName: "recordingTimer"
 
-			display: AbstractButton.TextOnly
-			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+        interval: 1000
+        running: false
+        repeat: true
+        onTriggered: {
+            // Since the timer starts at 0, go to endTime - 1
+            if (textCountdown.time >= textCountdown.time2 - 1) {
+                textCountdown.text = textCountdown.time + 1
+                qmlbridge.stop()
+                recordingTimer.stop()
+            } else {
+                textCountdown.text = textCountdown.time + 1
+                textCountdown.time++
+            }
+        }
+    }
 
-			background: Rectangle {
-				opacity: enabled ? 1 : 0.15
-				color: recordBtn.pressed ? "grey" : "darkgrey"
-				radius: recordBtn.width / 2
-			}
+    RowLayout {
+        id: transportLayout
+        width: buttonPanel.width
 
-			contentItem: Text {
-				font.family: "Material Design Icons"
-				font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-				text: MDFont.Icon.record
-				color: "red"
+        Item {
+            Layout.preferredWidth: 10
+        }
 
-				horizontalAlignment: Text.AlignHCenter
-				verticalAlignment: Text.AlignVCenter
-			}
+        RowLayout {
+            id: rowLayout
 
-			onClicked: {
-				qmlbridge.record()
-			}
-		}
+            spacing: Math.round(buttonPanel.width * 0.0075)
 
-		RoundButton {
-			id: stopBtn
-			objectName: "stopBtn"
+            RoundButton {
+                id: recordBtn
+                objectName: "recordBtn"
 
-			display: AbstractButton.TextOnly
-			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                display: AbstractButton.TextOnly
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
-			background: Rectangle {
-				opacity: enabled ? 1 : 0.15
-				color: stopBtn.pressed ? "grey" : "darkgrey"
-				radius: stopBtn.width / 2
-			}
+                background: Rectangle {
+                    opacity: enabled ? 1 : 0.15
+                    color: recordBtn.pressed ? "grey" : "darkgrey"
+                    radius: recordBtn.width / 2
+                }
 
-			contentItem: Text {
-				font.family: "Material Design Icons"
-				font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-				text: MDFont.Icon.stop
-				color: "black"
+                contentItem: Text {
+                    font.family: "Material Design Icons"
+                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                    text: MDFont.Icon.record
+                    color: "red"
 
-				horizontalAlignment: Text.AlignHCenter
-				verticalAlignment: Text.AlignVCenter
-			}
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
 
-			onClicked: {
-				qmlbridge.stop()
-			}
-		}
+                onClicked: {
+                    // Add JavaScript for delay timer
+                    qmlbridge.record()
+                }
+            }
 
-		RoundButton {
-			id: playBtn
-			objectName: "playBtn"
+            RoundButton {
+                id: stopBtn
+                objectName: "stopBtn"
 
-			display: AbstractButton.TextOnly
-			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                display: AbstractButton.TextOnly
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
-			contentItem: Text {
-				font.family: "Material Design Icons"
-				font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-				text: MDFont.Icon.play
-				color: "green"
+                background: Rectangle {
+                    opacity: enabled ? 1 : 0.15
+                    color: stopBtn.pressed ? "grey" : "darkgrey"
+                    radius: stopBtn.width / 2
+                }
 
-				horizontalAlignment: Text.AlignHCenter
-				verticalAlignment: Text.AlignVCenter
-			}
+                contentItem: Text {
+                    font.family: "Material Design Icons"
+                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                    text: MDFont.Icon.stop
+                    color: "black"
 
-			background: Rectangle {
-				opacity: enabled ? 1 : 0.15
-				color: playBtn.pressed ? "grey" : "darkgrey"
-				radius: playBtn.width / 2
-			}
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
 
-			onClicked: {
-				qmlbridge.play()
-			}
-		}
+                onClicked: {
+                    // Add JavaScript for recording time
+                    qmlbridge.stop()
+                }
+            }
 
-		RoundButton {
-			id: pauseBtn
-			objectName: "pauseBtn"
+            RoundButton {
+                id: playBtn
+                objectName: "playBtn"
 
-			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-			display: AbstractButton.TextOnly
+                display: AbstractButton.TextOnly
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
-			contentItem: Text {
-				font.family: "Material Design Icons"
-				font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-				text: MDFont.Icon.pause
-				color: "white"
+                contentItem: Text {
+                    font.family: "Material Design Icons"
+                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                    text: MDFont.Icon.play
+                    color: "green"
 
-				horizontalAlignment: Text.AlignHCenter
-				verticalAlignment: Text.AlignVCenter
-			}
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
 
-			background: Rectangle {
-				opacity: enabled ? 1 : 0.15
-				color: pauseBtn.pressed ? "grey" : "darkgrey"
-				radius: pauseBtn.width / 2
-			}
+                background: Rectangle {
+                    opacity: enabled ? 1 : 0.15
+                    color: playBtn.pressed ? "grey" : "darkgrey"
+                    radius: playBtn.width / 2
+                }
 
-			onClicked: {
-				qmlbridge.pause()
-			}
-		}
+                onClicked: {
+                    qmlbridge.play()
+                }
+            }
 
-		RoundButton {
-			id: timerBtn
-			objectName: "timerBtn"
+            RoundButton {
+                id: pauseBtn
+                objectName: "pauseBtn"
 
-			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-			display: AbstractButton.TextOnly
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                display: AbstractButton.TextOnly
 
-			contentItem: Text {
-				font.family: "Material Design Icons"
-				font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-				text: MDFont.Icon.timer
-				color: "white"
+                contentItem: Text {
+                    font.family: "Material Design Icons"
+                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                    text: MDFont.Icon.pause
+                    color: "white"
 
-				horizontalAlignment: Text.AlignHCenter
-				verticalAlignment: Text.AlignVCenter
-			}
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
 
-			background: Rectangle {
-				opacity: enabled ? 1 : 0.15
-				color: timerBtn.pressed ? "grey" : "darkgrey"
-				radius: timerBtn.width / 2
-			}
+                background: Rectangle {
+                    opacity: enabled ? 1 : 0.15
+                    color: pauseBtn.pressed ? "grey" : "darkgrey"
+                    radius: pauseBtn.width / 2
+                }
 
-			onClicked: timerPopup.open()
-		}
-	}
+                onClicked: {
+                    qmlbridge.pause()
+                }
+            }
 
-	Popup {
-		id: timerPopup
+            RoundButton {
+                id: timerBtn
+                objectName: "timerBtn"
 
-		x: Math.round((window.width - width) / 2)
-		y: Math.round((window.height - height) / 2)
-		width: Math.round(window.width * 0.5)
-		height: Math.round(window.height * 0.3)
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                display: AbstractButton.TextOnly
 
-		modal: true
-		focus: true
-		closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+                contentItem: Text {
+                    font.family: "Material Design Icons"
+                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                    text: MDFont.Icon.timer
+                    color: "white"
 
-		ComboBox {
-			editable: true
-			model: ListModel {
-				id: model
-				ListElement {
-					text: "1 sec"
-				}
-				ListElement {
-					text: "5 sec"
-				}
-				ListElement {
-					text: "10 sec"
-				}
-			}
-		}
-	}
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                background: Rectangle {
+                    opacity: enabled ? 1 : 0.15
+                    color: timerBtn.pressed ? "grey" : "darkgrey"
+                    radius: timerBtn.width / 2
+                }
+
+                onClicked: timerPopup.open()
+            }
+        }
+
+        RowLayout {
+            id: timeLabelLayout
+
+            Label {
+                id: timerLabel
+
+                color: "black"
+                font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                text: "Timer:"
+            }
+
+            Text {
+                id: textCountdown
+                objectName: "textCountdown"
+
+                color: "black"
+                font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                text: "0"
+
+                property int time: getTime()
+                property int time2: getTime2()
+                function getTime() {
+                    var d = delayInput.text
+                    var h = parseInt(d.substring(0, 2))
+                    var m = parseInt(d.substring(3, 5))
+                    var s = parseInt(d.substring(6, 8))
+                    var timeRem = h * 60 * 60 + m * 60 + s
+                    return timeRem
+                }
+                function getTime2() {
+                    var d = recordTimeInput.text
+                    var h = parseInt(d.substring(0, 2))
+                    var m = parseInt(d.substring(3, 5))
+                    var s = parseInt(d.substring(6, 8))
+                    var timeRem = h * 60 * 60 + m * 60 + s
+                    return timeRem
+                }
+            }
+        }
+
+        GridLayout {
+            Layout.alignment: Qt.AlignRight
+            rows: 2
+            columns: 2
+            Label {
+                id: inputDeviceLabel
+
+                color: "black"
+                text: "Input Device:"
+            }
+            ComboBox {
+                id: iDeviceInfoLabel
+                Layout.preferredWidth: Math.max(Math.round(window.width * 0.2),
+                                                320)
+                model: ListModel {
+                    id: iDeviceItems
+                    Component.onCompleted: {
+                        var idevices = qmlbridge.getInputDevices().split(',')
+                        var i
+                        for (i = 0; i < idevices.length; i++) {
+                            append({
+                                       "text": idevices[i]
+                                   })
+                        }
+                    }
+                }
+                onActivated: {
+                    console.log("Audio device has been changed to: " + iDeviceInfoLabel.currentText);
+                }
+                currentIndex: 0
+            }
+            Label {
+                id: outputDeviceLabel
+
+                color: "black"
+                text: "Output Device:"
+            }
+            ComboBox {
+                id: oDeviceInfoLabel
+                Layout.preferredWidth: Math.max(Math.round(window.width * 0.2),
+                                                320)
+                model: ListModel {
+                    id: oDeviceItems
+                    Component.onCompleted: {
+                        var odevices = qmlbridge.getOutputDevices().split(',')
+                        var i
+                        for (i = 0; i < odevices.length; i++) {
+                            append({
+                                       "text": odevices[i]
+                                   })
+                        }
+                    }
+                }
+                onActivated: {
+                    console.log("Audio device has been changed to: " + oDeviceInfoLabel.currentText);
+                }
+                currentIndex: 0
+            }
+        }
+
+        Item {
+            Layout.preferredWidth: 10
+        }
+    }
+
+    Popup {
+        id: timerPopup
+        objectName: "timerPopup"
+
+        x: Math.round((window.width - width) / 2)
+        y: Math.round((window.height - height) / 2)
+
+        modal: true
+        focus: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+
+        ColumnLayout {
+            spacing: Math.round(buttonPanel.height * 0.15)
+
+            GridLayout {
+                id: gridLayout
+                Layout.alignment: Qt.AlignTop
+                rows: 3
+                columns: 2
+
+                Label {
+                    font.family: "Roboto"
+                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                    text: "Delay Recording (hh:mm:ss)"
+                    color: "white"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                TextInput {
+                    id: delayInput
+                    objectName: "delayInput"
+
+                    text: "00:00:00"
+                    inputMask: "00:00:00"
+                    color: "white"
+                }
+
+                Label {
+                    font.family: "Roboto"
+                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                    text: "Recording Time (hh:mm:ss)"
+                    color: "white"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                TextInput {
+                    id: recordTimeInput
+                    objectName: "recordTimeInput"
+
+                    text: "00:00:00"
+                    inputMask: "00:00:00"
+                    color: "white"
+                }
+            }
+
+            RowLayout {
+                Layout.alignment: Qt.AlignCenter
+                spacing: Math.round(buttonPanel.width * 0.05)
+                width: gridLayout.width / 2
+
+                Button {
+                    Layout.alignment: Qt.AlignLeft
+                    id: cancelBtn
+                    onClicked: {
+                        timerPopup.close()
+                    }
+                    Layout.preferredWidth: Math.round(buttonPanel.width * 0.15)
+                    contentItem: Text {
+                        font.family: "Roboto"
+                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                        text: "CANCEL"
+                        color: "white"
+
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
+
+                Button {
+                    Layout.alignment: Qt.AlignRight
+                    id: okBtn
+                    onClicked: {
+                        countDownTimer.start()
+                        timerPopup.close()
+                    }
+
+                    Layout.preferredWidth: Math.round(buttonPanel.width * 0.15)
+                    contentItem: Text {
+                        font.family: "Roboto"
+                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                        text: "OK"
+                        color: "white"
+
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
+            }
+        }
+    }
 }

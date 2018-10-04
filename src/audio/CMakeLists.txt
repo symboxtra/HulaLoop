@@ -11,6 +11,7 @@ get_filename_component(DAEMON_MAIN OSXDaemon/main.cpp REALPATH)
 list (REMOVE_ITEM OSX_DAEMON_SRC_FILES ${DAEMON_MAIN})
 
 # Remove source files that do not pertain to the current OS
+# Link OS libraries based on OS
 if (WIN32)
     list (REMOVE_ITEM AUDIO_SRC_FILES ${LINUX_AUDIO_SRC_FILES} ${OSX_AUDIO_SRC_FILES})
     set (AUDIO_LIBS winmm Ole32)

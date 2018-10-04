@@ -136,7 +136,7 @@ if (OSX)
     )
 
     if (NOT PORTAUDIO_LIB)
-	    message (FATAL_ERROR "Could not find library: PortAudio")
+        message (FATAL_ERROR "Could not find library: PortAudio")
     else ()
         message (STATUS "PortAudio Location: ${PORTAUDIO_LIB}")
     endif()
@@ -149,11 +149,21 @@ if (HL_ADD_COVERAGE_FLAGS)
 endif ()
 
 # Add subdirectories and include any headers from lower level CMakeLists
+if (NOT DEFINED BUILD_ONLY_AUDIO)
+    set (BUILD_ONLY_AUDIO false)
+endif ()
+
 add_subdirectory (src/audio)
 include_directories (${INCLUDE_DIRS})
+set (HL_LIBRARIES ${HL_LIBRARIES} ${AUDIO_LIBS})
 
-add_subdirectory (src/ui)
-include_directories (${INCLUDE_DIRS})
+if (NOT BUILD_ONLY_AUDIO)
+    add_subdirectory (src/control)
+    include_directories (${INCLUDE_DIRS})
+
+    add_subdirectory (src/ui)
+    include_directories (${INCLUDE_DIRS})
+endif ()
 
 
 
@@ -167,6 +177,10 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     include (cmake/Testing.cmake)
 
     # Add more tests here using create_test()
-    create_test("src/test/TestSimpleMath.cpp" "" -1)
+    if (NOT BUILD_ONLY_AUDIO)
+        #create_test("src/test/TestAudioOutput.cpp" "${AUDIO_SRC_FILES}" -1)
+        create_test("src/test/TestCTInterface.cpp" "${AUDIO_SRC_FILES};src/control/transport.cpp" -1)
+        create_test("src/test/TestController.cpp" "${AUDIO_SRC_FILES}" -1)
+    endif ()
 
 endif ()

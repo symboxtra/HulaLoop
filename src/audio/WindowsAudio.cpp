@@ -33,6 +33,9 @@ vector<Device*> WindowsAudio::getInputDevices()
             waveInGetDevCapsW( i, &waveInCaps, sizeof( WAVEINCAPSW ) );
             wstring temp(waveInCaps.szPname);
             string str(temp.begin(), temp.end());
+
+            cout << str << endl;
+            deviceList.push_back(new Device(NULL, str, DeviceType::RECORD));
         }
     }
     else

@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
-import QtCharts 2.2
+
 import QtQuick.Controls 2.2
 
 
@@ -9,7 +9,7 @@ import "../fonts/Icon.js" as MDFont
 Rectangle {
 
     id: visualize
-    width: parent.width
+    width: window.width
     height: parent.height * 0.6
     color: "lightsteelblue"
     y: 98

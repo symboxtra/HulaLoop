@@ -1,6 +1,6 @@
 add_include_dir(.)
 
-add_executable(hulaloop main.cpp qmlbridge.cpp ../control/transport.cpp qml.qrc)
+add_executable(hulaloop main.cpp qmlbridge.cpp ../control/transport.cpp qml.qrc ${AUDIO_SRC_FILES})
 
 target_link_libraries(hulaloop ${HL_LIBRARIES})
 

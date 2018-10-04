@@ -1,3 +1,6 @@
+#include <algorithm>
+#include <iostream>
+
 #include "OSAudio.h"
 
 /**

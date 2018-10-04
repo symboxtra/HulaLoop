@@ -1,6 +1,7 @@
 #ifndef TRANSPORT_H
 #define TRANSPORT_H
 
+#include "Controller.h"
 #include <string>
 
 /**
@@ -22,7 +23,10 @@ class Transport
         TransportState state;
 
     public:
+        Controller * controller;
+
         Transport();
+        ~Transport();
 
         bool record();
         bool stop();
