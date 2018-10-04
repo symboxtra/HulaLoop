@@ -13,8 +13,8 @@ ApplicationWindow {
     title: qsTr("HulaLoop")
 
     visible: true
-    width: 640
-    height: 360
+    width: 1024
+    height: 576
 
     Material.theme: Material.Dark
     Material.accent: Material.Orange
