@@ -283,6 +283,7 @@ Rectangle {
 
     Popup {
         id: timerPopup
+        objectName: "timerPopup"
 
         x: Math.round((window.width - width) / 2)
         y: Math.round((window.height - height) / 2)
