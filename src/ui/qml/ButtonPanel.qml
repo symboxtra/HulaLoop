@@ -1,7 +1,7 @@
-import QtQuick 2.11
-import QtQuick.Layouts 1.11
+import QtQuick 2.10
+import QtQuick.Layouts 1.10
 
-import QtQuick.Controls 2.4
+import QtQuick.Controls 2.3
 
 import "../fonts/Icon.js" as MDFont
 
@@ -11,7 +11,7 @@ Rectangle {
 
     width: parent.width
     height: transportLayout.height
-    color: "lightsteelblue"
+    color: "lightgrey"
 
     Timer {
         id: countDownTimer
@@ -273,9 +273,6 @@ Rectangle {
                         }
                     }
                 }
-                onActivated: {
-                    console.log("Audio device has been changed to: " + iDeviceInfoLabel.currentText);
-                }
                 currentIndex: 0
             }
             Label {
@@ -299,9 +296,6 @@ Rectangle {
                                    })
                         }
                     }
-                }
-                onActivated: {
-                    console.log("Audio device has been changed to: " + oDeviceInfoLabel.currentText);
                 }
                 currentIndex: 0
             }
