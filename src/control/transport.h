@@ -1,10 +1,36 @@
 #ifndef TRANSPORT_H
 #define TRANSPORT_H
 
+#include <string>
+
+/**
+ * Available states for the recording/playback logic of the application.
+ */
+enum TransportState {
+    RECORDING,
+    STOPPED,
+    PLAYING,
+    PAUSED
+};
+
+/**
+ * Utility class for managing state of application and all audio related processes.
+ */
 class Transport
 {
-	public:
-		Transport();
+    private:
+        TransportState state;
+
+    public:
+        Transport();
+
+        bool record();
+        bool stop();
+        bool play();
+        bool pause();
+
+        TransportState getState() const;
+        std::string stateToStr(const TransportState state) const;
 };
 
 #endif // TRANSPORT_H
