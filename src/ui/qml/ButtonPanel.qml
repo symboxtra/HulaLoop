@@ -167,57 +167,64 @@ Rectangle {
         }
         Timer {
             id: countDownTimer
+            objectName: "countDownTimer"
+
             interval: 1000
             running: false
             repeat: true
             onTriggered: {
-                if(textCountdown.time <= 0){
-                    countDownTimer.stop();
-                    qmlbridge.record();
-                    recordingTimer.start();
-                }
-                else{
-                    textCountdown.text = textCountdown.time;
-                    textCountdown.time--;
+                if (textCountdown.time == 0) {
+                    textCountdown.text = 0
+                    countDownTimer.stop()
+                    qmlbridge.record()
+                    recordingTimer.start()
+                } else {
+                    textCountdown.text = textCountdown.time
+                    textCountdown.time--
                 }
             }
         }
         Timer {
             id: recordingTimer
+            objectName: "recordingTimer"
+
             interval: 1000
             running: false
             repeat: true
             onTriggered: {
-                if(textCountdown.time >= textCountdown.time2){
-                    qmlbridge.stop();
-                    recordingTimer.stop();
+                // Since the timer starts at 0, go to endTime - 1
+                if (textCountdown.time >= textCountdown.time2 - 1) {
+                    textCountdown.text = textCountdown.time + 1
+                    qmlbridge.stop()
+                    recordingTimer.stop()
+                } else {
+                    textCountdown.text = textCountdown.time + 1
+                    textCountdown.time++
                 }
-                textCountdown.text = textCountdown.time;
-                textCountdown.time++;
             }
         }
         Text {
             id: textCountdown
+            objectName: "textCountdown"
+
             text: "0"
             property int time: getTime()
             property int time2: getTime2()
-            function getTime(){
-                let d = delayInput.text;
-                //console.log(d);
-                let h = parseInt(d.substring(0,2));
-                let m = parseInt(d.substring(3,5));
-                let s = parseInt(d.substring(6,8));
-                let timeRem = h * 60 * 60 + m * 60 + s;
-                return timeRem;
+            function getTime() {
+                var d = delayInput.text
+                var h = parseInt(d.substring(0, 2))
+                var m = parseInt(d.substring(3, 5))
+                var s = parseInt(d.substring(6, 8))
+                var timeRem = h * 60 * 60 + m * 60 + s
+                return timeRem
             }
-            function getTime2(){
-                let d = recordTimeInput.text;
-                //console.log(d);
-                let h = parseInt(d.substring(0,2));
-                let m = parseInt(d.substring(3,5));
-                let s = parseInt(d.substring(6,8));
-                let timeRem = h * 60 * 60 + m * 60 + s;
-                return timeRem;
+            function getTime2() {
+                var d = recordTimeInput.text
+                var h = parseInt(d.substring(0, 2))
+                var m = parseInt(d.substring(3, 5))
+                var s = parseInt(d.substring(6, 8))
+                var timeRem = h * 60 * 60 + m * 60 + s
+                return timeRem
             }
         }
 
@@ -237,11 +244,11 @@ Rectangle {
                 model: ListModel {
                     id: iDeviceItems
                     Component.onCompleted: {
-                        let idevices = qmlbridge.getInputDevices().split(',');
-                        let i;
-                        for(i = 0; i < idevices.length; i++){
+                        var idevices = qmlbridge.getInputDevices().split(',')
+                        var i
+                        for (i = 0; i < idevices.length; i++) {
                             append({
-                                       text: idevices[i]
+                                       "text": idevices[i]
                                    })
                         }
                     }
@@ -260,21 +267,19 @@ Rectangle {
                 model: ListModel {
                     id: oDeviceItems
                     Component.onCompleted: {
-                        let odevices = qmlbridge.getOutputDevices().split(',');
-                        let i;
-                        for(i = 0; i < odevices.length; i++){
+                        var odevices = qmlbridge.getOutputDevices().split(',')
+                        var i
+                        for (i = 0; i < odevices.length; i++) {
                             append({
-                                       text: odevices[i]
+                                       "text": odevices[i]
                                    })
                         }
                     }
                 }
                 currentIndex: 0
             }
-
         }
     }
-
 
     Popup {
         id: timerPopup
@@ -307,6 +312,8 @@ Rectangle {
 
                 TextInput {
                     id: delayInput
+                    objectName: "delayInput"
+
                     text: "00:00:00"
                     inputMask: "00:00:00"
                     color: "white"
@@ -329,7 +336,6 @@ Rectangle {
                         }
                     }
                 }*/
-
                 Label {
                     font.family: "Roboto"
                     font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
@@ -342,6 +348,8 @@ Rectangle {
 
                 TextInput {
                     id: recordTimeInput
+                    objectName: "recordTimeInput"
+
                     text: "00:00:00"
                     inputMask: "00:00:00"
                     color: "white"
@@ -372,7 +380,7 @@ Rectangle {
                     Layout.alignment: Qt.AlignLeft
                     id: cancelBtn
                     onClicked: {
-                        timerPopup.close();
+                        timerPopup.close()
                     }
                     Layout.preferredWidth: Math.round(buttonPanel.width * 0.15)
                     contentItem: Text {
@@ -390,8 +398,8 @@ Rectangle {
                     Layout.alignment: Qt.AlignRight
                     id: okBtn
                     onClicked: {
-                        countDownTimer.start();
-                        timerPopup.close();
+                        countDownTimer.start()
+                        timerPopup.close()
                     }
 
                     Layout.preferredWidth: Math.round(buttonPanel.width * 0.15)
