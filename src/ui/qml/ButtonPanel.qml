@@ -11,7 +11,7 @@ Rectangle {
 
     width: parent.width
     height: transportLayout.height
-    color: "lightgrey"
+    color: "lightsteelblue"
 
     Timer {
         id: countDownTimer

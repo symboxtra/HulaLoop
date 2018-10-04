@@ -16,7 +16,7 @@ ApplicationWindow {
     width: 1024
     height: 576
 
-    Material.theme: Material.Dark
+    Material.theme: Material.Grey
     Material.accent: Material.Orange
 
     QMLBridge {
@@ -28,6 +28,10 @@ ApplicationWindow {
 
     ButtonPanel {
         id: btnPanel
+    }
+    
+    Visualizer {
+        id: visualize
     }
 
     Label {

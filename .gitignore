@@ -1,5 +1,6 @@
 build*
 .*.swp
+*.DS_Store
 *.autosave
 CMakeLists.txt.user
 
