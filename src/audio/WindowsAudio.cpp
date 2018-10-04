@@ -5,7 +5,10 @@ WindowsAudio::WindowsAudio()
     // TODO: Remove this once triggered from upper layers
     vector<Device*> t = getOutputDevices();
 
-    setActiveOutputDevice(t[0]);
+    if(!t.empty())
+        setActiveOutputDevice(t[0]);
+    else
+        cerr << "No Devices Found!" << endl;
 }
 
 /**
@@ -34,6 +37,10 @@ vector<Device*> WindowsAudio::getInputDevices()
             cout << str << endl;
             deviceList.push_back(new Device(NULL, str, DeviceType::RECORD));
         }
+    }
+    else
+    {
+        cerr << "Input Device Error!" << endl;
     }
 
     return deviceList;
@@ -120,7 +127,7 @@ Exit:
     {
         _com_error err(status);
         LPCTSTR errMsg = err.ErrorMessage();
-        printf("\nError: %s\n", errMsg);
+        cerr << "Error: " << errMsg << endl;
         return {};
     }
     else
@@ -286,7 +293,8 @@ Exit:
 
     _com_error err(status);
     LPCTSTR errMsg = err.ErrorMessage();
-    cout << "\nError: " << errMsg << "\n" << endl;
+    cerr << "\nError: " << errMsg << endl;
+    exit(1);
 
     //TODO: Handle error accordingly
 }

@@ -10,3 +10,5 @@ codecov:
 ignore:
     - "src/libs/"
     - "**/main.cpp"
+    - "src/audio/OSXDriver"
+    - "src/audio/OSXDaemon"
