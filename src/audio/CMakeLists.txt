@@ -7,7 +7,7 @@ file (GLOB OSX_AUDIO_SRC_FILES OSX*.cpp)
 
 # Remove source files that do not pertain to the current OS
 if (WIN32)
-    list (REMOVE_ITEM AUDIO_SRC_FILES ${LINUX_AUDIO_SRC_FILES} ${OSX_AUDIO_SRC_FILES})
+    list (REMOVE_ITEM AUDIO_SRC_FILES LinuxAudio.cpp OSXAudio.cpp)
     set (AUDIO_LIBS winmm Ole32)
 elseif (OSX)
     list (REMOVE_ITEM AUDIO_SRC_FILES ${LINUX_AUDIO_SRC_FILES} ${WIN_AUDIO_SRC_FILES})
