@@ -178,7 +178,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
     # Add more tests here using create_test()
     if (NOT BUILD_ONLY_AUDIO)
-        create_test("src/test/TestAudioOutput.cpp" "${AUDIO_SRC_FILES}" -1)
+        #create_test("src/test/TestAudioOutput.cpp" "${AUDIO_SRC_FILES}" -1)
         create_test("src/test/TestCTInterface.cpp" "${AUDIO_SRC_FILES};src/control/transport.cpp" -1)
         create_test("src/test/TestController.cpp" "${AUDIO_SRC_FILES}" -1)
     endif ()
