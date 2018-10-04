@@ -42,7 +42,7 @@ TEST_F(TestAudioOutput, checkAudioOutput)
         Sleep(25000);
     #elif __APPLE__
 
-    #elif __UNIX__
+    #elif __unix__
         system("timeout 5 | play ../src/test/test.wav");
     #endif
 

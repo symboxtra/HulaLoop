@@ -246,6 +246,9 @@ Rectangle {
                         }
                     }
                 }
+                onActivated: {
+                    console.log("Audio device has been changed to: " + iDeviceInfoLabel.currentText);
+                }
                 currentIndex: 0
             }
             Label {
@@ -268,6 +271,9 @@ Rectangle {
                                    })
                         }
                     }
+                }
+                onActivated: {
+                    console.log("Audio device has been changed to: " + oDeviceInfoLabel.currentText);
                 }
                 currentIndex: 0
             }

@@ -3,8 +3,14 @@
 LinuxAudio::LinuxAudio()
 {
     vector<Device *> t = getOutputDevices();
-    setActiveOutputDevice(t[0]);
-
+    if(t.empty())
+    {
+        cerr << "No devices found" << endl;
+    }
+    else
+    {
+        setActiveOutputDevice(t[0]);
+    }
     /*for(int i = 0; i < t.size(); i++){
         cout << reinterpret_cast<uintptr_t>(t[i]->getID()) << " " << t[i]->getName() << endl;
     }*/
@@ -111,21 +117,30 @@ vector<Device *> LinuxAudio::getOutputDevices()
 
 void LinuxAudio::setActiveOutputDevice(Device *device)
 {
+    // Set the active output device
     this->activeOutputDevice = device;
 
     // Interrupt all threads and make sure they stop
-    for (auto &t : execThreads)
+    for(auto& t : execThreads)
     {
         //TODO: Find better way of safely terminating thread
         t.detach();
         t.~thread();
     }
 
+    // Clean the threads after stopping all threads
     execThreads.clear();
-    // Start up new threads with new selected device info
-    thread t1(&LinuxAudio::test_capture, this);
 
-    t1.detach();
+    // Start up new threads with new selected device info
+
+    // Start capture thread and add to thread vector
+    execThreads.emplace_back(thread(&LinuxAudio::test_capture, this));
+
+    //TODO: Add playback thread later
+
+    // Detach new threads to run independently
+    for(auto& t : execThreads)
+        t.detach();
 }
 
 void LinuxAudio::test_capture(LinuxAudio *param)
@@ -141,11 +156,11 @@ void LinuxAudio::test_capture(LinuxAudio *param)
 void LinuxAudio::capture()
 {
     int err;                        //return for commands that might return an error
-    snd_pcm_t *pcmHandle;           //default pcm handle
+    snd_pcm_t *pcmHandle = NULL;           //default pcm handle
     string defaultDevice;           //default hw id for the device
     snd_pcm_hw_params_t *param;     //object to store our paramets (they are just the default ones for now)
     int audioBufferSize;            // size of the buffer for the audio
-    byte *audioBuffer;              // buffer for the audio
+    byte *audioBuffer = NULL;              // buffer for the audio
     snd_pcm_uframes_t *temp = NULL; //useless parameter because the api requires it
 
     //just writing to a buffer for now
@@ -231,18 +246,11 @@ void LinuxAudio::capture()
     //cleanup stuff
     snd_pcm_drain(pcmHandle);
     snd_pcm_close(pcmHandle);
-    free(audioBuffer);
+    //free(audioBuffer);
 }
 
 LinuxAudio::~LinuxAudio()
 {
-    delete this->activeInputDevice;
-    delete this->activeOutputDevice;
-    for (auto &t : execThreads)
-    {
-        t.detach();
-        t.~thread();
-    }
     callbackList.clear();
     execThreads.clear();
 }
