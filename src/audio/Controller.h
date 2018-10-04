@@ -9,7 +9,7 @@
 #elif __unix__
     // #include "LinuxAudio.h" // TODO: Remove comment once LinuxAudio is complete
 #elif __APPLE__
-    // #include "OSXAudio.h" // TODO: Remove comment once OSXAudio is complete
+    #include "OSXAudio.h"
 #endif
 
 #include <iostream>
@@ -17,6 +17,9 @@
 using byte = uint8_t;
 
 // TODO: Add public description of class
+/**
+ * A class that structures the receival of audio from the OS framework
+ */
 class Controller : public ICallback
 {
     private:

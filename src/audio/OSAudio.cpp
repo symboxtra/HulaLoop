@@ -46,6 +46,9 @@ void OSAudio::setActiveRecordDevice(Device* device)
     this->activeInputDevice = device;
 }
 
+/**
+ * Virtual implementation of Destructor
+ */
 OSAudio::~OSAudio()
 {
 }

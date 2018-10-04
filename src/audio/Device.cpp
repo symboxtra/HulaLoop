@@ -1,5 +1,12 @@
 #include "Device.h"
 
+/**
+ * Constructs an instance of the Device object
+ *
+ * @param id ID of the audio device
+ * @param name Name of the audio device
+ * @param t DeviceType of the audio device
+ */
 Device::Device(uint32_t* id, string name, DeviceType t)
 {
     this->deviceID = id;
@@ -67,6 +74,9 @@ void Device::setType(DeviceType t)
     this->type = t;
 }
 
+/**
+ * Deconstructs the device instance
+ */
 Device::~Device()
 {
     delete deviceID;

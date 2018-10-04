@@ -1,7 +1,11 @@
 build*
 .*.swp
+*.DS_Store
 *.autosave
 CMakeLists.txt.user
+
+# Doxygen
+docs/read-the-docs/source/_static/doxygen
 
 # Prerequisites
 *.d

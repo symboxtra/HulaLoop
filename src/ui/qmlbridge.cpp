@@ -1,19 +1,59 @@
 #include "qmlbridge.h"
 
-QMLBridge::QMLBridge(QObject *parent) : QObject(parent) {}
+#include "../control/transport.h"
 
-QString QMLBridge::getState()
+/**
+ * Construct a new instance of the QMLBridge class.
+ *
+ * @param parent Object which QMLBridge should be child of.
+ */
+QMLBridge::QMLBridge(QObject *parent) : QObject(parent)
 {
-	return state;
+    transport = new Transport;
 }
 
-void QMLBridge::setState(const QString &state)
+/**
+ * Return the current state of the Transport instance as a QString.
+ *
+ * @return state State of Transport instance
+ */
+QString QMLBridge::getTransportState() const
 {
+    return QString::fromStdString(transport->stateToStr(transport->getState()));
+}
 
-	if(this->state == state)
-		return;
+/**
+ * Trigger record in the Transport and update the UI state via signal.
+ */
+void QMLBridge::record()
+{
+    transport->record();
+    emit stateChanged();
+}
 
-	this->state = state;
-	emit stateChanged();
+/**
+ * Trigger stop in the Transport and update the UI state via signal.
+ */
+void QMLBridge::stop()
+{
+    transport->stop();
+    emit stateChanged();
+}
 
+/**
+ * Trigger playback in the Transport and update the UI state via signal.
+ */
+void QMLBridge::play()
+{
+    transport->play();
+    emit stateChanged();
+}
+
+/**
+ * Trigger pause in the Transport and update the UI state via signal.
+ */
+void QMLBridge::pause()
+{
+    transport->pause();
+    emit stateChanged();
 }
