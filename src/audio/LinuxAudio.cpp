@@ -9,7 +9,8 @@ LinuxAudio::LinuxAudio()
     }
     else
     {
-        setActiveOutputDevice(t[0]);
+        // Don't capture audio until this is fixed
+        // setActiveOutputDevice(t[0]);
     }
     /*for(int i = 0; i < t.size(); i++){
         cout << reinterpret_cast<uintptr_t>(t[i]->getID()) << " " << t[i]->getName() << endl;
@@ -148,7 +149,7 @@ void LinuxAudio::test_capture(LinuxAudio *param)
     param->capture();
 }
 
-/* 
+/*
    lengthOfRecording is in ms
    Device * recordingDevice is already formatted as hw:(int),(int)
    if Device is NULL then it chooses the default
@@ -237,7 +238,7 @@ void LinuxAudio::capture()
             /*err = write(1, audioBuffer, audioBufferSize);
         if(err != audioBufferSize)
         {
-            cerr << "Write short, only wrote " << err << " bytes" << endl; 
+            cerr << "Write short, only wrote " << err << " bytes" << endl;
         }*/
         }
         //cout << "stuck" << endl;
