@@ -7,6 +7,17 @@ codecov:
   ci:
     - jenkins.symboxtra.dynu.net
 
+flags:
+  windows:
+    paths:
+      - src/
+  osx:
+    paths:
+      - src/
+  linux:
+    paths:
+      - src/
+
 ignore:
     - "src/libs/"
     - "**/main.cpp"
