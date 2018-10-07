@@ -148,15 +148,17 @@ if (HL_ADD_COVERAGE_FLAGS)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
 endif ()
 
-# Add subdirectories and include any headers from lower level CMakeLists
+# Determine whether the UIs and control portions should be built
 if (NOT DEFINED BUILD_ONLY_AUDIO)
     set (BUILD_ONLY_AUDIO false)
 endif ()
 
+# Add subdirectories and include any headers from lower level CMakeLists
 add_subdirectory (src/audio)
 include_directories (${INCLUDE_DIRS})
-set (HL_LIBRARIES ${HL_LIBRARIES} ${AUDIO_LIBS})
+set (HL_LIBRARIES ${HL_LIBRARIES} hlaudio)
 
+# Build UI and control modules
 if (NOT BUILD_ONLY_AUDIO)
     add_subdirectory (src/control)
     include_directories (${INCLUDE_DIRS})
@@ -176,11 +178,12 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
     include (cmake/Testing.cmake)
 
-    # Add more tests here using create_test()
+    # Test that only rely on the audio library
+    create_test("src/test/TestController.cpp" "" -1)
+    #create_test("src/test/TestAudioOutput.cpp" "" -1)
+
     if (NOT BUILD_ONLY_AUDIO)
-        #create_test("src/test/TestAudioOutput.cpp" "${AUDIO_SRC_FILES}" -1)
-        create_test("src/test/TestCTInterface.cpp" "${AUDIO_SRC_FILES};src/control/transport.cpp" -1)
-        create_test("src/test/TestController.cpp" "${AUDIO_SRC_FILES}" -1)
+        create_test("src/test/TestCTInterface.cpp" "src/control/transport.cpp" -1)
     endif ()
 
 endif ()
