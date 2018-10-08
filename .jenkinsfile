@@ -316,13 +316,13 @@ pipeline {
                                 powershell '''
                                     echo "Running test suite on ${ENV:HL_OS}..."
 
-                                    cd build-win
-                                    ctest -C Debug -V
-                                    if ($LastExitCode -ne 0) {$host.SetShouldExit($LastExitCode)} # Exit with test error code
+                                    # cd build-win
+                                    # ctest -C Debug -V
+                                    # if ($LastExitCode -ne 0) {$host.SetShouldExit($LastExitCode)} # Exit with test error code
 
-                                    cd ..
+                                    # cd ..
 
-                                    OpenCppCoverage --export_type=cobertura:build-win/cobertura.xml (Get-Item build-win/bin/test/*.exe)>$null 2>$null
+                                    ./win-coverage.ps1 build-win
                                 '''
 
                             }
