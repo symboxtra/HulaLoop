@@ -45,13 +45,7 @@ Controller::Controller()
  */
 void Controller::handleData(byte* data, uint32_t size)
 {
-    //cout << size << endl;
-
-    // TODO: Temporary to satisfy user requirement
-    ofstream tempout;
-    tempout.open("output.raw", ios::binary | ios::out | ios::app);
-    tempout << data;
-    tempout.close();
+    cout << "Data received: " << size << endl;
 
     // Trigger upper layer callback functions
     for(int i = 0;i < callbackList.size();i++)
@@ -110,6 +104,7 @@ vector<Device*> Controller::getOutputDevices(){
  */
 Controller::~Controller()
 {
-    delete audio;
+    // Don't do this until mem management is fixed
+    // delete audio;
     callbackList.clear();
 }

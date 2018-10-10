@@ -25,7 +25,7 @@ else ()
 endif ()
 
 # Generate shared libraries
-add_library (hlaudio SHARED ${AUDIO_SRC_FILES})
+add_library (hlaudio STATIC ${AUDIO_SRC_FILES})
 set_target_properties (hlaudio PROPERTIES
     VERSION ${VERSION}
     SOVERSION 1

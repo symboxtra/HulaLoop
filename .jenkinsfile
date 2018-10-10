@@ -124,7 +124,7 @@ pipeline {
                             sh '''
                                 ./send.sh success ${HL_WEBHOOK_URL}
                                 curl -X PUT -d status=passing http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${HL_OS}-${GIT_BRANCH} || true
-                                bash <(curl -s https://codecov.io/bash) -X gcov -t ${HL_CODECOV_TOKEN} -f build-linux/coverage.info
+                                bash <(curl -s https://codecov.io/bash) -X gcov -f build-linux/coverage.info -F linux -t ${HL_CODECOV_TOKEN}
                             '''
                         }
                         failure {
@@ -246,7 +246,7 @@ pipeline {
                             sh '''
                                 ./send.sh success ${HL_WEBHOOK_URL}
                                 curl -X PUT -d status=passing http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${HL_OS}-${GIT_BRANCH} || true
-                                bash <(curl -s https://codecov.io/bash) -X gcov -t ${HL_CODECOV_TOKEN} -f build-osx/coverage.info
+                                bash <(curl -s https://codecov.io/bash) -X gcov -f build-osx/coverage.info -F osx -t ${HL_CODECOV_TOKEN}
                             '''
                         }
                         failure {
@@ -316,11 +316,13 @@ pipeline {
                                 powershell '''
                                     echo "Running test suite on ${ENV:HL_OS}..."
 
-                                    cd build-win
-                                    ctest -C Debug -V
-                                    cd ..
+                                    # cd build-win
+                                    # ctest -C Debug -V
+                                    # if ($LastExitCode -ne 0) {$host.SetShouldExit($LastExitCode)} # Exit with test error code
 
-                                    OpenCppCoverage --export_type=cobertura:build-win/cobertura.xml (Get-Item build-win/bin/test/*.exe)>$null 2>$null
+                                    # cd ..
+
+                                    ./win-coverage.ps1 build-win
                                 '''
 
                             }
@@ -338,7 +340,7 @@ pipeline {
                             powershell '''
                                 ./send.ps1 success ${ENV:HL_WEBHOOK_URL} -ErrorAction Ignore
                                 Invoke-WebRequest -Uri http://pi.symboxtra.dynu.net/status/builds/HulaLoop-${ENV:HL_OS}-${ENV:GIT_BRANCH} -Method PUT -Body (@{"status"="passing"} | ConvertTo-Json) -ContentType "application/json"
-                                codecov --root . --disable gcov -f build-win/cobertura.xml -t ${ENV:HL_CODECOV_TOKEN}
+                                codecov --root . --disable gcov -f build-win/cobertura.xml -F windows -t ${ENV:HL_CODECOV_TOKEN}
                             '''
                         }
                         failure {

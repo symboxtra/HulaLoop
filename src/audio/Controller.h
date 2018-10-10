@@ -15,7 +15,7 @@ using byte = uint8_t;
  */
 class Controller : public ICallback
 {
-    private:
+    protected:
         OSAudio* audio;
 
         vector<ICallback*> callbackList;
