@@ -17,7 +17,7 @@ Monday, Wednesday, Friday 5:00 PM - 7:00 PM
 Since this is the second sprint, we are far better prepared for the risks and challenges that might come our way. The primary challenges that we saw in the first sprint have mostly been conquered. The only lingering challenge is the unfamiliar APIs and technologies. We still have a few to introduce and remain new to the ones that we have been using. Memory management also pained us last sprint. To rectify this, we plan to develop a memory management strategy. This looks like it will be rather challenging as we allocate buffers that must be used in multiple parts of the application and at different times. Part of this challenge is also incorporating safe ways for third-party developers to receive and then deallocate memory from our library.
 
 ## **Current Sprint Detail** ##
-### **User Story #1:** ###
+### **User Story #16:** ###
 As a user, I would like to choose an input device to record audio from.
 
 | Task # | Description | Time (hrs) | Owner |
@@ -31,7 +31,7 @@ As a user, I would like to choose an input device to record audio from.
 * Given that the input device does not exists, the backend will notify the user that there is an error and display a message that the input device does not exist.
 * Given that the input device has an invalid sampling or bit rate, the user will be notified that the sampling and bit rate they choose does not exist on the device.
 
-### **User Story #2:** ###
+### **User Story #17:** ###
 As a user, I would like to choose an output device to record audio from (loopback).
 
 | Task # | Description | Time (hrs) | Owner |
@@ -45,7 +45,7 @@ As a user, I would like to choose an output device to record audio from (loopbac
 * Given that the output device does not exists, the backend will notify the user that there is an error and display a message that the output device does not exist.
 * Given that the output device has an invalid sampling or bit rate, the user will be notified that the sampling and bit rate they choose does not exist on the device.
 
-### **User Story #3:** ###
+### **User Story #18:** ###
 As a user, I would like to record audio for a specified amount of time.
 
 | Task # | Description | Time (hrs) | Owner |
@@ -61,7 +61,7 @@ As a user, I would like to record audio for a specified amount of time.
 * Given that the timer countdown sends the correct recording signal, the recording should start after the countdown.
 * Given that there is no input (or infinity) for the record duration, the application should record indefinitely until the user stops it.
 
-### **User Story #4:** ###
+### **User Story #19:** ###
 As a user, I would like to record until I manually stop the recording.
 
 | Task # | Description | Time (hrs) | Owner |
@@ -78,7 +78,7 @@ As a user, I would like to record until I manually stop the recording.
 * Given that the stop button is pressed, the play button will be enabled.
 * Given that the stop button is pressed, the export button will be activated and the audio data can be exported to a file.
 
-### **User Story #5:** ###
+### **User Story #20:** ###
 As a user, I would like to pause the capture process.
 
 | Task # | Description | Time (hrs) | Owner |
@@ -94,7 +94,7 @@ As a user, I would like to pause the capture process.
 * Given that the record button is pressed, the playback and record button are disabled.
 * Given that the record button is pressed, the visualizer will start moving based on the audio provided.
 
-### **User Story #6:** ###
+### **User Story #21:** ###
 As a user, I would like to resume the capture process.
 
 | Task # | Description | Time (hrs) | Owner |
@@ -110,7 +110,7 @@ As a user, I would like to resume the capture process.
 * Given that the pause button is pressed, all UI buttons except the playback, stop and record buttons should be disabled.
 * Given that the pause button is manually pressed, the visualizer will stop moving since no audio is being provided.
 
-### **User Story #7:** ###
+### **User Story #22:** ###
 As a user, I would like to visualize audio from the selected device.
 
 | Task # | Description | Time (hrs) | Owner |
@@ -129,7 +129,7 @@ As a user, I would like to visualize audio from the selected device.
 * Given that the user pressed the pause and play buttons, the visualizer stops and resumes movement.
 * Given that the original visualizer has dynamic heights, the visualizer has a dynamic curved line that is able to follow the same height movements.
 
-### **User Story #8:** ###
+### **User Story #23:** ###
 As a user, I would like to export captured audio to a file.
 
 | Task # | Description | Time (hrs) | Owner |
@@ -145,7 +145,7 @@ As a user, I would like to export captured audio to a file.
 * Given that the export button is clicked, a save file dialog box should show up allowing the user to export the recorded audio.
 * Given that the file is savable to a local directory, the SaveFileDialog should allow you name the file.
 
-### **User Story #9:** ###
+### **User Story #24:** ###
 As a user, I would like to export captured audio in WAV format.
 
 | Task # | Description | Time (hrs) | Owner |
@@ -161,7 +161,7 @@ As a user, I would like to export captured audio in WAV format.
 * Given that the PCM audio data is encoded into WAV format, the SaveFileDialog can store the WAV file to a specific local directory.
 * Given that the WAV file is stored to a local directory, the WAV file should not be corrupted and be able to play the audio when the file is run.
 
-### **User Story #10:** ###
+### **User Story #25:** ###
 As a third-party developer, I would like to set the device from which I capture audio.
 
 | Task # | Description | Time (hrs) | Owner |
@@ -176,7 +176,7 @@ As a third-party developer, I would like to set the device from which I capture 
 * Given that a third-party developer can set the desired audio capture device, the third-party developer can receive audio data from the desired device.
 * Given that the external documentation is completed, a third-party developer can easily determine how to access devices and switch the current device.
 
-### **User Story #11:** ###
+### **User Story #26:** ###
 As a developer, I would like my application to have minimal memory leaks.
 
 | Task # | Description | Time (hrs) | Owner |
@@ -191,7 +191,7 @@ As a developer, I would like my application to have minimal memory leaks.
 * Given that the memory management strategy is documented, Doxygen should contain the updated developer documentation containing memory management tips and tools for other developers.
 * Given that valgrind tests are created to monitor the application’s memory management, the valgrind tests should be integrated with our build process and fail the process if they are memory leaks present.
 
-### **User Story #12:** ###
+### **User Story #27:** ###
 As a developer, I would like at least 70% of our code to be covered by the test suites.
 
 | Task # | Description | Time (hrs) | Owner |
@@ -205,7 +205,7 @@ As a developer, I would like at least 70% of our code to be covered by the test 
 * Given that code coverage is at an acceptable level, the test suite will expand as we write additional code.
 * Given that we review the results of our code coverage, dead code will be found and removed from the codebase.
 
-### **User Story #13:** ###
+### **User Story #28:** ###
 As a user, I would like to be informed when the application is recording system audio.
 
 | Task # | Description | Time (hrs) | Owner |
@@ -220,7 +220,7 @@ As a user, I would like to be informed when the application is recording system 
 * Given the system tray icon exists, when the user starts recording, the icon changes to indicate recording.
 * Given the system tray icon exists, when the user starts recording, a message balloon is displayed to the user.
 
-### **User Story #14:** ###
+### **User Story #29:** ###
 As a user, I would like my application to stay up-to-date.
 
 | Task # | Description | Time (hrs) | Owner |
@@ -241,7 +241,7 @@ As a user, I would like my application to stay up-to-date.
 * Given that the update is ready to install, the user is notified if there are any running instances of HulaLoop.
 * Given that the update is ready to install, the older version of the application is removed and the updated version is launched.
 
-### **User Story #15:** ###
+### **User Story #30:** ###
 As a user, I would like the installation process to be both intuitive and take less than three minutes.
 
 | Task # | Description | Time (hrs) | Owner |
@@ -255,7 +255,7 @@ As a user, I would like the installation process to be both intuitive and take l
 * Given that the user runs the installer, the user is presented with intuitive and customized install options.
 * Given that the user has installed the application on their computer, when the user runs the uninstaller, then the application and all pertinent files are removed from the computer.
 
-### **User Story #16:** ###
+### **User Story #31:** ###
 As a user, I would like to be able to check for updates manually within the application.
 
 | Task # | Description | Time (hrs) | Owner |
@@ -269,7 +269,7 @@ As a user, I would like to be able to check for updates manually within the appl
 * Given that the check update button exists, when the user clicks the button, then a message is displayed to the user indicating whether an update is available or not.
 * Given that an update exists and the user confirms, the update process begins.
 
-### **User Story #17:** ###
+### **User Story #32:** ###
 As a user, I would like the CLI to provide the same features as the GUI.
 
 | Task # | Description | Time (hrs) | Owner |
