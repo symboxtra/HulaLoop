@@ -270,7 +270,7 @@ pipeline {
                     environment {
                         HL_OS = "Windows"
                         HL_QT_VERSION = "5.11.2"
-                        HL_QT_PREFIX = "C:\\Qt\\${HL_QT_VERSION}"
+                        HL_QT_PREFIX = "D:\\Qt\\${HL_QT_VERSION}"
                         PATH = "C:\\Program Files\\OpenCppCoverage;${PATH}"
                     }
 
