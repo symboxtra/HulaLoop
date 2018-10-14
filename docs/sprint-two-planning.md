@@ -7,6 +7,7 @@ Team 30: Aneesh Gokhale, Emanuel Pituch, Jack McKernan, Meriem Bounab, Neel Pate
 During this sprint, we plan to solidify and build off the foundation of our application. We plan to implement more of our essential features. These features include the actual recording process, allowing the user to save the audio to a file, notifying the user of recording, and adding our command line interface. We continue to focus on our API for third-party developers, including documentation of memory management techniques for them and ourselves. We also plan to excel in code quality by keeping our code coverage and code factor scores high and continuing good documentation practices.
 
 ## **Scrum Master:** ##
+
 Neel Patel
 
 
