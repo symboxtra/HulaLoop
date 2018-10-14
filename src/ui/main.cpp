@@ -1,10 +1,10 @@
+#include <QFontDatabase>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QQuickStyle>
-#include <QFontDatabase>
-
-#include <QtDebug>
 #include <QQmlDebuggingEnabler>
+#include <QQuickStyle>
+#include <QtDebug>
+
 
 #include "qmlbridge.h"
 
