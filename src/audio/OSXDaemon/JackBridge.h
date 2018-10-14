@@ -78,30 +78,30 @@ typedef float sample_t;
 #define JACK_SHMPATH        "/HulaLoop"
 
 #ifdef _ERROR_SYSLOG_
-#define ERROR(pri, str, code) syslog(pri, str, code);
+    #define ERROR(pri, str, code) syslog(pri, str, code);
 #else
-#define ERROR(pri, str, code) fprintf(stderr, str, code);
+    #define ERROR(pri, str, code) fprintf(stderr, str, code);
 #endif
 
 class JackBridgeDriverIF {
     protected:
         uint32_t instance;
         int shm_fd;
-        sample_t * buf_up[2];
-        sample_t * buf_down[2];
+        sample_t *buf_up[2];
+        sample_t *buf_down[2];
         uint64_t   FrameNumber;
         int        FramesPerBuffer;
-        volatile uint64_t   *  shmNumberTimeStamps;
-        volatile uint64_t   *  shmZeroHostTime;
-        volatile uint64_t   *  shmSeed;
-        volatile uint64_t   *  shmSyncMode;
-        volatile uint64_t   *  shmBufferSize;
-        volatile uint64_t   *  shmDriverStatus;
+        volatile uint64_t     *shmNumberTimeStamps;
+        volatile uint64_t     *shmZeroHostTime;
+        volatile uint64_t     *shmSeed;
+        volatile uint64_t     *shmSyncMode;
+        volatile uint64_t     *shmBufferSize;
+        volatile uint64_t     *shmDriverStatus;
 #define JB_DRV_STATUS_INIT      0
 #define JB_DRV_STATUS_ACTIVE    1
 #define JB_DRV_STATUS_STARTED   2
-        volatile uint64_t   *  shmReadFrameNumber[2];
-        volatile uint64_t   *  shmWriteFrameNumber[2];
+        volatile uint64_t     *shmReadFrameNumber[2];
+        volatile uint64_t     *shmWriteFrameNumber[2];
 
         int create_shm()
         {
@@ -165,7 +165,7 @@ class JackBridgeDriverIF {
                 }
             }
 
-            char * shm_base = (char *)mmap(NULL, REGSMAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, instance * REGSMAP_BOUNDARY);
+            char *shm_base = (char *)mmap(NULL, REGSMAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, instance * REGSMAP_BOUNDARY);
             // char* shm_base = (char*)mmap(NULL, JACK_SHMSIZE, PROT_READ|PROT_WRITE, MAP_SHARED, shm_fd, 0);
             if (shm_base == MAP_FAILED)
             {

@@ -18,11 +18,13 @@ void OSAudio::setBufferSize(uint32_t size)
  *
  * @param func Derived instance of ICallback class
  */
-void OSAudio::addBufferReadyCallback(ICallback* func)
+void OSAudio::addBufferReadyCallback(ICallback *func)
 {
     // Check if callback function already exists
-    if(find(callbackList.begin(), callbackList.end(), func) == callbackList.end())
+    if (find(callbackList.begin(), callbackList.end(), func) == callbackList.end())
+    {
         this->callbackList.push_back(func);
+    }
 }
 
 /**
@@ -30,12 +32,14 @@ void OSAudio::addBufferReadyCallback(ICallback* func)
  *
  * @param func Derived instance of ICallback class
  */
-void OSAudio::removeBufferReadyCallback(ICallback* callFunction)
+void OSAudio::removeBufferReadyCallback(ICallback *callFunction)
 {
     // Check if callback function exists to remove
-    vector<ICallback*>::iterator it = find(callbackList.begin(), callbackList.end(), callFunction);
-    if(it != callbackList.end())
+    vector<ICallback *>::iterator it = find(callbackList.begin(), callbackList.end(), callFunction);
+    if (it != callbackList.end())
+    {
         this->callbackList.erase(it);
+    }
 }
 
 /**
@@ -44,7 +48,7 @@ void OSAudio::removeBufferReadyCallback(ICallback* callFunction)
  *
  * @param device Instance of Device that corresponds to the desired system device
  */
-void OSAudio::setActiveRecordDevice(Device* device)
+void OSAudio::setActiveRecordDevice(Device *device)
 {
     this->activeInputDevice = device;
 }

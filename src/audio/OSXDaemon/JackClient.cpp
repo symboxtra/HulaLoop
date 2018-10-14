@@ -38,39 +38,39 @@ int JackClient::process_callback(jack_nframes_t nframes)
     return 0;
 }
 
-int JackClient::_process_callback(jack_nframes_t nframes, void * arg)
+int JackClient::_process_callback(jack_nframes_t nframes, void *arg)
 {
-    JackClient * obj = (JackClient *)arg;
+    JackClient *obj = (JackClient *)arg;
     return obj->process_callback(nframes);
 }
 
-int JackClient::sync_callback(jack_transport_state_t state, jack_position_t * pos)
+int JackClient::sync_callback(jack_transport_state_t state, jack_position_t *pos)
 {
     return 0;
 }
 
-int JackClient::_sync_callback(jack_transport_state_t state, jack_position_t * pos, void * arg)
+int JackClient::_sync_callback(jack_transport_state_t state, jack_position_t *pos, void *arg)
 {
-    JackClient * obj = (JackClient *)arg;
+    JackClient *obj = (JackClient *)arg;
     return obj->sync_callback(state, pos);
 }
 
 void JackClient::timebase_callback(jack_transport_state_t state, jack_nframes_t nframes,
-                                   jack_position_t * pos, int new_pos)
+                                   jack_position_t *pos, int new_pos)
 {
 }
 
 void JackClient::_timebase_callback(jack_transport_state_t state, jack_nframes_t nframes,
-                                    jack_position_t * pos, int new_pos, void * arg)
+                                    jack_position_t *pos, int new_pos, void *arg)
 {
-    JackClient * obj = (JackClient *)arg;
+    JackClient *obj = (JackClient *)arg;
     obj->timebase_callback(state, nframes, pos, new_pos);
 }
 
 /**********************************************************************
  public functions
 **********************************************************************/
-JackClient::JackClient(const char * name, uint32_t flags)
+JackClient::JackClient(const char *name, uint32_t flags)
 {
     jack_status_t jst;
 
@@ -104,7 +104,7 @@ JackClient::~JackClient()
     jack_client_close(client);
 }
 
-int JackClient::register_ports(const char * nameAin[], const char * nameAout[])
+int JackClient::register_ports(const char *nameAin[], const char *nameAout[])
 {
     int i;
 
@@ -195,12 +195,12 @@ void JackClient::transport_stop()
     jack_transport_stop(client);
 }
 
-jack_transport_state_t JackClient::transport_query(jack_position_t * pos)
+jack_transport_state_t JackClient::transport_query(jack_position_t *pos)
 {
     return jack_transport_query(client, pos);
 }
 
-int JackClient::transport_reposition(const jack_position_t * pos)
+int JackClient::transport_reposition(const jack_position_t *pos)
 {
     return jack_transport_reposition(client, pos);
 }

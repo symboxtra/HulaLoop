@@ -7,7 +7,7 @@
 class OSXDaemon : public JackClient, public JackBridgeDriverIF {
     public:
 
-        OSXDaemon(const char * name, int id);
+        OSXDaemon(const char *name, int id);
         virtual ~OSXDaemon();
 
         int process_callback(jack_nframes_t nframes) override;
@@ -21,8 +21,8 @@ class OSXDaemon : public JackClient, public JackBridgeDriverIF {
         double HostTicksPerFrame;
         int64_t ncalls;
 
-        int sendToCoreAudio(float ** in, int nframes);
-        int receiveFromCoreAudio(float ** out, int nframes);
+        int sendToCoreAudio(float **in, int nframes);
+        int receiveFromCoreAudio(float **out, int nframes);
         void check_progress();
 
 };

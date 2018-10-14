@@ -39,8 +39,7 @@ using byte = uint8_t;
 /**
  * A audio class that captures system wide audio on Windows
  */
-class WindowsAudio : public OSAudio
-{
+class WindowsAudio : public OSAudio {
     private:
         const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
         const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
@@ -52,23 +51,23 @@ class WindowsAudio : public OSAudio
         REFERENCE_TIME requestDuration = REFTIMES_PER_SEC;
         REFERENCE_TIME bufferDuration;
 
-        IMMDeviceEnumerator* pEnumerator = NULL;
-        IMMDeviceCollection* deviceCollection = NULL;
+        IMMDeviceEnumerator *pEnumerator = NULL;
+        IMMDeviceCollection *deviceCollection = NULL;
 
         // Audio data
-        byte* pData;
+        byte *pData;
 
     public:
         WindowsAudio();
         ~WindowsAudio();
 
-        vector<Device*> getInputDevices();
-        vector<Device*> getOutputDevices();
+        vector<Device *> getInputDevices();
+        vector<Device *> getOutputDevices();
 
-        static void test_capture(WindowsAudio* param);
+        static void test_capture(WindowsAudio *param);
         void capture();
 
-        void setActiveOutputDevice(Device* device);
+        void setActiveOutputDevice(Device *device);
 };
 
 #endif

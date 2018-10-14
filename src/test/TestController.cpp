@@ -4,51 +4,49 @@
 #include <ICallback.h>
 
 
-class TestCallback : public ICallback
-{
+class TestCallback : public ICallback {
     public:
         bool dataReceived;
 
-    TestCallback()
-    {
-        dataReceived = false;
-    }
+        TestCallback()
+        {
+            dataReceived = false;
+        }
 
-    void handleData(byte * data, uint32_t size)
-    {
-        dataReceived = true;
-    }
+        void handleData(byte *data, uint32_t size)
+        {
+            dataReceived = true;
+        }
 };
 
-class TestController : public Controller, public ::testing::Test
-{
+class TestController : public Controller, public ::testing::Test {
     public:
-        TestCallback * handler1;
-        TestCallback * handler2;
+        TestCallback *handler1;
+        TestCallback *handler2;
 
-    virtual void SetUp()
-    {
-        this->handler1 = new TestCallback();
-        this->handler2 = new TestCallback();
+        virtual void SetUp()
+        {
+            this->handler1 = new TestCallback();
+            this->handler2 = new TestCallback();
 
-        // Make sure callback list is accesible and empty
-        ASSERT_EQ(this->callbackList.size(), 0);
-    }
+            // Make sure callback list is accesible and empty
+            ASSERT_EQ(this->callbackList.size(), 0);
+        }
 
-    /**
-     * Trigger a buffer dispatch from the Controller.
-     */
-    void sendData()
-    {
-        byte * buffer = nullptr;
-        this->handleData(buffer, 0);
-    }
+        /**
+         * Trigger a buffer dispatch from the Controller.
+         */
+        void sendData()
+        {
+            byte *buffer = nullptr;
+            this->handleData(buffer, 0);
+        }
 
-    virtual void TearDown()
-    {
-        delete this->handler1;
-        delete this->handler2;
-    }
+        virtual void TearDown()
+        {
+            delete this->handler1;
+            delete this->handler2;
+        }
 
 };
 

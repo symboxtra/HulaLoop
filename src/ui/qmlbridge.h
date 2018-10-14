@@ -12,9 +12,8 @@
  * Class for communicating between QML and C++.
  * This is designed to be added as a QML type and used in QML.
  */
-class QMLBridge : public QObject
-{
-    Q_OBJECT
+class QMLBridge : public QObject {
+        Q_OBJECT
 
     private:
         Transport *transport;

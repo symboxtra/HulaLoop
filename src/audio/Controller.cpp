@@ -19,14 +19,14 @@ Controller::Controller()
 {
     // Initialize OSAudio based on host OS
     #if defined(__unix__)
-        audio = new LinuxAudio();
+    audio = new LinuxAudio();
     #elif defined(__APPLE__)
-        audio = new OSXAudio();
+    audio = new OSXAudio();
     #elif _WIN32
-        audio = new WindowsAudio();
+    audio = new WindowsAudio();
     #endif
 
-    if(audio == NULL)
+    if (audio == NULL)
     {
         cerr << "OS Audio error !" << endl;
     }//TODO: Handle error
@@ -43,13 +43,15 @@ Controller::Controller()
  * @param size Size of returned audio data (frames)
  * @param data Audio data in byte buffer
  */
-void Controller::handleData(byte* data, uint32_t size)
+void Controller::handleData(byte *data, uint32_t size)
 {
     cout << "Data received: " << size << endl;
 
     // Trigger upper layer callback functions
-    for(int i = 0;i < callbackList.size();i++)
+    for (int i = 0; i < callbackList.size(); i++)
+    {
         callbackList[i]->handleData(data, size);
+    }
 }
 
 /**
@@ -57,15 +59,19 @@ void Controller::handleData(byte* data, uint32_t size)
  *
  * @param func Derived instance of iCallback class
  */
-void Controller::addBufferReadyCallback(ICallback* func)
+void Controller::addBufferReadyCallback(ICallback *func)
 {
     // Add self to OSAudio callback when first callback is added
-    if(this->callbackList.size() == 0)
+    if (this->callbackList.size() == 0)
+    {
         audio->addBufferReadyCallback(this);
+    }
 
     // Check if callback function already exists
-    if(find(callbackList.begin(), callbackList.end(), func) == callbackList.end())
+    if (find(callbackList.begin(), callbackList.end(), func) == callbackList.end())
+    {
         this->callbackList.push_back(func);
+    }
 }
 
 /**
@@ -73,29 +79,35 @@ void Controller::addBufferReadyCallback(ICallback* func)
  *
  * @param func Derived instance of iCallback class
  */
-void Controller::removeBufferReadyCallback(ICallback* func)
+void Controller::removeBufferReadyCallback(ICallback *func)
 {
     // Check if callback function exists to remove
-    vector<ICallback*>::iterator it = find(callbackList.begin(), callbackList.end(), func);
-    if(it != callbackList.end())
+    vector<ICallback *>::iterator it = find(callbackList.begin(), callbackList.end(), func);
+    if (it != callbackList.end())
+    {
         this->callbackList.erase(it);
+    }
 
     // Remove self from callback when last callback is removed
-    if(this->callbackList.size() == 0)
+    if (this->callbackList.size() == 0)
+    {
         audio->removeBufferReadyCallback(this);
+    }
 }
 
 /**
  * Get input devices from OSAudio
  */
-vector<Device*> Controller::getInputDevices(){
+vector<Device *> Controller::getInputDevices()
+{
     return audio->getInputDevices();
 }
 
 /**
  * Get output devices from OSAudio
  */
-vector<Device*> Controller::getOutputDevices(){
+vector<Device *> Controller::getOutputDevices()
+{
     return audio->getOutputDevices();
 }
 

@@ -47,7 +47,7 @@ SOFTWARE.
  *
  * All that needs to be done from OSAudio is grab our record device.
  */
-OSXDaemon::OSXDaemon(const char * name, int id) : JackClient(name, JACK_PROCESS_CALLBACK), JackBridgeDriverIF(id)
+OSXDaemon::OSXDaemon(const char *name, int id) : JackClient(name, JACK_PROCESS_CALLBACK), JackBridgeDriverIF(id)
 {
     if (attach_shm() < 0)
     {
@@ -89,8 +89,8 @@ OSXDaemon::~OSXDaemon()
  */
 int OSXDaemon::process_callback(jack_nframes_t nframes)
 {
-    sample_t * ain[4];
-    sample_t * aout[4];
+    sample_t *ain[4];
+    sample_t *aout[4];
 
     if (*shmDriverStatus != JB_DRV_STATUS_STARTED)
     {
@@ -120,7 +120,7 @@ int OSXDaemon::process_callback(jack_nframes_t nframes)
 
         isActive = true;
         printf("HulaLoop #%d: Activated with SyncMode = %s, ZeroHostTime = %llx\n",
-                instance, isSyncMode ? "Yes" : "No", *shmZeroHostTime);
+               instance, isSyncMode ? "Yes" : "No", *shmZeroHostTime);
     }
 
     if ((FrameNumber % FramesPerBuffer) == 0)
@@ -136,8 +136,8 @@ int OSXDaemon::process_callback(jack_nframes_t nframes)
         if ((!isSyncMode) && isVerbose && ((ncalls++) % 100) == 0)
         {
             printf("HulaLoop #%d: ZeroHostTime: %llx, %lld, diff:%d\n",
-                    instance,  *shmZeroHostTime, *shmNumberTimeStamps,
-                    ((int)(mach_absolute_time() + 1000000 - (*shmZeroHostTime))) - 1000000);
+                   instance,  *shmZeroHostTime, *shmNumberTimeStamps,
+                   ((int)(mach_absolute_time() + 1000000 - (*shmZeroHostTime))) - 1000000);
         }
     }
 
@@ -167,7 +167,7 @@ int OSXDaemon::process_callback(jack_nframes_t nframes)
  * @param in TODO
  * @param nframes TODO
  */
-int OSXDaemon::sendToCoreAudio(float ** in, int nframes)
+int OSXDaemon::sendToCoreAudio(float **in, int nframes)
 {
     unsigned int offset = FrameNumber % FramesPerBuffer;
     // FIXME: should be consider buffer overwrapping
@@ -188,7 +188,7 @@ int OSXDaemon::sendToCoreAudio(float ** in, int nframes)
  * @param out TODO
  * @param nframe TODO
  */
-int OSXDaemon::receiveFromCoreAudio(float ** out, int nframes)
+int OSXDaemon::receiveFromCoreAudio(float **out, int nframes)
 {
     // unsigned int offset = FrameNumber % FramesPerBuffer;
     unsigned int offset = (FrameNumber - nframes) % FramesPerBuffer;
@@ -213,15 +213,15 @@ int OSXDaemon::receiveFromCoreAudio(float ** out, int nframes)
  */
 void OSXDaemon::check_progress()
 {
-#if 0
+    #if 0
     if (isVerbose && ((ncalls++) % 500) == 0)
     {
         printf("HulaLoop #%d: FRAME %llu : Write0: %llu Read0: %llu Write1: %llu Read0: %llu\n",
-                instance, FrameNumber,
-                *shmWriteFrameNumber[0], *shmReadFrameNumber[0],
-                *shmWriteFrameNumber[1], *shmReadFrameNumber[1]);
+               instance, FrameNumber,
+               *shmWriteFrameNumber[0], *shmReadFrameNumber[0],
+               *shmWriteFrameNumber[1], *shmReadFrameNumber[1]);
     }
-#endif
+    #endif
 
     int diff = *shmWriteFrameNumber[0] - FrameNumber;
     int interval = (mach_absolute_time() - lastHostTime) / HostTicksPerFrame;
@@ -232,7 +232,7 @@ void OSXDaemon::check_progress()
             if (isVerbose)
             {
                 printf("WARNING: miss synchronization detected at FRAME %llu (diff=%d, interval=%d)\n",
-                        FrameNumber, diff, interval);
+                       FrameNumber, diff, interval);
                 fflush(stdout);
             }
             showmsg = false;

@@ -2,8 +2,7 @@
 
 #include "transport.h"
 
-class TestCTInterface : public Transport, public ::testing::Test
-{
+class TestCTInterface : public Transport, public ::testing::Test {
 
 };
 
@@ -34,5 +33,5 @@ TEST_F(TestCTInterface, checkPause)
 
 TEST_F(TestCTInterface, unknownEnumType)
 {
-    ASSERT_EQ(stateToStr((TransportState)-1), "Unknown");
+    ASSERT_EQ(stateToStr((TransportState) - 1), "Unknown");
 }

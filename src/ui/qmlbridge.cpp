@@ -62,11 +62,14 @@ void QMLBridge::pause()
 QString QMLBridge::getInputDevices()
 {
     string devices;
-    vector<Device*> vd = transport->controller->getInputDevices();
-    for(int i = 0; i < vd.size(); i++){
+    vector<Device *> vd = transport->controller->getInputDevices();
+    for (int i = 0; i < vd.size(); i++)
+    {
         devices += vd[i]->getName();
-        if(i < vd.size()-1)
+        if (i < vd.size() - 1)
+        {
             devices += ",";
+        }
     }
     return QString::fromStdString(devices);
 }
@@ -74,11 +77,14 @@ QString QMLBridge::getInputDevices()
 QString QMLBridge::getOutputDevices()
 {
     string devices;
-    vector<Device*> vd = transport->controller->getOutputDevices();
-    for(int i = 0; i < vd.size(); i++){
+    vector<Device *> vd = transport->controller->getOutputDevices();
+    for (int i = 0; i < vd.size(); i++)
+    {
         devices += vd[i]->getName();
-        if(i < vd.size()-1)
+        if (i < vd.size() - 1)
+        {
             devices += ",";
+        }
     }
     return QString::fromStdString(devices);
 }

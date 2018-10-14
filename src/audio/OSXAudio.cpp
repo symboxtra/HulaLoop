@@ -16,7 +16,7 @@
 OSXAudio::OSXAudio()
 {
     // Create the loopback daemon
-    OSXDaemon * osxDaemon;
+    OSXDaemon *osxDaemon;
     osxDaemon = new OSXDaemon("HulaLoop #1", 0);
     osxDaemon->activate();
     osxDaemon->monitor();
@@ -41,7 +41,7 @@ void OSXAudio::capture()
 vector<Device *> OSXAudio::getDevices(DeviceType type)
 {
     int ret = Pa_Initialize();
-    if(ret != paNoError)
+    if (ret != paNoError)
     {
         fprintf(stderr, "%sPortAudio failed to initialize.\nError code: 0x%x\n", HL_ERROR_PREFIX, ret);
         exit(1);
@@ -55,17 +55,19 @@ vector<Device *> OSXAudio::getDevices(DeviceType type)
     }
 
     vector<Device *> devices;
-    for(uint32_t i = 0; i < deviceCount; i++)
+    for (uint32_t i = 0; i < deviceCount; i++)
     {
-        const PaDeviceInfo * paDevice = Pa_GetDeviceInfo(i);
+        const PaDeviceInfo *paDevice = Pa_GetDeviceInfo(i);
 
         // Exclude record only devices if type == PLAYBACK
         if (type == DeviceType::PLAYBACK && paDevice->maxOutputChannels == 0)
+        {
             continue;
+        }
 
         // Create HulaLoop style device and add to vector
         // This needs to be freed elsewhere
-        Device * hlDevice = new Device(NULL, string(paDevice->name), type);
+        Device *hlDevice = new Device(NULL, string(paDevice->name), type);
         devices.push_back(hlDevice);
 
         // Print some debug device info for now
@@ -104,7 +106,7 @@ vector<Device *> OSXAudio::getOutputDevices()
  *
  * @param _this Instance of the current object
  */
-void OSXAudio::test_capture(OSXAudio * param)
+void OSXAudio::test_capture(OSXAudio *param)
 {
 
 }
@@ -115,7 +117,7 @@ void OSXAudio::test_capture(OSXAudio * param)
  *
  * @param device Instance of Device that corresponds to the desired system device
  */
-void OSXAudio::setActiveOutputDevice(Device * device)
+void OSXAudio::setActiveOutputDevice(Device *device)
 {
 
 }

@@ -68,7 +68,7 @@ TransportState Transport::getState() const
 std::string Transport::stateToStr(const TransportState state) const
 {
 
-    switch(state)
+    switch (state)
     {
 
         case RECORDING:

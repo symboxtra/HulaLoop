@@ -7,7 +7,7 @@
  * @param name Name of the audio device
  * @param t DeviceType of the audio device
  */
-Device::Device(uint32_t* id, string name, DeviceType t)
+Device::Device(uint32_t *id, string name, DeviceType t)
 {
     this->deviceID = id;
     this->deviceName = name;
@@ -19,7 +19,7 @@ Device::Device(uint32_t* id, string name, DeviceType t)
  *
  * @param id Pointer to ID value due to Windows return values
  */
-void Device::setID(uint32_t* id)
+void Device::setID(uint32_t *id)
 {
     this->deviceID = id;
 }
@@ -29,7 +29,7 @@ void Device::setID(uint32_t* id)
  *
  * @return id Pointer to a integer
  */
-uint32_t* Device::getID()
+uint32_t *Device::getID()
 {
     return this->deviceID;
 }
