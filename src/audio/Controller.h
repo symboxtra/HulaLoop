@@ -1,8 +1,8 @@
 #ifndef CONTROL
 #define CONTROL
 
-#include <vector>
 #include <iostream>
+#include <vector>
 
 #include "OSAudio.h"
 #include "ICallback.h"

@@ -31,10 +31,10 @@ SOFTWARE.
 #include <sstream>
 #include <string>
 
-#include "OSXDaemon.h"
+#include "../HulaAudioError.h"
 #include "JackClient.hpp"
 #include "JackBridge.h"
-#include "../HulaAudioError.h"
+#include "OSXDaemon.h"
 
 /*
  * OSXDaemon.cpp

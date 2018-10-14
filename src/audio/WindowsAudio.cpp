@@ -148,7 +148,7 @@ void WindowsAudio::setActiveOutputDevice(Device* device)
     // Interrupt all threads and make sure they stop
     for(auto& t : execThreads)
     {
-        //TODO: Find better way of safely terminating thread
+        // TODO: Find better way of safely terminating thread
         t.detach();
         t.~thread();
     }
@@ -161,7 +161,7 @@ void WindowsAudio::setActiveOutputDevice(Device* device)
     // Start capture thread and add to thread vector
     execThreads.emplace_back(thread(&WindowsAudio::test_capture, this));
 
-    //TODO: Add playback thread later
+    // TODO: Add playback thread later
 
     // Detach new threads to run independently
     for(auto& t : execThreads)
@@ -208,7 +208,7 @@ void WindowsAudio::capture()
 
     // Select the current active output device
     status = pEnumerator->GetDevice(reinterpret_cast<LPCWSTR>(activeOutputDevice->getID()), &audioDevice);
-    //status = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &audioDevice);
+    // status = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &audioDevice);
     HANDLE_ERROR(status);
     cout << "Selected Device: " << activeOutputDevice->getName() << endl;
 
@@ -296,7 +296,7 @@ Exit:
     cerr << "\nError: " << errMsg << endl;
     exit(1);
 
-    //TODO: Handle error accordingly
+    // TODO: Handle error accordingly
 }
 
 /**

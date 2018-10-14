@@ -1,21 +1,22 @@
 #ifndef WIN_AUDIO
 #define WIN_AUDIO
 
-// System
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <thread>
 
 // Windows Audio
 #include <windows.h>
 #include <mmdeviceapi.h>
 #include <endpointvolume.h>
 #include <Audioclient.h>
-#include <functiondiscoverykeys_devpkey.h>
 #include <comdef.h>
+#include <functiondiscoverykeys_devpkey.h>
+
+// System
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+#include <string>
+#include <thread>
+#include <vector>
 
 #include "OSAudio.h"
 #include "Device.h"

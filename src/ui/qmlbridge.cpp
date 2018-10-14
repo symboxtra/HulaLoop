@@ -1,7 +1,7 @@
+#include <string>
+
 #include "qmlbridge.h"
 #include "../control/transport.h"
-
-#include <string>
 
 /**
  * Construct a new instance of the QMLBridge class.
@@ -67,7 +67,7 @@ QString QMLBridge::getInputDevices()
         devices += vd[i]->getName();
         if(i < vd.size()-1)
             devices += ",";
-    }  
+    }
     return QString::fromStdString(devices);
 }
 
@@ -79,6 +79,6 @@ QString QMLBridge::getOutputDevices()
         devices += vd[i]->getName();
         if(i < vd.size()-1)
             devices += ",";
-    }  
+    }
     return QString::fromStdString(devices);
 }

@@ -1,10 +1,10 @@
 #include <alsa/asoundlib.h>
 
-#include <iostream>
-#include <vector>
-#include <thread>
-#include "stdlib.h"
 #include <cstdint>
+#include <iostream>
+#include <stdlib.h>
+#include <thread>
+#include <vector>
 
 #include "OSAudio.h"
 #include "Device.h"
@@ -20,7 +20,7 @@ class LinuxAudio : public OSAudio
 {
     private:
         int bitrate;
-    
+
     public:
         LinuxAudio();
         ~LinuxAudio();

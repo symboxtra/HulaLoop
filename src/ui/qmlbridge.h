@@ -14,30 +14,30 @@
  */
 class QMLBridge : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
-	private:
-		Transport *transport;
+    private:
+        Transport *transport;
 
-	public:
-		explicit QMLBridge(QObject *parent = nullptr);
+    public:
+        explicit QMLBridge(QObject *parent = nullptr);
 
-		Q_INVOKABLE QString getInputDevices();
-		Q_INVOKABLE QString getOutputDevices();
+        Q_INVOKABLE QString getInputDevices();
+        Q_INVOKABLE QString getOutputDevices();
 
-		Q_INVOKABLE QString getTransportState() const;
-		Q_INVOKABLE void record();
-		Q_INVOKABLE void stop();
-		Q_INVOKABLE void play();
-		Q_INVOKABLE void pause();
+        Q_INVOKABLE QString getTransportState() const;
+        Q_INVOKABLE void record();
+        Q_INVOKABLE void stop();
+        Q_INVOKABLE void play();
+        Q_INVOKABLE void pause();
 
-	signals:
+    signals:
 
-		/**
-		 * Signal emmitted when the Transport changes states.
-		 * Keeps the UI's state machine on the same page.
-		 */
-		void stateChanged();
+        /**
+         * Signal emmitted when the Transport changes states.
+         * Keeps the UI's state machine on the same page.
+         */
+        void stateChanged();
 };
 
 #endif // QMLBRIDGE_H
