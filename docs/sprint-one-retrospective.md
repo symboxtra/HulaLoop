@@ -60,7 +60,7 @@ As a user, I would like to view all available audio devices.
 | 3 | Get list of available audio devices from Linux | 2 | Emanuel |
 | 4 | Store input and output device lists in OSAudio | 1 | Neel |
 | 5 | Build interface between Controller and OSAudio | 1 | Neel |
-| 6 | Build Device interface between Controller and GUI | 2 |Neel |
+| 6 | Build Device interface between Controller and GUI | 2 | Neel |
 | 7 | Display Device information in GUI combo-boxes | 1 | Emanuel |
 | 8 | Unit Test - Verify the interface between Controller and OSAudio | 1 | Emanuel |
 | 9 | Unit Test - Verify the interface between Controller and user interfaces | 1 | Emanuel |
@@ -113,7 +113,7 @@ As a user, I would like to have a button to start audio recording.
 |:------:|:-----------|:----------:|:-----:|
 | 1 | Add styled start button to layout manager | 1 | Aneesh |
 | 2 | Integrate button with Transport backend | 1 | Aneesh |
-| 3 | Unit Test - Verify the button sends the expected signal | 0.25 |Aneesh |
+| 3 | Unit Test - Verify the button sends the expected signal | 0.25 | Aneesh |
 
 #### Completed: ####
 A stylized record button was added to the UI and integrated via our C++/QML bridge. We verify that it sends a signal to the C++ backend via a unit test that checks to see if the state of the program was changed to recording.
@@ -164,7 +164,7 @@ As a user, I would like to delay the start of a recording by a specified amount 
 | 3 | Add textfield to show remaining countdown time | 1 | Emanuel |
 | 4 | Integrate timer with Transport | 2 | Emanuel |
 | 5 | Unit Test - Verify the button sends the expected signal | 0.25 | Emanuel |
-| 6 | Unit Test - Various timer options successfully result in starting a recording |  0.25 | Emanuel
+| 6 | Unit Test - Various timer options successfully result in starting a recording |  0.25 | Emanuel |
 
 #### Completed: ####
 A stylized timer button was added to the UI and integrated via our C++/QML bridge. Instead of implementing a drop-down list, we created a text input field. The countdown timer displays the delay timer by counting down to 0. We opted out of integrating the timer with the transport because we were able to write the timer in QML without any need for background interaction. We verify via a unit test that when the countdown ends, a signal to start recording is sent. We also test that various inputs into the timer box work via a unit test.
@@ -193,7 +193,7 @@ As a developer, I would like a documented API so that third-party developers can
 | 2 | Setup code quality and static analysis tools | 1 | Emanuel |
 | 3 | Act on results of code quality, static analysis, and code coverage to improve existing code | 12 (1 per person per week) | Aneesh, Emanuel, Jack, Neel |
 | 4 | Automatically generate documentation from code using Doxygen | 3 | Jack |
-| 5 | Host auto-updated and versioned documentation on readthedocs.io | 3 | Neel
+| 5 | Host auto-updated and versioned documentation on readthedocs.io | 3 | Neel |
 
 #### Completed: ####
 We established coding standards at the beginning of the sprint. The rules have been enforced using an online static analysis tool. A quality grade is assigned to our code base and is reassessed with each new push. Each pull request into the stable branch of the repository requires a review (and understanding of the code written) from another team member. As a team, we acted on the results of this analysis to improve our code and fix issues pointed out by the autonomous tools or our own human reviews. Our general user-facing documentation is hosted at https://hulaloop.readthedocs.io/en/latest/ and is auto-generated and versioned with each push. Our developer documentation is a subset of the same site: https://hulaloop.readthedocs.io/en/latest/_static/doxygen/index.html and is built from code with Doxygen.
@@ -233,7 +233,7 @@ As a developer, I would like the build system to be modular and support cross-pl
 | 5 | Experiment with CPack to create a basic installer | 3 | Aneesh |
 
 #### Not Completed: ####
-We decided not to create the installers during this sprint because we felt that we did not have a fully cohesive version of the application
+We decided not to create the installers during this sprint because we felt that we did not have a fully cohesive version of the application.
 
 ### **User Story #7:** ###
 As a user, I would like to have a GUI.
@@ -241,7 +241,7 @@ As a user, I would like to have a GUI.
 | Task # | Description | Time (hrs) | Owner |
 |:------:|:-----------|:----------:|:-----:|
 | 3 | Design color scheme and styles | 1 | Aneesh |
-| 4 | Implement color scheme and styles | 1 |Aneesh |
+| 4 | Implement color scheme and styles | 1 | Aneesh |
 
 #### Not Completed: ####
 Although we created a GUI that has a rough color scheme and style (i.e. Material design, dark theme with blue and orange highlights), the styling that has been applied is not the finished product. We plan to demo the application to some users and hope to modify the color scheme and style based on feedback.
