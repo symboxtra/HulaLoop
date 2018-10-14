@@ -1,10 +1,10 @@
 #include <alsa/asoundlib.h>
 
+#include <stdlib.h>
 #include <cstdint>
 #include <iostream>
 #include <thread>
 #include <vector>
-#include <stdlib.h>
 
 #include "OSAudio.h"
 #include "Device.h"
