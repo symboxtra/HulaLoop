@@ -1,7 +1,7 @@
 #include <string>
 
-#include "qmlbridge.h"
 #include "../control/transport.h"
+#include "qmlbridge.h"
 
 /**
  * Construct a new instance of the QMLBridge class.
