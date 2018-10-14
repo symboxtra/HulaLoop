@@ -3,7 +3,7 @@
 LinuxAudio::LinuxAudio()
 {
     vector<Device *> t = getOutputDevices();
-    if(t.empty())
+    if (t.empty())
     {
         cerr << "No devices found" << endl;
     }
@@ -122,7 +122,7 @@ void LinuxAudio::setActiveOutputDevice(Device *device)
     this->activeOutputDevice = device;
 
     // Interrupt all threads and make sure they stop
-    for(auto& t : execThreads)
+    for (auto &t : execThreads)
     {
         //TODO: Find better way of safely terminating thread
         t.detach();
@@ -140,8 +140,10 @@ void LinuxAudio::setActiveOutputDevice(Device *device)
     //TODO: Add playback thread later
 
     // Detach new threads to run independently
-    for(auto& t : execThreads)
+    for (auto &t : execThreads)
+    {
         t.detach();
+    }
 }
 
 void LinuxAudio::test_capture(LinuxAudio *param)
@@ -236,10 +238,10 @@ void LinuxAudio::capture()
             //free(audioBuffer);
             //audioBuffer = nullptr;
             /*err = write(1, audioBuffer, audioBufferSize);
-        if(err != audioBufferSize)
-        {
+            if(err != audioBufferSize)
+            {
             cerr << "Write short, only wrote " << err << " bytes" << endl;
-        }*/
+            }*/
         }
         //cout << "stuck" << endl;
     }

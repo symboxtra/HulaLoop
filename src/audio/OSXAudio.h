@@ -12,8 +12,7 @@ using namespace std;
 /**
  * A audio class that captures system wide audio on OSX
  */
-class OSXAudio : public OSAudio
-{
+class OSXAudio : public OSAudio {
     private:
         vector<Device *> getDevices(DeviceType type);
 
@@ -26,8 +25,8 @@ class OSXAudio : public OSAudio
         vector<Device *> getInputDevices();
         vector<Device *> getOutputDevices();
 
-        static void test_capture(OSXAudio * param);
-        void setActiveOutputDevice(Device * device);
+        static void test_capture(OSXAudio *param);
+        void setActiveOutputDevice(Device *device);
 
 };
 

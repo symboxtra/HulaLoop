@@ -44,12 +44,14 @@ class TestGUI : public ::testing::Test {
 
             QObject *label = engine->rootObjects()[0]->findChild<QObject *>(QString::fromStdString("transportState"));
 
-            if(label)
+            if (label)
             {
 
                 QVariant property = QQmlProperty::read(label, QString::fromStdString("text"));
-                if(!property.isNull())
+                if (!property.isNull())
+                {
                     return property.toString();
+                }
 
             }
             return QString();
@@ -60,8 +62,10 @@ class TestGUI : public ::testing::Test {
 
             QObject *obj = engine->rootObjects()[0]->findChild<QObject *>(objName);
 
-            if(obj)
+            if (obj)
+            {
                 return obj->property("visible").toBool();
+            }
 
             return false;
         }
@@ -71,8 +75,10 @@ class TestGUI : public ::testing::Test {
 
             QObject *btn = engine->rootObjects()[0]->findChild<QObject *>(objName);
 
-            if(btn)
+            if (btn)
+            {
                 QMetaObject::invokeMethod(btn, "clicked");
+            }
 
         }
 
@@ -83,12 +89,12 @@ class TestGUI : public ::testing::Test {
             QObject *delayIn = engine->rootObjects()[0]->findChild<QObject *>("delayInput");
             QObject *recordIn = engine->rootObjects()[0]->findChild<QObject *>("recordTimeInput");
 
-            if(timer && delayIn && recordIn)
+            if (timer && delayIn && recordIn)
             {
 
                 delayIn->setProperty("text", "00:00:01");
                 recordIn->setProperty("text", "00:00:01");
-                timer->setProperty("running" , "true");
+                timer->setProperty("running", "true");
 
             }
 
@@ -142,11 +148,13 @@ TEST_F(TestGUI, timers)
     startTimers();
 
     //Set initial timer to 3000 ms to account for startup time
-    QTimer::singleShot(3000, [=] {
+    QTimer::singleShot(3000, [ = ]
+    {
         ASSERT_TRUE(getTransportState() == "Recording");
     });
 
-    QTimer::singleShot(4000, [=] {
+    QTimer::singleShot(4000, [ = ]
+    {
         ASSERT_TRUE(getTransportState() == "Stopped");
     });
 }

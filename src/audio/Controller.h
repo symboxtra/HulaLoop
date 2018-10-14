@@ -1,8 +1,8 @@
 #ifndef CONTROL
 #define CONTROL
 
-#include <vector>
 #include <iostream>
+#include <vector>
 
 #include "OSAudio.h"
 #include "ICallback.h"
@@ -13,23 +13,22 @@ using byte = uint8_t;
 /**
  * A class that structures the receival of audio from the OS framework
  */
-class Controller : public ICallback
-{
+class Controller : public ICallback {
     protected:
-        OSAudio* audio;
+        OSAudio *audio;
 
-        vector<ICallback*> callbackList;
+        vector<ICallback *> callbackList;
 
     public:
         Controller();
         ~Controller();
 
-        void addBufferReadyCallback(ICallback* func);
-        void removeBufferReadyCallback(ICallback* func);
+        void addBufferReadyCallback(ICallback *func);
+        void removeBufferReadyCallback(ICallback *func);
 
-        void handleData(byte* data, uint32_t size);
-        vector<Device*> getInputDevices();
-        vector<Device*> getOutputDevices();
+        void handleData(byte *data, uint32_t size);
+        vector<Device *> getInputDevices();
+        vector<Device *> getOutputDevices();
 };
 
 #endif

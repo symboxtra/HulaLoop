@@ -1,9 +1,9 @@
 #include "OSXDaemon.h"
 
-int main (int argc, char ** argv)
+int main (int argc, char **argv)
 {
     // Create the loopback daemon
-    OSXDaemon * osxDaemon;
+    OSXDaemon *osxDaemon;
     osxDaemon = new OSXDaemon("HulaLoop #1", 0);
     osxDaemon->activate();
 

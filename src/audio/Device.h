@@ -17,20 +17,19 @@ enum DeviceType
  * Defines a system audio device
  */
 // TODO: Add better public description
-class Device
-{
+class Device {
     private:
-        uint32_t* deviceID;
+        uint32_t *deviceID;
         string deviceName;
 
         DeviceType type;
 
     public:
-        Device(uint32_t* id, string name, DeviceType t);
+        Device(uint32_t *id, string name, DeviceType t);
         ~Device();
 
-        uint32_t* getID();
-        void setID(uint32_t* id);
+        uint32_t *getID();
+        void setID(uint32_t *id);
 
         string getName();
         void setName(string name);
