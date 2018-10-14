@@ -2,9 +2,9 @@
 
 #include <cstdint>
 #include <iostream>
-#include <stdlib.h>
 #include <thread>
 #include <vector>
+#include <stdlib.h>
 
 #include "OSAudio.h"
 #include "Device.h"
