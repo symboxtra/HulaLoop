@@ -1,11 +1,4 @@
-/** @file paex_record_file.c
-    @ingroup examples_src
-    @brief Record input into a file, then playback recorded data from file (Windows only at the moment)
-    @author Robert Bielik
-*/
 /*
- * $Id: paex_record_file.c 1752 2011-09-08 03:21:55Z philburk $
- *
  * This program uses the PortAudio Portable Audio Library.
  * For more information see: http://www.portaudio.com
  * Copyright (c) 1999-2000 Ross Bencina and Phil Burk
@@ -52,6 +45,10 @@
     #include <process.h>
 #endif
 
+#ifdef __APPLE__
+    #include <pthread.h>
+#endif
+
 /* #define SAMPLE_RATE  (17932) // Test failure to open with this value. */
 #define FILE_NAME       "audio_data.raw"
 #define SAMPLE_RATE  (44100)
@@ -96,6 +93,11 @@ typedef struct
     void               *threadHandle;
 }
 paTestData;
+
+int min ( int a, int b )
+{
+    return a < b ? a : b;
+}
 
 /* This routine is run in a separate thread to write data from the ring buffer into a file (during Recording) */
 static int threadFunctionWriteToRawFile(void *ptr)
@@ -208,12 +210,26 @@ static PaError startThread( paTestData *pData, ThreadFunctionType fn )
     pData->threadSyncFlag = 1;
     ResumeThread(pData->threadHandle);
 
+    #elif __APPLE__
+    pthread_t thread;
+    int ret = pthread_create(&thread, NULL, (void *)fn, (void *)pData);
+    if (ret > 0)
+    {
+        return paUnanticipatedHostError;
+    }
+    pData->threadHandle = thread;
+
+    pData->threadSyncFlag = 1;
+
+    #elif __unix__
+
     #endif
 
     /* Wait for thread to startup */
     while (pData->threadSyncFlag)
     {
         Pa_Sleep(10);
+        printf("sleeping\n");
     }
 
     return paNoError;
@@ -230,6 +246,12 @@ static int stopThread( paTestData *pData )
     #ifdef _WIN32
     CloseHandle(pData->threadHandle);
     pData->threadHandle = 0;
+
+    #elif defined __APPLE__ || defined __unix__
+
+    pthread_join(pData->threadHandle, NULL);
+    pData->threadHandle = 0;
+
     #endif
 
     return paNoError;
@@ -316,7 +338,7 @@ int main(void)
     /* We set the ring buffer size to about 500 ms */
     numSamples = NextPowerOf2((unsigned)(SAMPLE_RATE * 0.5 * NUM_CHANNELS));
     numBytes = numSamples * sizeof(SAMPLE);
-    data.ringBufferData = (SAMPLE *) PaUtil_AllocateMemory( numBytes );
+    data.ringBufferData = (SAMPLE *) malloc( numBytes );
     if ( data.ringBufferData == NULL )
     {
         printf("Could not allocate ring buffer data.\n");
@@ -495,7 +517,7 @@ done:
     Pa_Terminate();
     if ( data.ringBufferData )      /* Sure it is NULL or valid. */
     {
-        PaUtil_FreeMemory( data.ringBufferData );
+        free( data.ringBufferData );
     }
     if ( err != paNoError )
     {
