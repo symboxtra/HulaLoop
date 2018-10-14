@@ -3,12 +3,12 @@
 
 
 // Windows Audio
-#include <windows.h>
-#include <mmdeviceapi.h>
-#include <endpointvolume.h>
 #include <Audioclient.h>
 #include <comdef.h>
+#include <endpointvolume.h>
 #include <functiondiscoverykeys_devpkey.h>
+#include <mmdeviceapi.h>
+#include <windows.h>
 
 // System
 #include <stdio.h>
