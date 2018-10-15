@@ -128,19 +128,8 @@ set (HL_LIBRARIES
 
 ######## Libraries ########
 
-if (OSX)
-    # Find PortAudio
-    find_library (
-        PORTAUDIO_LIB
-        NAMES portaudio
-    )
-
-    if (NOT PORTAUDIO_LIB)
-        message (FATAL_ERROR "Could not find library: PortAudio")
-    else ()
-        message (STATUS "PortAudio Location: ${PORTAUDIO_LIB}")
-    endif()
-endif ()
+# Make sure we can find our Find<package>.cmake files
+list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 # Add coverage flags for GCC after 3rd party libs are built
 set (CXX_FLAGS_NOCOV "${CMAKE_CXX_FLAGS}")
