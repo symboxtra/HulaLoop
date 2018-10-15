@@ -2,6 +2,7 @@
 #define TRANSPORT_H
 
 #include "Controller.h"
+#include "Record.h"
 #include <string>
 
 /**
@@ -22,8 +23,11 @@ class Transport {
     private:
         TransportState state;
 
+    protected:
+        Record* recorder;
+
     public:
-        Controller *controller;
+        Controller* controller;
 
         Transport();
         ~Transport();

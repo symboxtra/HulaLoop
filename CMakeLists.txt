@@ -183,7 +183,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     #create_test("src/test/TestAudioOutput.cpp" "" -1)
 
     if (NOT BUILD_ONLY_AUDIO)
-        create_test("src/test/TestCTInterface.cpp" "src/control/transport.cpp" -1)
+        create_test("src/test/TestCTInterface.cpp" "src/control/transport.cpp;src/control/Record.cpp" "" -1)
     endif ()
 
 endif ()
