@@ -139,7 +139,44 @@ if (OSX)
         message (FATAL_ERROR "Could not find library: PortAudio")
     else ()
         message (STATUS "PortAudio Location: ${PORTAUDIO_LIB}")
-    endif()
+    endif ()
+
+    # Find PortAudio includes
+    find_path (
+        PORTAUDIO_PATH
+        NAMES "portaudio.h"
+        HINTS ${CMAKE_SOURCE_DIR}/src/libs
+    )
+    if (NOT PORTAUDIO_PATH)
+        message (FATAL_ERROR "Could not find PortAudio headers.")
+    else ()
+        message (STATUS "PortAudio Headers: ${PORTAUDIO_PATH}")
+    endif ()
+
+    # Find JACK
+    find_library (
+        JACK_LIB
+        NAMES jack
+    )
+
+    if (NOT JACK_LIB)
+        message (FATAL_ERROR "Could not find library: JACK")
+    else ()
+        message (STATUS "JACK Location: ${JACK_LIB}")
+    endif ()
+
+    # Find JACK includes
+    find_path (
+        JACK_PATH
+        NAMES "jack/jack.h"
+    )
+    if (NOT JACK_PATH)
+        message(FATAL_ERROR "Could not find JACK headers.")
+    else ()
+        message (STATUS "JACK Headers: ${PORTAUDIO_PATH}")
+    endif ()
+
+    include_directories (${PORTAUDIO_PATH} ${JACK_PATH})
 endif ()
 
 # Add coverage flags for GCC after 3rd party libs are built

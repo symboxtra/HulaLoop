@@ -20,8 +20,8 @@ Rectangle {
         Item{
             id: gennums
             function generate(element){
-                for(var i =0;i<70;i++){
-                    element.itemAt(i).height=rand.randomNumber()
+                for(var i =0;i<Math.round(visualize.width / 10);i++){
+                    element.itemAt(i).height=rand.randomNumber()*visualize.height
                   }
              }
         }
@@ -29,7 +29,7 @@ Rectangle {
         Item{
             id: rand
             function randomNumber() {
-                    return Math.random()*200 ;
+                    return Math.random() ;
             }
         }
         Timer {
@@ -39,7 +39,7 @@ Rectangle {
         }
         Repeater{
             id:rectgen
-            model: 70
+            model: Math.round(visualize.width / 10)
             Rectangle { id: testrec; color: "grey"; width: 10; border.width: 1; border.color: "black"; transform: Rotation { origin.x: 25; origin.y: 25; angle: 180} }
         }
 

@@ -18,7 +18,8 @@ if (WIN32)
 elseif (OSX)
     list (REMOVE_ITEM AUDIO_SRC_FILES ${LINUX_AUDIO_SRC_FILES} ${WIN_AUDIO_SRC_FILES})
     list (APPEND AUDIO_SRC_FILES ${OSX_DAEMON_SRC_FILES})
-    set (AUDIO_LIBS portaudio jack pthread)
+    set (CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS}  -I/usr/local/include")
+    set (AUDIO_LIBS ${PORTAUDIO_LIB} ${JACK_LIB} pthread)
 else ()
     list (REMOVE_ITEM AUDIO_SRC_FILES ${WIN_AUDIO_SRC_FILES} ${OSX_AUDIO_SRC_FILES})
     set (AUDIO_LIBS asound pthread)
@@ -32,7 +33,7 @@ set_target_properties (hlaudio PROPERTIES
     PUBLIC_HEADER Controller.h
 )
 configure_file (hlaudio.pc.in hlaudio.pc @ONLY)
-target_include_directories (hlaudio PRIVATE .)
+target_include_directories (hlaudio PRIVATE . ${CMAKE_SOURCE_DIR}/src/libs/portaudio/include)
 install (TARGETS hlaudio
     DESTINATION ${CMAKE_BINARY_DIR}/bin
     PUBLIC_HEADER DESTINATION ${CMAKE_BINARY_DIR}/include
