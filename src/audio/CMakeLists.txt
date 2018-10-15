@@ -33,14 +33,14 @@ set_target_properties (hlaudio PROPERTIES
 )
 configure_file (hlaudio.pc.in hlaudio.pc @ONLY)
 target_include_directories (hlaudio PRIVATE .)
-install (TARGETS hlaudio
-    DESTINATION ${CMAKE_BINARY_DIR}/bin
-    PUBLIC_HEADER DESTINATION ${CMAKE_BINARY_DIR}/include
-    COMPONENT library
-)
-install (FILES ${CMAKE_BINARY_DIR}/bin/hlaudio.pc
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
-)
+# install (TARGETS hlaudio
+    # DESTINATION ${CMAKE_BINARY_DIR}/bin
+    # PUBLIC_HEADER DESTINATION ${CMAKE_BINARY_DIR}/include
+    # COMPONENT library
+# )
+# install (FILES ${CMAKE_BINARY_DIR}/bin/hlaudio.pc
+    # DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
+# )
 
 # Link external libraries to new generated library
 target_link_libraries (hlaudio ${AUDIO_LIBS})

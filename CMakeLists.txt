@@ -187,3 +187,69 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     endif ()
 
 endif ()
+
+
+
+
+######## CPack ########
+if (NOT DEFINED GEN_INSTALL)
+    set (GEN_INSTALL false)
+endif ()
+
+if(GEN_INSTALL AND NOT BUILD_ONLY_AUDIO)
+
+    set(CPACK_PACKAGE_NAME "HulaLoop Installer")
+    set(CPACK_PACKAGE_VENDOR "Symboxtra Software")
+    set(CPACK_PACKAGE_VERSION "0.0.0")
+
+    if (64BIT) # Windows x64
+
+        set(CPACK_GENERATOR "NSIS64")
+
+        set(CPACK_NSIS_MUI_ICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
+        set(CPACK_NSIS_MUI_UNIICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
+#        set(CPACK_PACKAGE_ICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.bmp")
+        set(CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
+        set(CPACK_PACKAGE_INSTALL_DIRECTORY "Test CPack")
+        set(CPACK_NSIS_MODIFY_PATH ON)
+        set(CPACK_COMPONENTS_ALL app)
+
+        if(PACK)
+            set(INSTALL_DIR bin)
+            set(LIB_DIR bin/lib)
+        endif()
+
+        include(CPack)
+
+        # Configuration file with custom definitions for NSIS
+        # configure_file(
+            # /res/nsis/NSIS.definitions.nsh.in
+            # ${CMAKE_CURRENT_BINARY_DIR}/res/nsis/NSIS.definitions.nsh
+        # )
+
+    elseif (WIN32) # Windows x86
+
+        set(CPACK_GENERATOR "NSIS")
+
+        set(CPACK_NSIS_MUI_ICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
+        set(CPACK_NSIS_MUI_UNIICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
+#        set(CPACK_PACKAGE_ICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.bmp")
+        set(CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
+        set(CPACK_PACKAGE_INSTALL_DIRECTORY "Test CPack")
+        set(CPACK_NSIS_MODIFY_PATH ON)
+        set(CPACK_COMPONENTS_ALL app)
+
+        if(PACK)
+            set(INSTALL_DIR bin)
+            set(LIB_DIR bin/lib)
+        endif()
+
+        include(CPack)
+
+    elseif (OSX) # Mac OS X
+        set(CPACK_GENERATOR "DMG")
+    else () # Debian Linux
+        set(CPACK_GENERATOR "DEB")
+    endif ()
+
+endif()
