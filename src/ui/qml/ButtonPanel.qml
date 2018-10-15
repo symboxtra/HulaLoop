@@ -290,6 +290,17 @@ Rectangle {
                 onActivated: {
                     console.log("Audio device has been changed to: " + iDeviceInfoLabel.currentText);
                 }
+
+                onPressedChanged: {
+                    model.clear();
+                    var idevices = qmlbridge.getInputDevices().split(',')
+                        var i
+                        for (i = 0; i < idevices.length; i++) {
+                            model.append({
+                                       "text": idevices[i]
+                                   })
+                        }
+                }
                 currentIndex: 0
             }
             Label {
@@ -316,6 +327,17 @@ Rectangle {
                 }
                 onActivated: {
                     console.log("Audio device has been changed to: " + oDeviceInfoLabel.currentText);
+                }
+
+                onPressedChanged: {
+                    model.clear();
+                    var odevices = qmlbridge.getOutputDevices().split(',')
+                        var i
+                        for (i = 0; i < odevices.length; i++) {
+                            model.append({
+                                       "text": odevices[i]
+                                   })
+                        }
                 }
                 currentIndex: 0
             }
