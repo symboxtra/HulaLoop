@@ -1,20 +1,17 @@
 #ifndef OSXAUDIO_H
 #define OSXAUDIO_H
 
-#include <thread>
-#include <vector>
-
 #include "OSAudio.h"
 #include "Device.h"
 
-using namespace std;
+#define PA_CHECK_ERROR if ( err != paNoError ) { goto done; }
 
 /**
- * A audio class that captures system wide audio on OSX
+ * A audio class that captures system wide audio on OSX.
  */
 class OSXAudio : public OSAudio {
     private:
-        vector<Device *> getDevices(DeviceType type);
+        std::vector<Device *> getDevices(DeviceType type);
 
     public:
         OSXAudio();
@@ -22,10 +19,10 @@ class OSXAudio : public OSAudio {
 
         void capture();
 
-        vector<Device *> getInputDevices();
-        vector<Device *> getOutputDevices();
+        std::vector<Device *> getInputDevices();
+        std::vector<Device *> getOutputDevices();
 
-        static void test_capture(OSXAudio *param);
+        static void test_capture(OSAudio *_this);
         void setActiveOutputDevice(Device *device);
 
 };

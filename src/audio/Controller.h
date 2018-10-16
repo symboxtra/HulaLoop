@@ -27,7 +27,7 @@ class Controller : public ICallback {
         void addBufferReadyCallback(ICallback *func);
         void removeBufferReadyCallback(ICallback *func);
 
-        void handleData(byte *data, uint32_t size);
+        void handleData(uint8_t *data, uint32_t size);
         vector<Device *> getInputDevices();
         vector<Device *> getOutputDevices();
 };

@@ -43,7 +43,7 @@ Controller::Controller()
  * @param size Size of returned audio data (frames)
  * @param data Audio data in byte buffer
  */
-void Controller::handleData(byte *data, uint32_t size)
+void Controller::handleData(uint8_t *data, uint32_t size)
 {
     cout << "Data received: " << size << endl;
 
