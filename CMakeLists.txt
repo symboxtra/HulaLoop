@@ -56,9 +56,11 @@ endforeach ()
 
 # Set output for libs compiled with --target install
 # Allow override via -DCMAKE_INSTALL_PREFIX=blah
-if (NOT CMAKE_INSTALL_PREFIX AND CMAKE_BUILD_TYPE MATCHES "Debug")
+if (CMAKE_BUILD_TYPE MATCHES "Debug")
     set (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/lib)
     set (CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/lib) # Should this be here?
+else ()
+    message (FATAL_ERROR "We don't know where to install this to yet")
 endif ()
 
 message (STATUS "System Platform: ${CMAKE_SYSTEM_NAME} ${CMAKE_GENERATOR_PLATFORM}\n")
