@@ -31,22 +31,21 @@ else ()
     set (AUDIO_LIBS asound pthread)
 endif ()
 
-# Generate shared libraries
+# Generate libraries
 add_library (hlaudio STATIC ${AUDIO_SRC_FILES})
 set_target_properties (hlaudio PROPERTIES
     VERSION ${VERSION}
     SOVERSION 1
     PUBLIC_HEADER Controller.h
 )
-configure_file (hlaudio.pc.in hlaudio.pc @ONLY)
+
 target_include_directories (hlaudio PRIVATE . ${OSX_INCLUDES})
 install (TARGETS hlaudio
-    DESTINATION ${CMAKE_BINARY_DIR}/bin
-    PUBLIC_HEADER DESTINATION ${CMAKE_BINARY_DIR}/include
+    RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin                    # DLLs
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib                    # Static libs
+    LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib                    # Shared libs (non-DLL)
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/include/hlaudio  # Headers
     COMPONENT library
-)
-install (FILES ${CMAKE_BINARY_DIR}/bin/hlaudio.pc
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
 )
 
 # Link external libraries to new generated library

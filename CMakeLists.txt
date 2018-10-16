@@ -55,10 +55,14 @@ foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
 endforeach ()
 
 # Set output for libs compiled with --target install
-set (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/lib)
-set (CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/lib)
+# Allow override via -DCMAKE_INSTALL_PREFIX=blah
+if (NOT CMAKE_INSTALL_PREFIX AND CMAKE_BUILD_TYPE MATCHES "Debug")
+    set (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/lib)
+    set (CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/lib) # Should this be here?
+endif ()
 
 message (STATUS "System Platform: ${CMAKE_SYSTEM_NAME} ${CMAKE_GENERATOR_PLATFORM}\n")
+message (STATUS "Install Prefix: ${CMAKE_INSTALL_PREFIX}")
 
 # Initialize lists
 set (SRC_FILES)
