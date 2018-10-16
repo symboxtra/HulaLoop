@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
-
-#include "transport.h"
+#include <hlcontrol/hlcontrol.h>
 
 class TestCTInterface : public Transport, public ::testing::Test {
 

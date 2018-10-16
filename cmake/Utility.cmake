@@ -35,6 +35,38 @@ function (generate_and_install_lib _path _generation_flags)
 
 endfunction ()
 
+function (add_library_target _name _src_files)
+
+    # Generate libraries
+    add_library (${_name} STATIC ${_src_files})
+    set_target_properties (${_name} PROPERTIES
+        VERSION ${VERSION}
+        SOVERSION 1
+        PUBLIC_HEADER include/${_name}/${_name}.h
+    )
+
+    # Target public and private headers
+    target_include_directories (${_name} PUBLIC include)
+    target_include_directories (${_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
+    # Copy the include directory
+    install (DIRECTORY include/${_name}
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/include
+    )
+
+    # Copy the library
+    install (TARGETS ${_name}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin                               # DLLs
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib                               # Static libs
+        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib                               # Shared libs (non-DLL)
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${_name}  # Headers
+        COMPONENT library
+    )
+
+    install (FILES)
+
+endfunction ()
+
 # Macro for collectinrheader files
 macro (add_include_dir)
     file (RELATIVE_PATH _relPath "${PROJECT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")

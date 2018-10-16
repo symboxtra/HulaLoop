@@ -1,7 +1,7 @@
 #include <algorithm>
-
-#include "Controller.h"
 #include <fstream>
+
+#include "hlaudio/internal/Controller.h"
 
 #if _WIN32
     #include "WindowsAudio.h"

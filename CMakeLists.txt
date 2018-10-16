@@ -56,11 +56,9 @@ endforeach ()
 
 # Set output for libs compiled with --target install
 # Allow override via -DCMAKE_INSTALL_PREFIX=blah
-if (CMAKE_BUILD_TYPE MATCHES "Debug")
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND CMAKE_BUILD_TYPE MATCHES "Debug")
     set (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/lib)
     set (CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/lib) # Should this be here?
-else ()
-    message (FATAL_ERROR "We don't know where to install this to yet")
 endif ()
 
 message (STATUS "System Platform: ${CMAKE_SYSTEM_NAME} ${CMAKE_GENERATOR_PLATFORM}\n")
@@ -161,7 +159,6 @@ endif ()
 # Add subdirectories and include any headers from lower level CMakeLists
 add_subdirectory (src/audio)
 include_directories (${INCLUDE_DIRS})
-set (HL_LIBRARIES ${HL_LIBRARIES} hlaudio)
 
 # Build UI and control modules
 if (NOT BUILD_ONLY_AUDIO)
@@ -188,7 +185,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     #create_test("src/test/TestAudioOutput.cpp" "" -1)
 
     if (NOT BUILD_ONLY_AUDIO)
-        create_test("src/test/TestCTInterface.cpp" "src/control/transport.cpp" -1)
+        create_test("src/test/TestCTInterface.cpp" "" -1)
     endif ()
 
 endif ()

@@ -5,8 +5,8 @@
 #include <QString>
 #include <QStringList>
 
-#include "transport.h"
-#include "OSAudio.h"
+#include <hlaudio/hlaudio.h>
+#include <hlcontrol/hlcontrol.h>
 
 /**
  * Class for communicating between QML and C++.

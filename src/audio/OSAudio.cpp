@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <iostream>
 
-#include "OSAudio.h"
+#include "hlaudio/internal/OSAudio.h"
 
 /**
  * Set the desired capture buffer size

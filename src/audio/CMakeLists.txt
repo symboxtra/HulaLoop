@@ -1,4 +1,4 @@
-add_include_dir (.)
+set (HL_LIBRARY_NAME "hlaudio")
 
 file (GLOB AUDIO_SRC_FILES *.cpp)
 file (GLOB WIN_AUDIO_SRC_FILES Windows*.cpp)
@@ -25,31 +25,18 @@ elseif (OSX)
     # Add the extra include paths and libraries for PortAudio and JACK
     # Include direct link to PortAudio src/common since pa_ringbuffer isn't exposed
     set (OSX_INCLUDES ${PORTAUDIO_PATH} ${JACK_PATH} ${PROJECT_SOURCE_DIR}/src/libs/portaudio/src/common)
-    set (AUDIO_LIBS ${PORTAUDIO_LIBRARY} ${JACK_LIBRARY} pthread)
+    set (AUDIO_LIBS ${PORTAUDIO_LIBRARY} ${JACK_LIBRARY})
 else ()
     list (REMOVE_ITEM AUDIO_SRC_FILES ${WIN_AUDIO_SRC_FILES} ${OSX_AUDIO_SRC_FILES})
     set (AUDIO_LIBS asound pthread)
 endif ()
 
-# Generate libraries
-add_library (hlaudio STATIC ${AUDIO_SRC_FILES})
-set_target_properties (hlaudio PROPERTIES
-    VERSION ${VERSION}
-    SOVERSION 1
-    PUBLIC_HEADER Controller.h
-)
-
-target_include_directories (hlaudio PRIVATE . ${OSX_INCLUDES})
-install (TARGETS hlaudio
-    RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin                    # DLLs
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib                    # Static libs
-    LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib                    # Shared libs (non-DLL)
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/include/hlaudio  # Headers
-    COMPONENT library
-)
+# Add library
+add_library_target (${HL_LIBRARY_NAME} "${AUDIO_SRC_FILES}")
+add_include_dir (include)
 
 # Link external libraries to new generated library
-target_link_libraries (hlaudio ${AUDIO_LIBS})
+target_link_libraries (${HL_LIBRARY_NAME} ${AUDIO_LIBS})
 
 set (AUDIO_SRC_FILES ${AUDIO_SRC_FILES} PARENT_SCOPE)
-set (AUDIO_LIBS ${AUDIO_LIBS} PARENT_SCOPE)
+set (HL_LIBRARIES ${HL_LIBRARIES} ${HL_LIBRARY_NAME} PARENT_SCOPE)

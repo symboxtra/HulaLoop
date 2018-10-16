@@ -42,8 +42,8 @@ endif ()
 
 # Include directories needed for testing
 include_directories (
-    ${CMAKE_SOURCE_DIR}/src/libs/googletest/googletest/include/gtest
-    ${CMAKE_SOURCE_DIR}/src/libs/googletest/googlemock/include/gmock
+    ${PROJECT_SOURCE_DIR}/src/libs/googletest/googletest/include/gtest
+    ${PROJECT_SOURCE_DIR}/src/libs/googletest/googlemock/include/gmock
 )
 
 # Let the linker know it should check bin
@@ -52,14 +52,14 @@ link_directories (
 )
 
 # Collect all test source files
-file (GLOB TEST_SRC_FILES ${CMAKE_SOURCE_DIR}/src/test/*/*.cpp)
+file (GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/src/test/*/*.cpp)
 
-set (T_TEST_DIR "${CMAKE_SOURCE_DIR}/src/test")
+set (T_TEST_DIR "${PROJECT_SOURCE_DIR}/src/test")
 
 # Add the GUI tests to the bin directory instead of bin/test
 # GUI tests need the Qt DLLs in bin
 if (HL_INCLUDE_GUI_TESTS AND NOT BUILD_ONLY_AUDIO)
-    create_test ("src/test/TestGUI.cpp" "src/control/transport.cpp;src/ui/qmlbridge.cpp;src/ui/qml.qrc" -1)
+    create_test ("src/test/TestGUI.cpp" "src/ui/qmlbridge.cpp;src/ui/qml.qrc" -1)
     target_link_libraries (TestGUI ${HL_LIBRARIES})
 else ()
     message (STATUS "Ignoring GUI tests. Set HL_INCLUDE_GUI_TESTS=true to include.")

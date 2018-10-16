@@ -1,6 +1,5 @@
 #include <string>
 
-#include "../control/transport.h"
 #include "qmlbridge.h"
 
 /**
