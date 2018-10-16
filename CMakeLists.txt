@@ -15,7 +15,7 @@ set (VERSION_BUILD 0)
 set (VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_REV}.${VERSION_BUILD}")
 
 # Declare project
-project (HulaLoop VERSION ${VERSION} LANGUAGES CXX)
+project (HulaLoop VERSION ${VERSION} LANGUAGES CXX C)
 
 message (STATUS "")
 message (STATUS "Building ${PROJECT_NAME} v${VERSION}")
@@ -128,19 +128,18 @@ set (HL_LIBRARIES
 
 ######## Libraries ########
 
-if (OSX)
-    # Find PortAudio
-    find_library (
-        PORTAUDIO_LIB
-        NAMES portaudio
-    )
-
-    if (NOT PORTAUDIO_LIB)
-        message (FATAL_ERROR "Could not find library: PortAudio")
-    else ()
-        message (STATUS "PortAudio Location: ${PORTAUDIO_LIB}")
-    endif()
+# Setup flags for all external library builds
+if (WIN32 AND 64BIT)
+    set (HL_EXT_LIB_FLAGS -A x64)
 endif ()
+
+# Build and install portaudio to our build/lib folder
+if (OSX)
+    generate_and_install_lib("${PROJECT_SOURCE_DIR}/src/libs/portaudio" "${HL_EXT_LIB_FLAGS}")
+endif ()
+
+# Make sure we can find our Find<package>.cmake files
+list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 # Add coverage flags for GCC after 3rd party libs are built
 set (CXX_FLAGS_NOCOV "${CMAKE_CXX_FLAGS}")

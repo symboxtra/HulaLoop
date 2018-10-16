@@ -18,7 +18,14 @@ if (WIN32)
 elseif (OSX)
     list (REMOVE_ITEM AUDIO_SRC_FILES ${LINUX_AUDIO_SRC_FILES} ${WIN_AUDIO_SRC_FILES})
     list (APPEND AUDIO_SRC_FILES ${OSX_DAEMON_SRC_FILES})
-    set (AUDIO_LIBS portaudio jack pthread)
+
+    find_package (PortAudio REQUIRED)
+    find_package (JACK REQUIRED)
+
+    # Add the extra include paths and libraries for PortAudio and JACK
+    # Include direct link to PortAudio src/common since pa_ringbuffer isn't exposed
+    set (OSX_INCLUDES ${PORTAUDIO_PATH} ${JACK_PATH} ${PROJECT_SOURCE_DIR}/src/libs/portaudio/src/common)
+    set (AUDIO_LIBS ${PORTAUDIO_LIBRARY} ${JACK_LIBRARY} pthread)
 else ()
     list (REMOVE_ITEM AUDIO_SRC_FILES ${WIN_AUDIO_SRC_FILES} ${OSX_AUDIO_SRC_FILES})
     set (AUDIO_LIBS asound pthread)
@@ -32,7 +39,7 @@ set_target_properties (hlaudio PROPERTIES
     PUBLIC_HEADER Controller.h
 )
 configure_file (hlaudio.pc.in hlaudio.pc @ONLY)
-target_include_directories (hlaudio PRIVATE .)
+target_include_directories (hlaudio PRIVATE . ${OSX_INCLUDES})
 install (TARGETS hlaudio
     DESTINATION ${CMAKE_BINARY_DIR}/bin
     PUBLIC_HEADER DESTINATION ${CMAKE_BINARY_DIR}/include
