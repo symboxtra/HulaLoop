@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 
+#include "Device.h"
 #include "OSAudio.h"
 #include "ICallback.h"
 

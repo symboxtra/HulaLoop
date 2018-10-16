@@ -1,7 +1,10 @@
 # Find PortAudio
 find_library (
     PORTAUDIO_LIBRARY
+    NAMES "portaudio"
+    PATHS ${CMAKE_INSTALL_PREFIX}/lib
     NAMES portaudio
+    NO_DEFAULT_PATH
 )
 
 if (NOT PORTAUDIO_LIBRARY)
@@ -14,8 +17,10 @@ endif ()
 find_path (
     PORTAUDIO_PATH
     NAMES "portaudio.h"
-    HINTS ${CMAKE_SOURCE_DIR}/src/libs
+    PATHS ${CMAKE_INSTALL_PREFIX}/include
+    NO_DEFAULT_PATH
 )
+
 if (NOT PORTAUDIO_PATH)
     message (FATAL_ERROR "Could not find PortAudio headers.")
 else ()

@@ -15,7 +15,7 @@ set (VERSION_BUILD 0)
 set (VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_REV}.${VERSION_BUILD}")
 
 # Declare project
-project (HulaLoop VERSION ${VERSION} LANGUAGES CXX)
+project (HulaLoop VERSION ${VERSION} LANGUAGES CXX C)
 
 message (STATUS "")
 message (STATUS "Building ${PROJECT_NAME} v${VERSION}")
@@ -55,10 +55,16 @@ foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
 endforeach ()
 
 # Set output for libs compiled with --target install
-set (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/lib)
-set (CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/lib)
+# Allow override via -DCMAKE_INSTALL_PREFIX=blah
+if (CMAKE_BUILD_TYPE MATCHES "Debug")
+    set (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/lib)
+    set (CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/lib) # Should this be here?
+else ()
+    message (FATAL_ERROR "We don't know where to install this to yet")
+endif ()
 
 message (STATUS "System Platform: ${CMAKE_SYSTEM_NAME} ${CMAKE_GENERATOR_PLATFORM}\n")
+message (STATUS "Install Prefix: ${CMAKE_INSTALL_PREFIX}")
 
 # Initialize lists
 set (SRC_FILES)
@@ -127,6 +133,16 @@ set (HL_LIBRARIES
 
 
 ######## Libraries ########
+
+# Setup flags for all external library builds
+if (WIN32 AND 64BIT)
+    set (HL_EXT_LIB_FLAGS -A x64)
+endif ()
+
+# Build and install portaudio to our build/lib folder
+if (OSX)
+    generate_and_install_lib("${PROJECT_SOURCE_DIR}/src/libs/portaudio" "${HL_EXT_LIB_FLAGS}")
+endif ()
 
 # Make sure we can find our Find<package>.cmake files
 list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
