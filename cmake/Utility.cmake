@@ -63,8 +63,6 @@ function (add_library_target _name _src_files)
         COMPONENT library
     )
 
-    install (FILES)
-
 endfunction ()
 
 # Macro for collectinrheader files
