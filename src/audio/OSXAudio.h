@@ -1,8 +1,11 @@
 #ifndef OSXAUDIO_H
 #define OSXAUDIO_H
 
-#include "OSAudio.h"
-#include "Device.h"
+#include <thread>
+#include <vector>
+
+#include "hlaudio/internal/Device.h"
+#include "hlaudio/internal/OSAudio.h"
 
 #define PA_CHECK_ERROR if ( err != paNoError ) { goto done; }
 

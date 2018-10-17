@@ -1,7 +1,7 @@
 #ifndef TRANSPORT_H
 #define TRANSPORT_H
 
-#include "Controller.h"
+#include <hlaudio/hlaudio.h>
 #include <string>
 
 /**
