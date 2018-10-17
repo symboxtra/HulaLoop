@@ -15,7 +15,7 @@ set (VERSION_BUILD 0)
 set (VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_REV}.${VERSION_BUILD}")
 
 # Declare project
-project (HulaLoop VERSION ${VERSION} LANGUAGES CXX)
+project (HulaLoop VERSION ${VERSION} LANGUAGES CXX C)
 
 message (STATUS "")
 message (STATUS "Building ${PROJECT_NAME} v${VERSION}")
@@ -37,8 +37,13 @@ if (WIN32 AND CMAKE_GENERATOR_PLATFORM MATCHES "x64")
     set (64BIT TRUE)
 endif ()
 
-# Disable coverage flags by default
+# Global build options
+option (HL_BUILD_ONLY_AUDIO "Build only the audio library." OFF)
+option (HL_BUILD_CLI "Build the command line application." ON)
+option (HL_BUILD_GUI "Build the graphical application." ON)
 option (HL_ADD_COVERAGE_FLAGS "Add coverage options to compiler flags" OFF)
+
+# Disable coverage flags by default
 if (CMAKE_BUILD_TYPE MATCHES "Debug" AND (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
     set (HL_ADD_COVERAGE_FLAGS ON)
 endif ()
@@ -55,10 +60,14 @@ foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
 endforeach ()
 
 # Set output for libs compiled with --target install
-set (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/lib)
-set (CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/lib)
+# Allow override via -DCMAKE_INSTALL_PREFIX=blah
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND CMAKE_BUILD_TYPE MATCHES "Debug")
+    set (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/lib)
+    set (CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/lib) # Should this be here?
+endif ()
 
-message (STATUS "System Platform: ${CMAKE_SYSTEM_NAME} ${CMAKE_GENERATOR_PLATFORM}\n")
+message (STATUS "System Platform: ${CMAKE_SYSTEM_NAME} ${CMAKE_GENERATOR_PLATFORM}")
+message (STATUS "Install Prefix: ${CMAKE_INSTALL_PREFIX}\n")
 
 # Initialize lists
 set (SRC_FILES)
@@ -87,7 +96,7 @@ if (WIN32 AND NOT DEFINED QT_ROOT)
     else ()
         message (FATAL_ERROR "QT_ROOT environment variable not set. Add the environment variable in Windows Environment Variables or cmake with -DQT_ROOT=C:\\path\\to\\qt\\5.XX.X")
     endif ()
-elseif (NOT DEFINED QT_ROOT)
+elseif (WIN32)
     set (QT_ROOT $ENV{QT_ROOT} CACHE STRING "Path to Qt Installation")
 endif ()
 
@@ -99,9 +108,6 @@ if (WIN32 AND NOT DEFINED Qt5_DIR)
     else ()
         set (Qt5_DIR "${QT_ROOT}\\msvc2015\\lib\\cmake\\Qt5")
     endif ()
-
-elseif (NOT DEFINED Qt5_DIR)
-    set (Qt5_DIR "${QT_ROOT}/gcc_64/lib/cmake/Qt5")
 endif ()
 
 message (STATUS "Qt5_DIR: ${Qt5_DIR}")
@@ -126,21 +132,21 @@ set (HL_LIBRARIES
 
 
 
+
 ######## Libraries ########
 
-if (OSX)
-    # Find PortAudio
-    find_library (
-        PORTAUDIO_LIB
-        NAMES portaudio
-    )
-
-    if (NOT PORTAUDIO_LIB)
-        message (FATAL_ERROR "Could not find library: PortAudio")
-    else ()
-        message (STATUS "PortAudio Location: ${PORTAUDIO_LIB}")
-    endif()
+# Setup flags for all external library builds
+if (WIN32 AND 64BIT)
+    set (HL_EXT_LIB_FLAGS -A x64)
 endif ()
+
+# Build and install portaudio to our build/lib folder
+if (OSX)
+    generate_and_install_lib("${PROJECT_SOURCE_DIR}/src/libs/portaudio" "${HL_EXT_LIB_FLAGS}")
+endif ()
+
+# Make sure we can find our Find<package>.cmake files
+list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 # Add coverage flags for GCC after 3rd party libs are built
 set (CXX_FLAGS_NOCOV "${CMAKE_CXX_FLAGS}")
@@ -148,23 +154,24 @@ if (HL_ADD_COVERAGE_FLAGS)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
 endif ()
 
-# Determine whether the UIs and control portions should be built
-if (NOT DEFINED BUILD_ONLY_AUDIO)
-    set (BUILD_ONLY_AUDIO false)
-endif ()
-
 # Add subdirectories and include any headers from lower level CMakeLists
 add_subdirectory (src/audio)
 include_directories (${INCLUDE_DIRS})
-set (HL_LIBRARIES ${HL_LIBRARIES} hlaudio)
 
 # Build UI and control modules
-if (NOT BUILD_ONLY_AUDIO)
+if (NOT HL_BUILD_ONLY_AUDIO)
     add_subdirectory (src/control)
     include_directories (${INCLUDE_DIRS})
 
-    add_subdirectory (src/ui)
-    include_directories (${INCLUDE_DIRS})
+    if (HL_BUILD_CLI)
+        add_subdirectory (src/ui/cli)
+        include_directories (${INCLUDE_DIRS})
+    endif ()
+
+    if (HL_BUILD_GUI)
+        add_subdirectory (src/ui/gui)
+        include_directories (${INCLUDE_DIRS})
+    endif ()
 endif ()
 
 
@@ -182,8 +189,10 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     create_test("src/test/TestController.cpp" "" -1)
     #create_test("src/test/TestAudioOutput.cpp" "" -1)
 
-    if (NOT BUILD_ONLY_AUDIO)
-        create_test("src/test/TestCTInterface.cpp" "src/control/transport.cpp" -1)
+    if (NOT HL_BUILD_ONLY_AUDIO)
+        create_test("src/test/TestCTInterface.cpp" "" -1)
     endif ()
 
 endif ()
+
+message (STATUS "")

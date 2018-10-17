@@ -1,8 +1,5 @@
 #include <gtest/gtest.h>
-
-#include <Controller.h>
-#include <ICallback.h>
-
+#include <hlaudio/hlaudio.h>
 
 class TestCallback : public ICallback {
     public:

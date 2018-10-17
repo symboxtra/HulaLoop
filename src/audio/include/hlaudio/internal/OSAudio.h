@@ -2,7 +2,7 @@
 #define OS_AUDIO
 
 // System
-#include <stdlib.h>
+#include <cstdlib>
 #include <thread>
 #include <vector>
 

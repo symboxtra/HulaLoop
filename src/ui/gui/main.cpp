@@ -6,7 +6,7 @@
 #include <QtDebug>
 
 
-#include "qmlbridge.h"
+#include "QMLBridge.h"
 
 int main(int argc, char *argv[])
 {

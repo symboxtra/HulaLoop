@@ -1,4 +1,4 @@
-#include "Device.h"
+#include "hlaudio/internal/Device.h"
 
 /**
  * Constructs an instance of the Device object
