@@ -62,15 +62,14 @@ endforeach ()
 # Set output for libs compiled with --target install
 # Allow override via -DCMAKE_INSTALL_PREFIX=blah
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND CMAKE_BUILD_TYPE MATCHES "Debug")
-    set (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/lib)
-    set (CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/lib) # Should this be here?
+    set (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/lib CACHE PATH "Installation path" FORCE)
+    set (CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/lib CACHE PATH "" FORCE) # Should this be here?
 endif ()
 
 message (STATUS "System Platform: ${CMAKE_SYSTEM_NAME} ${CMAKE_GENERATOR_PLATFORM}")
 message (STATUS "Install Prefix: ${CMAKE_INSTALL_PREFIX}\n")
 
 # Initialize lists
-set (SRC_FILES)
 set (INCLUDE_DIRS)
 set (HL_LIBRARIES)
 
@@ -141,9 +140,7 @@ if (WIN32 AND 64BIT)
 endif ()
 
 # Build and install portaudio to our build/lib folder
-if (OSX)
-    generate_and_install_lib("${PROJECT_SOURCE_DIR}/src/libs/portaudio" "${HL_EXT_LIB_FLAGS}")
-endif ()
+add_subdirectory (src/libs/portaudio)
 
 # Make sure we can find our Find<package>.cmake files
 list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
