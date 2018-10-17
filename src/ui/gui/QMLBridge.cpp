@@ -1,6 +1,6 @@
 #include <string>
 
-#include "qmlbridge.h"
+#include "QMLBridge.h"
 
 /**
  * Construct a new instance of the QMLBridge class.

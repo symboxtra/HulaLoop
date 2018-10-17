@@ -7,7 +7,7 @@
 #include <QQuickItem>
 #include <QTimer>
 
-#include "qmlbridge.h"
+#include "QMLBridge.h"
 
 class TestGUI : public ::testing::Test {
 

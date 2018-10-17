@@ -58,10 +58,10 @@ set (T_TEST_DIR "${PROJECT_SOURCE_DIR}/src/test")
 
 # Add the GUI tests to the bin directory instead of bin/test
 # GUI tests need the Qt DLLs in bin
-if (HL_INCLUDE_GUI_TESTS AND NOT BUILD_ONLY_AUDIO)
+if (HL_BUILD_GUI AND HL_INCLUDE_GUI_TESTS AND NOT HL_BUILD_ONLY_AUDIO)
     create_test ("src/test/TestGUI.cpp" "src/ui/gui/QMLBridge.cpp;src/ui/gui/qml.qrc" -1)
     target_link_libraries (TestGUI ${HL_LIBRARIES})
-else ()
+else (NOT HL_INCLUDE_GUI_TESTS)
     message (STATUS "Ignoring GUI tests. Set HL_INCLUDE_GUI_TESTS=true to include.")
 endif ()
 

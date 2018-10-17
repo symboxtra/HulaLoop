@@ -37,8 +37,13 @@ if (WIN32 AND CMAKE_GENERATOR_PLATFORM MATCHES "x64")
     set (64BIT TRUE)
 endif ()
 
-# Disable coverage flags by default
+# Global build options
+option (HL_BUILD_ONLY_AUDIO "Build only the audio library." OFF)
+option (HL_BUILD_CLI "Build the command line application." ON)
+option (HL_BUILD_GUI "Build the graphical application." ON)
 option (HL_ADD_COVERAGE_FLAGS "Add coverage options to compiler flags" OFF)
+
+# Disable coverage flags by default
 if (CMAKE_BUILD_TYPE MATCHES "Debug" AND (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
     set (HL_ADD_COVERAGE_FLAGS ON)
 endif ()
@@ -61,8 +66,8 @@ if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND CMAKE_BUILD_TYPE MATCHES "De
     set (CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/lib) # Should this be here?
 endif ()
 
-message (STATUS "System Platform: ${CMAKE_SYSTEM_NAME} ${CMAKE_GENERATOR_PLATFORM}\n")
-message (STATUS "Install Prefix: ${CMAKE_INSTALL_PREFIX}")
+message (STATUS "System Platform: ${CMAKE_SYSTEM_NAME} ${CMAKE_GENERATOR_PLATFORM}")
+message (STATUS "Install Prefix: ${CMAKE_INSTALL_PREFIX}\n")
 
 # Initialize lists
 set (SRC_FILES)
@@ -91,7 +96,7 @@ if (WIN32 AND NOT DEFINED QT_ROOT)
     else ()
         message (FATAL_ERROR "QT_ROOT environment variable not set. Add the environment variable in Windows Environment Variables or cmake with -DQT_ROOT=C:\\path\\to\\qt\\5.XX.X")
     endif ()
-elseif (NOT DEFINED QT_ROOT)
+elseif (WIN32)
     set (QT_ROOT $ENV{QT_ROOT} CACHE STRING "Path to Qt Installation")
 endif ()
 
@@ -103,9 +108,6 @@ if (WIN32 AND NOT DEFINED Qt5_DIR)
     else ()
         set (Qt5_DIR "${QT_ROOT}\\msvc2015\\lib\\cmake\\Qt5")
     endif ()
-
-elseif (NOT DEFINED Qt5_DIR)
-    set (Qt5_DIR "${QT_ROOT}/gcc_64/lib/cmake/Qt5")
 endif ()
 
 message (STATUS "Qt5_DIR: ${Qt5_DIR}")
@@ -130,6 +132,7 @@ set (HL_LIBRARIES
 
 
 
+
 ######## Libraries ########
 
 # Setup flags for all external library builds
@@ -151,22 +154,24 @@ if (HL_ADD_COVERAGE_FLAGS)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
 endif ()
 
-# Determine whether the UIs and control portions should be built
-if (NOT DEFINED BUILD_ONLY_AUDIO)
-    set (BUILD_ONLY_AUDIO false)
-endif ()
-
 # Add subdirectories and include any headers from lower level CMakeLists
 add_subdirectory (src/audio)
 include_directories (${INCLUDE_DIRS})
 
 # Build UI and control modules
-if (NOT BUILD_ONLY_AUDIO)
+if (NOT HL_BUILD_ONLY_AUDIO)
     add_subdirectory (src/control)
     include_directories (${INCLUDE_DIRS})
 
-    add_subdirectory (src/ui/gui)
-    include_directories (${INCLUDE_DIRS})
+    if (HL_BUILD_CLI)
+        add_subdirectory (src/ui/cli)
+        include_directories (${INCLUDE_DIRS})
+    endif ()
+
+    if (HL_BUILD_GUI)
+        add_subdirectory (src/ui/gui)
+        include_directories (${INCLUDE_DIRS})
+    endif ()
 endif ()
 
 
@@ -184,8 +189,10 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     create_test("src/test/TestController.cpp" "" -1)
     #create_test("src/test/TestAudioOutput.cpp" "" -1)
 
-    if (NOT BUILD_ONLY_AUDIO)
+    if (NOT HL_BUILD_ONLY_AUDIO)
         create_test("src/test/TestCTInterface.cpp" "" -1)
     endif ()
 
 endif ()
+
+message (STATUS "")
