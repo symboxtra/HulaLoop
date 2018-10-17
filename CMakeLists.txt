@@ -165,7 +165,7 @@ if (NOT BUILD_ONLY_AUDIO)
     add_subdirectory (src/control)
     include_directories (${INCLUDE_DIRS})
 
-    add_subdirectory (src/ui)
+    add_subdirectory (src/ui/gui)
     include_directories (${INCLUDE_DIRS})
 endif ()
 
