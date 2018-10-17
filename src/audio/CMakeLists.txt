@@ -25,7 +25,7 @@ elseif (OSX)
     find_package (JACK REQUIRED)
 
     # Add the extra include paths and libraries for JACK
-    set (EXTRA_INCLUDES ${JACK_PATH})
+    list (APPEND EXTRA_INCLUDES ${JACK_PATH})
     list (APPEND AUDIO_LIBS ${JACK_LIBRARY})
 else ()
     list (REMOVE_ITEM AUDIO_SRC_FILES ${WIN_AUDIO_SRC_FILES} ${OSX_AUDIO_SRC_FILES})

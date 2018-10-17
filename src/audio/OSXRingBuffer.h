@@ -38,12 +38,16 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "portaudio.h"
-#include "pa_ringbuffer.h"
-#include "pa_util.h"
-
 #include <thread>
 
+#include "pa_ringbuffer.h"
+#include "pa_util.h"
+#include "portaudio.h"
+
+
+/*
+ * Helper function for finding minimum value
+ */
 static ring_buffer_size_t rbs_min(ring_buffer_size_t a, ring_buffer_size_t b)
 {
     return (a < b) ? a : b;
@@ -92,7 +96,6 @@ typedef void (*rbFunction)(void *);
  */
 typedef struct
 {
-    void               *hlNotifyCallback; // Callback to let HulaLoop know that data was written
     int                 threadSyncFlag;
     SAMPLE             *ringBufferData;
     PaUtilRingBuffer    ringBuffer;
