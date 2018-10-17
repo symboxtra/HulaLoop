@@ -11,6 +11,8 @@ get_filename_component(DAEMON_MAIN OSXDaemon/main.cpp REALPATH)
 list (REMOVE_ITEM OSX_DAEMON_SRC_FILES ${DAEMON_MAIN})
 
 # Find Port Audio and add the common folder so that we can include the ring buffer headers
+# Build the ring buffer code into our executable since it isn't exposed on the normal Port Audio library
+list (APPEND AUDIO_SRC_FILES ${PROJECT_SOURCE_DIR}/src/libs/portaudio/src/common/pa_ringbuffer.c)
 list (APPEND EXTRA_INCLUDES ${PROJECT_SOURCE_DIR}/src/libs/portaudio/include ${PROJECT_SOURCE_DIR}/src/libs/portaudio/src/common)
 list (APPEND AUDIO_LIBS portaudio)
 

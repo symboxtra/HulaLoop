@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "Device.h"
+#include "HulaRingBuffer.h"
 #include "ICallback.h"
 
 using namespace std;
@@ -35,6 +36,12 @@ class OSAudio {
         vector<ICallback *> callbackList;
 
         /**
+         * List of all added ring buffers.
+         * Data received from the operating system is copied into each of these buffers.
+         */
+        vector<HulaRingBuffer *> rbs;
+
+        /**
          * List of all running threads
          */
         vector<thread> execThreads;
@@ -48,6 +55,10 @@ class OSAudio {
 
         void addBufferReadyCallback(ICallback *c);
         void removeBufferReadyCallback(ICallback *func);
+
+        void addBuffer(HulaRingBuffer *rb);
+        void removeBuffer(HulaRingBuffer *rb);
+        void copyToBuffers(void *data, uint32_t bytes);
 
         /**
          * Receive the list of available output audio devices connected to the OS

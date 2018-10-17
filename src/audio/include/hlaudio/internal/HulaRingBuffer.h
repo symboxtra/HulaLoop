@@ -36,6 +36,9 @@
  * license above.
  */
 
+#ifndef HULA_RING_BUFFER_H
+#define HULA_RING_BUFFER_H
+
 #include <cstdio>
 #include <cstdlib>
 #include <portaudio.h>
@@ -72,17 +75,15 @@
     #define PRINTF_S_FORMAT "%d"
 #endif
 
+#define BYTES_TO_SAMPLES(bytes) ((bytes) / (sizeof(SAMPLE)))
+#define SAMPLES_TO_BYTES(samples) ((samples) * (sizeof(SAMPLE)))
+
 /*
  * HulaLoop wrapper class for PortAudio ring buffer.
  */
 class HulaRingBuffer {
 
     private:
-        /*
-         * Unique identifier by which this ring buffer can be reffered to.
-         */
-        uint32_t id;
-
         /*
          * Underlying memory allocated for the ring buffer.
          */
@@ -111,11 +112,12 @@ class HulaRingBuffer {
     public:
         HulaRingBuffer(float maxDuration);
 
-        uint32_t getId();
-
-        uint32_t read(SAMPLE * data, uint32_t maxSamples);
-        uint32_t directRead(uint32_t maxSamples, void **dataPtr1, uint32_t *size1, void **dataPtr2, uint32_t *size2);
+        int32_t read(SAMPLE * data, int32_t maxSamples);
+        int32_t directRead(int32_t maxSamples, void **dataPtr1, int32_t *size1, void **dataPtr2, int32_t *size2);
+        int32_t write(const SAMPLE * data, int32_t maxSamples);
 
         ~HulaRingBuffer();
 
 };
+
+#endif // END HULA_RING_BUFFER_H
