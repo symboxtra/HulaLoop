@@ -4,8 +4,8 @@
 #include <thread>
 #include <vector>
 
-#include "hlaudio/internal/OSAudio.h"
 #include "hlaudio/internal/Device.h"
+#include "hlaudio/internal/OSAudio.h"
 
 using namespace std;
 

@@ -6,8 +6,8 @@
 #include <thread>
 #include <vector>
 
-#include "hlaudio/internal/OSAudio.h"
 #include "hlaudio/internal/Device.h"
+#include "hlaudio/internal/OSAudio.h"
 
 #ifndef ALSA_PCM_NEW_HW_PARAMS_API
     #define ALSA_PCM_NEW_HW_PARAMS_API
