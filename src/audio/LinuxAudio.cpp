@@ -22,99 +22,191 @@ LinuxAudio::LinuxAudio()
 
 vector<Device *> LinuxAudio::getInputDevices()
 {
-    vector<Device *> devices;
-    int err;             //check err from function
-    int cardNumber = -1; //to keep track of audio device
+    // vector<Device *> devices;
+    // int err;             //check err from function
+    // int cardNumber = -1; //to keep track of audio device
 
-    while (true)
-    {
-        snd_ctl_t *soundCard;
-        snd_ctl_card_info_t *cardInfo;
+    // while (true)
+    // {
+    //     snd_ctl_t *soundCard;
+    //     snd_ctl_card_info_t *cardInfo;
 
-        //get the next sound card number
-        err = snd_card_next(&cardNumber);
-        if (err < 0)
-        {
-            cerr << "Can't get next sound card" << endl;
-            break;
-        }
+    //     //get the next sound card number
+    //     err = snd_card_next(&cardNumber);
+    //     if (err < 0)
+    //     {
+    //         cerr << "Can't get next sound card" << endl;
+    //         break;
+    //     }
 
-        //check to see if card is -1, which means that it has went through all the devices
-        if (cardNumber < 0)
-        {
-            break;
-        }
+    //     //check to see if card is -1, which means that it has went through all the devices
+    //     if (cardNumber < 0)
+    //     {
+    //         break;
+    //     }
 
-        //initialize the sound card
-        char str[64];
-        sprintf(str, "hw:%i", cardNumber);
-        err = snd_ctl_open(&soundCard, str, 0);
-        if (err < 0)
-        {
-            cerr << "Can't open card number " << str << endl;
-            continue;
-        }
+    //     //initialize the sound card
+    //     char str[64];
+    //     sprintf(str, "hw:%i", cardNumber);
+    //     err = snd_ctl_open(&soundCard, str, 0);
+    //     if (err < 0)
+    //     {
+    //         cerr << "Can't open card number " << str << endl;
+    //         continue;
+    //     }
 
-        //get the card info
-        snd_ctl_card_info_alloca(&cardInfo);
-        snd_ctl_card_info(soundCard, cardInfo);
-        string deviceName = snd_ctl_card_info_get_name(cardInfo);
+    //     //get the card info
+    //     snd_ctl_card_info_alloca(&cardInfo);
+    //     snd_ctl_card_info(soundCard, cardInfo);
+    //     string deviceName = snd_ctl_card_info_get_name(cardInfo);
 
-        //create a new device and push it into the vector
-        devices.push_back(new Device(reinterpret_cast<uint32_t *>(cardNumber), deviceName, DeviceType::PLAYBACK));
-        snd_ctl_close(soundCard);
-    }
-    snd_config_update_free_global();
-    return devices;
+    //     //create a new device and push it into the vector
+    //     devices.push_back(new Device(reinterpret_cast<uint32_t *>(cardNumber), deviceName, DeviceType::PLAYBACK));
+    //     snd_ctl_close(soundCard);
+    // }
+    // snd_config_update_free_global();
+    // vector<Device *> devices;
+    // snd_ctl_card_info_t *info;
+    // snd_pcm_info_t *pcminfo;
+    // int cardNumber = -1;
+    // while (snd_card_next(&cardNumber) >= 0 && cardNumber >= 0)
+    // {
+    //     char name[64];
+    //     sprintf(name, "hw:%i", cardNumber);
+    //     snd_ctl_t *handle;
+    //     snd_ctl_open(&handle, name, 0);
+    //     snd_ctl_card_info_alloca(&info);
+    //     snd_ctl_card_info(handle, info);
+    //     int device = -1;
+    //     while (snd_ctl_pcm_next_device(handle, &device) >= 0 && device >= 0)
+    //     {
+    //         snd_pcm_info_alloca(&pcminfo);
+    //         snd_pcm_info_set_device(pcminfo, device);
+    //         snd_pcm_info_set_subdevice(pcminfo, 0);
+    //         snd_pcm_info_set_stream(pcminfo, SND_PCM_STREAM_PLAYBACK);
+    //         if (snd_ctl_pcm_info(handle, pcminfo) >= 0)
+    //         {
+    //             char DID[20];
+    //             sprintf(DID, "hw:%d,%d", cardNumber, device);
+    //             string deviceName = snd_ctl_card_info_get_name(info);
+    //             string subDeviceName = snd_pcm_info_get_name(pcminfo);
+    //             cout << deviceName << " : " << subDeviceName << endl;
+    //             cout << DID << endl;
+    //         }
+    //     }
+    //     snd_ctl_close(handle);
+    // }
+    // //devices.push_back(new Device(reinterpret_cast<uint32_t *>(cardNumber), "hi", DeviceType::PLAYBACK));
+    // //devices.push_back(new Device(reinterpret_cast<uint32_t *>(cardNumber), "hey", DeviceType::PLAYBACK));
+    // snd_config_update_free_global();
+    // return devices;
+    return getDevices(DeviceType::RECORD);
 }
 
 vector<Device *> LinuxAudio::getOutputDevices()
 {
+    // vector<Device *> devices;
+    // int err;             //check err from function
+    // int cardNumber = -1; //to keep track of audio device
+
+    // while (true)
+    // {
+    //     snd_ctl_t *soundCard;
+    //     snd_ctl_card_info_t *cardInfo;
+
+    //     //get the next sound card number
+    //     err = snd_card_next(&cardNumber);
+    //     if (err < 0)
+    //     {
+    //         cerr << "Can't get next sound card" << endl;
+    //         break;
+    //     }
+
+    //     //check to see if card is -1, which means that it has went through all the devices
+    //     if (cardNumber < 0)
+    //     {
+    //         break;
+    //     }
+
+    //     //initialize the sound card
+    //     char str[64];
+    //     sprintf(str, "hw:%i", cardNumber);
+    //     err = snd_ctl_open(&soundCard, str, 0);
+    //     if (err < 0)
+    //     {
+    //         cerr << "Can't open card number " << str << endl;
+    //         continue;
+    //     }
+
+    //     //get the card info
+    //     snd_ctl_card_info_alloca(&cardInfo);
+    //     snd_ctl_card_info(soundCard, cardInfo);
+    //     string deviceName = snd_ctl_card_info_get_name(cardInfo);
+
+    //     //create a new device and push it into the vector
+    //     devices.push_back(new Device(reinterpret_cast<uint32_t *>(cardNumber), deviceName, DeviceType::RECORD));
+    //     snd_ctl_close(soundCard);
+    // }
+    // snd_config_update_free_global();
+    // return devices;
+    return getDevices(DeviceType::PLAYBACK);
+}
+
+
+vector<Device *> LinuxAudio::getDevices(DeviceType type)
+{
+    //variables needed for the getting of devices to work
     vector<Device *> devices;
-    int err;             //check err from function
-    int cardNumber = -1; //to keep track of audio device
+    snd_ctl_card_info_t *cardInfo;
+    snd_pcm_info_t *subInfo;
+    snd_ctl_t *handle;
+    int subDevice;
+    int cardNumber = -1;
+    char cardName[64];
+    char deviceID[64];
 
-    while (true)
+    //outer while gets all the sound cards
+    while (snd_card_next(&cardNumber) >= 0 && cardNumber >= 0)
     {
-        snd_ctl_t *soundCard;
-        snd_ctl_card_info_t *cardInfo;
-
-        //get the next sound card number
-        err = snd_card_next(&cardNumber);
-        if (err < 0)
-        {
-            cerr << "Can't get next sound card" << endl;
-            break;
-        }
-
-        //check to see if card is -1, which means that it has went through all the devices
-        if (cardNumber < 0)
-        {
-            break;
-        }
-
-        //initialize the sound card
-        char str[64];
-        sprintf(str, "hw:%i", cardNumber);
-        err = snd_ctl_open(&soundCard, str, 0);
-        if (err < 0)
-        {
-            cerr << "Can't open card number " << str << endl;
-            continue;
-        }
-
-        //get the card info
+        // open and init the sound card
+        sprintf(cardName, "hw:%i", cardNumber);
+        snd_ctl_open(&handle, cardName, 0);
         snd_ctl_card_info_alloca(&cardInfo);
-        snd_ctl_card_info(soundCard, cardInfo);
-        string deviceName = snd_ctl_card_info_get_name(cardInfo);
-
-        //create a new device and push it into the vector
-        devices.push_back(new Device(reinterpret_cast<uint32_t *>(cardNumber), deviceName, DeviceType::RECORD));
-        snd_ctl_close(soundCard);
+        snd_ctl_card_info(handle, cardInfo);
+        //inner while gets all the sound card subdevices
+        subDevice = -1;
+        while (snd_ctl_pcm_next_device(handle, &subDevice) >= 0 && subDevice >= 0)
+        {
+            // open and init the subdevices
+            snd_pcm_info_alloca(&subInfo);
+            snd_pcm_info_set_device(subInfo, subDevice);
+            snd_pcm_info_set_subdevice(subInfo, 0);
+            // check if the device is an input or output device
+            if(type & DeviceType::RECORD)
+            {
+                snd_pcm_info_set_stream(subInfo, SND_PCM_STREAM_CAPTURE);
+            }
+            else
+            {
+                snd_pcm_info_set_stream(subInfo, SND_PCM_STREAM_PLAYBACK);
+            }
+            if (snd_ctl_pcm_info(handle, subInfo) >= 0)
+            {
+                sprintf(deviceID, "hw:%d,%d", cardNumber, subDevice);
+                string deviceName = snd_ctl_card_info_get_name(cardInfo);
+                string subDeviceName = snd_pcm_info_get_name(subInfo);
+                string fullDeviceName = deviceName + ": " + subDeviceName;
+                devices.push_back(new Device(reinterpret_cast<uint32_t *>(deviceID), fullDeviceName, DeviceType::RECORD));
+                // cout << deviceName << ": " << subDeviceName << endl;
+                // cout << deviceID << endl;
+            }
+        }
+        snd_ctl_close(handle);
     }
     snd_config_update_free_global();
     return devices;
 }
+
 
 void LinuxAudio::setActiveOutputDevice(Device *device)
 {
@@ -159,11 +251,11 @@ void LinuxAudio::test_capture(LinuxAudio *param)
 void LinuxAudio::capture()
 {
     int err;                        //return for commands that might return an error
-    snd_pcm_t *pcmHandle = NULL;           //default pcm handle
+    snd_pcm_t *pcmHandle = NULL;    //default pcm handle
     string defaultDevice;           //default hw id for the device
     snd_pcm_hw_params_t *param;     //object to store our paramets (they are just the default ones for now)
     int audioBufferSize;            // size of the buffer for the audio
-    byte *audioBuffer = NULL;              // buffer for the audio
+    byte *audioBuffer = NULL;       // buffer for the audio
     snd_pcm_uframes_t *temp = NULL; //useless parameter because the api requires it
 
     //just writing to a buffer for now
