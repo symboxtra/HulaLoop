@@ -46,6 +46,15 @@ class OSAudio {
          */
         vector<thread> execThreads;
 
+        /**
+         * Flag representing capture state.
+         * True if capturing data.
+         * False if idle (0 ring buffers present or device is switching).
+         *
+         * Mostly for testing.
+         */
+        volatile bool isCapturing;
+
         uint32_t captureBufferSize;
 
     public:
@@ -59,6 +68,8 @@ class OSAudio {
         void addBuffer(HulaRingBuffer *rb);
         void removeBuffer(HulaRingBuffer *rb);
         void copyToBuffers(void *data, uint32_t bytes);
+
+        static void backgroundCapture(OSAudio *_this);
 
         /**
          * Receive the list of available output audio devices connected to the OS
@@ -81,7 +92,7 @@ class OSAudio {
          */
         virtual void capture() = 0;
 
-        void setActiveRecordDevice(Device *device); //TODO: Make virtual or maybe remove if can combine into one function
+        void setActiveRecordDevice(Device *device); // TODO: Make virtual or maybe remove if can combine into one function
         virtual void setActiveOutputDevice(Device *device) = 0;
 };
 

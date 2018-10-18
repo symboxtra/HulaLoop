@@ -7,6 +7,7 @@
 #include "Device.h"
 #include "OSAudio.h"
 #include "ICallback.h"
+#include "HulaRingBuffer.h"
 
 using byte = uint8_t;
 
@@ -26,6 +27,11 @@ class Controller : public ICallback {
 
         void addBufferReadyCallback(ICallback *func);
         void removeBufferReadyCallback(ICallback *func);
+
+        void addBuffer(HulaRingBuffer *rb);
+        void removeBuffer(HulaRingBuffer *rb);
+        HulaRingBuffer * createBuffer(float duration);
+        HulaRingBuffer * createAndAddBuffer(float duration);
 
         void handleData(uint8_t *data, uint32_t size);
         vector<Device *> getInputDevices();

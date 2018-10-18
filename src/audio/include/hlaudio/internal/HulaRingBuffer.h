@@ -78,23 +78,23 @@
 #define BYTES_TO_SAMPLES(bytes) ((bytes) / (sizeof(SAMPLE)))
 #define SAMPLES_TO_BYTES(samples) ((samples) * (sizeof(SAMPLE)))
 
-/*
+/**
  * HulaLoop wrapper class for PortAudio ring buffer.
  */
 class HulaRingBuffer {
 
     private:
-        /*
+        /**
          * Underlying memory allocated for the ring buffer.
          */
         SAMPLE *rbMemory;
 
-        /*
+        /**
          * PortAudio ring buffer structure.
          */
         PaUtilRingBuffer rb;
 
-        /*
+        /**
         * Helper function for determining the next power of two.
         *
         * @return Next power of 2 from val

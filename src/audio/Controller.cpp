@@ -29,7 +29,7 @@ Controller::Controller()
     if (audio == NULL)
     {
         cerr << "OS Audio error !" << endl;
-    }//TODO: Handle error
+    } // TODO: Handle error
 
     // Add current Controller instance as buffercallback to
     // OSAudio
@@ -96,7 +96,60 @@ void Controller::removeBufferReadyCallback(ICallback *func)
 }
 
 /**
- * Get input devices from OSAudio
+ * Add an initialized buffer to the list of buffers that receive audio data.
+ * As soon as the buffer is added, it should begin receiving data.
+ *
+ * If already present, the ring buffer will not be duplicated.
+ *
+ * This is a publicly exposed wrapper for the OSAudio method.
+ *
+ * @param rb HulaLoop ring buffer to add to the list.
+*/
+void Controller::addBuffer(HulaRingBuffer *rb)
+{
+    audio->addBuffer(rb);
+}
+
+/**
+ * Remove a buffer from the list of buffers that receive audio data.
+ * The removed buffer is not deleted and must be deleted by the user.
+ *
+ * This enables pausing retrieval when audio is not needed and
+ * re-adding the same buffer when audio data is again needed.
+ *
+ * This is a publicly exposed wrapper for the OSAudio method.
+ *
+ * @param rb HulaLoop ring buffer to remove from the list.
+*/
+void Controller::removeBuffer(HulaRingBuffer *rb)
+{
+    audio->removeBuffer(rb);
+}
+
+/**
+ * Allocate and initialize a HulaRingBuffer that can be added to
+ * the OSAudio ring buffer list via Controller::addBuffer.
+ *
+ * @return Newly allocated ring buffer.
+ */
+HulaRingBuffer * Controller::createBuffer(float duration)
+{
+    return new HulaRingBuffer(duration);
+}
+
+/**
+ * Allocate and initialize a HulaRingBuffer and automatically
+ * add it to the OSAudio ring buffer list.
+ */
+HulaRingBuffer * Controller::createAndAddBuffer(float duration)
+{
+    HulaRingBuffer * rb = new HulaRingBuffer(duration);
+    addBuffer(rb);
+    return rb;
+}
+
+/**
+ * Get input devices from OSAudio.
  */
 vector<Device *> Controller::getInputDevices()
 {
@@ -104,7 +157,7 @@ vector<Device *> Controller::getInputDevices()
 }
 
 /**
- * Get output devices from OSAudio
+ * Get output devices from OSAudio.
  */
 vector<Device *> Controller::getOutputDevices()
 {
@@ -112,7 +165,7 @@ vector<Device *> Controller::getOutputDevices()
 }
 
 /**
- * Deconstructs the current instance of the Controller class
+ * Deconstructs the current instance of the Controller class.
  */
 Controller::~Controller()
 {

@@ -42,7 +42,7 @@ void OSAudio::removeBufferReadyCallback(ICallback *callFunction)
     }
 }
 
-/*
+/**
  * Add an initialized buffer to the list of buffers that receive audio data.
  * If already present, the ring buffer will not be duplicated.
  *
@@ -56,7 +56,7 @@ void OSAudio::addBuffer(HulaRingBuffer *rb)
     }
 }
 
-/*
+/**
  * Remove a buffer from the list of buffers that receive audio data.
  * The removed buffer is not deleted and must be deleted by the user.
  *
@@ -74,7 +74,7 @@ void OSAudio::removeBuffer(HulaRingBuffer *rb)
     }
 }
 
-/*
+/**
  * Write to each of the buffers contained in rbs.
  */
 void OSAudio::copyToBuffers(void *data, uint32_t bytes)
@@ -87,6 +87,16 @@ void OSAudio::copyToBuffers(void *data, uint32_t bytes)
     {
         (*it)->write(samples, sampleCount);
     }
+}
+
+/**
+* Static function to allow starting a thread with an instance's capture method.
+*
+* @param _this Instance of OSAudio subclass which capture should be called on.
+*/
+static void backgroundCapture(OSAudio *_this)
+{
+    _this->capture();
 }
 
 /**

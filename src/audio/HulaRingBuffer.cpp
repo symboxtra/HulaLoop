@@ -41,7 +41,7 @@
 #include "hlaudio/internal/HulaRingBuffer.h"
 #include "HulaAudioError.h"
 
-/*
+/**
  * Create a new ring buffer.
  * The ring buffer's size is determined using maxDuration * sampleRate * channelCount * sizeof(SAMPLE).
  *
@@ -69,7 +69,7 @@ HulaRingBuffer::HulaRingBuffer(float maxDuration)
     }
 }
 
-/*
+/**
  * Read up to maxSamples from the ring buffer into the memory pointed to by data.
  *
  * @param data Pointer to allocated memory of at least maxSamples size.
@@ -91,7 +91,7 @@ int32_t HulaRingBuffer::read(SAMPLE * data, int32_t maxSamples)
     return samplesRead;
 }
 
-/*
+/**
  * Fetch direct pointers to memory within the ring buffer. This can be used to avoid allocating a secondary container.
  * The second pointer/size pair is for when the ring buffer has split data between its tail and head.
  * If the requested maxBytes are continuous in the underlying memory, only the first pointer/size pair is used.
@@ -137,7 +137,7 @@ int32_t HulaRingBuffer::write(const SAMPLE *data, int32_t maxSamples)
     return elementsWritten;
 }
 
-/*
+/**
  * Destructor for the ring buffer.
  */
 HulaRingBuffer::~HulaRingBuffer()
