@@ -48,7 +48,7 @@ void OSAudio::removeBufferReadyCallback(ICallback *callFunction)
  *
  * @param device Instance of Device that corresponds to the desired system device
  */
-void OSAudio::setActiveRecordDevice(Device *device)
+void OSAudio::setActiveInputDevice(Device *device)
 {
     this->activeInputDevice = device;
 }

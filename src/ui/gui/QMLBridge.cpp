@@ -58,6 +58,11 @@ void QMLBridge::pause()
     emit stateChanged();
 }
 
+void QMLBridge::setActiveInputDevice(QString QDeviceName){
+    string deviceName = QDeviceName.toStdString();
+    cout << "DEVICENAMEFROMBRIDGE: " << deviceName << endl;
+}
+
 QString QMLBridge::getInputDevices()
 {
     string devices;

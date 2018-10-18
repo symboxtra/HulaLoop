@@ -21,6 +21,7 @@ class QMLBridge : public QObject {
     public:
         explicit QMLBridge(QObject *parent = nullptr);
 
+        Q_INVOKABLE void setActiveInputDevice(QString QDeviceName);
         Q_INVOKABLE QString getInputDevices();
         Q_INVOKABLE QString getOutputDevices();
 
