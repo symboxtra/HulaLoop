@@ -21,9 +21,14 @@ enum TransportState
 class Transport {
     private:
         TransportState state;
+        bool recordState;
+        bool playbackState;
+
+    protected:
+        Record* recorder;
 
     public:
-        Controller *controller;
+        Controller* controller;
 
         Transport();
         ~Transport();

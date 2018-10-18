@@ -90,14 +90,22 @@ Rectangle {
                 }
 
                 onClicked: {
-                    // Add JavaScript for delay timer
-                    qmlbridge.record()
+
+                    stopBtn.enabled = true;
+                    playpauseBtn.enabled = true;
+                    playpauseBtn.contentItem.text = MDFont.Icon.pause;
+                    playpauseBtn.contentItem.color = "white";
+                    enabled = false;
+
+                    qmlbridge.record();
                 }
             }
 
             RoundButton {
                 id: stopBtn
                 objectName: "stopBtn"
+                enabled: false
+                property bool isStopped: false
 
                 display: AbstractButton.TextOnly
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
@@ -121,40 +129,21 @@ Rectangle {
                 onClicked: {
                     // Add JavaScript for recording time
                     qmlbridge.stop()
+                    enabled = false;
+
+                    recordBtn.enabled = false;
+                    isStopped = true;
+                    // TODO: Set variable so that pause cannot re-enable record and stop
+                    playpauseBtn.enabled = true;
+                    playpauseBtn.contentItem.text = MDFont.Icon.play;
+                    playpauseBtn.contentItem.color = "green";
                 }
             }
 
             RoundButton {
-                id: playBtn
-                objectName: "playBtn"
-
-                display: AbstractButton.TextOnly
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-
-                contentItem: Text {
-                    font.family: "Material Design Icons"
-                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                    text: MDFont.Icon.play
-                    color: "green"
-
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                }
-
-                background: Rectangle {
-                    opacity: enabled ? 1 : 0.15
-                    color: playBtn.pressed ? "grey" : "darkgrey"
-                    radius: playBtn.width / 2
-                }
-
-                onClicked: {
-                    qmlbridge.play()
-                }
-            }
-
-            RoundButton {
-                id: pauseBtn
-                objectName: "pauseBtn"
+                id: playpauseBtn
+                objectName: "playpauseBtn"
+                enabled: false
 
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 display: AbstractButton.TextOnly
@@ -171,12 +160,37 @@ Rectangle {
 
                 background: Rectangle {
                     opacity: enabled ? 1 : 0.15
-                    color: pauseBtn.pressed ? "grey" : "darkgrey"
-                    radius: pauseBtn.width / 2
+                    color: playpauseBtn.pressed ? "grey" : "darkgrey"
+                    radius: playpauseBtn.width / 2
                 }
 
                 onClicked: {
-                    qmlbridge.pause()
+                    //qmlbridge.pause()
+
+                    if(contentItem.text == MDFont.Icon.pause)
+                    {
+                        contentItem.text = MDFont.Icon.play;
+                        contentItem.color = "green";
+
+                        if(!stopBtn.isStopped)
+                        {
+                            stopBtn.enabled = true;
+                            recordBtn.enabled = true;
+                        }
+
+                        qmlbridge.pause();
+                    }
+                    else
+                    {
+                        contentItem.text = MDFont.Icon.pause;
+                        contentItem.color = "white";
+
+                        stopBtn.enabled = false; // TODO: Determine final state of playback button
+                        recordBtn.enabled = false;
+
+                        qmlbridge.play();
+                    }
+
                 }
             }
 
@@ -276,6 +290,17 @@ Rectangle {
                 onActivated: {
                     console.log("Audio device has been changed to: " + iDeviceInfoLabel.currentText);
                 }
+
+                onPressedChanged: {
+                    model.clear();
+                    var idevices = qmlbridge.getInputDevices().split(',')
+                        var i
+                        for (i = 0; i < idevices.length; i++) {
+                            model.append({
+                                       "text": idevices[i]
+                                   })
+                        }
+                }
                 currentIndex: 0
             }
             Label {
@@ -302,6 +327,17 @@ Rectangle {
                 }
                 onActivated: {
                     console.log("Audio device has been changed to: " + oDeviceInfoLabel.currentText);
+                }
+
+                onPressedChanged: {
+                    model.clear();
+                    var odevices = qmlbridge.getOutputDevices().split(',')
+                        var i
+                        for (i = 0; i < odevices.length; i++) {
+                            model.append({
+                                       "text": odevices[i]
+                                   })
+                        }
                 }
                 currentIndex: 0
             }

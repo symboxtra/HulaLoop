@@ -8,6 +8,10 @@
 Transport::Transport()
 {
     controller = new Controller();
+    recorder = new Record(controller);
+
+    recordState = true;
+    playbackState = false;
 }
 
 /**
@@ -17,6 +21,8 @@ bool Transport::record()
 {
     std::cout << "Record button clicked!" << std::endl;
     state = RECORDING;
+    if(recordState)
+        recorder->start();
     return true;
 }
 
@@ -27,6 +33,8 @@ bool Transport::stop()
 {
     std::cout << "Stop button clicked!" << std::endl;
     state = STOPPED;
+    if(recordState)
+        recorder->stop();
     return true;
 }
 
@@ -47,6 +55,12 @@ bool Transport::pause()
 {
     std::cout << "Pause button clicked!" << std::endl;
     state = PAUSED;
+
+    // TODO: Stop recording or playback based on state machine
+    if(recordState) // Pause record
+        recorder->stop();
+    else if(playbackState) {} // Pause playback
+
     return true;
 }
 

@@ -121,19 +121,31 @@ TEST_F(TestGUI, recordButton)
 
 TEST_F(TestGUI, stopButton)
 {
+    clickButton("recordBtn");
+    ASSERT_TRUE(getTransportState() == "Recording");
+
     clickButton("stopBtn");
     ASSERT_TRUE(getTransportState() == "Stopped");
 }
 
 TEST_F(TestGUI, playButton)
 {
-    clickButton("playBtn");
+    clickButton("recordBtn");
+    ASSERT_TRUE(getTransportState() == "Recording");
+
+    clickButton("playpauseBtn");
+    ASSERT_TRUE(getTransportState() == "Paused");
+
+    clickButton("playpauseBtn");
     ASSERT_TRUE(getTransportState() == "Playing");
 }
 
 TEST_F(TestGUI, pauseButton)
 {
-    clickButton("pauseBtn");
+    clickButton("recordBtn");
+    ASSERT_TRUE(getTransportState() == "Recording");
+
+    clickButton("playpauseBtn");
     ASSERT_TRUE(getTransportState() == "Paused");
 }
 
