@@ -22,7 +22,7 @@ macro (qt5_post_build_windeployqt APP QMLDIR)
     endif ()
 
     add_custom_command (TARGET ${APP} POST_BUILD
-            COMMAND ${WINDEPLOYQT_EXECUTABLE} -qmldir ${QMLDIR} $<TARGET_FILE:${APP}> WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+            COMMAND ${WINDEPLOYQT_EXECUTABLE} -qmldir ${QMLDIR} $<TARGET_FILE:${APP}> WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
     message (STATUS "Added post-build call to windeployqt.")
 
@@ -41,7 +41,7 @@ macro (qt5_post_build_macdeployqt APP QMLDIR)
     endif ()
 
     add_custom_command (TARGET ${APP} POST_BUILD
-            COMMAND ${MACDEPLOYQT_EXECUTABLE} -qmldir ${QMLDIR} $<TARGET_FILE:${APP}> WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+            COMMAND ${MACDEPLOYQT_EXECUTABLE} -qmldir ${QMLDIR} $<TARGET_FILE:${APP}> WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
     message (STATUS "Added post-build call to macdeployqt.")
 
