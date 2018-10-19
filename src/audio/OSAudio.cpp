@@ -127,7 +127,7 @@ void OSAudio::backgroundCapture(OSAudio *_this)
  *
  * @param device Instance of Device that corresponds to the desired system device
  */
-void OSAudio::setActiveRecordDevice(Device *device)
+void OSAudio::setActiveInputDevice(Device *device)
 {
     this->activeInputDevice = device;
 

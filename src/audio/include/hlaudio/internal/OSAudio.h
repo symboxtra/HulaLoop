@@ -93,8 +93,6 @@ class OSAudio {
         void removeBuffer(HulaRingBuffer *rb);
         void copyToBuffers(const void *data, uint32_t bytes);
 
-        static void backgroundCapture(OSAudio *_this);
-
         /**
          * Receive the list of available output audio devices connected to the OS
          * and return them as Device instances
@@ -115,9 +113,10 @@ class OSAudio {
          * Execution loop for loopback capture
          */
         virtual void capture() = 0;
+        static void backgroundCapture(OSAudio *_this);
 
-        void setActiveRecordDevice(Device *device); // TODO: Make virtual or maybe remove if can combine into one function
-        virtual void setActiveOutputDevice(Device *device) = 0;
+        void setActiveInputDevice(Device *device);
+        void setActiveOutputDevice(Device *device);
 };
 
 #endif
