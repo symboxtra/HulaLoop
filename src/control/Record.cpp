@@ -1,4 +1,4 @@
-#include "Record.h"
+#include "hlcontrol/internal/Record.h"
 
 Record::Record(Controller* control)
 {

@@ -4,6 +4,8 @@
 #include <hlaudio/hlaudio.h>
 #include <string>
 
+#include "Record.h"
+
 /**
  * Available states for the recording/playback logic of the application.
  */

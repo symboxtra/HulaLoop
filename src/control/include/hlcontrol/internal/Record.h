@@ -1,8 +1,7 @@
 #ifndef RECORD_H
 #define RECORD_H
 
-#include "Controller.h"
-#include "ICallback.h"
+#include <hlaudio/hlaudio.h>
 
 class Record : public ICallback {
 
