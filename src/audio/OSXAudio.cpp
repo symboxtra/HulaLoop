@@ -5,9 +5,7 @@
 #include <thread>
 
 #include "OSXAudio.h"
-#include "OSXDaemon/OSXDaemon.h"
-#include "OSXRingBuffer.h"
-#include "HulaAudioError.h"
+#include "hlaudio/internal/HulaAudioError.h"
 
 /**
  * Constructs an instance of OSXAudio class.
@@ -18,7 +16,6 @@
 OSXAudio::OSXAudio()
 {
     // Create the loopback daemon
-    OSXDaemon *osxDaemon;
     osxDaemon = new OSXDaemon("HulaLoop #1", 0); // TODO: Make sure this can handle multiple instances of HulaLoop running
     osxDaemon->activate();
     osxDaemon->monitor();
@@ -26,17 +23,40 @@ OSXAudio::OSXAudio()
     printf("\n\n");
 
     // Initialize PortAudio
-    int ret = Pa_Initialize();
-    if (ret != paNoError)
+    int err = Pa_Initialize();
+    if (err != paNoError)
     {
-        fprintf(stderr, "%sPortAudio failed to initialize.\nError code: 0x%x\n", HL_ERROR_PREFIX, ret);
+        fprintf(stderr, "%sPortAudio failed to initialize.\n", HL_ERROR_PREFIX);
+        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
         exit(1); // TODO: Handle error
     }
 
     printf("\n\n");
+}
 
-    // Start a test capture
-    std::thread(&test_capture, this).detach();
+/**
+ * This routine will be called by the PortAudio engine when audio is needed.
+ * It may be called at interrupt level on some machines so don't do anything
+ * that could mess up the system like calling malloc() or free().
+ */
+static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
+                           unsigned long framesPerBuffer,
+                           const PaStreamCallbackTimeInfo *timeInfo,
+                           PaStreamCallbackFlags statusFlags,
+                           void *userData)
+{
+    OSXAudio *obj = (OSXAudio *)userData;
+
+    // Prevent unused variable warnings.
+    (void) outputBuffer;
+    (void) timeInfo;
+    (void) statusFlags;
+    (void) userData;
+
+    // TODO: Make sure this calculation is right
+    obj->copyToBuffers(inputBuffer, framesPerBuffer * NUM_CHANNELS);
+
+    return paContinue;
 }
 
 /**
@@ -49,36 +69,13 @@ void OSXAudio::capture()
     PaStreamParameters  inputParameters;
     PaStream           *stream;
     PaError             err = paNoError;
-    rbComm              data = {0};
-    unsigned            delayCntr;
-    unsigned            numSamples;
-    unsigned            numBytes;
-
-    // Set the ring buffer size to about 500 ms
-    // We can adjust this after testing                ### this value
-    numSamples = NextPowerOf2((unsigned)(SAMPLE_RATE * 0.5 * NUM_CHANNELS));
-    numBytes = numSamples * sizeof(SAMPLE);
-    data.ringBufferData = (SAMPLE *) PaUtil_AllocateMemory(numBytes);
-
-    // Make sure ring buffer was allocated
-    if (data.ringBufferData == NULL)
-    {
-        fprintf(stderr, "%sCould not allocate ring buffer data of size %d.\n", HL_ERROR_PREFIX, numBytes);
-        goto done;
-    }
-
-    if (PaUtil_InitializeRingBuffer(&data.ringBuffer, sizeof(SAMPLE), numSamples, data.ringBufferData) < 0)
-    {
-        fprintf(stderr, "%sFailed to initialize ring buffer. Perhaps size is not power of 2?\nSize: %d\n", HL_ERROR_PREFIX, numSamples);
-        goto done;
-    }
 
     // TODO: Grab HulaLoop driver specifically/make this grabbable for RECORD devices
     inputParameters.device = Pa_GetDefaultInputDevice();
     if (inputParameters.device == paNoDevice)
     {
         fprintf(stderr, "%sNo default input device found.\n", HL_ERROR_PREFIX);
-        goto done;
+        exit(1); // TODO: Handle error
     }
 
     // Setup the stream for the selected device
@@ -93,49 +90,55 @@ void OSXAudio::capture()
               NULL,                  // &outputParameters
               SAMPLE_RATE,
               FRAMES_PER_BUFFER,
-              paClipOff,      // we won't output out of range samples so don't bother clipping them
-              recordCallback,
-              &data);
-
-    PA_CHECK_ERROR
-
-    // Start a handler to read from the ring buffer
-    err = startThread(&data, &testWrite);
-    PA_CHECK_ERROR
-
-    // Start the stream
-    err = Pa_StartStream(stream);
-    PA_CHECK_ERROR
-
-    delayCntr = 0;
-    while ( delayCntr++ < NUM_SECONDS )
-    {
-        printf("rb write index = 0x%d\n", data.ringBuffer.writeIndex);
-        fflush(stdout);
-        Pa_Sleep(1000);
-    }
-    PA_CHECK_ERROR
-
-    err = Pa_CloseStream(stream);
-    PA_CHECK_ERROR
-
-    // Stop the thread
-    err = stopThread(&data);
-    PA_CHECK_ERROR
-
-done:
-    // Make sure this is still valid before freeing
-    if (data.ringBufferData)
-    {
-        PaUtil_FreeMemory(data.ringBufferData);
-    }
+              paClipOff,             // We won't output out of range samples so don't bother clipping them
+              paRecordCallback,
+              this                   // Pass our instance in
+    );
 
     if (err != paNoError)
     {
-        fprintf(stderr, "%sAn error occured while using the PortAudio stream\n", HL_ERROR_PREFIX);
-        fprintf(stderr, "%sError number: %d\n", HL_ERROR_PREFIX, err);
-        fprintf(stderr, "%sError message: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
-        err = 1;
+        fprintf(stderr, "%sCould not open Port Audio device stream.\n", HL_ERROR_PREFIX);
+        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+        exit(1); // TODO: Handle error
+    }
+
+    // Start the stream
+    err = Pa_StartStream(stream);
+    if (err != paNoError)
+    {
+        fprintf(stderr, "%sCould not start Port Audio device stream.\n", HL_ERROR_PREFIX);
+        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+        exit(1); // TODO: Handle error
+    }
+
+    while (!this->deviceSwitch && this->rbs.size() > 0)
+    {
+        // Keep this thread alive
+        // The second half of this function could be moved to a separate
+        // function like endCapture() so that we don't have to keep this thread alive.
+
+        printf("%sCapture keep-alive\n", HL_PRINT_PREFIX);
+
+        // This value can be adjusted
+        // 100 msec is decent precision for now
+        Pa_Sleep(1000);
+    }
+
+    printf("%sCapture thread ended keep-alive.\n\n", HL_PRINT_PREFIX);
+
+    if (err != paNoError)
+    {
+        fprintf(stderr, "%sError during read from device stream.\n", HL_ERROR_PREFIX);
+        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+        exit(1); // TODO: Handle error
+    }
+
+    err = Pa_CloseStream(stream);
+    if (err != paNoError)
+    {
+        fprintf(stderr, "%sCould not close Port Audio device stream.\n", HL_ERROR_PREFIX);
+        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+        exit(1); // TODO: Handle error
     }
 }
 
@@ -148,7 +151,7 @@ vector<Device *> OSXAudio::getDevices(DeviceType type)
     int deviceCount = Pa_GetDeviceCount();
     if (deviceCount < 0)
     {
-        fprintf(stderr, "%sNo PortAudio devices were found.\nError code: 0x%x\n", HL_ERROR_PREFIX, deviceCount);
+        fprintf(stderr, "%sNo PortAudio devices were found.\n", HL_ERROR_PREFIX);
         exit(1); // TODO: Handle error
     }
 
@@ -228,5 +231,17 @@ void OSXAudio::setActiveOutputDevice(Device *device)
  */
 OSXAudio::~OSXAudio()
 {
+    printf("%sOSXAudio destructor called\n", HL_PRINT_PREFIX);
 
+    // Close the Port Audio session
+    PaError err = Pa_Terminate();
+    if (err != paNoError)
+    {
+        fprintf(stderr, "%sCould not terminate Port Audio session.\n", HL_ERROR_PREFIX);
+        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+    }
+
+    // Stop the daemon
+    if (osxDaemon)
+        delete osxDaemon;
 }

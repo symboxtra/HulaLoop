@@ -6,6 +6,7 @@
 
 #include "hlaudio/internal/Device.h"
 #include "hlaudio/internal/OSAudio.h"
+#include "OSXDaemon/OSXDaemon.h"
 
 #define PA_CHECK_ERROR if ( err != paNoError ) { goto done; }
 
@@ -14,6 +15,7 @@
  */
 class OSXAudio : public OSAudio {
     private:
+        OSXDaemon *osxDaemon;
         std::vector<Device *> getDevices(DeviceType type);
 
     public:

@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 
+#include "hlaudio/internal/HulaAudioError.h"
 #include "hlaudio/internal/OSAudio.h"
 
 /**
@@ -54,6 +55,12 @@ void OSAudio::addBuffer(HulaRingBuffer *rb)
     {
         this->rbs.push_back(rb);
     }
+
+    if (rbs.size() == 1)
+    {
+        // Start up the capture thread
+        inThreads.emplace_back(std::thread(&backgroundCapture, this));
+    }
 }
 
 /**
@@ -72,12 +79,25 @@ void OSAudio::removeBuffer(HulaRingBuffer *rb)
     {
         this->rbs.erase(it);
     }
+
+    // Stop the capture thread if there are no buffers left
+    if (rbs.size() == 0)
+    {
+        // Join all threads
+        // Threads should end since they checks the size of rbs
+        for (auto &t : inThreads)
+        {
+            t.join();
+            t.~thread();
+        }
+        inThreads.clear();
+    }
 }
 
 /**
  * Write to each of the buffers contained in rbs.
  */
-void OSAudio::copyToBuffers(void *data, uint32_t bytes)
+void OSAudio::copyToBuffers(const void *data, uint32_t bytes)
 {
     SAMPLE *samples = (SAMPLE *)data;
     uint32_t sampleCount = BYTES_TO_SAMPLES(bytes);
@@ -94,8 +114,10 @@ void OSAudio::copyToBuffers(void *data, uint32_t bytes)
 *
 * @param _this Instance of OSAudio subclass which capture should be called on.
 */
-static void backgroundCapture(OSAudio *_this)
+void OSAudio::backgroundCapture(OSAudio *_this)
 {
+    // Reset the thread interrupt flag
+    _this->deviceSwitch = false;
     _this->capture();
 }
 
@@ -108,6 +130,17 @@ static void backgroundCapture(OSAudio *_this)
 void OSAudio::setActiveRecordDevice(Device *device)
 {
     this->activeInputDevice = device;
+
+    // Set the flag to signal thread end
+    this->deviceSwitch = true;
+
+    // Wait for all threads to catch the signal
+    for (auto &t : inThreads)
+    {
+        t.join();
+        t.~thread();
+    }
+    inThreads.clear();
 }
 
 /**
@@ -115,4 +148,13 @@ void OSAudio::setActiveRecordDevice(Device *device)
  */
 OSAudio::~OSAudio()
 {
+    printf("%sOSAudio destructor called\n", HL_PRINT_PREFIX);
+
+    // Forcefully kill all in threads
+    for (auto &t : inThreads)
+    {
+        t.detach();
+        t.~thread();
+    }
+    inThreads.clear();
 }

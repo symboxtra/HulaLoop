@@ -2,6 +2,7 @@
 #include <fstream>
 
 #include "hlaudio/internal/Controller.h"
+#include "include/hlaudio/internal/HulaAudioError.h"
 
 #if _WIN32
     #include "WindowsAudio.h"
@@ -169,7 +170,10 @@ vector<Device *> Controller::getOutputDevices()
  */
 Controller::~Controller()
 {
-    // Don't do this until mem management is fixed
-    // delete audio;
+    printf("%sController destructor called\n", HL_PRINT_PREFIX);
+
     callbackList.clear();
+
+    // Don't do this until mem management is fixed
+    delete audio;
 }

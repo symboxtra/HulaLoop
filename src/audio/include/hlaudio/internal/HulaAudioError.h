@@ -21,7 +21,7 @@
 
 /******************************************************************************
  *
- * Collection of error codes and information for hl_audio
+ * Collection of error codes and information for hlaudio
  *
 ******************************************************************************/
 

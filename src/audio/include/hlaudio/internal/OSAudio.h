@@ -42,14 +42,33 @@ class OSAudio {
         vector<HulaRingBuffer *> rbs;
 
         /**
-         * List of all running threads
+         * List of all running threads.
+         *
+         * TODO: Remove
+         * Leave until WindowsAudio can be updated.
          */
         vector<thread> execThreads;
 
         /**
+         * Thread for input device activities.
+         */
+        vector<thread> inThreads;
+
+        /**
+         * Thread for output device activities.
+         */
+        vector<thread> outThreads;
+
+        /**
+         * Flag to syncronize the capture thread for an instance.
+         * This is used to break the capture loop when switching devices.
+         */
+        volatile bool deviceSwitch;
+
+        /**
          * Flag representing capture state.
          * True if capturing data.
-         * False if idle (0 ring buffers present or device is switching).
+         * False if idle (no ring buffers present or device is switching).
          *
          * Mostly for testing.
          */
@@ -67,7 +86,7 @@ class OSAudio {
 
         void addBuffer(HulaRingBuffer *rb);
         void removeBuffer(HulaRingBuffer *rb);
-        void copyToBuffers(void *data, uint32_t bytes);
+        void copyToBuffers(const void *data, uint32_t bytes);
 
         static void backgroundCapture(OSAudio *_this);
 

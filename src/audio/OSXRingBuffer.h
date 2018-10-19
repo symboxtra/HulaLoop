@@ -36,8 +36,8 @@
  * license above.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <thread>
 
 #include "pa_ringbuffer.h"
@@ -45,7 +45,7 @@
 #include "portaudio.h"
 
 
-/*
+/**
  * Helper function for finding minimum value
  */
 static ring_buffer_size_t rbs_min(ring_buffer_size_t a, ring_buffer_size_t b)
@@ -61,7 +61,6 @@ static ring_buffer_size_t rbs_min(ring_buffer_size_t a, ring_buffer_size_t b)
 #define NUM_WRITES_PER_BUFFER   (4)
 // #define DITHER_FLAG          (paDitherOff)
 #define DITHER_FLAG             (0)
-
 
 // Select sample format.
 #if 1
@@ -103,7 +102,7 @@ typedef struct
 }
 rbComm;
 
-/*
+/**
  * Helper function for determining the next power of two.
  */
 static unsigned NextPowerOf2(unsigned val)
@@ -117,7 +116,7 @@ static unsigned NextPowerOf2(unsigned val)
     return ++val;
 }
 
-/*
+/**
  * This routine will be called by the PortAudio engine when audio is needed.
  * It may be called at interrupt level on some machines so don't do anything
  * that could mess up the system like calling malloc() or free().
@@ -144,7 +143,7 @@ static int recordCallback( const void *inputBuffer, void *outputBuffer,
     return paContinue;
 }
 
-/*
+/**
  * This routine will be called by the PortAudio engine when audio is needed.
  * It may be called at interrupt level on some machines so don't do anything
  * that could mess up the system like calling malloc() or free().
