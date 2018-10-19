@@ -6,12 +6,163 @@ WindowsAudio::WindowsAudio()
 }
 
 /**
+ * Receive the list of available record, playback and/or loopback audio devices
+ * connected to the OS and return them as Device instances
+ *
+ * @param a type or a combination of type of devices to be received (LOOPBACK, PLAYBACK, RECORD)
+ * @return vector of Device instances
+ */
+vector<Device*> WindowsAudio::getDevices(DeviceType type)
+{
+
+    // Check if the following enums are set in the params
+    bool isLoopSet = (type & DeviceType::LOOPBACK) == DeviceType::LOOPBACK;
+    bool isRecSet = (type & DeviceType::RECORD) == DeviceType::RECORD;
+    bool isPlaySet = (type & DeviceType::PLAYBACK) == DeviceType::PLAYBACK;
+
+    // Vector to store acquired list of output devices
+    vector<Device*> deviceList;
+
+    // Get devices from WASAPI if loopback and/or playback devices
+    // are requested
+    if(isLoopSet | isPlaySet)
+    {
+        // Setup capture environment
+        status = CoInitialize(NULL);
+        HANDLE_ERROR(status);
+
+        // Creates a system instance of the device enumerator
+        status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
+        HANDLE_ERROR(status);
+
+        // Get the collection of all devices
+        status = pEnumerator->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, &deviceCollection);
+        HANDLE_ERROR(status);
+
+        // Get the size of the collection
+        UINT count = 0;
+        status = deviceCollection->GetCount(&count);
+        HANDLE_ERROR(status);
+
+        // Iterate through the collection and store the necessary information into
+        // the device vector
+        for (UINT i = 0; i < count; i++)
+        {
+            // Initialize variables for current loop
+            IMMDevice *device;
+            DWORD state = NULL;
+            LPWSTR id = NULL;
+            IPropertyStore *propKey;
+            PROPVARIANT varName;
+            PropVariantInit(&varName);
+
+            // Get the IMMDevice at the specified index
+            status = deviceCollection->Item(i, &device);
+            HANDLE_ERROR(status);
+
+            // Get the state of the IMMDevice
+            status = device->GetState(&state);
+            HANDLE_ERROR(status);
+
+            // Get the ID of the IMMDevice
+            status = device->GetId(&id);
+            HANDLE_ERROR(status);
+
+            // Get device name using PropertyStore
+            status = device->OpenPropertyStore(STGM_READ, &propKey);
+            HANDLE_ERROR(status);
+            status = propKey->GetValue(PKEY_Device_FriendlyName, &varName);
+            HANDLE_ERROR(status);
+
+            // Convert wide-char string to std::string
+            wstring fun(varName.pwszVal);
+            string str(fun.begin(), fun.end());
+
+            // Create instance of Device using acquired data
+            Device *audio = new Device(reinterpret_cast<uint32_t *>(id), str, (DeviceType)(DeviceType::LOOPBACK | DeviceType::PLAYBACK));
+
+            // Add to devicelist
+            deviceList.push_back(audio);
+
+            SAFE_RELEASE(device);
+        }
+    }
+
+    // Get devices from PortAudio if record devices are requested
+    if(isRecSet)
+    {
+
+        // Initialize PortAudio and update audio devices
+        pa_status = Pa_Initialize();
+        HANDLE_PA_ERROR(pa_status);
+
+        // Get the total count of audio devices
+        int numDevices = Pa_GetDeviceCount();
+        if(numDevices < 0)
+        {
+            pa_status = numDevices;
+            HANDLE_PA_ERROR(pa_status);
+        }
+
+        //
+        const PaDeviceInfo *deviceInfo;
+        for(int i = 0;i < numDevices;i++)
+        {
+            deviceInfo = Pa_GetDeviceInfo(i);
+
+            if(deviceInfo->maxInputChannels != 0 && deviceInfo->hostApi == Pa_GetDefaultHostApi())
+            {
+                // Create instance of Device using acquired data
+                Device* audio = new Device(NULL, string(deviceInfo->name), DeviceType::RECORD);
+
+                // Add to devicelist
+                deviceList.push_back(audio);
+
+                // Print some debug device info for now
+            // TODO: Remove
+            cout << "Device #" << i + 1 << ": " << deviceInfo->name << endl;
+            cout << "Input Channels: " << deviceInfo->maxInputChannels << endl;
+            cout << "Output Channels: " << deviceInfo->maxOutputChannels << endl;
+            cout << "Default Sample Rate: " << deviceInfo->defaultSampleRate << endl;
+            cout << endl;
+            }
+        }
+
+        pa_status = Pa_Terminate();
+        HANDLE_PA_ERROR(pa_status);
+
+       return {};
+    }
+
+Exit:
+    SAFE_RELEASE(pEnumerator)
+
+    // Output error to stdout
+    // TODO: Handle error accordingly
+    if (FAILED(status))
+    {
+        _com_error err(status);
+        LPCTSTR errMsg = err.ErrorMessage();
+        cerr << "WASAPI_Error: " << errMsg << endl;
+        return {};
+    }
+    else if (pa_status != paNoError)
+    {
+        cerr << "PORTAUDIO_Error: " << Pa_GetErrorText(pa_status) << endl;
+        return {};
+    }
+    else
+    {
+        return deviceList;
+    }
+}
+
+/**
  * Receive the list of available input audio devices connected to the OS
  * and return them as Device instances
  *
  * @return vector of Device instances
  */
-// TODO: Remove this after all branches are synced
 vector<Device *> WindowsAudio::getInputDevices()
 {
     return getDevices(DeviceType::RECORD);
@@ -27,11 +178,6 @@ vector<Device *> WindowsAudio::getInputDevices()
 vector<Device *> WindowsAudio::getOutputDevices()
 {
     return getDevices(DeviceType::LOOPBACK);
-}
-
-vector<Device *> WindowsAudio::getDevices(DeviceType type)
-{
-    return {};
 }
 
 /**

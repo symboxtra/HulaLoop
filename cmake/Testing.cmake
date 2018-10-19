@@ -14,6 +14,20 @@ function (create_test _test_file _src_files _timeout)
         set_tests_properties (${_test_name} PROPERTIES TIMEOUT ${_timeout})
     endif ()
 
+    # Copy PortAudio DLLs to bin/test if not done so already
+    if(WIN32)
+        if (NOT EXISTS ${CMAKE_BINARY_DIR}/bin/test/portaudio_x64.dll AND NOT EXISTS ${CMAKE_BINARY_DIR}/bin/test/portaudio_x86.dll)
+            if(64BIT)
+                set (PORTAUDIO_DLL  ${CMAKE_BINARY_DIR}/bin/portaudio_x64.dll)
+            else ()
+                set (PORTAUDIO_DLL  ${CMAKE_BINARY_DIR}/bin/portaudio_x86.dll)
+            endif ()
+
+            add_custom_command (TARGET ${_test_name} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy ${PORTAUDIO_DLL} ${CMAKE_BINARY_DIR}/bin/test/)
+        endif ()
+    endif ()
+
 endfunction ()
 
 # Make gui tests opt-out
