@@ -183,7 +183,8 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     include (cmake/Testing.cmake)
 
     # Test that only rely on the audio library
-    create_test("src/test/TestHulaRingBuffer.cpp" "" 3)
+    create_test("src/test/TestOSAudio.cpp" "" -1)
+    create_test("src/test/TestHulaRingBuffer.cpp" "" 0.5)
     create_test("src/test/TestController.cpp" "" -1)
     #create_test("src/test/TestAudioOutput.cpp" "" -1)
 

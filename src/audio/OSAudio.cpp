@@ -111,6 +111,9 @@ void OSAudio::copyToBuffers(const void *data, uint32_t bytes)
 
 /**
 * Static function to allow starting a thread with an instance's capture method.
+* This will block, so it should be called in a new thread.
+*
+* Ex: std::thread(&backgroundCapture, this);
 *
 * @param _this Instance of OSAudio subclass which capture should be called on.
 */

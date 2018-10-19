@@ -2,13 +2,28 @@
 #include <hlaudio/hlaudio.h>
 #include "TestCallback.h"
 
-class TestController : public Controller, public ::testing::Test {
+// Timeout code from: http://antonlipov.blogspot.com/2015/08/how-to-timeout-tests-in-gtest.html
+#include <future>
+#define TEST_TIMEOUT_BEGIN          std::promise<bool> promisedFinished; \
+                                    auto futureResult = promisedFinished.get_future(); \
+                                    std::thread([](std::promise<bool>& finished) {
+
+#define TEST_TIMEOUT_FAIL_END(X)    finished.set_value(true); \
+                                    }, std::ref(promisedFinished)).detach(); \
+                                    EXPECT_TRUE(futureResult.wait_for(std::chrono::milliseconds(X)) != std::future_status::timeout);
+
+#define TEST_TIMEOUT_SUCCESS_END(X) finished.set_value(true); \
+                                    }, std::ref(promisedFinished)).detach(); \
+                                    EXPECT_FALSE(futureResult.wait_for(std::chrono::milliseconds(X)) != std::future_status::timeout);
+
+/**
+ * This test class currently implements both the ring buffer
+ * and callback approaches for memory management.
+ */
+class TestOSAudio : public OSAudio, public ::testing::Test {
     public:
         TestCallback *handler1;
         TestCallback *handler2;
-
-        TestController() : Controller(true)
-        {}
 
         virtual void SetUp()
         {
@@ -19,13 +34,40 @@ class TestController : public Controller, public ::testing::Test {
             ASSERT_EQ(this->callbackList.size(), 0);
         }
 
+        void capture()
+        {
+            while (!this->deviceSwitch && this->rbs.size() > 0)
+            {
+                printf("Mock capturing...\n");
+            }
+        }
+
         /**
-         * Trigger a buffer dispatch from the Controller.
+         * Mock receiving data from the OS.
          */
         void sendData()
         {
             byte *buffer = nullptr;
-            this->handleData(buffer, 0);
+            for (int i = 0; i < callbackList.size(); i++)
+            {
+                callbackList[i]->handleData(buffer, 0);
+            }
+        }
+
+        vector<Device *> getDevices(DeviceType type)
+        {
+            vector<Device *> devices;
+            return devices;
+        }
+
+        vector<Device *> getInputDevices()
+        {
+            return getDevices((DeviceType)(RECORD|LOOPBACK));
+        }
+
+        vector<Device *> getOutputDevices()
+        {
+            return getDevices(PLAYBACK);
         }
 
         virtual void TearDown()
@@ -37,12 +79,25 @@ class TestController : public Controller, public ::testing::Test {
 };
 
 /**
+ * Initialization should not create a capture thread.
+ *
+ * EXPECTED:
+ *      Thread vectors are empty.
+ */
+TEST_F(TestOSAudio, init_does_not_block)
+{
+    EXPECT_EQ(this->inThreads.size(), 0);
+    EXPECT_EQ(this->outThreads.size(), 0);
+}
+
+// Same tests for callbacks as TestController.cpp
+/**
  * Add a single callback.
  *
  * EXPECTED:
  *     The callback should be present and receive data.
  */
-TEST_F(TestController, singleCallback)
+TEST_F(TestOSAudio, singleCallback)
 {
     // Add a single callback
     this->addBufferReadyCallback(this->handler1);
@@ -59,7 +114,7 @@ TEST_F(TestController, singleCallback)
  * EXPECTED:
  *     Both callbacks should be present and receive data.
  */
-TEST_F(TestController, twoCallbacks)
+TEST_F(TestOSAudio, twoCallbacks)
 {
     // Add callback 1
     this->addBufferReadyCallback(this->handler1);
@@ -81,7 +136,7 @@ TEST_F(TestController, twoCallbacks)
  * EXPECTED:
  *     Callback should not be duplicated.
  */
-TEST_F(TestController, duplicateCallback)
+TEST_F(TestOSAudio, duplicateCallback)
 {
     this->addBufferReadyCallback(this->handler1);
     this->addBufferReadyCallback(this->handler1);
@@ -94,7 +149,7 @@ TEST_F(TestController, duplicateCallback)
  * EXPECTED:
  *     Callback should no longer be present.
  */
-TEST_F(TestController, removeCallback)
+TEST_F(TestOSAudio, removeCallback)
 {
     this->addBufferReadyCallback(this->handler1);
     this->removeBufferReadyCallback(this->handler1);
@@ -108,7 +163,7 @@ TEST_F(TestController, removeCallback)
  * EXPECTED:
  *     First callback is removed without disturbing the second.
  */
-TEST_F(TestController, nonDisturbingRemoval)
+TEST_F(TestOSAudio, nonDisturbingRemoval)
 {
     this->addBufferReadyCallback(this->handler1);
     this->addBufferReadyCallback(this->handler2);

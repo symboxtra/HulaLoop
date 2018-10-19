@@ -113,6 +113,7 @@ class OSAudio {
          * Execution loop for loopback capture
          */
         virtual void capture() = 0;
+
         static void backgroundCapture(OSAudio *_this);
 
         void setActiveInputDevice(Device *device);
