@@ -98,9 +98,9 @@ int32_t HulaRingBuffer::read(SAMPLE * data, int32_t maxSamples)
  *
  * @param maxSamples Desired number of samples.
  * @param dataPtr1 The address where the first pointer should be stored.
- * @param size1 Size of the memory available from dataPtr1. THIS IS IN BYTES
+ * @param size1 Number of elements available from dataPtr1.
  * @param dataPtr2 The address where the second pointer (if required) will be stored. NULL if not used.
- * @param size2 Size of the memory available from dataPtr2. THIS IS IN BYTES.
+ * @param size2 Number of elements available from dataPtr2.
  * @return Number of samples read.
  */
 int32_t HulaRingBuffer::directRead(int32_t maxSamples, void **dataPtr1, int32_t *size1, void **dataPtr2, int32_t *size2)
