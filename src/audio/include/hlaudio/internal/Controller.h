@@ -16,12 +16,17 @@ using byte = uint8_t;
  * A class that structures the receival of audio from the OS framework
  */
 class Controller : public ICallback {
-    protected:
+    private:
         OSAudio *audio;
 
+    protected:
         vector<ICallback *> callbackList;
 
     public:
+        #ifndef NDEBUG
+        Controller(bool dryRun);
+        #endif // END NDEBUG
+
         Controller();
         ~Controller();
 

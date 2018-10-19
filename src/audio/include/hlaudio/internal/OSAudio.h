@@ -21,6 +21,11 @@ class OSAudio {
     protected:
 
         /**
+         * Constructor is protected since this class is abstract.
+         */
+        OSAudio() {};
+
+        /**
          * The selected input device
          */
         Device *activeInputDevice;

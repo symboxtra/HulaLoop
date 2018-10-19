@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "hlcontrol/internal/HulaControlError.h"
 #include "hlcontrol/internal/Transport.h"
 
 /**
@@ -9,6 +10,22 @@ Transport::Transport()
 {
     controller = new Controller();
 }
+
+#ifndef NDEBUG
+/**
+ * ---------------- FOR TESTING/DEBUG BUILDS ONLY -----------------
+ *
+ * A "dry run" is a run in which full application functionality is not
+ * required. This is usually used by unit tests targeting upper-level
+ * modules that don't require the initialization of lower-level modules.
+ *
+ * This constructor is protected and designed for testing purposes only.
+ */
+Transport::Transport(bool dryRun)
+{
+    controller = new Controller(dryRun);
+}
+#endif
 
 /**
  * Start and handle the process of recording.
@@ -91,5 +108,8 @@ std::string Transport::stateToStr(const TransportState state) const
  */
 Transport::~Transport()
 {
-    delete controller;
+    printf("%sTransport destructor called\n", HL_PRINT_PREFIX);
+
+    if (controller)
+        delete controller;
 }

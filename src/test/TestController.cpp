@@ -21,6 +21,9 @@ class TestController : public Controller, public ::testing::Test {
         TestCallback *handler1;
         TestCallback *handler2;
 
+        TestController() : Controller(true)
+        {}
+
         virtual void SetUp()
         {
             this->handler1 = new TestCallback();

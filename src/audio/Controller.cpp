@@ -32,10 +32,25 @@ Controller::Controller()
         cerr << "OS Audio error !" << endl;
     } // TODO: Handle error
 
-    // Add current Controller instance as buffercallback to
-    // OSAudio
+    // Add current Controller instance as buffercallback to OSAudio
     audio->addBufferReadyCallback(this);
 }
+
+#ifndef NDEBUG
+/**
+ * ---------------- FOR TESTING/DEBUG BUILDS ONLY -----------------
+ *
+ * A "dry run" is a run in which full application functionality is not
+ * required. This is usually used by unit tests targeting upper-level
+ * modules that don't require the initialization of lower-level modules.
+ *
+ * This constructor is protected and designed for testing purposes only.
+ */
+Controller::Controller(bool dryRun)
+{
+    audio = NULL;
+}
+#endif
 
 /**
  * Callback function that is triggered when audio is captured
@@ -63,7 +78,7 @@ void Controller::handleData(uint8_t *data, uint32_t size)
 void Controller::addBufferReadyCallback(ICallback *func)
 {
     // Add self to OSAudio callback when first callback is added
-    if (this->callbackList.size() == 0)
+    if (this->callbackList.size() == 0 && audio != NULL)
     {
         audio->addBufferReadyCallback(this);
     }
@@ -90,7 +105,7 @@ void Controller::removeBufferReadyCallback(ICallback *func)
     }
 
     // Remove self from callback when last callback is removed
-    if (this->callbackList.size() == 0)
+    if (this->callbackList.size() == 0 && audio != NULL)
     {
         audio->removeBufferReadyCallback(this);
     }
@@ -175,5 +190,6 @@ Controller::~Controller()
     callbackList.clear();
 
     // Don't do this until mem management is fixed
-    delete audio;
+    if (audio)
+        delete audio;
 }
