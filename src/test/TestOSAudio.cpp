@@ -65,6 +65,7 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
         static bool checkThreadCount(TestOSAudio *_this)
         {
             while (_this->inThreads.size() > 0);
+            return true;
         }
 
         vector<Device *> getDevices(DeviceType type)

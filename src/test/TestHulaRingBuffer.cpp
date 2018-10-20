@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <hlaudio/hlaudio.h>
 
-#define TEST_BUFFER_SIZE 0.2
+#define TEST_BUFFER_SIZE 0.2f
 #define TEST_NUM_SAMPLES 200 // Don't pick a power of 2
 SAMPLE sampleData = (SAMPLE)7.7;
 
@@ -172,7 +172,7 @@ TEST(TestHulaRingBuffer, direct_read_buffer)
 TEST(TestHulaRingBuffer, direct_read_wrap_buffer)
 {
     // Small buffer
-    HulaRingBuffer * rb = new HulaRingBuffer(0.01);
+    HulaRingBuffer * rb = new HulaRingBuffer(0.01f);
 
     SAMPLE * writeData = createTestSamples();
 
