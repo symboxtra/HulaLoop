@@ -11,12 +11,24 @@ LinuxAudio::LinuxAudio()
 
 vector<Device *> LinuxAudio::getInputDevices()
 {
-    return getDevices(DeviceType::RECORD);
+    // clearDevices(this->iDevices);
+    this->iDevices = getDevices(DeviceType::RECORD);
+    return this->iDevices;
 }
 
 vector<Device *> LinuxAudio::getOutputDevices()
 {
-    return getDevices(DeviceType::PLAYBACK);
+    // clearDevices(this->oDevices);
+    this->oDevices = getDevices(DeviceType::PLAYBACK);
+    return this->oDevices;
+}
+
+void LinuxAudio::clearDevices(vector<Device *> devices)
+{
+    for(auto const & device : devices){
+        delete device;
+    }
+    devices.clear();
 }
 
 vector<Device *> LinuxAudio::getDevices(DeviceType type)
@@ -163,12 +175,13 @@ void LinuxAudio::capture()
 
     // allocate memory for the buffer
     audioBufferSize = frame * 4;
+    audioBuffer = (byte *)malloc(audioBufferSize);
 
     while (true)
     {
         while (callbackList.size() > 0)
         {
-            audioBuffer = (byte *)malloc(audioBufferSize);
+            // audioBuffer = (byte *)malloc(audioBufferSize);
             // read frames from the pcm
             err = snd_pcm_readi(pcmHandle, audioBuffer, frame);
             if (err == -EPIPE)
@@ -202,11 +215,13 @@ void LinuxAudio::capture()
     // cleanup stuff
     snd_pcm_drain(pcmHandle);
     snd_pcm_close(pcmHandle);
-    // free(audioBuffer);
+    //free(audioBuffer);
 }
 
 LinuxAudio::~LinuxAudio()
 {
+    clearDevices(this->oDevices);
+    clearDevices(this->iDevices);
     callbackList.clear();
     execThreads.clear();
 }

@@ -125,6 +125,6 @@ void Controller::setActiveInputDevice(Device *device) const
 Controller::~Controller()
 {
     // Don't do this until mem management is fixed
-    // delete audio;
+    delete audio;
     callbackList.clear();
 }
