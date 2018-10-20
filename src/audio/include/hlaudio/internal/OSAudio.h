@@ -70,11 +70,12 @@ class OSAudio {
 
         /**
          * Flag to syncronize the capture thread for an instance.
-         * This is used to break the capture loop when switching devices.
+         * This is used to break the capture loop when switching devices
+         * or when 0 buffers are present.
          *
          * Should never be set directly. Only by setActiveXXXDevice().
          */
-        atomic<bool> deviceSwitch;
+        atomic<bool> endCapture;
 
         uint32_t captureBufferSize;
 

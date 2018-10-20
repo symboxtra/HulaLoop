@@ -83,8 +83,8 @@ void OSAudio::removeBuffer(HulaRingBuffer *rb)
     // Stop the capture thread if there are no buffers left
     if (rbs.size() == 0)
     {
-        // Join all threads
-        // Threads should end since they checks the size of rbs
+        // Signal death and join all threads
+        this->endCapture.store(true);
         joinAndKillThreads(inThreads);
     }
 }
@@ -108,14 +108,21 @@ void OSAudio::copyToBuffers(const void *data, uint32_t bytes)
 * Static function to allow starting a thread with an instance's capture method.
 * This will block, so it should be called in a new thread.
 *
-* Ex: std::thread(&backgroundCapture, this);
+* Calling this directly outside of this class is dangerous.
+* Any thread not in the inThreads vector cannot be guarenteed a valid endCapture
+* signal since it won't be joined after a device switch or 0 buffer state.
+* Sync flags might be reset before the independent thread sees them.
 *
 * @param _this Instance of OSAudio subclass which capture should be called on.
 */
 void OSAudio::backgroundCapture(OSAudio *_this)
 {
+    // Don't start if we have no buffers to copy to
+    if (_this->rbs.size() == 0)
+        return;
+
     // Reset the thread interrupt flag
-    _this->deviceSwitch.store(false);
+    _this->endCapture.store(false);
     _this->capture();
 }
 
@@ -137,10 +144,8 @@ void OSAudio::setActiveInputDevice(Device *device)
 
     this->activeInputDevice = device;
 
-    // Set the flag to signal thread end
-    this->deviceSwitch.store(true);
-
-    // Wait for all threads to catch the signal
+    // Signal death and wait for all threads to catch the signal
+    this->endCapture.store(true);
     joinAndKillThreads(inThreads);
 
     // Startup a new thread
@@ -171,7 +176,7 @@ OSAudio::~OSAudio()
     printf("%sOSAudio destructor called\n", HL_PRINT_PREFIX);
 
     // Signal thread death
-    this->deviceSwitch.store(true);
+    this->endCapture.store(true);
     joinAndKillThreads(inThreads);
     joinAndKillThreads(outThreads);
 }

@@ -2,9 +2,9 @@
 #include <hlaudio/hlaudio.h>
 #include "TestCallback.h"
 
-#define TEST_BUFFER_SIZE 0.2
-#define MOCK_CAPTURE_TIME 50
-#define CHECK_IF_DEAD_TIME 15
+#define TEST_BUFFER_SIZE 0.2f
+#define MOCK_CAPTURE_TIME 25
+#define CHECK_IF_DEAD_TIME 10
 
 // Timeout code from: http://antonlipov.blogspot.com/2015/08/how-to-timeout-tests-in-gtest.html
 // Add & to lambda capture group to allow capturing by reference
@@ -43,7 +43,7 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
 
         void capture()
         {
-            while (!this->deviceSwitch.load() && this->rbs.size() > 0)
+            while (!this->endCapture.load())
             {
                 printf("Mock capturing...\n");
                 std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CAPTURE_TIME));
@@ -60,6 +60,11 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
             {
                 callbackList[i]->handleData(buffer, 0);
             }
+        }
+
+        static bool checkThreadCount(TestOSAudio *_this)
+        {
+            while (_this->inThreads.size() > 0);
         }
 
         vector<Device *> getDevices(DeviceType type)
@@ -92,7 +97,6 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
             delete this->handler1;
             delete this->handler2;
         }
-
 };
 
 /**
@@ -142,7 +146,7 @@ TEST_F(TestOSAudio, init_does_not_block)
 
     // This should come back immediately
     TEST_TIMEOUT_BEGIN(backgroundCapture(this));
-    TEST_TIMEOUT_FAIL_AFTER(CHECK_IF_DEAD_TIME);
+    TEST_TIMEOUT_FAIL_AFTER(2 * MOCK_CAPTURE_TIME);
 }
 
 /**
@@ -156,14 +160,13 @@ TEST_F(TestOSAudio, add_starts_thread)
     HulaRingBuffer *rb = new HulaRingBuffer(TEST_BUFFER_SIZE);
     this->addBuffer(rb);
 
-    // Start the capture in a thread
-    std::thread t(&backgroundCapture, this);
-
-    // Join the thread
     // This should be running infinitely
     // Succeed after ~two cycles
-    TEST_TIMEOUT_BEGIN(t.join());
+    TEST_TIMEOUT_BEGIN(backgroundCapture(this));
     TEST_TIMEOUT_SUCCESS_AFTER(2 * MOCK_CAPTURE_TIME);
+
+    // OSAudio should have created a thread
+    EXPECT_EQ(this->inThreads.size(), 1);
 
     this->removeBuffer(rb);
     delete rb;
@@ -182,19 +185,21 @@ TEST_F(TestOSAudio, remove_kills_thread)
     HulaRingBuffer *rb = new HulaRingBuffer(TEST_BUFFER_SIZE);
     this->addBuffer(rb);
 
-    // Start the capture in a thread
-    std::thread t(&backgroundCapture, this);
-
-    // Wait for a cycle, then remove the buffer
+    // Wait for a cycle, then remove buffer
     std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CAPTURE_TIME));
+
+    // OSAudio should have created a thread
+    EXPECT_EQ(this->inThreads.size(), 1);
+
     this->removeBuffer(rb);
-
-    // Join the thread
-    // If it takes too long, we might still be running, so fail
-    TEST_TIMEOUT_BEGIN(t.join());
-    TEST_TIMEOUT_FAIL_AFTER(CHECK_IF_DEAD_TIME);
-
     delete rb;
+
+    waitForThreadDeathBeforeDestruction();
+
+    // Vector isn't cleared until all threads are joined
+    // Since we can't see the thread (unique ownership), use
+    // this assumption to check that the thread was joined
+    EXPECT_EQ(this->inThreads.size(), 0);
 }
 
 /**
@@ -208,20 +213,26 @@ TEST_F(TestOSAudio, switch_kills_thread)
     HulaRingBuffer *rb = new HulaRingBuffer(TEST_BUFFER_SIZE);
     this->addBuffer(rb);
 
-    // Start the capture in a thread
-    std::thread t(&backgroundCapture, this);
-
     // Wait for a cycle, then singal switch
     std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CAPTURE_TIME));
+
+    // OSAudio should have created a thread
+    EXPECT_EQ(this->inThreads.size(), 1);
+
+    // Start checking before we go to switch
+    std::thread t(&checkThreadCount, this);
+
+    // Switch device
     setActiveInputDevice(this->testDevice);
 
-    // Join the thread
-    // If it takes too long, we might still be running, so fail
+    // Make sure the threads actually died
     TEST_TIMEOUT_BEGIN(t.join());
-    TEST_TIMEOUT_FAIL_AFTER(CHECK_IF_DEAD_TIME);
+    TEST_TIMEOUT_FAIL_AFTER(2 * MOCK_CAPTURE_TIME);
 
     this->removeBuffer(rb);
     delete rb;
+
+    waitForThreadDeathBeforeDestruction();
 }
 
 /**

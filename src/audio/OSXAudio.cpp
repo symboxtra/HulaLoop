@@ -111,7 +111,7 @@ void OSXAudio::capture()
         exit(1); // TODO: Handle error
     }
 
-    while (!this->deviceSwitch && this->rbs.size() > 0)
+    while (!this->endCapture)
     {
         // Keep this thread alive
         // The second half of this function could be moved to a separate
