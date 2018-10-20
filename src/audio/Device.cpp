@@ -79,7 +79,4 @@ void Device::setType(DeviceType t)
  */
 Device::~Device()
 {
-    delete deviceID;
-
-    deviceName = "";
 }

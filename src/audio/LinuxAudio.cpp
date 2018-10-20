@@ -11,14 +11,14 @@ LinuxAudio::LinuxAudio()
 
 vector<Device *> LinuxAudio::getInputDevices()
 {
-    // clearDevices(this->iDevices);
+    clearDevices(this->iDevices);
     this->iDevices = getDevices(DeviceType::RECORD);
     return this->iDevices;
 }
 
 vector<Device *> LinuxAudio::getOutputDevices()
 {
-    // clearDevices(this->oDevices);
+    clearDevices(this->oDevices);
     this->oDevices = getDevices(DeviceType::PLAYBACK);
     return this->oDevices;
 }
@@ -26,6 +26,7 @@ vector<Device *> LinuxAudio::getOutputDevices()
 void LinuxAudio::clearDevices(vector<Device *> devices)
 {
     for(auto const & device : devices){
+        // cout << device->getName() << endl;
         delete device;
     }
     devices.clear();
