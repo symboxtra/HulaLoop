@@ -87,6 +87,24 @@ std::string Transport::stateToStr(const TransportState state) const
 }
 
 /**
+ * Get the current input devices
+ *
+ * @return vector containing current input devices
+ */
+vector<Device *> Transport::getInputDevices(){
+    return controller->getInputDevices();
+}
+
+/**
+ * Get the current output devices
+ *
+ * @return vector containing current output devices
+ */ 
+vector<Device *> Transport::getOutputDevices(){
+    return controller->getOutputDevices();
+}
+
+/**
  * Delete the controller we created
  */
 Transport::~Transport()

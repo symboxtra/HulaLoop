@@ -66,7 +66,7 @@ void QMLBridge::setActiveInputDevice(QString QDeviceName){
 QString QMLBridge::getInputDevices()
 {
     string devices;
-    vector<Device *> vd = transport->controller->getInputDevices();
+    vector<Device *> vd = transport->getInputDevices();
     for (int i = 0; i < vd.size(); i++)
     {
         devices += vd[i]->getName();
@@ -81,7 +81,7 @@ QString QMLBridge::getInputDevices()
 QString QMLBridge::getOutputDevices()
 {
     string devices;
-    vector<Device *> vd = transport->controller->getOutputDevices();
+    vector<Device *> vd = transport->getOutputDevices();
     for (int i = 0; i < vd.size(); i++)
     {
         devices += vd[i]->getName();

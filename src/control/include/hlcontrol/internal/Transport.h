@@ -33,6 +33,9 @@ class Transport {
         bool play();
         bool pause();
 
+        vector<Device *> getInputDevices();
+        vector<Device *> getOutputDevices();
+
         TransportState getState() const;
         std::string stateToStr(const TransportState state) const;
 };
