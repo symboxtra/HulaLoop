@@ -85,12 +85,7 @@ void OSAudio::removeBuffer(HulaRingBuffer *rb)
     {
         // Join all threads
         // Threads should end since they checks the size of rbs
-        for (auto &t : inThreads)
-        {
-            t.join();
-            t.~thread();
-        }
-        inThreads.clear();
+        joinAndKillThreads(inThreads);
     }
 }
 
@@ -120,7 +115,7 @@ void OSAudio::copyToBuffers(const void *data, uint32_t bytes)
 void OSAudio::backgroundCapture(OSAudio *_this)
 {
     // Reset the thread interrupt flag
-    _this->deviceSwitch = false;
+    _this->deviceSwitch.store(false);
     _this->capture();
 }
 
@@ -132,18 +127,40 @@ void OSAudio::backgroundCapture(OSAudio *_this)
  */
 void OSAudio::setActiveInputDevice(Device *device)
 {
+    // TODO: Handle error
+    if (device == NULL)
+        return;
+
+    // If this isn't a loopback or record device
+    if (!(device->getType() & LOOPBACK || device->getType() & RECORD))
+        return;
+
     this->activeInputDevice = device;
 
     // Set the flag to signal thread end
-    this->deviceSwitch = true;
+    this->deviceSwitch.store(true);
 
     // Wait for all threads to catch the signal
-    for (auto &t : inThreads)
+    joinAndKillThreads(inThreads);
+
+    // Startup a new thread
+    inThreads.emplace_back(std::thread(&backgroundCapture, this));
+}
+
+/**
+ * Helper function to join and kill a vector of threads.
+ * Will only join if joinable.
+ *
+ * @param threads Vector of threads to join and kill.
+ */
+void OSAudio::joinAndKillThreads(vector<thread>& threads)
+{
+    for (auto &t : threads)
     {
-        t.join();
-        t.~thread();
+        if (t.joinable())
+            t.join();
     }
-    inThreads.clear();
+    threads.clear();
 }
 
 /**
@@ -153,11 +170,8 @@ OSAudio::~OSAudio()
 {
     printf("%sOSAudio destructor called\n", HL_PRINT_PREFIX);
 
-    // Forcefully kill all in threads
-    for (auto &t : inThreads)
-    {
-        t.detach();
-        t.~thread();
-    }
-    inThreads.clear();
+    // Signal thread death
+    this->deviceSwitch.store(true);
+    joinAndKillThreads(inThreads);
+    joinAndKillThreads(outThreads);
 }

@@ -2,6 +2,7 @@
 #define OS_AUDIO
 
 // System
+#include <atomic>
 #include <cstdlib>
 #include <thread>
 #include <vector>
@@ -18,6 +19,9 @@ using namespace std;
  * specfic classes.
  */
 class OSAudio {
+    private:
+        void joinAndKillThreads(vector<thread>& threads);
+
     protected:
 
         /**
@@ -67,17 +71,10 @@ class OSAudio {
         /**
          * Flag to syncronize the capture thread for an instance.
          * This is used to break the capture loop when switching devices.
-         */
-        volatile bool deviceSwitch;
-
-        /**
-         * Flag representing capture state.
-         * True if capturing data.
-         * False if idle (no ring buffers present or device is switching).
          *
-         * Mostly for testing.
+         * Should never be set directly. Only by setActiveXXXDevice().
          */
-        volatile bool isCapturing;
+        atomic<bool> deviceSwitch;
 
         uint32_t captureBufferSize;
 
