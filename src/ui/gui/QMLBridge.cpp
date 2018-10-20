@@ -58,15 +58,35 @@ void QMLBridge::pause()
     emit stateChanged();
 }
 
-void QMLBridge::setActiveInputDevice(QString QDeviceName){
+/**
+ * Match a string that the user chose to the input device list
+ * and notify the backend
+ */
+void QMLBridge::setActiveInputDevice(QString QDeviceName)
+{
     string deviceName = QDeviceName.toStdString();
-    cout << "DEVICENAMEFROMBRIDGE: " << deviceName << endl;
+    vector<Device *> iDevices = transport->getController()->getInputDevices();
+    for (auto const &device : iDevices)
+    {
+        if (device->getName() == deviceName)
+        {
+            transport->getController()->setActiveInputDevice(device);
+            return;
+        }
+    }
+    //Should not get here should have found the device
+    cerr << "Device not found: " << deviceName << endl;
 }
 
+/**
+ * Get the current input devices
+ *
+ * @return QString containing current input devices
+ */
 QString QMLBridge::getInputDevices()
 {
     string devices;
-    vector<Device *> vd = transport->getInputDevices();
+    vector<Device *> vd = transport->getController()->getInputDevices();
     for (int i = 0; i < vd.size(); i++)
     {
         devices += vd[i]->getName();
@@ -78,10 +98,15 @@ QString QMLBridge::getInputDevices()
     return QString::fromStdString(devices);
 }
 
+/**
+ * Get the current output devices
+ *
+ * @return QString containing current output devices
+ */
 QString QMLBridge::getOutputDevices()
 {
     string devices;
-    vector<Device *> vd = transport->getOutputDevices();
+    vector<Device *> vd = transport->getController()->getOutputDevices();
     for (int i = 0; i < vd.size(); i++)
     {
         devices += vd[i]->getName();

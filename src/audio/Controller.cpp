@@ -98,7 +98,7 @@ void Controller::removeBufferReadyCallback(ICallback *func)
 /**
  * Get input devices from OSAudio
  */
-vector<Device *> Controller::getInputDevices()
+vector<Device *> Controller::getInputDevices() const
 {
     return audio->getInputDevices();
 }
@@ -106,9 +106,17 @@ vector<Device *> Controller::getInputDevices()
 /**
  * Get output devices from OSAudio
  */
-vector<Device *> Controller::getOutputDevices()
+vector<Device *> Controller::getOutputDevices() const
 {
     return audio->getOutputDevices();
+}
+
+/**
+ * Middle function to transfer the device from the front end
+ */
+void Controller::setActiveInputDevice(Device *device) const
+{
+    audio->setActiveInputDevice(device);
 }
 
 /**

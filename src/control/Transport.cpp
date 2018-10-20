@@ -91,7 +91,8 @@ std::string Transport::stateToStr(const TransportState state) const
  *
  * @return vector containing current input devices
  */
-vector<Device *> Transport::getInputDevices(){
+vector<Device *> Transport::getInputDevices() const
+{
     return controller->getInputDevices();
 }
 
@@ -99,9 +100,20 @@ vector<Device *> Transport::getInputDevices(){
  * Get the current output devices
  *
  * @return vector containing current output devices
- */ 
-vector<Device *> Transport::getOutputDevices(){
+ */
+vector<Device *> Transport::getOutputDevices() const
+{
     return controller->getOutputDevices();
+}
+
+/**
+ * Get the controller instance
+ *
+ * @return pointer to controller
+ */
+Controller *Transport::getController() const
+{
+    return controller;
 }
 
 /**
