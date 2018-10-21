@@ -13,6 +13,12 @@ enum DeviceType
     LOOPBACK = 4
 };
 
+union DeviceID
+{
+    string linuxID;
+    uint32_t *windowsID;
+};
+
 /**
  * Defines a system audio device
  */

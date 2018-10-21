@@ -90,8 +90,8 @@ bool LinuxAudio::checkSamplingRate(Device *device)
 {
     int err;                         // return for commands that might return an error
     snd_pcm_t *pcmHandle = NULL;     // default pcm handle
-    snd_pcm_hw_params_t *param;  
-    
+    snd_pcm_hw_params_t *param;
+
     char * id = (char*) reinterpret_cast<string*>(device->getID())->c_str();
     // TODO: FIX
     err = snd_pcm_open(&pcmHandle, id, SND_PCM_STREAM_CAPTURE, 0);
@@ -108,7 +108,7 @@ bool LinuxAudio::checkSamplingRate(Device *device)
     // TODO: insert actual sampling rate
     int testSamplingRate = 44100;
     if(snd_pcm_hw_params_test_rate(pcmHandle, param, testSamplingRate, 0) == 0){
-        //the sampling rate is good 
+        //the sampling rate is good
         cout << "SAMPLING RATE GOOD" << endl;
         return true;
     }
@@ -190,7 +190,7 @@ void LinuxAudio::capture()
     unsigned minVal;
     snd_pcm_hw_params_get_rate_min(param, &minVal, NULL);
     cout << "MINVAL: " << minVal  << endl;
-     snd_pcm_hw_params_get_rate_max(param, &minVal, NULL);		
+     snd_pcm_hw_params_get_rate_max(param, &minVal, NULL);
     cout << "MAXVAL: " << minVal  << endl;
 
     // we set the sampling rate to whatever the user or device wants
