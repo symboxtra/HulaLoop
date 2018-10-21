@@ -5,6 +5,8 @@
 
 // Don't extend OSXAudio.
 // Use a shared instance of it since setup is so expensive.
+// This is black-box testing of OSXAudio since we can't extend
+// without creating a new instance each time.
 class TestOSXAudio : public ::testing::Test {
     public:
         static OSXAudio *audio;
@@ -130,7 +132,7 @@ TEST_F(TestOSXAudio, get_output_devices)
 }
 
 /**
- * Get devices with an invalid enum
+ * Get devices with an invalid enum.
  *
  * EXPECTED:
  *      Device list should be empty.
@@ -139,4 +141,34 @@ TEST_F(TestOSXAudio, get_invalid_type_devices)
 {
     vector<Device *> devs = audio->getDevices((DeviceType)(0));
     EXPECT_EQ(devs.size(), 0);
+}
+
+/**
+ * Run a short capture test.
+ *
+ * EXPECTED:
+ *      Capture starts.
+ *      Capture writes to our ring buffer.
+ *      Capture ends.
+ *      Data is not deleted.
+ */
+TEST_F(TestOSXAudio, short_capture)
+{
+    int maxSamples = 25;
+    SAMPLE *readData = new SAMPLE[maxSamples];
+
+    HulaRingBuffer *rb = new HulaRingBuffer(0.5);
+    audio->addBuffer(rb);
+
+    // Sleep for a few seconds to allow thread to start
+    // and data to flow in
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
+    // Read some samples
+    int32_t samplesRead = rb->read(readData, maxSamples);
+    EXPECT_EQ(samplesRead, maxSamples);
+
+    // Remove the buffer
+    audio->removeBuffer(rb);
+    delete rb;
 }
