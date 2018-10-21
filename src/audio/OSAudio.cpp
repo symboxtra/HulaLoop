@@ -54,6 +54,17 @@ void OSAudio::setActiveInputDevice(Device *device)
 }
 
 /**
+ * Set the selected output device and restart capture threads with
+ * new device
+ *
+ * @param device Instance of Device that corresponds to the desired system device
+ */
+void OSAudio::setActiveOutputDevice(Device *device)
+{
+    this->activeOutputDevice = device;
+}
+
+/**
  * Virtual implementation of Destructor
  */
 OSAudio::~OSAudio()

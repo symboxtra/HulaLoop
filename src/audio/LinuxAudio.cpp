@@ -12,25 +12,12 @@ LinuxAudio::LinuxAudio()
 
 vector<Device *> LinuxAudio::getInputDevices()
 {
-    clearDevices(this->iDevices);
-    this->iDevices = getDevices(DeviceType::RECORD);
-    return this->iDevices;
+    return getDevices(DeviceType::RECORD);
 }
 
 vector<Device *> LinuxAudio::getOutputDevices()
 {
-    clearDevices(this->oDevices);
-    this->oDevices = getDevices(DeviceType::PLAYBACK);
-    return this->oDevices;
-}
-
-void LinuxAudio::clearDevices(vector<Device *> devices)
-{
-    for(auto const & device : devices){
-        // cout << device->getName() << endl;
-        delete device;
-    }
-    devices.clear();
+    return getDevices(DeviceType::PLAYBACK);
 }
 
 vector<Device *> LinuxAudio::getDevices(DeviceType type)
@@ -97,7 +84,7 @@ bool LinuxAudio::checkSamplingRate(Device *device)
     err = snd_pcm_open(&pcmHandle, id, SND_PCM_STREAM_CAPTURE, 0);
     if (err < 0)
     {
-        cerr << "Unable to open " << id << endl;
+        cerr << "Unable to open: " << id << endl;
         return false;
     }
     // allocate hw params object and fill the pcm device with the default params
@@ -110,8 +97,12 @@ bool LinuxAudio::checkSamplingRate(Device *device)
     if(snd_pcm_hw_params_test_rate(pcmHandle, param, testSamplingRate, 0) == 0){
         //the sampling rate is good
         cout << "SAMPLING RATE GOOD" << endl;
+        snd_pcm_drain(pcmHandle);
+        snd_pcm_close(pcmHandle);
         return true;
     }
+    snd_pcm_drain(pcmHandle);
+    snd_pcm_close(pcmHandle);
     return false;
 }
 
@@ -185,14 +176,6 @@ void LinuxAudio::capture()
     snd_pcm_hw_params_set_format(pcmHandle, param, SND_PCM_FORMAT_S16_LE);
     snd_pcm_hw_params_set_channels(pcmHandle, param, 2);
 
-    // getting the min sampling rate
-    // TODO: REMOVE
-    unsigned minVal;
-    snd_pcm_hw_params_get_rate_min(param, &minVal, NULL);
-    cout << "MINVAL: " << minVal  << endl;
-     snd_pcm_hw_params_get_rate_max(param, &minVal, NULL);
-    cout << "MAXVAL: " << minVal  << endl;
-
     // we set the sampling rate to whatever the user or device wants
     // TODO insert sample rate
     unsigned int sampleRate = 44100;
@@ -261,8 +244,6 @@ void LinuxAudio::capture()
 
 LinuxAudio::~LinuxAudio()
 {
-    clearDevices(this->oDevices);
-    clearDevices(this->iDevices);
     callbackList.clear();
     execThreads.clear();
 }

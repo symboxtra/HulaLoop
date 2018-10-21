@@ -71,11 +71,33 @@ void QMLBridge::setActiveInputDevice(QString QDeviceName)
         if (device->getName() == deviceName)
         {
             transport->getController()->setActiveInputDevice(device);
+            Device::deleteDevices(iDevices);
             return;
         }
     }
     //Should not get here should have found the device
-    cerr << "Device not found: " << deviceName << endl;
+    cerr << "Input device not found: " << deviceName << endl;
+}
+
+/**
+ * Match a string that the user chose to the output device list
+ * and notify the backend
+ */
+void QMLBridge::setActiveOutputDevice(QString QDeviceName)
+{
+    string deviceName = QDeviceName.toStdString();
+    vector<Device *> oDevices = transport->getController()->getOutputDevices();
+    for (auto const &device : oDevices)
+    {
+        if (device->getName() == deviceName)
+        {
+            transport->getController()->setActiveOutputDevice(device);
+            Device::deleteDevices(oDevices);
+            return;
+        }
+    }
+    //Should not get here should have found the device
+    cerr << "Output device not found: " << deviceName << endl;
 }
 
 /**
@@ -95,6 +117,7 @@ QString QMLBridge::getInputDevices()
             devices += ",";
         }
     }
+    Device::deleteDevices(vd);
     return QString::fromStdString(devices);
 }
 
@@ -115,5 +138,6 @@ QString QMLBridge::getOutputDevices()
             devices += ",";
         }
     }
+    Device::deleteDevices(vd);
     return QString::fromStdString(devices);
 }

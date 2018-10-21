@@ -70,8 +70,8 @@ class OSAudio {
          */
         virtual void capture() = 0;
 
-        void setActiveInputDevice(Device *device); //TODO: Make virtual or maybe remove if can combine into one function
-        virtual void setActiveOutputDevice(Device *device) = 0;
+        void setActiveInputDevice(Device *device);
+        void setActiveOutputDevice(Device *device);
 };
 
 #endif

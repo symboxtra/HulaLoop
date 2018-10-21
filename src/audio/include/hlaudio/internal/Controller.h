@@ -31,6 +31,7 @@ class Controller : public ICallback {
         vector<Device *> getInputDevices() const;
         vector<Device *> getOutputDevices() const;
         void setActiveInputDevice(Device *device) const;
+        void setActiveOutputDevice(Device *device) const;
 };
 
 #endif

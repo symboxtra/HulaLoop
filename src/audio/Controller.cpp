@@ -119,6 +119,11 @@ void Controller::setActiveInputDevice(Device *device) const
     audio->setActiveInputDevice(device);
 }
 
+void Controller::setActiveOutputDevice(Device *device) const
+{
+    audio->setActiveOutputDevice(device);
+}
+
 /**
  * Deconstructs the current instance of the Controller class
  */
