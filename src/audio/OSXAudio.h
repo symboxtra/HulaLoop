@@ -16,7 +16,6 @@
 class OSXAudio : public OSAudio {
     private:
         OSXDaemon *osxDaemon;
-        std::vector<Device *> getDevices(DeviceType type);
 
     public:
         OSXAudio();
@@ -24,6 +23,7 @@ class OSXAudio : public OSAudio {
 
         void capture();
 
+        std::vector<Device *> getDevices(DeviceType type);
         std::vector<Device *> getInputDevices();
         std::vector<Device *> getOutputDevices();
 

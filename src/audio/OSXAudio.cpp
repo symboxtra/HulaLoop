@@ -159,25 +159,37 @@ vector<Device *> OSXAudio::getDevices(DeviceType type)
     for (uint32_t i = 0; i < deviceCount; i++)
     {
         const PaDeviceInfo *paDevice = Pa_GetDeviceInfo(i);
+        DeviceType checkType = (DeviceType)0;
 
-        // Exclude record only devices if type == PLAYBACK
-        if (type == DeviceType::PLAYBACK && paDevice->maxOutputChannels == 0)
+        // We can only support OSX loopback on our own driver
+        if (strcmp(paDevice->name, "HulaLoop") == 0)
         {
-            continue;
+            checkType = (DeviceType)(checkType | LOOPBACK);
+        }
+        if (paDevice->maxOutputChannels > 0)
+        {
+            checkType = (DeviceType)(checkType | PLAYBACK);
+        }
+        if (paDevice->maxInputChannels > 0)
+        {
+            checkType = (DeviceType)(checkType | RECORD);
         }
 
         // Create HulaLoop style device and add to vector
         // This needs to be freed elsewhere
-        Device *hlDevice = new Device(NULL, string(paDevice->name), type);
-        devices.push_back(hlDevice);
+        if (type & checkType)
+        {
+            Device *hlDevice = new Device(NULL, string(paDevice->name), type);
+            devices.push_back(hlDevice);
 
-        // Print some debug device info for now
-        // TODO: Remove
-        cout << "Device #" << i + 1 << ": " << paDevice->name << endl;
-        cout << "Input Channels: " << paDevice->maxInputChannels << endl;
-        cout << "Output Channels: " << paDevice->maxOutputChannels << endl;
-        cout << "Default Sample Rate: " << paDevice->defaultSampleRate << endl;
-        cout << endl;
+            // Print some debug device info for now
+            // TODO: Remove
+            cout << "Device #" << i + 1 << ": " << paDevice->name << endl;
+            cout << "Input Channels: " << paDevice->maxInputChannels << endl;
+            cout << "Output Channels: " << paDevice->maxOutputChannels << endl;
+            cout << "Default Sample Rate: " << paDevice->defaultSampleRate << endl;
+            cout << endl;
+        }
     }
 
     return devices;
