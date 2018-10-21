@@ -75,6 +75,19 @@ void Device::setType(DeviceType t)
 }
 
 /**
+ * Delete all the device pointers inside the vector
+ */
+static void deleteDevices(vector<Device *> devices)
+{
+    for(auto const & device : devices){
+        // cout << device->getName() << endl;
+        delete device;
+    }
+    devices.clear();
+}
+
+
+/**
  * Deconstructs the device instance
  */
 Device::~Device()

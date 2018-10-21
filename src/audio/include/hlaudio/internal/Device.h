@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -42,6 +43,8 @@ class Device {
 
         DeviceType getType();
         void setType(DeviceType t);
+
+        static void deleteDevices(vector<Device *> devices);
 };
 
 #endif
