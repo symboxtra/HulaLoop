@@ -7,7 +7,7 @@ LinuxAudio::LinuxAudio()
     {
         cerr << "No devices found" << endl;
     }
-    setActiveOutputDevice(t[0]);
+    // setActiveOutputDevice(t[0]);
 }
 
 vector<Device *> LinuxAudio::getInputDevices()
@@ -63,7 +63,7 @@ vector<Device *> LinuxAudio::getDevices(DeviceType type)
                 string deviceName = snd_ctl_card_info_get_name(cardInfo);
                 string subDeviceName = snd_pcm_info_get_name(subInfo);
                 string fullDeviceName = deviceName + ": " + subDeviceName;
-                string * sDeviceID = new string(deviceID);
+                string *sDeviceID = new string(deviceID);
                 devices.push_back(new Device(reinterpret_cast<uint32_t *>(sDeviceID), fullDeviceName, DeviceType::RECORD));
             }
         }
@@ -79,7 +79,7 @@ bool LinuxAudio::checkSamplingRate(Device *device)
     snd_pcm_t *pcmHandle = NULL;     // default pcm handle
     snd_pcm_hw_params_t *param;
 
-    char * id = (char*) reinterpret_cast<string*>(device->getID())->c_str();
+    char *id = (char *) reinterpret_cast<string *>(device->getID())->c_str();
     // TODO: FIX
     err = snd_pcm_open(&pcmHandle, id, SND_PCM_STREAM_CAPTURE, 0);
     if (err < 0)
@@ -94,15 +94,16 @@ bool LinuxAudio::checkSamplingRate(Device *device)
     //test the desired sample rate
     // TODO: insert actual sampling rate
     int testSamplingRate = 44100;
-    if(snd_pcm_hw_params_test_rate(pcmHandle, param, testSamplingRate, 0) == 0){
+    if (snd_pcm_hw_params_test_rate(pcmHandle, param, testSamplingRate, 0) == 0)
+    {
         //the sampling rate is good
         cout << "SAMPLING RATE GOOD" << endl;
         snd_pcm_drain(pcmHandle);
         snd_pcm_close(pcmHandle);
         return true;
     }
-    snd_pcm_drain(pcmHandle);
-    snd_pcm_close(pcmHandle);
+    // snd_pcm_drain(pcmHandle);
+    // snd_pcm_close(pcmHandle);
     return false;
 }
 

@@ -79,7 +79,8 @@ void Device::setType(DeviceType t)
  */
 void Device::deleteDevices(vector<Device *> devices)
 {
-    for(auto const & device : devices){
+    for (auto const &device : devices)
+    {
         // cout << device->getName() << endl;
         delete device;
     }
