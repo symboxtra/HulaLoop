@@ -7,6 +7,7 @@ LinuxAudio::LinuxAudio()
     {
         cerr << "No devices found" << endl;
     }
+    setActiveOutputDevice(t[0]);
 }
 
 vector<Device *> LinuxAudio::getInputDevices()
@@ -75,7 +76,8 @@ vector<Device *> LinuxAudio::getDevices(DeviceType type)
                 string deviceName = snd_ctl_card_info_get_name(cardInfo);
                 string subDeviceName = snd_pcm_info_get_name(subInfo);
                 string fullDeviceName = deviceName + ": " + subDeviceName;
-                devices.push_back(new Device(reinterpret_cast<uint32_t *>(deviceID), fullDeviceName, DeviceType::RECORD));
+                string * sDeviceID = new string(deviceID);
+                devices.push_back(new Device(reinterpret_cast<uint32_t *>(sDeviceID), fullDeviceName, DeviceType::RECORD));
             }
         }
         snd_ctl_close(handle);
@@ -84,11 +86,40 @@ vector<Device *> LinuxAudio::getDevices(DeviceType type)
     return devices;
 }
 
+bool LinuxAudio::checkSamplingRate(Device *device)
+{
+    int err;                         // return for commands that might return an error
+    snd_pcm_t *pcmHandle = NULL;     // default pcm handle
+    snd_pcm_hw_params_t *param;  
+    
+    char * id = (char*) reinterpret_cast<string*>(device->getID())->c_str();
+    // TODO: FIX
+    err = snd_pcm_open(&pcmHandle, id, SND_PCM_STREAM_CAPTURE, 0);
+    if (err < 0)
+    {
+        cerr << "Unable to open " << id << endl;
+        return false;
+    }
+    // allocate hw params object and fill the pcm device with the default params
+    snd_pcm_hw_params_alloca(&param);
+    snd_pcm_hw_params_any(pcmHandle, param);
+
+    //test the desired sample rate
+    // TODO: insert actual sampling rate
+    int testSamplingRate = 44100;
+    if(snd_pcm_hw_params_test_rate(pcmHandle, param, testSamplingRate, 0) == 0){
+        //the sampling rate is good 
+        cout << "SAMPLING RATE GOOD" << endl;
+        return true;
+    }
+    return false;
+}
+
 void LinuxAudio::setActiveOutputDevice(Device *device)
 {
     // Set the active output device
     this->activeOutputDevice = device;
-
+    cout << checkSamplingRate(device) << endl;
     // Interrupt all threads and make sure they stop
     for (auto &t : execThreads)
     {
@@ -154,6 +185,14 @@ void LinuxAudio::capture()
     snd_pcm_hw_params_set_format(pcmHandle, param, SND_PCM_FORMAT_S16_LE);
     snd_pcm_hw_params_set_channels(pcmHandle, param, 2);
 
+    // getting the min sampling rate
+    // TODO: REMOVE
+    unsigned minVal;
+    snd_pcm_hw_params_get_rate_min(param, &minVal, NULL);
+    cout << "MINVAL: " << minVal  << endl;
+     snd_pcm_hw_params_get_rate_max(param, &minVal, NULL);		
+    cout << "MAXVAL: " << minVal  << endl;
+
     // we set the sampling rate to whatever the user or device wants
     // TODO insert sample rate
     unsigned int sampleRate = 44100;
@@ -180,6 +219,7 @@ void LinuxAudio::capture()
 
     while (true)
     {
+        break;
         while (callbackList.size() > 0)
         {
             // audioBuffer = (byte *)malloc(audioBufferSize);

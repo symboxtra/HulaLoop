@@ -29,6 +29,7 @@ class LinuxAudio : public OSAudio {
         vector<Device *> getInputDevices();
         vector<Device *> getOutputDevices();
         vector<Device *> getDevices(DeviceType type);
+        bool checkSamplingRate(Device *device);
         void clearDevices(vector<Device *> devices);
         static void test_capture(LinuxAudio *param);
         void setActiveOutputDevice(Device *device);
