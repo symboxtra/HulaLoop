@@ -127,12 +127,22 @@ int32_t HulaRingBuffer::directRead(int32_t maxSamples, void **dataPtr1, int32_t 
     return samplesRead;
 }
 
+/**
+ * Add data to the ring buffer.
+ *
+ * @param data Array of samples to write to the ring buffer.
+ * @param maxSamples Number of samples contained in the array.
+ * @return Number of samples written.
+ */
 int32_t HulaRingBuffer::write(const SAMPLE *data, int32_t maxSamples)
 {
     ring_buffer_size_t elementsWriteable = PaUtil_GetRingBufferWriteAvailable(&this->rb);
     ring_buffer_size_t elementsToWrite = std::min(elementsWriteable, (ring_buffer_size_t)(maxSamples));
 
     ring_buffer_size_t elementsWritten = PaUtil_WriteRingBuffer(&this->rb, data, elementsToWrite);
+
+    if (elementsWritten < maxSamples)
+        printf("%sOverrun: %d of %d samples written\n", HL_PRINT_PREFIX, elementsWritten, maxSamples);
 
     return elementsWritten;
 }
