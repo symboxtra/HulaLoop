@@ -64,7 +64,7 @@ void QMLBridge::pause()
  */
 void QMLBridge::setActiveInputDevice(QString QDeviceName)
 {
-     cout << "SETACTIVEiDEVICECALLED" << endl;
+    cout << "SETACTIVEiDEVICECALLED" << endl;
     string deviceName = QDeviceName.toStdString();
     vector<Device *> iDevices = transport->getController()->getInputDevices();
     for (auto const &device : iDevices)
