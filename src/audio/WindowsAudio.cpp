@@ -310,6 +310,16 @@ Exit:
 }
 
 /**
+ * Checks the sampling rate and bit depth of the device
+ *
+ * @param device Instance of Device that corresponds to the desired system device
+ */
+bool WindowsAudio::checkRates(Device *device)
+{
+
+}
+
+/**
  * Clear all global pointers
  */
 WindowsAudio::~WindowsAudio()

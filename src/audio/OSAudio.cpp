@@ -50,6 +50,7 @@ void OSAudio::removeBufferReadyCallback(ICallback *callFunction)
  */
 void OSAudio::setActiveInputDevice(Device *device)
 {
+    this->checkRates(device);
     this->activeInputDevice = device;
 }
 
@@ -61,6 +62,7 @@ void OSAudio::setActiveInputDevice(Device *device)
  */
 void OSAudio::setActiveOutputDevice(Device *device)
 {
+    this->checkRates(device);
     this->activeOutputDevice = device;
 }
 

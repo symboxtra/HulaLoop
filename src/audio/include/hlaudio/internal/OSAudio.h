@@ -70,6 +70,7 @@ class OSAudio {
          */
         virtual void capture() = 0;
 
+        virtual bool checkRates(Device *device) = 0;
         void setActiveInputDevice(Device *device);
         void setActiveOutputDevice(Device *device);
 };

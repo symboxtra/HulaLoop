@@ -73,37 +73,50 @@ vector<Device *> LinuxAudio::getDevices(DeviceType type)
     return devices;
 }
 
-bool LinuxAudio::checkSamplingRate(Device *device)
+bool LinuxAudio::checkRates(Device *device)
 {
     int err;                         // return for commands that might return an error
     snd_pcm_t *pcmHandle = NULL;     // default pcm handle
-    snd_pcm_hw_params_t *param;
+    snd_pcm_hw_params_t *param;      // defaults param for the pcm
+    snd_pcm_format_t format;         // format that user chooses
+    unsigned samplingRate;            // sampling rate the user choooses
+    bool samplingRateValid;          // bool that gets set if the sampling rate is valid
+    bool formatValid;                // bool that gets set if the format is valid
 
+    // device id
     char *id = (char *) reinterpret_cast<string *>(device->getID())->c_str();
-    // TODO: FIX
+    cout << id << endl;
+    // open pcm device
     err = snd_pcm_open(&pcmHandle, id, SND_PCM_STREAM_CAPTURE, 0);
     if (err < 0)
     {
-        cerr << "Unable to open: " << id << endl;
+        cerr << "Unable to test device: " << id << endl;
         return false;
     }
+
     // allocate hw params object and fill the pcm device with the default params
     snd_pcm_hw_params_alloca(&param);
     snd_pcm_hw_params_any(pcmHandle, param);
 
-    //test the desired sample rate
+    // test the desired sample rate
     // TODO: insert actual sampling rate
-    int testSamplingRate = 44100;
-    if (snd_pcm_hw_params_test_rate(pcmHandle, param, testSamplingRate, 0) == 0)
+    samplingRate = 44100;
+    samplingRateValid = snd_pcm_hw_params_test_rate(pcmHandle, param, samplingRate, 0) == 0;
+
+    // test the desired format (bit depth)
+    format = SND_PCM_FORMAT_S16_LE;
+    formatValid = snd_pcm_hw_params_test_format(pcmHandle, param, format) == 0;
+
+    // clean up
+    snd_pcm_drain(pcmHandle);
+    snd_pcm_close(pcmHandle);
+    snd_config_update_free_global();
+    if(samplingRateValid && formatValid)
     {
-        //the sampling rate is good
-        cout << "SAMPLING RATE GOOD" << endl;
-        snd_pcm_drain(pcmHandle);
-        snd_pcm_close(pcmHandle);
+        cout << "Sampling rate and format valid" << endl;
         return true;
     }
-    // snd_pcm_drain(pcmHandle);
-    // snd_pcm_close(pcmHandle);
+    cout << "Something invalid" << endl;
     return false;
 }
 
@@ -111,7 +124,7 @@ void LinuxAudio::setActiveOutputDevice(Device *device)
 {
     // Set the active output device
     this->activeOutputDevice = device;
-    cout << checkSamplingRate(device) << endl;
+    cout << checkRates(device) << endl;
     // Interrupt all threads and make sure they stop
     for (auto &t : execThreads)
     {

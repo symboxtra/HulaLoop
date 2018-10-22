@@ -22,6 +22,7 @@ class OSXAudio : public OSAudio {
 
         void capture();
 
+        bool checkRates(Device *device);
         vector<Device *> getInputDevices();
         vector<Device *> getOutputDevices();
 
