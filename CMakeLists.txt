@@ -116,6 +116,7 @@ message (STATUS "Qt5_DIR: ${Qt5_DIR}")
 find_package (Qt5 REQUIRED
     Core
     Gui
+    Network
     Qml
     Quick
     QuickControls2
@@ -125,6 +126,7 @@ set (HL_LIBRARIES
     ${HL_LIBRARIES}
     Qt5::Core
     Qt5::Gui
+    Qt5::Network
     Qt5::Qml
     Qt5::Quick
     Qt5::QuickControls2
@@ -170,6 +172,7 @@ if (NOT HL_BUILD_ONLY_AUDIO)
 
     if (HL_BUILD_GUI)
         add_subdirectory (src/ui/gui)
+        add_subdirectory (src/launcher)
         include_directories (${INCLUDE_DIRS})
     endif ()
 endif ()

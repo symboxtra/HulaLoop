@@ -1,11 +1,10 @@
-#include <QFontDatabase>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlDebuggingEnabler>
 #include <QQuickStyle>
 #include <QtDebug>
 
-#include "QMLBridge.h"
+#include "Updater.h"
 
 int main(int argc, char *argv[])
 {
@@ -16,9 +15,6 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
-    qmlRegisterType<QMLBridge>("hulaloop.qmlbridge", 1, 0, "QMLBridge");
-
-    QFontDatabase::addApplicationFont(":/fonts/materialdesignicons-webfont.ttf");
     QQuickStyle::setStyle("Material");
 
     QQmlApplicationEngine engine;
@@ -28,6 +24,10 @@ int main(int argc, char *argv[])
     {
         return -1;
     }
+
+    Updater updater;
+    updater.setUpdateHost("https://api.github.com/repos/segmentio/evergreen/releases/latest");
+    updater.checkForUpdate();
 
     return app.exec();
 }
