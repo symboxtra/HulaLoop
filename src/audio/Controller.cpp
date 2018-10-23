@@ -44,7 +44,7 @@ Controller::Controller()
  * required. This is usually used by unit tests targeting upper-level
  * modules that don't require the initialization of lower-level modules.
  *
- * This constructor is protected and designed for testing purposes only.
+ * This constructor is designed for testing purposes and exists only in debug builds.
  */
 Controller::Controller(bool dryRun)
 {
