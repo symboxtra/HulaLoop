@@ -54,7 +54,7 @@ static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
     (void) userData;
 
     // TODO: Make sure this calculation is right
-    obj->copyToBuffers(inputBuffer, framesPerBuffer * NUM_CHANNELS);
+    obj->copyToBuffers(inputBuffer, framesPerBuffer * NUM_CHANNELS * sizeof(SAMPLE));
 
     return paContinue;
 }
