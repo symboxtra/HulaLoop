@@ -4,6 +4,7 @@ pipeline {
     environment {
         HL_WEBHOOK_URL = credentials('HULALOOP_WEBHOOK_URL')
         HL_CODECOV_TOKEN = credentials('HL_CODECOV_TOKEN')
+        HL_MEMCHECK_PREFIX = "memcheck"
     }
 
     options {
@@ -98,8 +99,10 @@ pipeline {
 
                                         lcov -c -i -d build-linux -o build-linux/coverage.base
 
+                                        # Run everything but the memtests.
+                                        # These will run on PRs and master and should also be run locally if you think you're leaking.
                                         cd ./build-linux
-                                        ctest -v
+                                        ctest -v -E ${HL_MEMCHECK_PREFIX}
                                         cd ..
 
                                         lcov -c -d build-linux -o build-linux/coverage.actual
@@ -110,6 +113,21 @@ pipeline {
 
                             }
 
+                        }
+
+                        stage('Memcheck - Linux') {
+                            when {
+                                expression { return env.BRANCH_NAME == /(master|develop|PR.*)/ }
+                            }
+
+                            steps {
+
+                                sh '''
+                                    # Only run the memtests
+                                    # No need for code coverage since these are the same as above just inside valgrind
+                                    ctest -v -R ${HL_MEMCHECK_PREFIX}
+                                '''
+                            }
                         }
 
                     } // END stages
@@ -211,8 +229,10 @@ pipeline {
 
                                     lcov -c -i -d build-osx -o build-osx/coverage.base
 
+                                    # Run everything but the memtests
+                                    # These will run on PRs and master and should also be run locally if you think you're leaking
                                     cd ./build-osx
-                                    ctest -v
+                                    ctest -v -E ${HL_MEMCHECK_PREFIX}
                                     cd ..
 
                                     lcov -c -d build-osx -o build-osx/coverage.actual
@@ -234,6 +254,22 @@ pipeline {
                             }
 
                         }
+
+                        stage('Memcheck - OSX') {
+                            when {
+                                expression { return env.BRANCH_NAME == /(master|develop|PR.*)/ }
+                            }
+
+                            steps {
+
+                                sh '''
+                                    # Only run the memtests
+                                    # No need for code coverage since these are the same as above just inside valgrind
+                                    ctest -v -R ${HL_MEMCHECK_PREFIX}
+                                '''
+                            }
+                        }
+
                     } // END stages
 
                     post {
@@ -316,8 +352,9 @@ pipeline {
                                 powershell '''
                                     echo "Running test suite on ${ENV:HL_OS}..."
 
+                                    # Run everything but the memtests.
                                     # cd build-win
-                                    # ctest -C Debug -v
+                                    # ctest -C Debug -v -E ${ENV:HL_MEMCHECK_PREFIX}
                                     # if ($LastExitCode -ne 0) {$host.SetShouldExit($LastExitCode)} # Exit with test error code
 
                                     # cd ..
