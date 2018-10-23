@@ -28,14 +28,11 @@ class Device {
         Device(uint32_t *id, string name, DeviceType t);
         ~Device();
 
-        uint32_t *getID();
-        void setID(uint32_t *id);
+        uint32_t * getID();
 
         string getName();
-        void setName(string name);
 
         DeviceType getType();
-        void setType(DeviceType t);
 };
 
 #endif

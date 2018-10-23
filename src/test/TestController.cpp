@@ -1,25 +1,14 @@
 #include <gtest/gtest.h>
 #include <hlaudio/hlaudio.h>
-
-class TestCallback : public ICallback {
-    public:
-        bool dataReceived;
-
-        TestCallback()
-        {
-            dataReceived = false;
-        }
-
-        void handleData(byte *data, uint32_t size)
-        {
-            dataReceived = true;
-        }
-};
+#include "TestCallback.h"
 
 class TestController : public Controller, public ::testing::Test {
     public:
         TestCallback *handler1;
         TestCallback *handler2;
+
+        TestController() : Controller(true)
+        {}
 
         virtual void SetUp()
         {

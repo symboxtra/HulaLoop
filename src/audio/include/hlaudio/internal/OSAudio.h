@@ -2,11 +2,13 @@
 #define OS_AUDIO
 
 // System
+#include <atomic>
 #include <cstdlib>
 #include <thread>
 #include <vector>
 
 #include "Device.h"
+#include "HulaRingBuffer.h"
 #include "ICallback.h"
 
 using namespace std;
@@ -17,7 +19,15 @@ using namespace std;
  * specfic classes.
  */
 class OSAudio {
+    private:
+        void joinAndKillThreads(vector<thread>& threads);
+
     protected:
+
+        /**
+         * Constructor is protected since this class is abstract.
+         */
+        OSAudio() {};
 
         /**
          * The selected input device
@@ -35,9 +45,37 @@ class OSAudio {
         vector<ICallback *> callbackList;
 
         /**
-         * List of all running threads
+         * List of all added ring buffers.
+         * Data received from the operating system is copied into each of these buffers.
+         */
+        vector<HulaRingBuffer *> rbs;
+
+        /**
+         * List of all running threads.
+         *
+         * TODO: Remove
+         * Leave until WindowsAudio can be updated.
          */
         vector<thread> execThreads;
+
+        /**
+         * Thread for input device activities.
+         */
+        vector<thread> inThreads;
+
+        /**
+         * Thread for output device activities.
+         */
+        vector<thread> outThreads;
+
+        /**
+         * Flag to syncronize the capture thread for an instance.
+         * This is used to break the capture loop when switching devices
+         * or when 0 buffers are present.
+         *
+         * Should never be set directly. Only by setActiveXXXDevice().
+         */
+        atomic<bool> endCapture;
 
         uint32_t captureBufferSize;
 
@@ -48,6 +86,10 @@ class OSAudio {
 
         void addBufferReadyCallback(ICallback *c);
         void removeBufferReadyCallback(ICallback *func);
+
+        void addBuffer(HulaRingBuffer *rb);
+        void removeBuffer(HulaRingBuffer *rb);
+        void copyToBuffers(const void *data, uint32_t bytes);
 
         /**
          * Receive the list of available output audio devices connected to the OS
@@ -70,8 +112,10 @@ class OSAudio {
          */
         virtual void capture() = 0;
 
-        void setActiveRecordDevice(Device *device); //TODO: Make virtual or maybe remove if can combine into one function
-        virtual void setActiveOutputDevice(Device *device) = 0;
+        static void backgroundCapture(OSAudio *_this);
+
+        void setActiveInputDevice(Device *device);
+        void setActiveOutputDevice(Device *device);
 };
 
 #endif

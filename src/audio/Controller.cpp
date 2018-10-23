@@ -2,6 +2,7 @@
 #include <fstream>
 
 #include "hlaudio/internal/Controller.h"
+#include "include/hlaudio/internal/HulaAudioError.h"
 
 #if _WIN32
     #include "WindowsAudio.h"
@@ -29,12 +30,27 @@ Controller::Controller()
     if (audio == NULL)
     {
         cerr << "OS Audio error !" << endl;
-    }//TODO: Handle error
+    } // TODO: Handle error
 
-    // Add current Controller instance as buffercallback to
-    // OSAudio
+    // Add current Controller instance as buffercallback to OSAudio
     audio->addBufferReadyCallback(this);
 }
+
+#ifndef NDEBUG
+/**
+ * ---------------- FOR TESTING/DEBUG BUILDS ONLY -----------------
+ *
+ * A "dry run" is a run in which full application functionality is not
+ * required. This is usually used by unit tests targeting upper-level
+ * modules that don't require the initialization of lower-level modules.
+ *
+ * This constructor is designed for testing purposes and exists only in debug builds.
+ */
+Controller::Controller(bool dryRun)
+{
+    audio = NULL;
+}
+#endif
 
 /**
  * Callback function that is triggered when audio is captured
@@ -43,7 +59,7 @@ Controller::Controller()
  * @param size Size of returned audio data (frames)
  * @param data Audio data in byte buffer
  */
-void Controller::handleData(byte *data, uint32_t size)
+void Controller::handleData(uint8_t *data, uint32_t size)
 {
     cout << "Data received: " << size << endl;
 
@@ -62,7 +78,7 @@ void Controller::handleData(byte *data, uint32_t size)
 void Controller::addBufferReadyCallback(ICallback *func)
 {
     // Add self to OSAudio callback when first callback is added
-    if (this->callbackList.size() == 0)
+    if (this->callbackList.size() == 0 && audio != NULL)
     {
         audio->addBufferReadyCallback(this);
     }
@@ -89,14 +105,67 @@ void Controller::removeBufferReadyCallback(ICallback *func)
     }
 
     // Remove self from callback when last callback is removed
-    if (this->callbackList.size() == 0)
+    if (this->callbackList.size() == 0 && audio != NULL)
     {
         audio->removeBufferReadyCallback(this);
     }
 }
 
 /**
- * Get input devices from OSAudio
+ * Add an initialized buffer to the list of buffers that receive audio data.
+ * As soon as the buffer is added, it should begin receiving data.
+ *
+ * If already present, the ring buffer will not be duplicated.
+ *
+ * This is a publicly exposed wrapper for the OSAudio method.
+ *
+ * @param rb HulaLoop ring buffer to add to the list.
+*/
+void Controller::addBuffer(HulaRingBuffer *rb)
+{
+    audio->addBuffer(rb);
+}
+
+/**
+ * Remove a buffer from the list of buffers that receive audio data.
+ * The removed buffer is not deleted and must be deleted by the user.
+ *
+ * This enables pausing retrieval when audio is not needed and
+ * re-adding the same buffer when audio data is again needed.
+ *
+ * This is a publicly exposed wrapper for the OSAudio method.
+ *
+ * @param rb HulaLoop ring buffer to remove from the list.
+*/
+void Controller::removeBuffer(HulaRingBuffer *rb)
+{
+    audio->removeBuffer(rb);
+}
+
+/**
+ * Allocate and initialize a HulaRingBuffer that can be added to
+ * the OSAudio ring buffer list via Controller::addBuffer.
+ *
+ * @return Newly allocated ring buffer.
+ */
+HulaRingBuffer * Controller::createBuffer(float duration)
+{
+    return new HulaRingBuffer(duration);
+}
+
+/**
+ * Allocate and initialize a HulaRingBuffer and automatically
+ * add it to the OSAudio ring buffer list.
+ */
+HulaRingBuffer * Controller::createAndAddBuffer(float duration)
+{
+    HulaRingBuffer * rb = new HulaRingBuffer(duration);
+    addBuffer(rb);
+    return rb;
+}
+
+/**
+ * Get input devices from OSAudio.
  */
 vector<Device *> Controller::getInputDevices()
 {
@@ -104,7 +173,7 @@ vector<Device *> Controller::getInputDevices()
 }
 
 /**
- * Get output devices from OSAudio
+ * Get output devices from OSAudio.
  */
 vector<Device *> Controller::getOutputDevices()
 {
@@ -112,11 +181,15 @@ vector<Device *> Controller::getOutputDevices()
 }
 
 /**
- * Deconstructs the current instance of the Controller class
+ * Deconstructs the current instance of the Controller class.
  */
 Controller::~Controller()
 {
-    // Don't do this until mem management is fixed
-    // delete audio;
+    printf("%sController destructor called\n", HL_PRINT_PREFIX);
+
     callbackList.clear();
+
+    // Don't do this until mem management is fixed
+    if (audio)
+        delete audio;
 }

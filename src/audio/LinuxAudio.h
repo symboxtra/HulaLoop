@@ -26,6 +26,7 @@ class LinuxAudio : public OSAudio {
         void capture();
         vector<Device *> getInputDevices();
         vector<Device *> getOutputDevices();
+        vector<Device *> getDevices(DeviceType type);
         static void test_capture(LinuxAudio *param);
         void setActiveOutputDevice(Device *device);
 
