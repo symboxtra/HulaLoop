@@ -39,9 +39,9 @@
 #ifndef HULA_RING_BUFFER_H
 #define HULA_RING_BUFFER_H
 
-#include <portaudio.h>
 #include <pa_ringbuffer.h>
 #include <pa_util.h>
+#include <portaudio.h>
 #include <cstdio>
 #include <cstdlib>
 #include <thread>
