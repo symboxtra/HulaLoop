@@ -28,7 +28,7 @@ class Controller : public ICallback {
         #endif // END NDEBUG
 
         Controller();
-        ~Controller();
+        virtual ~Controller();
 
         void addBufferReadyCallback(ICallback *func);
         void removeBufferReadyCallback(ICallback *func);
