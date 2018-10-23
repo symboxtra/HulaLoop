@@ -18,7 +18,7 @@ function (create_test _test_file _src_files _timeout _do_memcheck)
         else ()
             add_test (
                 NAME memcheck_${_test_name}
-                COMMAND ${VALGRIND_EXECUTABLE} --leak-check=full --show-reachable=yes ./test/${_test_name}
+                COMMAND ${VALGRIND_EXECUTABLE} --leak-check=full --show-reachable=yes --error-exitcode=1 ./test/${_test_name}
                 WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
             )
         endif ()

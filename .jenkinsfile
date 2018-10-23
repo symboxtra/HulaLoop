@@ -102,7 +102,7 @@ pipeline {
                                         # Run everything but the memtests.
                                         # These will run on PRs and master and should also be run locally if you think you're leaking.
                                         cd ./build-linux
-                                        ctest -v -E ${HL_MEMCHECK_PREFIX}
+                                        ctest -V -E ${HL_MEMCHECK_PREFIX}
                                         cd ..
 
                                         lcov -c -d build-linux -o build-linux/coverage.actual
@@ -125,7 +125,7 @@ pipeline {
                                 sh '''
                                     # Only run the memtests
                                     # No need for code coverage since these are the same as above just inside valgrind
-                                    ctest -v -R ${HL_MEMCHECK_PREFIX}
+                                    ctest -V -R ${HL_MEMCHECK_PREFIX}
                                 '''
                             }
                         }
@@ -232,7 +232,7 @@ pipeline {
                                     # Run everything but the memtests
                                     # These will run on PRs and master and should also be run locally if you think you're leaking
                                     cd ./build-osx
-                                    ctest -v -E ${HL_MEMCHECK_PREFIX}
+                                    ctest -V -E ${HL_MEMCHECK_PREFIX}
                                     cd ..
 
                                     lcov -c -d build-osx -o build-osx/coverage.actual
@@ -265,7 +265,7 @@ pipeline {
                                 sh '''
                                     # Only run the memtests
                                     # No need for code coverage since these are the same as above just inside valgrind
-                                    ctest -v -R ${HL_MEMCHECK_PREFIX}
+                                    ctest -V -R ${HL_MEMCHECK_PREFIX}
                                 '''
                             }
                         }
@@ -354,7 +354,7 @@ pipeline {
 
                                     # Run everything but the memtests.
                                     # cd build-win
-                                    # ctest -C Debug -v -E ${ENV:HL_MEMCHECK_PREFIX}
+                                    # ctest -C Debug -V -E ${ENV:HL_MEMCHECK_PREFIX}
                                     # if ($LastExitCode -ne 0) {$host.SetShouldExit($LastExitCode)} # Exit with test error code
 
                                     # cd ..
