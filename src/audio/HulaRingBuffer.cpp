@@ -38,8 +38,8 @@
 
 #include <algorithm>
 
-#include "hlaudio/internal/HulaRingBuffer.h"
 #include "hlaudio/internal/HulaAudioError.h"
+#include "hlaudio/internal/HulaRingBuffer.h"
 
 /**
  * Create a new ring buffer.

@@ -22,10 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include <jack/jack.h>
 #include <cerrno>
 #include <cstdio>
 #include <cstring>
-#include <jack/jack.h>
 
 #include "hlaudio/internal/HulaAudioError.h"
 #include "JackClient.hpp"

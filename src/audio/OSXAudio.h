@@ -8,8 +8,6 @@
 #include "hlaudio/internal/OSAudio.h"
 #include "OSXDaemon/OSXDaemon.h"
 
-#define PA_CHECK_ERROR if ( err != paNoError ) { goto done; }
-
 /**
  * A audio class that captures system wide audio on OSX.
  */

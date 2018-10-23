@@ -39,11 +39,11 @@
 #ifndef HULA_RING_BUFFER_H
 #define HULA_RING_BUFFER_H
 
-#include <cstdio>
-#include <cstdlib>
 #include <portaudio.h>
 #include <pa_ringbuffer.h>
 #include <pa_util.h>
+#include <cstdio>
+#include <cstdlib>
 #include <thread>
 
 #define SAMPLE_RATE             (44100)
