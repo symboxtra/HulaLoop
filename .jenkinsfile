@@ -50,13 +50,12 @@ pipeline {
 
                     stages {
 
-                        // Generate CMake and build any required dependencies
-                        stage('Dependencies - Linux') {
+                        stage('Generate - Linux') {
 
                             steps {
 
                                 sh '''
-                                    echo "Configuring dependencies for ${HL_OS}..."
+                                    echo "CMake generation for ${HL_OS}..."
 
                                     env
                                     echo "Path: ${PATH}"
@@ -173,12 +172,12 @@ pipeline {
 
                     stages {
 
-                        stage('Dependencies - OSX') {
+                        stage('Generate - OSX') {
 
                             steps {
 
                                 sh '''
-                                    echo "Configuring dependencies for ${HL_OS}..."
+                                    echo "CMake generation for ${HL_OS}..."
 
                                     echo "Path: ${PATH}"
                                     qmake -v
@@ -312,12 +311,12 @@ pipeline {
 
                     stages {
 
-                        stage('Dependencies - Windows') {
+                        stage('Generate - Windows') {
 
                             steps {
 
                                 powershell '''
-                                    echo "Configuring dependencies for ${ENV:HL_OS}..."
+                                    echo "CMake generation for ${ENV:HL_OS}..."
 
                                     # Not on path
                                     # qmake -v
