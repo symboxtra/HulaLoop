@@ -72,7 +72,7 @@ void QMLBridge::setActiveInputDevice(QString QDeviceName)
         if (device->getName() == deviceName)
         {
             transport->getController()->setActiveInputDevice(device);
-            // Device::deleteDevices(iDevices);
+            Device::deleteDevices(iDevices);
             return;
         }
     }
@@ -93,7 +93,7 @@ void QMLBridge::setActiveOutputDevice(QString QDeviceName)
         if (device->getName() == deviceName)
         {
             transport->getController()->setActiveOutputDevice(device);
-            // Device::deleteDevices(oDevices);
+            Device::deleteDevices(oDevices);
             return;
         }
     }
@@ -118,7 +118,7 @@ QString QMLBridge::getInputDevices()
             devices += ",";
         }
     }
-    // Device::deleteDevices(vd);
+    Device::deleteDevices(vd);
     return QString::fromStdString(devices);
 }
 
@@ -139,6 +139,6 @@ QString QMLBridge::getOutputDevices()
             devices += ",";
         }
     }
-    // Device::deleteDevices(vd);
+    Device::deleteDevices(vd);
     return QString::fromStdString(devices);
 }

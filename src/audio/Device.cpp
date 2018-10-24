@@ -62,10 +62,10 @@ void Device::deleteDevices(vector<Device *> devices)
  */
 Device::~Device()
 {
-    if (deviceID)
+    /*if (deviceID)
     {
         delete deviceID;
-    }
+    }*/
 
     deviceName.clear();
 }
