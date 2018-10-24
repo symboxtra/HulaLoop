@@ -126,28 +126,28 @@ void LinuxAudio::setActiveOutputDevice(Device *device)
     this->activeOutputDevice = device;
     cout << checkRates(device) << endl;
     // Interrupt all threads and make sure they stop
-    for (auto &t : execThreads)
-    {
-        // TODO: Find better way of safely terminating thread
-        t.detach();
-        t.~thread();
-    }
+    // for (auto &t : execThreads)
+    // {
+    //     // TODO: Find better way of safely terminating thread
+    //     t.detach();
+    //     t.~thread();
+    // }
 
-    // Clean the threads after stopping all threads
-    execThreads.clear();
+    // // Clean the threads after stopping all threads
+    // execThreads.clear();
 
-    // Start up new threads with new selected device info
+    // // Start up new threads with new selected device info
 
-    // Start capture thread and add to thread vector
-    execThreads.emplace_back(thread(&LinuxAudio::test_capture, this));
+    // // Start capture thread and add to thread vector
+    // execThreads.emplace_back(thread(&LinuxAudio::test_capture, this));
 
-    // TODO: Add playback thread later
+    // // TODO: Add playback thread later
 
-    // Detach new threads to run independently
-    for (auto &t : execThreads)
-    {
-        t.detach();
-    }
+    // // Detach new threads to run independently
+    // for (auto &t : execThreads)
+    // {
+    //     t.detach();
+    // }
 }
 
 void LinuxAudio::test_capture(LinuxAudio *param)
@@ -216,10 +216,8 @@ void LinuxAudio::capture()
 
     while (true)
     {
-        break;
-        while (callbackList.size() > 0)
-        {
-            // audioBuffer = (byte *)malloc(audioBufferSize);
+        // while (callbackList.size() > 0)
+        // {
             // read frames from the pcm
             err = snd_pcm_readi(pcmHandle, audioBuffer, frame);
             if (err == -EPIPE)
@@ -237,27 +235,28 @@ void LinuxAudio::capture()
             }
             // write to standard output for now
             // TODO: change to not standard output
-            for (int i = 0; i < callbackList.size(); i++)
-            {
-                thread(&ICallback::handleData, callbackList[i], audioBuffer, audioBufferSize).detach();
-            }
+            // for (int i = 0; i < callbackList.size(); i++)
+            // {
+            //     thread(&ICallback::handleData, callbackList[i], audioBuffer, audioBufferSize).detach();
+            // }
             // free(audioBuffer);
             // audioBuffer = nullptr;
+            copyToBuffers(audioBuffer,  audioBufferSize);
             /* err = write(1, audioBuffer, audioBufferSize);
             if(err != audioBufferSize)
             {
             cerr << "Write short, only wrote " << err << " bytes" << endl;
             } */
-        }
+        // }
     }
     // cleanup stuff
     snd_pcm_drain(pcmHandle);
     snd_pcm_close(pcmHandle);
-    //free(audioBuffer);
+    free(audioBuffer);
 }
 
 LinuxAudio::~LinuxAudio()
 {
-    callbackList.clear();
-    execThreads.clear();
+    // callbackList.clear();
+    // execThreads.clear();
 }

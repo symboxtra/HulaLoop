@@ -85,6 +85,11 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
             return getDevices(PLAYBACK);
         }
 
+        bool checkRates(Device *device)
+        {
+            return true;
+        }
+
         /**
          * Give everyone 4 cycles to catch up
          * This isn't guarenteed, but it has proven relatively effective
