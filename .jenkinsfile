@@ -99,7 +99,7 @@ pipeline {
                                         lcov -c -i -d build-linux -o build-linux/coverage.base
 
                                         cd ./build-linux
-                                        ctest -V
+                                        ctest -v
                                         cd ..
 
                                         lcov -c -d build-linux -o build-linux/coverage.actual
@@ -212,7 +212,7 @@ pipeline {
                                     lcov -c -i -d build-osx -o build-osx/coverage.base
 
                                     cd ./build-osx
-                                    ctest -V
+                                    ctest -v
                                     cd ..
 
                                     lcov -c -d build-osx -o build-osx/coverage.actual
@@ -317,7 +317,7 @@ pipeline {
                                     echo "Running test suite on ${ENV:HL_OS}..."
 
                                     # cd build-win
-                                    # ctest -C Debug -V
+                                    # ctest -C Debug -v
                                     # if ($LastExitCode -ne 0) {$host.SetShouldExit($LastExitCode)} # Exit with test error code
 
                                     # cd ..
@@ -375,7 +375,7 @@ pipeline {
                             DOX_ERR_COUNT=$(echo "${DOX_UNDOCUMENTED}" | wc -l)
 
                             echo -e "Doxygen completed with ${DOX_ERR_COUNT} undocumented member(s)"
-                            echo ${DOX_UNDOCUMENTED}
+                            echo "${DOX_UNDOCUMENTED}"
 
                             # Exit with error if Doxygen had too many undocumented members
                             if [ "${DOX_ERR_COUNT}" -gt "${HL_DOX_UNDOCUMENTED_LIMIT}" ]; then

@@ -26,17 +26,28 @@ git submodule update --remote --merge
 #### Debian-based Linux ####
 Required:
 ```bash
-sudo apt install g++ build-essential libgl1-mesa-dev cmake libasound2 libasound2-dev
+sudo apt install g++ build-essential cmake libgl1-mesa-dev libasound2 libasound2-dev
 ```
 
-**IMPORTANT:** Qt must be installed using the GUI installer since ```apt``` does not backport a recent enough version.
+**IMPORTANT:** This application requires Qt 5.10+. This typically has to be installed using the Qt GUI installer since ```apt``` does not backport a recent enough version.
 
 If you want to compile documentation:
 ```bash
-sudo apt install python3-sphinx doxygen graphviz
-python -m pip install recommonmark
+sudo apt install python-sphinx doxygen graphviz
+python -m pip install --user recommonmark
 ```
 
+#### RPM-based Linux ####
+Required:
+```bash
+sudo dnf install gcc-c++ make cmake qt5-devel qt5-qtquickcontrols2-devel alsa-lib alsa-lib-devel
+```
+
+If you want to compile documentation:
+```bash
+sudo dnf install python-sphinx doxygen graphviz
+python -m pip install --user recommonmark
+```
 
 #### OSX ####
 Install ```brew```:

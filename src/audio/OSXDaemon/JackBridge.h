@@ -38,6 +38,8 @@
 #include <sstream>
 #include <string>
 
+#include "hlaudio/internal/HulaAudioError.h"
+
 /******************************************************************************
  Audio functions (Generic/CoreAudio)
 ******************************************************************************/
@@ -192,11 +194,13 @@ class JackBridgeDriverIF {
         }
 
     public:
-        JackBridgeDriverIF(uint32_t _instance) : instance(_instance)
+        JackBridgeDriverIF(uint32_t _instance)
         {
+            this->instance = _instance;
         }
 
         ~JackBridgeDriverIF()
         {
+            printf("%sJackBridgeDriverIF destructor called\n", HL_PRINT_PREFIX);
         }
 };

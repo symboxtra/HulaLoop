@@ -6,27 +6,27 @@
 
 #include "hlaudio/internal/Device.h"
 #include "hlaudio/internal/OSAudio.h"
-
-using namespace std;
+#include "OSXDaemon/OSXDaemon.h"
 
 /**
- * A audio class that captures system wide audio on OSX
+ * A audio class that captures system wide audio on OSX.
  */
 class OSXAudio : public OSAudio {
     private:
-        vector<Device *> getDevices(DeviceType type);
+        OSXDaemon *osxDaemon;
 
     public:
         OSXAudio();
         virtual ~OSXAudio();
 
         void capture();
-
         bool checkRates(Device *device);
-        vector<Device *> getInputDevices();
-        vector<Device *> getOutputDevices();
 
-        static void test_capture(OSXAudio *param);
+        std::vector<Device *> getDevices(DeviceType type);
+        std::vector<Device *> getInputDevices();
+        std::vector<Device *> getOutputDevices();
+
+        static void test_capture(OSAudio *_this);
         void setActiveOutputDevice(Device *device);
 
 };

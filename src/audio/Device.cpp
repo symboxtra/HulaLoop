@@ -15,21 +15,11 @@ Device::Device(uint32_t *id, string name, DeviceType t)
 }
 
 /**
- * Set the ID of a system audio device
- *
- * @param id Pointer to ID value due to Windows return values
- */
-void Device::setID(uint32_t *id)
-{
-    this->deviceID = id;
-}
-
-/**
  * Get the ID of a system audio device
  *
  * @return id Pointer to a integer
  */
-uint32_t *Device::getID()
+uint32_t * Device::getID()
 {
     return this->deviceID;
 }
@@ -45,16 +35,6 @@ string Device::getName()
 }
 
 /**
- * Set the name of the system audio device
- *
- * @param name String representing the name of the device
- */
-void Device::setName(string name)
-{
-    this->deviceName = name;
-}
-
-/**
  * Get the type of system audio device
  *
  * @return type DeviceType enum value
@@ -62,16 +42,6 @@ void Device::setName(string name)
 DeviceType Device::getType()
 {
     return type;
-}
-
-/**
- * Set the type of system audio device
- *
- * @param type DeviceType enum value
- */
-void Device::setType(DeviceType t)
-{
-    this->type = t;
 }
 
 /**
@@ -87,11 +57,13 @@ void Device::deleteDevices(vector<Device *> devices)
     devices.clear();
 }
 
-
 /**
  * Deconstructs the device instance
  */
 Device::~Device()
 {
-    delete deviceID;
+    if (deviceID)
+        delete deviceID;
+
+    deviceName.clear();
 }

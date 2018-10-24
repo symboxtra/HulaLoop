@@ -26,8 +26,12 @@ class Transport {
     public:
 
 
+        #ifndef NDEBUG
+        Transport(bool dryRun);
+        #endif // END NDEBUG
+
         Transport();
-        ~Transport();
+        virtual ~Transport();
 
         bool record();
         bool stop();
