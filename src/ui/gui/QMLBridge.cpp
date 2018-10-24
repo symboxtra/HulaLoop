@@ -139,6 +139,6 @@ QString QMLBridge::getOutputDevices()
             devices += ",";
         }
     }
-    Device::deleteDevices(vd);
+    // Device::deleteDevices(vd);
     return QString::fromStdString(devices);
 }
