@@ -316,7 +316,7 @@ Exit:
  */
 bool WindowsAudio::checkRates(Device *device)
 {
-
+    return true;
 }
 
 /**

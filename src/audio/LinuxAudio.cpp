@@ -234,21 +234,7 @@ void LinuxAudio::capture()
         {
             cerr << "Read short, only read " << framesRead << " bytes" << endl;
         }
-        // write to standard output for now
-        // TODO: change to not standard output
-        // for (int i = 0; i < callbackList.size(); i++)
-        // {
-        //     thread(&ICallback::handleData, callbackList[i], audioBuffer, audioBufferSize).detach();
-        // }
-        // free(audioBuffer);
-        // audioBuffer = nullptr;
         copyToBuffers(audioBuffer,  framesRead * NUM_CHANNELS * sizeof(SAMPLE));
-        /* err = write(1, audioBuffer, audioBufferSize);
-        if(err != audioBufferSize)
-        {
-        cerr << "Write short, only wrote " << err << " bytes" << endl;
-        } */
-        // }
     }
     // cleanup stuff
     snd_pcm_drain(pcmHandle);

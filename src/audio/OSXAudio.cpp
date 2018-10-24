@@ -245,7 +245,7 @@ void OSXAudio::setActiveOutputDevice(Device *device)
  */
 bool OSXAudio::checkRates(Device *device)
 {
-
+    return true;
 }
 
 /**
