@@ -169,6 +169,7 @@ void LinuxAudio::capture()
     int audioBufferSize;             // size of the buffer for the audio
     byte *audioBuffer = NULL;        // buffer for the audio
     snd_pcm_uframes_t *temp = NULL;  // useless parameter because the api requires it
+    int framesRead = 0;              // amount of frames read
 
     // just writing to a buffer for now
     defaultDevice = "default";
@@ -187,7 +188,7 @@ void LinuxAudio::capture()
 
     // set to interleaved mode, 16-bit little endian, 2 channels
     snd_pcm_hw_params_set_access(pcmHandle, param, SND_PCM_ACCESS_RW_INTERLEAVED);
-    snd_pcm_hw_params_set_format(pcmHandle, param, SND_PCM_FORMAT_S16_LE);
+    snd_pcm_hw_params_set_format(pcmHandle, param, SND_PCM_FORMAT_FLOAT_LE);
     snd_pcm_hw_params_set_channels(pcmHandle, param, 2);
 
     // we set the sampling rate to whatever the user or device wants
@@ -211,7 +212,7 @@ void LinuxAudio::capture()
     snd_pcm_hw_params_get_period_size(param, &frame, NULL);
 
     // allocate memory for the buffer
-    audioBufferSize = frame * 4;
+    audioBufferSize = frame * NUM_CHANNELS * sizeof(SAMPLE);
     audioBuffer = (byte *)malloc(audioBufferSize);
 
     while (true)
@@ -219,19 +220,19 @@ void LinuxAudio::capture()
         // while (callbackList.size() > 0)
         // {
             // read frames from the pcm
-            err = snd_pcm_readi(pcmHandle, audioBuffer, frame);
-            if (err == -EPIPE)
+            framesRead = snd_pcm_readi(pcmHandle, audioBuffer, frame);
+            if (framesRead == -EPIPE)
             {
                 cerr << "Buffer overrun" << endl;
                 snd_pcm_prepare(pcmHandle);
             }
-            else if (err < 0)
+            else if (framesRead < 0)
             {
                 cerr << "Read error" << endl;
             }
-            else if (err != (int)frame)
+            else if (framesRead != (int)frame)
             {
-                cerr << "Read short, only read " << err << " bytes" << endl;
+                cerr << "Read short, only read " << framesRead << " bytes" << endl;
             }
             // write to standard output for now
             // TODO: change to not standard output
@@ -241,7 +242,7 @@ void LinuxAudio::capture()
             // }
             // free(audioBuffer);
             // audioBuffer = nullptr;
-            copyToBuffers(audioBuffer,  audioBufferSize);
+            copyToBuffers(audioBuffer,  framesRead * NUM_CHANNELS * sizeof(SAMPLE));
             /* err = write(1, audioBuffer, audioBufferSize);
             if(err != audioBufferSize)
             {
