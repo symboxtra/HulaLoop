@@ -148,7 +148,7 @@ void Controller::removeBuffer(HulaRingBuffer *rb)
  *
  * @return Newly allocated ring buffer.
  */
-HulaRingBuffer * Controller::createBuffer(float duration)
+HulaRingBuffer *Controller::createBuffer(float duration)
 {
     return new HulaRingBuffer(duration);
 }
@@ -157,9 +157,9 @@ HulaRingBuffer * Controller::createBuffer(float duration)
  * Allocate and initialize a HulaRingBuffer and automatically
  * add it to the OSAudio ring buffer list.
  */
-HulaRingBuffer * Controller::createAndAddBuffer(float duration)
+HulaRingBuffer *Controller::createAndAddBuffer(float duration)
 {
-    HulaRingBuffer * rb = new HulaRingBuffer(duration);
+    HulaRingBuffer *rb = new HulaRingBuffer(duration);
     addBuffer(rb);
     return rb;
 }
@@ -204,5 +204,7 @@ Controller::~Controller()
 
     // Don't do this until mem management is fixed
     if (audio)
+    {
         delete audio;
+    }
 }

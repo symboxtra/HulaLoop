@@ -64,7 +64,7 @@ TEST_F(TestOSXAudio, deprecated_get_output_devices)
  */
 TEST_F(TestOSXAudio, get_input_devices)
 {
-    vector<Device *> devs = audio->getDevices((DeviceType)(RECORD|LOOPBACK));
+    vector<Device *> devs = audio->getDevices((DeviceType)(RECORD | LOOPBACK));
     EXPECT_GT(devs.size(), 0);
 
     for (int i = 0; i < devs.size(); i++)

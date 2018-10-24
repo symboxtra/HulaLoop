@@ -99,7 +99,8 @@ class HulaRingBuffer {
         *
         * @return Next power of 2 from val
         */
-        static uint32_t nextPowerOf2(uint32_t val) {
+        static uint32_t nextPowerOf2(uint32_t val)
+        {
             val--;
             val = (val >> 1) | val;
             val = (val >> 2) | val;
@@ -112,9 +113,9 @@ class HulaRingBuffer {
     public:
         HulaRingBuffer(float maxDuration);
 
-        int32_t read(SAMPLE * data, int32_t maxSamples);
+        int32_t read(SAMPLE *data, int32_t maxSamples);
         int32_t directRead(int32_t maxSamples, void **dataPtr1, int32_t *size1, void **dataPtr2, int32_t *size2);
-        int32_t write(const SAMPLE * data, int32_t maxSamples);
+        int32_t write(const SAMPLE *data, int32_t maxSamples);
 
         ~HulaRingBuffer();
 

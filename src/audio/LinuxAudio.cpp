@@ -219,35 +219,35 @@ void LinuxAudio::capture()
     {
         // while (callbackList.size() > 0)
         // {
-            // read frames from the pcm
-            framesRead = snd_pcm_readi(pcmHandle, audioBuffer, frame);
-            if (framesRead == -EPIPE)
-            {
-                cerr << "Buffer overrun" << endl;
-                snd_pcm_prepare(pcmHandle);
-            }
-            else if (framesRead < 0)
-            {
-                cerr << "Read error" << endl;
-            }
-            else if (framesRead != (int)frame)
-            {
-                cerr << "Read short, only read " << framesRead << " bytes" << endl;
-            }
-            // write to standard output for now
-            // TODO: change to not standard output
-            // for (int i = 0; i < callbackList.size(); i++)
-            // {
-            //     thread(&ICallback::handleData, callbackList[i], audioBuffer, audioBufferSize).detach();
-            // }
-            // free(audioBuffer);
-            // audioBuffer = nullptr;
-            copyToBuffers(audioBuffer,  framesRead * NUM_CHANNELS * sizeof(SAMPLE));
-            /* err = write(1, audioBuffer, audioBufferSize);
-            if(err != audioBufferSize)
-            {
-            cerr << "Write short, only wrote " << err << " bytes" << endl;
-            } */
+        // read frames from the pcm
+        framesRead = snd_pcm_readi(pcmHandle, audioBuffer, frame);
+        if (framesRead == -EPIPE)
+        {
+            cerr << "Buffer overrun" << endl;
+            snd_pcm_prepare(pcmHandle);
+        }
+        else if (framesRead < 0)
+        {
+            cerr << "Read error" << endl;
+        }
+        else if (framesRead != (int)frame)
+        {
+            cerr << "Read short, only read " << framesRead << " bytes" << endl;
+        }
+        // write to standard output for now
+        // TODO: change to not standard output
+        // for (int i = 0; i < callbackList.size(); i++)
+        // {
+        //     thread(&ICallback::handleData, callbackList[i], audioBuffer, audioBufferSize).detach();
+        // }
+        // free(audioBuffer);
+        // audioBuffer = nullptr;
+        copyToBuffers(audioBuffer,  framesRead * NUM_CHANNELS * sizeof(SAMPLE));
+        /* err = write(1, audioBuffer, audioBufferSize);
+        if(err != audioBufferSize)
+        {
+        cerr << "Write short, only wrote " << err << " bytes" << endl;
+        } */
         // }
     }
     // cleanup stuff

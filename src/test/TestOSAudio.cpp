@@ -77,7 +77,7 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
 
         vector<Device *> getInputDevices()
         {
-            return getDevices((DeviceType)(RECORD|LOOPBACK));
+            return getDevices((DeviceType)(RECORD | LOOPBACK));
         }
 
         vector<Device *> getOutputDevices()

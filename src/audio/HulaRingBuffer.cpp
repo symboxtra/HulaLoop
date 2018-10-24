@@ -76,7 +76,7 @@ HulaRingBuffer::HulaRingBuffer(float maxDuration)
  * @param maxSamples Desired number of samples.
  * @return Number of samples read.
  */
-int32_t HulaRingBuffer::read(SAMPLE * data, int32_t maxSamples)
+int32_t HulaRingBuffer::read(SAMPLE *data, int32_t maxSamples)
 {
     ring_buffer_size_t samplesRead = PaUtil_ReadRingBuffer(&this->rb, (void *)data, (ring_buffer_size_t)maxSamples);
     if (samplesRead > 0)
@@ -142,7 +142,9 @@ int32_t HulaRingBuffer::write(const SAMPLE *data, int32_t maxSamples)
     ring_buffer_size_t elementsWritten = PaUtil_WriteRingBuffer(&this->rb, data, elementsToWrite);
 
     if (elementsWritten < maxSamples)
+    {
         printf("%sOverrun: %d of %d samples written\n", HL_PRINT_PREFIX, elementsWritten, maxSamples);
+    }
 
     return elementsWritten;
 }

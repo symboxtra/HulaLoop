@@ -19,7 +19,7 @@ Device::Device(uint32_t *id, string name, DeviceType t)
  *
  * @return id Pointer to a integer
  */
-uint32_t * Device::getID()
+uint32_t *Device::getID()
 {
     return this->deviceID;
 }
@@ -63,7 +63,9 @@ void Device::deleteDevices(vector<Device *> devices)
 Device::~Device()
 {
     if (deviceID)
+    {
         delete deviceID;
+    }
 
     deviceName.clear();
 }

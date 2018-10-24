@@ -119,7 +119,9 @@ void OSAudio::backgroundCapture(OSAudio *_this)
 {
     // Don't start if we have no buffers to copy to
     if (_this->rbs.size() == 0)
+    {
         return;
+    }
 
     // Reset the thread interrupt flag
     _this->endCapture.store(false);
@@ -136,11 +138,15 @@ void OSAudio::setActiveInputDevice(Device *device)
 {
     // TODO: Handle error
     if (device == NULL)
+    {
         return;
+    }
 
     // If this isn't a loopback or record device
     if (!(device->getType() & LOOPBACK || device->getType() & RECORD))
+    {
         return;
+    }
 
     this->checkRates(device);
     this->activeInputDevice = device;
@@ -159,12 +165,14 @@ void OSAudio::setActiveInputDevice(Device *device)
  *
  * @param threads Vector of threads to join and kill.
  */
-void OSAudio::joinAndKillThreads(vector<thread>& threads)
+void OSAudio::joinAndKillThreads(vector<thread> &threads)
 {
     for (auto &t : threads)
     {
         if (t.joinable())
+        {
             t.join();
+        }
     }
     threads.clear();
 }

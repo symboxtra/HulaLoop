@@ -40,10 +40,10 @@ OSXAudio::OSXAudio()
  * that could mess up the system like calling malloc() or free().
  */
 static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
-                           unsigned long framesPerBuffer,
-                           const PaStreamCallbackTimeInfo *timeInfo,
-                           PaStreamCallbackFlags statusFlags,
-                           void *userData)
+                            unsigned long framesPerBuffer,
+                            const PaStreamCallbackTimeInfo *timeInfo,
+                            PaStreamCallbackFlags statusFlags,
+                            void *userData)
 {
     OSXAudio *obj = (OSXAudio *)userData;
 
@@ -93,7 +93,7 @@ void OSXAudio::capture()
               paClipOff,             // We won't output out of range samples so don't bother clipping them
               paRecordCallback,
               this                   // Pass our instance in
-    );
+          );
 
     if (err != paNoError)
     {
@@ -265,5 +265,7 @@ OSXAudio::~OSXAudio()
 
     // Stop the daemon
     if (osxDaemon)
+    {
         delete osxDaemon;
+    }
 }

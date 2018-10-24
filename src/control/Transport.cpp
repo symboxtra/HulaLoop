@@ -141,5 +141,7 @@ Transport::~Transport()
     printf("%sTransport destructor called\n", HL_PRINT_PREFIX);
 
     if (controller)
+    {
         delete controller;
+    }
 }

@@ -35,8 +35,8 @@ class Controller : public ICallback {
 
         void addBuffer(HulaRingBuffer *rb);
         void removeBuffer(HulaRingBuffer *rb);
-        HulaRingBuffer * createBuffer(float duration);
-        HulaRingBuffer * createAndAddBuffer(float duration);
+        HulaRingBuffer *createBuffer(float duration);
+        HulaRingBuffer *createAndAddBuffer(float duration);
 
         void handleData(uint8_t *data, uint32_t size);
         vector<Device *> getInputDevices() const;

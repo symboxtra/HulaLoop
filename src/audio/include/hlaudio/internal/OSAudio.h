@@ -20,7 +20,7 @@ using namespace std;
  */
 class OSAudio {
     private:
-        void joinAndKillThreads(vector<thread>& threads);
+        void joinAndKillThreads(vector<thread> &threads);
 
     protected:
 

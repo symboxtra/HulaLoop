@@ -35,7 +35,7 @@ class Device {
         Device(uint32_t *id, string name, DeviceType t);
         ~Device();
 
-        uint32_t * getID();
+        uint32_t *getID();
 
         string getName();
 
