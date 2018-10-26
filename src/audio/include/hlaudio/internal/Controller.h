@@ -28,19 +28,21 @@ class Controller : public ICallback {
         #endif // END NDEBUG
 
         Controller();
-        ~Controller();
+        virtual ~Controller();
 
         void addBufferReadyCallback(ICallback *func);
         void removeBufferReadyCallback(ICallback *func);
 
         void addBuffer(HulaRingBuffer *rb);
         void removeBuffer(HulaRingBuffer *rb);
-        HulaRingBuffer * createBuffer(float duration);
-        HulaRingBuffer * createAndAddBuffer(float duration);
+        HulaRingBuffer *createBuffer(float duration);
+        HulaRingBuffer *createAndAddBuffer(float duration);
 
         void handleData(uint8_t *data, uint32_t size);
-        vector<Device *> getInputDevices();
-        vector<Device *> getOutputDevices();
+        vector<Device *> getInputDevices() const;
+        vector<Device *> getOutputDevices() const;
+        void setActiveInputDevice(Device *device) const;
+        void setActiveOutputDevice(Device *device) const;
 };
 
 #endif

@@ -40,10 +40,10 @@ OSXAudio::OSXAudio()
  * that could mess up the system like calling malloc() or free().
  */
 static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
-                           unsigned long framesPerBuffer,
-                           const PaStreamCallbackTimeInfo *timeInfo,
-                           PaStreamCallbackFlags statusFlags,
-                           void *userData)
+                            unsigned long framesPerBuffer,
+                            const PaStreamCallbackTimeInfo *timeInfo,
+                            PaStreamCallbackFlags statusFlags,
+                            void *userData)
 {
     OSXAudio *obj = (OSXAudio *)userData;
 
@@ -54,7 +54,7 @@ static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
     (void) userData;
 
     // TODO: Make sure this calculation is right
-    obj->copyToBuffers(inputBuffer, framesPerBuffer * NUM_CHANNELS);
+    obj->copyToBuffers(inputBuffer, framesPerBuffer * NUM_CHANNELS * sizeof(SAMPLE));
 
     return paContinue;
 }
@@ -93,7 +93,7 @@ void OSXAudio::capture()
               paClipOff,             // We won't output out of range samples so don't bother clipping them
               paRecordCallback,
               this                   // Pass our instance in
-    );
+          );
 
     if (err != paNoError)
     {
@@ -239,6 +239,16 @@ void OSXAudio::setActiveOutputDevice(Device *device)
 }
 
 /**
+ * Checks the sampling rate and bit depth of the device
+ *
+ * @param device Instance of Device that corresponds to the desired system device
+ */
+bool OSXAudio::checkRates(Device *device)
+{
+    return true;
+}
+
+/**
  * Deconstructs the OSXAudio instance
  */
 OSXAudio::~OSXAudio()
@@ -255,5 +265,7 @@ OSXAudio::~OSXAudio()
 
     // Stop the daemon
     if (osxDaemon)
+    {
         delete osxDaemon;
+    }
 }

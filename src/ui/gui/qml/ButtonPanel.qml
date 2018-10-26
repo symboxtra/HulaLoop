@@ -303,6 +303,7 @@ Rectangle {
                 }
                 onActivated: {
                     console.log("Audio device has been changed to: " + oDeviceInfoLabel.currentText);
+                    qmlbridge.setActiveOutputDevice(oDeviceInfoLabel.currentText);
                 }
                 currentIndex: 0
             }

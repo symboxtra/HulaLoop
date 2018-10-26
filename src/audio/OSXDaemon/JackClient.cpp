@@ -22,10 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include <jack/jack.h>
 #include <cerrno>
 #include <cstdio>
 #include <cstring>
-#include <jack/jack.h>
 
 #include "hlaudio/internal/HulaAudioError.h"
 #include "JackClient.hpp"
@@ -205,7 +205,9 @@ JackClient::~JackClient()
     printf("%sJackClient destructor called\n", HL_PRINT_PREFIX);
 
     if (!client)
+    {
         return;
+    }
 
     char *clientName = strdup(jack_get_client_name(client));
 

@@ -19,7 +19,7 @@ Transport::Transport()
  * required. This is usually used by unit tests targeting upper-level
  * modules that don't require the initialization of lower-level modules.
  *
- * This constructor is protected and designed for testing purposes only.
+ * This constructor is designed for testing purposes and exists only in debug builds.
  */
 Transport::Transport(bool dryRun)
 {
@@ -104,6 +104,36 @@ std::string Transport::stateToStr(const TransportState state) const
 }
 
 /**
+ * Get the current input devices
+ *
+ * @return vector containing current input devices
+ */
+vector<Device *> Transport::getInputDevices() const
+{
+    return controller->getInputDevices();
+}
+
+/**
+ * Get the current output devices
+ *
+ * @return vector containing current output devices
+ */
+vector<Device *> Transport::getOutputDevices() const
+{
+    return controller->getOutputDevices();
+}
+
+/**
+ * Get the controller instance
+ *
+ * @return pointer to controller
+ */
+Controller *Transport::getController() const
+{
+    return controller;
+}
+
+/**
  * Delete the controller we created
  */
 Transport::~Transport()
@@ -111,5 +141,7 @@ Transport::~Transport()
     printf("%sTransport destructor called\n", HL_PRINT_PREFIX);
 
     if (controller)
+    {
         delete controller;
+    }
 }

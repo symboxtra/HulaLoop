@@ -21,9 +21,10 @@ enum TransportState
 class Transport {
     private:
         TransportState state;
+        Controller *controller;
 
     public:
-        Controller *controller;
+
 
         #ifndef NDEBUG
         Transport(bool dryRun);
@@ -36,6 +37,10 @@ class Transport {
         bool stop();
         bool play();
         bool pause();
+
+        vector<Device *> getInputDevices() const;
+        vector<Device *> getOutputDevices() const;
+        Controller *getController() const;
 
         TransportState getState() const;
         std::string stateToStr(const TransportState state) const;

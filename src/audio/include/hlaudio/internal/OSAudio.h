@@ -20,7 +20,7 @@ using namespace std;
  */
 class OSAudio {
     private:
-        void joinAndKillThreads(vector<thread>& threads);
+        void joinAndKillThreads(vector<thread> &threads);
 
     protected:
 
@@ -111,8 +111,8 @@ class OSAudio {
          * Execution loop for loopback capture
          */
         virtual void capture() = 0;
-
         static void backgroundCapture(OSAudio *_this);
+        virtual bool checkRates(Device *device) = 0;
 
         void setActiveInputDevice(Device *device);
         void setActiveOutputDevice(Device *device);
