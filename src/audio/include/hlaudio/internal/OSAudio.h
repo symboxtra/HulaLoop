@@ -9,7 +9,6 @@
 
 #include "Device.h"
 #include "HulaRingBuffer.h"
-#include "ICallback.h"
 
 using namespace std;
 
@@ -40,23 +39,10 @@ class OSAudio {
         Device *activeOutputDevice;
 
         /**
-         * List of all added callback function
-         */
-        vector<ICallback *> callbackList;
-
-        /**
          * List of all added ring buffers.
          * Data received from the operating system is copied into each of these buffers.
          */
         vector<HulaRingBuffer *> rbs;
-
-        /**
-         * List of all running threads.
-         *
-         * TODO: Remove
-         * Leave until WindowsAudio can be updated.
-         */
-        vector<thread> execThreads;
 
         /**
          * Thread for input device activities.
@@ -84,9 +70,6 @@ class OSAudio {
 
         void setBufferSize(uint32_t size);
 
-        void addBufferReadyCallback(ICallback *c);
-        void removeBufferReadyCallback(ICallback *func);
-
         void addBuffer(HulaRingBuffer *rb);
         void removeBuffer(HulaRingBuffer *rb);
         void copyToBuffers(const void *data, uint32_t bytes);
@@ -106,6 +89,8 @@ class OSAudio {
          * @param device Instance of Device that corresponds to the desired system device
          */
         virtual vector<Device *> getOutputDevices() = 0;
+
+        virtual vector<Device *> getDevices(DeviceType type) = 0;
 
         /**
          * Execution loop for loopback capture

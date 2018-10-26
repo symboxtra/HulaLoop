@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include <hlaudio/hlaudio.h>
-#include "TestCallback.h"
 
 #define TEST_BUFFER_SIZE 0.2f
 #define MOCK_CAPTURE_TIME 25
@@ -27,18 +26,11 @@
  */
 class TestOSAudio : public OSAudio, public ::testing::Test {
     public:
-        TestCallback *handler1;
-        TestCallback *handler2;
         Device *testDevice;
 
         virtual void SetUp()
         {
-            this->handler1 = new TestCallback();
-            this->handler2 = new TestCallback();
             this->testDevice = new Device(NULL, "Device", RECORD);
-
-            // Make sure callback list is accesible and empty
-            ASSERT_EQ(this->callbackList.size(), 0);
         }
 
         void capture()
@@ -47,18 +39,6 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
             {
                 printf("Mock capturing...\n");
                 std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CAPTURE_TIME));
-            }
-        }
-
-        /**
-         * Mock receiving data from the OS.
-         */
-        void sendData()
-        {
-            byte *buffer = nullptr;
-            for (int i = 0; i < callbackList.size(); i++)
-            {
-                callbackList[i]->handleData(buffer, 0);
             }
         }
 
@@ -101,9 +81,6 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
 
         virtual void TearDown()
         {
-            delete this->handler1;
-            delete this->handler2;
-            delete this->testDevice;
         }
 };
 
@@ -248,93 +225,3 @@ TEST_F(TestOSAudio, switch_kills_thread)
     waitForThreadDeathBeforeDestruction();
 }
 */
-
-/**
- *
- * Same callback tests as Controller callbacks
- *
- */
-
-
-/**
- * Add a single callback.
- *
- * EXPECTED:
- *      The callback should be present and receive data.
- */
-TEST_F(TestOSAudio, singleCallback)
-{
-    // Add a single callback
-    this->addBufferReadyCallback(this->handler1);
-    ASSERT_EQ(this->callbackList.size(), 1);
-
-    // Make sure data gets delivered
-    this->sendData();
-    ASSERT_TRUE(this->handler1->dataReceived);
-}
-
-/**
- * Add two callbacks.
- *
- * EXPECTED:
- *      Both callbacks should be present and receive data.
- */
-TEST_F(TestOSAudio, twoCallbacks)
-{
-    // Add callback 1
-    this->addBufferReadyCallback(this->handler1);
-    ASSERT_EQ(this->callbackList.size(), 1);
-
-    // Add callback 2
-    this->addBufferReadyCallback(this->handler2);
-    ASSERT_EQ(this->callbackList.size(), 2);
-
-    // Make sure data gets delivered
-    this->sendData();
-    ASSERT_TRUE(this->handler1->dataReceived);
-    ASSERT_TRUE(this->handler2->dataReceived);
-}
-
-/**
- * Add the same callback twice.
- *
- * EXPECTED:
- *     Callback should not be duplicated.
- */
-TEST_F(TestOSAudio, duplicateCallback)
-{
-    this->addBufferReadyCallback(this->handler1);
-    this->addBufferReadyCallback(this->handler1);
-    ASSERT_EQ(this->callbackList.size(), 1);
-}
-
-/**
- * Add a callback and then remove it.
- *
- * EXPECTED:
- *     Callback should no longer be present.
- */
-TEST_F(TestOSAudio, removeCallback)
-{
-    this->addBufferReadyCallback(this->handler1);
-    this->removeBufferReadyCallback(this->handler1);
-
-    ASSERT_EQ(this->callbackList.size(), 0);
-}
-
-/**
- * Add two callbacks then remove the first.
- *
- * EXPECTED:
- *     First callback is removed without disturbing the second.
- */
-TEST_F(TestOSAudio, nonDisturbingRemoval)
-{
-    this->addBufferReadyCallback(this->handler1);
-    this->addBufferReadyCallback(this->handler2);
-
-    this->removeBufferReadyCallback(this->handler1);
-
-    ASSERT_EQ(this->callbackList.size(), 1);
-    ASSERT_EQ(this->callbackList[0], handler2);
-}

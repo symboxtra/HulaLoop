@@ -24,8 +24,6 @@
 
 using namespace std;
 
-using byte = uint8_t;
-
 #define REFTIMES_PER_SEC  10000000
 #define REFTIMES_PER_MILLISEC  10000
 
@@ -55,7 +53,7 @@ class WindowsAudio : public OSAudio {
         IMMDeviceCollection *deviceCollection = NULL;
 
         // Audio data
-        byte *pData;
+        uint8_t *pData;
 
     public:
         WindowsAudio();
@@ -64,8 +62,8 @@ class WindowsAudio : public OSAudio {
         bool checkRates(Device *device);
         vector<Device *> getInputDevices();
         vector<Device *> getOutputDevices();
+        vector<Device *> getDevices(DeviceType type);
 
-        static void test_capture(WindowsAudio *param);
         void capture();
 
         void setActiveOutputDevice(Device *device);

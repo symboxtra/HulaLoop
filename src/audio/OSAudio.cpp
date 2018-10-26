@@ -15,35 +15,6 @@ void OSAudio::setBufferSize(uint32_t size)
 }
 
 /**
- * Add upper layer functions to the callback list
- *
- * @param func Derived instance of ICallback class
- */
-void OSAudio::addBufferReadyCallback(ICallback *func)
-{
-    // Check if callback function already exists
-    if (find(callbackList.begin(), callbackList.end(), func) == callbackList.end())
-    {
-        this->callbackList.push_back(func);
-    }
-}
-
-/**
- * Remove upper layer functions to the callback list
- *
- * @param func Derived instance of ICallback class
- */
-void OSAudio::removeBufferReadyCallback(ICallback *callFunction)
-{
-    // Check if callback function exists to remove
-    vector<ICallback *>::iterator it = find(callbackList.begin(), callbackList.end(), callFunction);
-    if (it != callbackList.end())
-    {
-        this->callbackList.erase(it);
-    }
-}
-
-/**
  * Add an initialized buffer to the list of buffers that receive audio data.
  * If already present, the ring buffer will not be duplicated.
  *
