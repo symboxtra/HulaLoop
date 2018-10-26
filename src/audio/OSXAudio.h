@@ -20,6 +20,7 @@ class OSXAudio : public OSAudio {
         virtual ~OSXAudio();
 
         void capture();
+        bool checkRates(Device *device);
 
         std::vector<Device *> getDevices(DeviceType type);
         std::vector<Device *> getInputDevices();

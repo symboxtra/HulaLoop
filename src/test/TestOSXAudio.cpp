@@ -41,6 +41,7 @@ TEST_F(TestOSXAudio, deprecated_get_input_devices)
 {
     vector<Device *> devs = audio->getInputDevices();
     EXPECT_GT(devs.size(), 0);
+    Device::deleteDevices(devs);
 }
 
 /**
@@ -53,6 +54,7 @@ TEST_F(TestOSXAudio, deprecated_get_output_devices)
 {
     vector<Device *> devs = audio->getOutputDevices();
     EXPECT_GT(devs.size(), 0);
+    Device::deleteDevices(devs);
 }
 
 /**
@@ -64,7 +66,7 @@ TEST_F(TestOSXAudio, deprecated_get_output_devices)
  */
 TEST_F(TestOSXAudio, get_input_devices)
 {
-    vector<Device *> devs = audio->getDevices((DeviceType)(RECORD|LOOPBACK));
+    vector<Device *> devs = audio->getDevices((DeviceType)(RECORD | LOOPBACK));
     EXPECT_GT(devs.size(), 0);
 
     for (int i = 0; i < devs.size(); i++)
@@ -72,6 +74,7 @@ TEST_F(TestOSXAudio, get_input_devices)
         // Device should be record or loopback
         EXPECT_TRUE(devs[i]->getType() & RECORD || devs[i]->getType() & LOOPBACK);
     }
+    Device::deleteDevices(devs);
 }
 
 /**
@@ -91,6 +94,7 @@ TEST_F(TestOSXAudio, get_record_devices)
         // Device should be record
         EXPECT_TRUE(devs[i]->getType() & RECORD);
     }
+    Device::deleteDevices(devs);
 }
 
 /**
@@ -110,6 +114,7 @@ TEST_F(TestOSXAudio, get_loopback_devices)
         // Device should be loopback
         EXPECT_TRUE(devs[i]->getType() & LOOPBACK);
     }
+    Device::deleteDevices(devs);
 }
 
 /**
@@ -129,6 +134,7 @@ TEST_F(TestOSXAudio, get_output_devices)
         // Device should be playback
         EXPECT_TRUE(devs[i]->getType() & PLAYBACK);
     }
+    Device::deleteDevices(devs);
 }
 
 /**
@@ -141,6 +147,7 @@ TEST_F(TestOSXAudio, get_invalid_type_devices)
 {
     vector<Device *> devs = audio->getDevices((DeviceType)(0));
     EXPECT_EQ(devs.size(), 0);
+    Device::deleteDevices(devs);
 }
 
 /**
@@ -171,4 +178,5 @@ TEST_F(TestOSXAudio, short_capture)
     // Remove the buffer
     audio->removeBuffer(rb);
     delete rb;
+    delete [] readData;
 }

@@ -61,6 +61,7 @@ class WindowsAudio : public OSAudio {
         WindowsAudio();
         ~WindowsAudio();
 
+        bool checkRates(Device *device);
         vector<Device *> getInputDevices();
         vector<Device *> getOutputDevices();
 

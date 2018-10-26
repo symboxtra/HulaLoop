@@ -205,7 +205,9 @@ JackClient::~JackClient()
     printf("%sJackClient destructor called\n", HL_PRINT_PREFIX);
 
     if (!client)
+    {
         return;
+    }
 
     char *clientName = strdup(jack_get_client_name(client));
 

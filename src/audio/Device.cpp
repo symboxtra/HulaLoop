@@ -19,7 +19,7 @@ Device::Device(uint32_t *id, string name, DeviceType t)
  *
  * @return id Pointer to a integer
  */
-uint32_t * Device::getID()
+uint32_t *Device::getID()
 {
     return this->deviceID;
 }
@@ -45,12 +45,27 @@ DeviceType Device::getType()
 }
 
 /**
+ * Delete all the device pointers inside the vector
+ */
+void Device::deleteDevices(vector<Device *> devices)
+{
+    for (auto const &device : devices)
+    {
+        // cout << device->getName() << endl;
+        delete device;
+    }
+    devices.clear();
+}
+
+/**
  * Deconstructs the device instance
  */
 Device::~Device()
 {
-    if (deviceID)
+    /*if (deviceID)
+    {
         delete deviceID;
+    }*/
 
     deviceName.clear();
 }

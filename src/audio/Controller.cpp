@@ -148,7 +148,7 @@ void Controller::removeBuffer(HulaRingBuffer *rb)
  *
  * @return Newly allocated ring buffer.
  */
-HulaRingBuffer * Controller::createBuffer(float duration)
+HulaRingBuffer *Controller::createBuffer(float duration)
 {
     return new HulaRingBuffer(duration);
 }
@@ -157,9 +157,9 @@ HulaRingBuffer * Controller::createBuffer(float duration)
  * Allocate and initialize a HulaRingBuffer and automatically
  * add it to the OSAudio ring buffer list.
  */
-HulaRingBuffer * Controller::createAndAddBuffer(float duration)
+HulaRingBuffer *Controller::createAndAddBuffer(float duration)
 {
-    HulaRingBuffer * rb = new HulaRingBuffer(duration);
+    HulaRingBuffer *rb = new HulaRingBuffer(duration);
     addBuffer(rb);
     return rb;
 }
@@ -167,7 +167,7 @@ HulaRingBuffer * Controller::createAndAddBuffer(float duration)
 /**
  * Get input devices from OSAudio.
  */
-vector<Device *> Controller::getInputDevices()
+vector<Device *> Controller::getInputDevices() const
 {
     return audio->getInputDevices();
 }
@@ -175,13 +175,26 @@ vector<Device *> Controller::getInputDevices()
 /**
  * Get output devices from OSAudio.
  */
-vector<Device *> Controller::getOutputDevices()
+vector<Device *> Controller::getOutputDevices() const
 {
     return audio->getOutputDevices();
 }
 
 /**
- * Deconstructs the current instance of the Controller class.
+ * Middle function to transfer the device from the front end
+ */
+void Controller::setActiveInputDevice(Device *device) const
+{
+    audio->setActiveInputDevice(device);
+}
+
+void Controller::setActiveOutputDevice(Device *device) const
+{
+    audio->setActiveOutputDevice(device);
+}
+
+/**
+ * Deconstructs the current instance of the Controller class
  */
 Controller::~Controller()
 {
@@ -191,5 +204,7 @@ Controller::~Controller()
 
     // Don't do this until mem management is fixed
     if (audio)
+    {
         delete audio;
+    }
 }
