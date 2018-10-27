@@ -218,6 +218,9 @@ Rectangle {
                nameFilters: openDialog.nameFilters
                selectedNameFilter.index: document.fileType === "txt" ? 0 : 1
                folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+               onAccepted: {
+                   console.log(saveDialog.currentFile.toString());
+               }
            }
 
 //        FileDialog {
