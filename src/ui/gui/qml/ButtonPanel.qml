@@ -182,6 +182,32 @@ Rectangle {
             }
 
             RoundButton {
+                id: timerBtn
+                objectName: "timerBtn"
+
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                display: AbstractButton.TextOnly
+
+                contentItem: Text {
+                    font.family: "Material Design Icons"
+                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                    text: MDFont.Icon.timer
+                    color: "white"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                background: Rectangle {
+                    opacity: enabled ? 1 : 0.15
+                    color: timerBtn.pressed ? "grey" : "darkgrey"
+                    radius: timerBtn.width / 2
+                }
+
+                onClicked: timerPopup.open()
+            }
+
+            RoundButton {
                 id: exportBtn
                 objectName: "exportBtn"
 
@@ -206,38 +232,37 @@ Rectangle {
                 }
 
                 onClicked:saveDialog.open()
-
-
             }
 
         }
         FileDialog {
-               id: saveDialog
-               fileMode: FileDialog.SaveFile
-               defaultSuffix: document.fileType
-               nameFilters: openDialog.nameFilters
-               selectedNameFilter.index: document.fileType === "txt" ? 0 : 1
-               folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
-               onAccepted: {
-                   console.log(saveDialog.currentFile.toString());
-               }
-           }
+            id: saveDialog
+            objectName: "saveDialog"
+            fileMode: FileDialog.SaveFile
+            defaultSuffix: document.fileType
+            nameFilters: openDialog.nameFilters
+            selectedNameFilter.index: document.fileType === "txt" ? 0 : 1
+            folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+            onAccepted: {
+                console.log(saveDialog.currentFile.toString());
+            }
+        }
 
-//        FileDialog {
-//            id: fileDialog
-//            //fileMode:
-//            title: "Please choose a file"
-//            folder: shortcuts.home
-//            onAccepted: {
-//                console.log("You chose: " + fileDialog.fileUrls)
-//                //Qt.quit()
-//            }
-//            onRejected: {
-//                console.log("Canceled")
-//                //Qt.quit()
-//            }
-//            Component.onCompleted: visible = false
-//        }
+        //        FileDialog {
+        //            id: fileDialog
+        //            //fileMode:
+        //            title: "Please choose a file"
+        //            folder: shortcuts.home
+        //            onAccepted: {
+        //                console.log("You chose: " + fileDialog.fileUrls)
+        //                //Qt.quit()
+        //            }
+        //            onRejected: {
+        //                console.log("Canceled")
+        //                //Qt.quit()
+        //            }
+        //            Component.onCompleted: visible = false
+        //        }
 
         RowLayout {
             id: timeLabelLayout

@@ -146,7 +146,7 @@ TEST_F(TestGUI, timerButton)
 TEST_F(TestGUI, exportButton)
 {
     clickButton("exportBtn");
-    ASSERT_TRUE(isVisible("timerPopup"));
+    ASSERT_TRUE(isVisible("saveDialog"));
 }
 
 TEST_F(TestGUI, timers)
