@@ -143,6 +143,12 @@ TEST_F(TestGUI, timerButton)
     ASSERT_TRUE(isVisible("timerPopup"));
 }
 
+TEST_F(TestGUI, exportButton)
+{
+    clickButton("exportBtn");
+    ASSERT_TRUE(isVisible("timerPopup"));
+}
+
 TEST_F(TestGUI, timers)
 {
     startTimers();

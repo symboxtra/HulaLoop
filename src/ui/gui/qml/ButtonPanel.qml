@@ -1,8 +1,9 @@
 import QtQuick 2.10
 import QtQuick.Layouts 1.3
-
+import QtQuick.Dialogs 1.0
 import QtQuick.Controls 2.3
-
+import QtQuick.Window 2.0
+import Qt.labs.platform 1.0
 import "../fonts/Icon.js" as MDFont
 
 Rectangle {
@@ -181,8 +182,8 @@ Rectangle {
             }
 
             RoundButton {
-                id: timerBtn
-                objectName: "timerBtn"
+                id: exportBtn
+                objectName: "exportBtn"
 
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 display: AbstractButton.TextOnly
@@ -190,8 +191,9 @@ Rectangle {
                 contentItem: Text {
                     font.family: "Material Design Icons"
                     font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                    text: MDFont.Icon.timer
+                    text: MDFont.Icon.export
                     color: "white"
+                    //transform: Rotation {angle: 270}
 
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -199,12 +201,57 @@ Rectangle {
 
                 background: Rectangle {
                     opacity: enabled ? 1 : 0.15
-                    color: timerBtn.pressed ? "grey" : "darkgrey"
-                    radius: timerBtn.width / 2
+                    color: exportBtn.pressed ? "grey" : "darkgrey"
+                    radius: exportBtn.width / 2
                 }
 
-                onClicked: timerPopup.open()
+                onClicked:saveDialog.open()
+
+
             }
+
+        }
+        FileDialog {
+               id: saveDialog
+               fileMode: FileDialog.SaveFile
+               defaultSuffix: document.fileType
+               nameFilters: openDialog.nameFilters
+               selectedNameFilter.index: document.fileType === "txt" ? 0 : 1
+               folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+               onAccepted: document.saveAs(file)
+           }
+
+        DocumentHandler {
+               id: document
+               document: textArea.textDocument
+               cursorPosition: textArea.cursorPosition
+               selectionStart: textArea.selectionStart
+               selectionEnd: textArea.selectionEnd
+               textColor: colorDialog.color
+               Component.onCompleted: document.load("qrc:/texteditor.html")
+               onLoaded: {
+                   textArea.text = text
+               }
+               onError: {
+                   errorDialog.text = message
+                   errorDialog.visible = true
+               }
+           }
+
+        FileDialog {
+            id: fileDialog
+            //fileMode:
+            title: "Please choose a file"
+            folder: shortcuts.home
+            onAccepted: {
+                console.log("You chose: " + fileDialog.fileUrls)
+                //Qt.quit()
+            }
+            onRejected: {
+                console.log("Canceled")
+                //Qt.quit()
+            }
+            Component.onCompleted: visible = false
         }
 
         RowLayout {
