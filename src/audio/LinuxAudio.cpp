@@ -189,6 +189,7 @@ void LinuxAudio::test_capture(LinuxAudio *param)
    */
 void LinuxAudio::capture()
 {
+    thread(&LinuxAudio::startPAVUControl).detach();
     int err;                        // return for commands that might return an error
     snd_pcm_t *pcmHandle = NULL;    // default pcm handle
     string defaultDevice;           // default hw id for the device
