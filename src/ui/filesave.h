@@ -2,10 +2,9 @@
 #define FILESAVE_H
 
 
-class FileSave
-{
-public:
-    FileSave();
+class FileSave {
+    public:
+        FileSave();
 };
 
 #endif // FILESAVE_H

@@ -218,41 +218,23 @@ Rectangle {
                nameFilters: openDialog.nameFilters
                selectedNameFilter.index: document.fileType === "txt" ? 0 : 1
                folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
-               onAccepted: document.saveAs(file)
            }
 
-        DocumentHandler {
-               id: document
-               document: textArea.textDocument
-               cursorPosition: textArea.cursorPosition
-               selectionStart: textArea.selectionStart
-               selectionEnd: textArea.selectionEnd
-               textColor: colorDialog.color
-               Component.onCompleted: document.load("qrc:/texteditor.html")
-               onLoaded: {
-                   textArea.text = text
-               }
-               onError: {
-                   errorDialog.text = message
-                   errorDialog.visible = true
-               }
-           }
-
-        FileDialog {
-            id: fileDialog
-            //fileMode:
-            title: "Please choose a file"
-            folder: shortcuts.home
-            onAccepted: {
-                console.log("You chose: " + fileDialog.fileUrls)
-                //Qt.quit()
-            }
-            onRejected: {
-                console.log("Canceled")
-                //Qt.quit()
-            }
-            Component.onCompleted: visible = false
-        }
+//        FileDialog {
+//            id: fileDialog
+//            //fileMode:
+//            title: "Please choose a file"
+//            folder: shortcuts.home
+//            onAccepted: {
+//                console.log("You chose: " + fileDialog.fileUrls)
+//                //Qt.quit()
+//            }
+//            onRejected: {
+//                console.log("Canceled")
+//                //Qt.quit()
+//            }
+//            Component.onCompleted: visible = false
+//        }
 
         RowLayout {
             id: timeLabelLayout
