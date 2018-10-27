@@ -32,6 +32,19 @@ vector<Device *> LinuxAudio::getDevices(DeviceType type)
     char cardName[64];
     char deviceID[64];
 
+    // check what devices we need to get
+    bool loopSet = (type & DeviceType::LOOPBACK) == DeviceType::LOOPBACK;
+    bool recSet = (type & DeviceType::RECORD) == DeviceType::RECORD;
+    bool playSet = (type & DeviceType::PLAYBACK) == DeviceType::PLAYBACK;
+
+    // add pavucontrol to loopback for now
+    if (loopSet)
+    {
+        string *pvc = new string("Pulse Audio Volume Control");
+        string temp = *pvc;
+        devices.push_back(new Device(reinterpret_cast<uint32_t *>(pvc), temp, DeviceType::LOOPBACK));
+    }
+
     // outer while gets all the sound cards
     while (snd_card_next(&cardNumber) >= 0 && cardNumber >= 0)
     {
@@ -49,22 +62,31 @@ vector<Device *> LinuxAudio::getDevices(DeviceType type)
             snd_pcm_info_set_device(subInfo, subDevice);
             snd_pcm_info_set_subdevice(subInfo, 0);
             // check if the device is an input or output device
-            if (type & DeviceType::RECORD)
+            if (recSet)
             {
                 snd_pcm_info_set_stream(subInfo, SND_PCM_STREAM_CAPTURE);
+                if (snd_ctl_pcm_info(handle, subInfo) >= 0)
+                {
+                    sprintf(deviceID, "hw:%d,%d", cardNumber, subDevice);
+                    string deviceName = snd_ctl_card_info_get_name(cardInfo);
+                    string subDeviceName = snd_pcm_info_get_name(subInfo);
+                    string fullDeviceName = deviceName + ": " + subDeviceName;
+                    string *sDeviceID = new string(deviceID);
+                    devices.push_back(new Device(reinterpret_cast<uint32_t *>(sDeviceID), fullDeviceName, DeviceType::RECORD));
+                }
             }
-            else
+            if (playSet)
             {
                 snd_pcm_info_set_stream(subInfo, SND_PCM_STREAM_PLAYBACK);
-            }
-            if (snd_ctl_pcm_info(handle, subInfo) >= 0)
-            {
-                sprintf(deviceID, "hw:%d,%d", cardNumber, subDevice);
-                string deviceName = snd_ctl_card_info_get_name(cardInfo);
-                string subDeviceName = snd_pcm_info_get_name(subInfo);
-                string fullDeviceName = deviceName + ": " + subDeviceName;
-                string *sDeviceID = new string(deviceID);
-                devices.push_back(new Device(reinterpret_cast<uint32_t *>(sDeviceID), fullDeviceName, DeviceType::RECORD));
+                if (snd_ctl_pcm_info(handle, subInfo) >= 0)
+                {
+                    sprintf(deviceID, "hw:%d,%d", cardNumber, subDevice);
+                    string deviceName = snd_ctl_card_info_get_name(cardInfo);
+                    string subDeviceName = snd_pcm_info_get_name(subInfo);
+                    string fullDeviceName = deviceName + ": " + subDeviceName;
+                    string *sDeviceID = new string(deviceID);
+                    devices.push_back(new Device(reinterpret_cast<uint32_t *>(sDeviceID), fullDeviceName, DeviceType::PLAYBACK));
+                }
             }
         }
         snd_ctl_close(handle);
@@ -75,16 +97,16 @@ vector<Device *> LinuxAudio::getDevices(DeviceType type)
 
 bool LinuxAudio::checkRates(Device *device)
 {
-    int err;                         // return for commands that might return an error
-    snd_pcm_t *pcmHandle = NULL;     // default pcm handle
-    snd_pcm_hw_params_t *param;      // defaults param for the pcm
-    snd_pcm_format_t format;         // format that user chooses
-    unsigned samplingRate;            // sampling rate the user choooses
-    bool samplingRateValid;          // bool that gets set if the sampling rate is valid
-    bool formatValid;                // bool that gets set if the format is valid
+    int err;                     // return for commands that might return an error
+    snd_pcm_t *pcmHandle = NULL; // default pcm handle
+    snd_pcm_hw_params_t *param;  // defaults param for the pcm
+    snd_pcm_format_t format;     // format that user chooses
+    unsigned samplingRate;       // sampling rate the user choooses
+    bool samplingRateValid;      // bool that gets set if the sampling rate is valid
+    bool formatValid;            // bool that gets set if the format is valid
 
     // device id
-    char *id = (char *) reinterpret_cast<string *>(device->getID())->c_str();
+    char *id = (char *)reinterpret_cast<string *>(device->getID())->c_str();
     cout << id << endl;
     // open pcm device
     err = snd_pcm_open(&pcmHandle, id, SND_PCM_STREAM_CAPTURE, 0);
@@ -150,6 +172,11 @@ void LinuxAudio::setActiveOutputDevice(Device *device)
     // }
 }
 
+void LinuxAudio::startPAVUControl()
+{
+    system("/usr/bin/pavucontrol -t 2");
+}
+
 void LinuxAudio::test_capture(LinuxAudio *param)
 {
     param->capture();
@@ -162,14 +189,14 @@ void LinuxAudio::test_capture(LinuxAudio *param)
    */
 void LinuxAudio::capture()
 {
-    int err;                         // return for commands that might return an error
-    snd_pcm_t *pcmHandle = NULL;     // default pcm handle
-    string defaultDevice;            // default hw id for the device
-    snd_pcm_hw_params_t *param;      // object to store our paramets (they are just the default ones for now)
-    int audioBufferSize;             // size of the buffer for the audio
-    byte *audioBuffer = NULL;        // buffer for the audio
-    snd_pcm_uframes_t *temp = NULL;  // useless parameter because the api requires it
-    int framesRead = 0;              // amount of frames read
+    int err;                        // return for commands that might return an error
+    snd_pcm_t *pcmHandle = NULL;    // default pcm handle
+    string defaultDevice;           // default hw id for the device
+    snd_pcm_hw_params_t *param;     // object to store our paramets (they are just the default ones for now)
+    int audioBufferSize;            // size of the buffer for the audio
+    byte *audioBuffer = NULL;       // buffer for the audio
+    snd_pcm_uframes_t *temp = NULL; // useless parameter because the api requires it
+    int framesRead = 0;             // amount of frames read
 
     // just writing to a buffer for now
     defaultDevice = "default";
@@ -234,7 +261,7 @@ void LinuxAudio::capture()
         {
             cerr << "Read short, only read " << framesRead << " bytes" << endl;
         }
-        copyToBuffers(audioBuffer,  framesRead * NUM_CHANNELS * sizeof(SAMPLE));
+        copyToBuffers(audioBuffer, framesRead * NUM_CHANNELS * sizeof(SAMPLE));
     }
     // cleanup stuff
     snd_pcm_drain(pcmHandle);

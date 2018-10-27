@@ -26,6 +26,7 @@ class LinuxAudio : public OSAudio {
         LinuxAudio();
         ~LinuxAudio();
         void capture();
+        static void startPAVUControl();
         vector<Device *> getInputDevices();
         vector<Device *> getOutputDevices();
         vector<Device *> getDevices(DeviceType type);
