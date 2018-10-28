@@ -29,6 +29,10 @@ Transport::Transport()
 Transport::Transport(bool dryRun)
 {
     controller = new Controller(dryRun);
+    recorder = new Record(controller);
+
+    recordState = false;
+    playbackState = false;
 }
 #endif
 
@@ -59,7 +63,7 @@ bool Transport::stop()
     std::cout << "Stop button clicked!" << std::endl;
     state = STOPPED;
 
-    if(!recordState)
+    if(!playbackState || !recordState)
     {
         recorder->stop();
 
@@ -177,7 +181,8 @@ Transport::~Transport()
     printf("%sTransport destructor called\n", HL_PRINT_PREFIX);
 
     if (controller)
-    {
         delete controller;
-    }
+
+    if(recorder)
+        delete recorder;
 }
