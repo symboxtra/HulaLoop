@@ -130,6 +130,7 @@ pipeline {
                                 sh '''
                                     # Only run the memtests
                                     # No need for code coverage since these are the same as above just inside valgrind
+                                    cd ./build-linux
                                     ctest -V -R ${HL_MEMCHECK_PREFIX}
                                 '''
                             }
@@ -276,6 +277,7 @@ pipeline {
                                 sh '''
                                     # Only run the memtests
                                     # No need for code coverage since these are the same as above just inside valgrind
+                                    cd ./build-osx
                                     ctest -V -R ${HL_MEMCHECK_PREFIX}
                                 '''
                             }
