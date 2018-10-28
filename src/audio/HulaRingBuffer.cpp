@@ -157,6 +157,6 @@ HulaRingBuffer::~HulaRingBuffer()
     if (this->rbMemory != NULL)
     {
         PaUtil_FlushRingBuffer(&this->rb);
-        delete this->rbMemory;
+        delete [] this->rbMemory;
     }
 }
