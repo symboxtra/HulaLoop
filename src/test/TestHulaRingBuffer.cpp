@@ -65,7 +65,7 @@ SAMPLE *createTestSamples()
 TEST(TestHulaRingBuffer, create_and_destroy_buffer)
 {
     HulaRingBuffer *rb = new HulaRingBuffer(TEST_BUFFER_SIZE);
-    ASSERT_NE(rb, NULL);
+    ASSERT_TRUE(rb != NULL);
 
     delete rb;
 }
@@ -151,11 +151,11 @@ TEST(TestHulaRingBuffer, direct_read_buffer)
     EXPECT_EQ(samplesRead, TEST_NUM_SAMPLES);
 
     // Should be data in the first pair
-    EXPECT_NE(ptr1, NULL);
+    EXPECT_TRUE(ptr1 != NULL);
     EXPECT_EQ(count1, TEST_NUM_SAMPLES);
 
     // Should have cleared the second pair
-    EXPECT_NE(ptr2, NULL);
+    EXPECT_TRUE(ptr2 != NULL);
     EXPECT_EQ(count2, 0);
 
     // Make sure the two are identical
@@ -196,11 +196,11 @@ TEST(TestHulaRingBuffer, direct_read_wrap_buffer)
     }
 
     // Should be data in the first pair
-    EXPECT_NE(ptr1, NULL);
+    EXPECT_TRUE(ptr1 != NULL);
     EXPECT_GT(count1, 0);
 
     // Should be data in the second pair
-    EXPECT_NE(ptr2, NULL);
+    EXPECT_TRUE(ptr2 != NULL);
     EXPECT_GT(count2, 0);
 
     // Sizes should sum
