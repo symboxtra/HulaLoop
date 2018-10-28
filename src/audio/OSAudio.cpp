@@ -93,6 +93,16 @@ void OSAudio::backgroundCapture(OSAudio *_this)
     {
         return;
     }
+    if (_this->activeInputDevice == NULL)
+    {
+        vector<Device*> devices = _this->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
+        if(devices.empty())
+            return;
+
+        delete _this->activeInputDevice;
+        _this->activeInputDevice = new Device(*devices[0]);
+        Device::deleteDevices(devices);
+    }
 
     // Reset the thread interrupt flag
     _this->endCapture.store(false);
@@ -114,13 +124,15 @@ void OSAudio::setActiveInputDevice(Device *device)
     }
 
     // If this isn't a loopback or record device
-    if (!(device->getType() & LOOPBACK || device->getType() & RECORD))
+    if (device->getType() & LOOPBACK != LOOPBACK && device->getType() & RECORD != RECORD)
     {
         return;
     }
 
     this->checkRates(device);
-    this->activeInputDevice = device;
+
+    delete this->activeInputDevice;
+    this->activeInputDevice = new Device(*device);
 
     // Signal death and wait for all threads to catch the signal
     this->endCapture.store(true);
@@ -151,12 +163,14 @@ void OSAudio::joinAndKillThreads(vector<thread> &threads)
 /**
  * Set the selected output device and restart capture threads with
  * new device
- *
+ *f
  * @param device Instance of Device that corresponds to the desired system device
  */
 void OSAudio::setActiveOutputDevice(Device *device)
 {
     this->checkRates(device);
+
+
     this->activeOutputDevice = device;
 }
 

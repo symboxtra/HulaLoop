@@ -3,6 +3,8 @@
 
 WindowsAudio::WindowsAudio()
 {
+    pa_status = paNoError;
+    activeInputDevice = NULL;
 }
 
 /**
@@ -110,7 +112,7 @@ vector<Device*> WindowsAudio::getDevices(DeviceType type)
         {
             deviceInfo = Pa_GetDeviceInfo(i);
 
-            if(deviceInfo->maxInputChannels != 0 && deviceInfo->hostApi == Pa_GetDefaultHostApi())
+            if(deviceInfo->maxInputChannels != 0 && deviceInfo->hostApi == (Pa_GetDefaultHostApi()+1))
             {
                 // Create instance of Device using acquired data
                 Device* audio = new Device(NULL, string(deviceInfo->name), DeviceType::RECORD);
@@ -130,8 +132,6 @@ vector<Device*> WindowsAudio::getDevices(DeviceType type)
 
         pa_status = Pa_Terminate();
         HANDLE_PA_ERROR(pa_status);
-
-       return {};
     }
 
 Exit:
@@ -194,11 +194,11 @@ void WindowsAudio::capture()
     status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
     HANDLE_ERROR(status);
 
-    // Select the current active output device
-    status = pEnumerator->GetDevice(reinterpret_cast<LPCWSTR>(activeOutputDevice->getID()), &audioDevice);
+    // Select the current active record/loopback device
+    status = pEnumerator->GetDevice(reinterpret_cast<LPCWSTR>(activeInputDevice->getID()), &audioDevice);
     // status = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &audioDevice);
     HANDLE_ERROR(status);
-    cout << "Selected Device: " << activeOutputDevice->getName() << endl; // TODO: Remove this later
+    cout << "Selected Device: " << activeInputDevice->getName() << endl; // TODO: Remove this later
 
     // Activate the IMMDevice
     status = audioDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void **)&audioClient);
@@ -242,14 +242,8 @@ void WindowsAudio::capture()
             status = captureClient->GetBuffer(&pData, &numFramesAvailable, &flags, NULL, NULL);
             HANDLE_ERROR(status);
 
-            // Detect silent noise
-            if (flags & AUDCLNT_BUFFERFLAGS_SILENT)
-            {
-                pData = NULL;
-            }
-
             // Copy to ringbuffers
-            this->copyToBuffers(pData, numFramesAvailable * NUM_CHANNELS * sizeof(SAMPLE));
+            this->copyToBuffers((void*)pData, numFramesAvailable * NUM_CHANNELS * sizeof(SAMPLE));
 
             // Release buffer after data is captured and handled
             status = captureClient->ReleaseBuffer(numFramesAvailable);
@@ -273,12 +267,14 @@ Exit:
     SAFE_RELEASE(audioClient);
     SAFE_RELEASE(captureClient);
 
-    _com_error err(status);
-    LPCTSTR errMsg = err.ErrorMessage();
-    cerr << "\nError: " << errMsg << endl;
-    exit(1);
-
-    // TODO: Handle error accordingly
+    if(FAILED(status))
+    {
+        _com_error err(status);
+        LPCTSTR errMsg = err.ErrorMessage();
+        cerr << "\nError: " << errMsg << endl;
+        exit(1);
+        // TODO: Handle error accordingly
+    }
 }
 
 /**
@@ -295,9 +291,4 @@ bool WindowsAudio::checkRates(Device *device)
 WindowsAudio::~WindowsAudio()
 {
     printf("%sWindowsAudio destructor called\n", HL_PRINT_PREFIX);
-
-    delete pEnumerator;
-    delete deviceCollection;
-
-    delete pData;
 }

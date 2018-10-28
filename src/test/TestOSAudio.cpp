@@ -20,10 +20,6 @@
                                     }, std::ref(promisedFinished)).detach(); \
                                     EXPECT_FALSE(futureResult.wait_for(std::chrono::milliseconds(X)) != std::future_status::timeout);
 
-/**
- * This test class currently implements both the ring buffer
- * and callback approaches for memory management.
- */
 class TestOSAudio : public OSAudio, public ::testing::Test {
     public:
         Device *testDevice;

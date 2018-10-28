@@ -32,32 +32,6 @@ class TestOSXAudio : public ::testing::Test {
 OSXAudio *TestOSXAudio::audio = NULL;
 
 /**
- * DEPRECATED -- Get input devices.
- *
- * EXPECTED:
- *      Device list is not empty.
- */
-TEST_F(TestOSXAudio, deprecated_get_input_devices)
-{
-    vector<Device *> devs = audio->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
-    EXPECT_GT(devs.size(), 0);
-    Device::deleteDevices(devs);
-}
-
-/**
- * DEPRECATED -- Get output devices.
- *
- * EXPECTED:
- *      Device list is not empty.
- */
-TEST_F(TestOSXAudio, deprecated_get_output_devices)
-{
-    vector<Device *> devs = audio->getDevices(DeviceType::PLAYBACK);
-    EXPECT_GT(devs.size(), 0);
-    Device::deleteDevices(devs);
-}
-
-/**
  * Get input (record or loopback) devices.
  *
  * EXPECTED:
