@@ -116,7 +116,12 @@ pipeline {
 
                         stage('Memcheck - Linux') {
                             when {
-                                expression { return env.BRANCH_NAME == /(master|develop|PR.*)/ }
+                                anyOf {
+                                    branch 'master'
+                                    branch 'develop'
+                                    changeRequest target: 'master'
+                                    changeRequest target: 'develop'
+                                }
                             }
 
                             steps {
@@ -256,7 +261,12 @@ pipeline {
 
                         stage('Memcheck - OSX') {
                             when {
-                                expression { return env.BRANCH_NAME == /(master|develop|PR.*)/ }
+                                anyOf {
+                                    branch 'master'
+                                    branch 'develop'
+                                    changeRequest target: 'master'
+                                    changeRequest target: 'develop'
+                                }
                             }
 
                             steps {
