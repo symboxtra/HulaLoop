@@ -32,6 +32,8 @@ class QMLBridge : public QObject {
         Q_INVOKABLE void play();
         Q_INVOKABLE void pause();
 
+        Q_INVOKABLE void saveFile(QString dir);
+
     signals:
 
         /**
