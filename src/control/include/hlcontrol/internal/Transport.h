@@ -3,6 +3,7 @@
 
 #include <hlaudio/hlaudio.h>
 #include <string>
+using namespace std;
 
 /**
  * Available states for the recording/playback logic of the application.
@@ -25,7 +26,6 @@ class Transport {
 
     public:
 
-
         #ifndef NDEBUG
         Transport(bool dryRun);
         #endif // END NDEBUG
@@ -41,6 +41,8 @@ class Transport {
         vector<Device *> getInputDevices() const;
         vector<Device *> getOutputDevices() const;
         Controller *getController() const;
+
+        void exportFile(std::string targetDirectory);
 
         TransportState getState() const;
         std::string stateToStr(const TransportState state) const;

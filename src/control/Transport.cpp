@@ -2,6 +2,7 @@
 
 #include "hlcontrol/internal/HulaControlError.h"
 #include "hlcontrol/internal/Transport.h"
+#include "hlcontrol/internal/Export.h"
 
 /**
  * Construct a new instance of the Transport class.
@@ -131,6 +132,13 @@ vector<Device *> Transport::getOutputDevices() const
 Controller *Transport::getController() const
 {
     return controller;
+}
+
+void Transport::exportFile(string targetDirectory)
+{
+    Export *exp = new Export(targetDirectory);
+
+    delete exp;
 }
 
 /**

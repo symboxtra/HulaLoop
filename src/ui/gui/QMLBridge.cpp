@@ -142,3 +142,16 @@ QString QMLBridge::getOutputDevices()
     Device::deleteDevices(vd);
     return QString::fromStdString(devices);
 }
+
+/**
+ * Get the directory the user wants to save to
+ *
+ * @param QString containing the directory
+ *
+ * @return String containing the directory
+ */
+void QMLBridge::saveFile(QString dir)
+{
+    string directory = dir.toStdString();
+    transport->exportFile(directory);
+}
