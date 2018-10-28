@@ -39,9 +39,16 @@ bool Transport::record()
 {
     std::cout << "Record button clicked!" << std::endl;
     state = RECORDING;
+
     if(recordState)
+    {
         recorder->start();
-    return true;
+
+        recordState = false;
+
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -51,9 +58,17 @@ bool Transport::stop()
 {
     std::cout << "Stop button clicked!" << std::endl;
     state = STOPPED;
-    if(recordState)
+
+    if(!recordState)
+    {
         recorder->stop();
-    return true;
+
+        recordState = false;
+        playbackState = true;
+
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -63,7 +78,15 @@ bool Transport::play()
 {
     std::cout << "Play button clicked!" << std::endl;
     state = PLAYING;
-    return true;
+
+    if(playbackState)
+    {
+        // TODO: Add playback call
+        playbackState = false;
+
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -74,12 +97,23 @@ bool Transport::pause()
     std::cout << "Pause button clicked!" << std::endl;
     state = PAUSED;
 
-    // TODO: Stop recording or playback based on state machine
-    if(recordState) // Pause record
+    if(!recordState) // Pause record
+    {
         recorder->stop();
-    else if(playbackState) {} // Pause playback
 
-    return true;
+        recordState = true;
+        playbackState = true;
+
+        return true;
+    }
+    else if(!playbackState) // Pause playback
+    {
+        // TODO: Add playback pause call
+        playbackState = true;
+
+        return true;
+    }
+    return false;
 }
 
 /**

@@ -3,7 +3,7 @@
 
 #include <hlaudio/hlaudio.h>
 
-class Record : public ICallback {
+class Record {
 
     private:
         Controller* controller;
@@ -11,8 +11,6 @@ class Record : public ICallback {
     public:
         Record(Controller* control);
         ~Record();
-
-        void handleData(uint8_t* data, uint32_t size);
 
         void start();
         void stop();

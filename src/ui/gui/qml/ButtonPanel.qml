@@ -92,13 +92,21 @@ Rectangle {
 
                 onClicked: {
 
-                    stopBtn.enabled = true;
-                    playpauseBtn.enabled = true;
-                    playpauseBtn.contentItem.text = MDFont.Icon.pause;
-                    playpauseBtn.contentItem.color = "white";
-                    enabled = false;
+                    let success = qmlbridge.record()
 
-                    qmlbridge.record();
+                    if(qmlbridge.getTransportState() === "Recording") // TODO: Check record call success
+                    {
+                        // Update stop button
+                        stopBtn.enabled = true;
+
+                        // Update play/pause button
+                        playpauseBtn.enabled = true;
+                        playpauseBtn.contentItem.text = MDFont.Icon.pause;
+                        playpauseBtn.contentItem.color = "white";
+
+                        // Update self
+                        enabled = false;
+                    }
                 }
             }
 
@@ -128,16 +136,21 @@ Rectangle {
                 }
 
                 onClicked: {
-                    // Add JavaScript for recording time
-                    qmlbridge.stop()
-                    enabled = false;
+                    let success = qmlbridge.stop()
 
-                    recordBtn.enabled = false;
-                    isStopped = true;
-                    // TODO: Set variable so that pause cannot re-enable record and stop
-                    playpauseBtn.enabled = true;
-                    playpauseBtn.contentItem.text = MDFont.Icon.play;
-                    playpauseBtn.contentItem.color = "green";
+                    if(qmlbridge.getTransportState() === "Stopped")
+                    {
+                        enabled = false;
+
+                        recordBtn.enabled = false;
+                        isStopped = true;
+
+                        playpauseBtn.enabled = true;
+                        playpauseBtn.contentItem.text = MDFont.Icon.play;
+                        playpauseBtn.contentItem.color = "green";
+
+                        exportBtn.enabled = true;
+                    }
                 }
             }
 
@@ -166,30 +179,37 @@ Rectangle {
                 }
 
                 onClicked: {
-                    //qmlbridge.pause()
+
+                    let success;
 
                     if(contentItem.text == MDFont.Icon.pause)
                     {
-                        contentItem.text = MDFont.Icon.play;
-                        contentItem.color = "green";
+                        success = qmlbridge.pause();
 
-                        if(!stopBtn.isStopped)
+                        if(qmlbridge.getTransportState() === "Paused")
                         {
-                            stopBtn.enabled = true;
-                            recordBtn.enabled = true;
-                        }
+                            contentItem.text = MDFont.Icon.play;
+                            contentItem.color = "green";
 
-                        qmlbridge.pause();
+                            if(!stopBtn.isStopped)
+                            {
+                                stopBtn.enabled = true;
+                                recordBtn.enabled = true;
+                            }
+                        }
                     }
                     else
                     {
-                        contentItem.text = MDFont.Icon.pause;
-                        contentItem.color = "white";
+                        success = qmlbridge.play();
 
-                        stopBtn.enabled = false; // TODO: Determine final state of playback button
-                        recordBtn.enabled = false;
+                        if(qmlbridge.getTransportState() === "Playing")
+                        {
+                            contentItem.text = MDFont.Icon.pause;
+                            contentItem.color = "white";
 
-                        qmlbridge.play();
+                            stopBtn.enabled = false; // TODO: Determine final state of playback button
+                            recordBtn.enabled = false;
+                        }
                     }
 
                 }
@@ -224,6 +244,7 @@ Rectangle {
             RoundButton {
                 id: exportBtn
                 objectName: "exportBtn"
+                enabled: false
 
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 display: AbstractButton.TextOnly
