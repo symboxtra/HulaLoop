@@ -1,6 +1,7 @@
 #include <string>
 
 #include "QMLBridge.h"
+#include <QUrl>
 
 /**
  * Construct a new instance of the QMLBridge class.
@@ -152,7 +153,8 @@ QString QMLBridge::getOutputDevices()
  */
 void QMLBridge::saveFile(QString dir)
 {
-    string directory = dir.toStdString();
-    cout << directory << endl;
-    // transport->exportFile(directory);
+    // create a Qurl so it is easy to convert
+    QUrl url(dir);
+    string directory = url.path().toStdString();
+    transport->exportFile(directory);
 }

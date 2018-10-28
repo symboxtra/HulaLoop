@@ -24,11 +24,13 @@ void Export::copyData(string inputFileDirectory)
     if (iFile.fail())
     {
         // TODO: Handle error
+        cerr << "Error opening file: " << inputFileDirectory << endl;
     }
     ofstream oFile(this->targetDirectory, ios::binary);
     if (oFile.fail())
     {
         // TODO: Handle error
+        cerr << "Error opening file: " << this->targetDirectory << endl;
     }
 
     // copies the file

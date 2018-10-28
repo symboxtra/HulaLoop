@@ -137,6 +137,7 @@ Controller *Transport::getController() const
 void Transport::exportFile(string targetDirectory)
 {
     Export *exp = new Export(targetDirectory);
+    // TODO: Make it an actual directory
     exp->copyData("/tmp/temp.txt");
     delete exp;
 }
