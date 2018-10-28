@@ -8,4 +8,6 @@
 
 #define HL_VERSION_STR   "@HL_VERSION_STR@"
 
+#define HL_PACKAGE_TYPE  "@HL_PACKAGE_TYPE@"
+
 #endif

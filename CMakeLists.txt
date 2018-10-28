@@ -21,13 +21,6 @@ message (STATUS "")
 message (STATUS "Building ${PROJECT_NAME} v${HL_VERSION_STR}")
 message (STATUS "")
 
-# Generate version header
-configure_file (
-    "${PROJECT_SOURCE_DIR}/cmake/HulaVersion.h.in"
-    "${CMAKE_BINARY_DIR}/HulaVersion.h"
-)
-include_directories (${CMAKE_BINARY_DIR})
-
 # Set build type if not provided
 # Default to DEBUG
 if (NOT CMAKE_BUILD_TYPE)
@@ -42,6 +35,19 @@ endif ()
 set (64BIT FALSE)
 if (WIN32 AND CMAKE_GENERATOR_PLATFORM MATCHES "x64")
     set (64BIT TRUE)
+endif ()
+
+set (HL_PACKAGE_TYPE ".tar.gz")
+if (WIN32 AND 64BIT)
+    set (HL_PACKAGE_TYPE "win64.exe")
+elseif (WIN32 AND NOT 64BIT)
+    set (HL_PACKAGE_TYPE "win32.exe")
+elseif (OSX)
+    set (HL_PACKAGE_TYPE ".dmg")
+elseif (EXISTS "/etc/debian_version")
+    set (HL_PACKAGE_TYPE ".deb")
+elseif (EXISTS "/etc/redhat-release")
+    set (HL_PACKAGE_TYPE ".rpm")
 endif ()
 
 # Global build options
@@ -85,6 +91,16 @@ set (HL_LIBRARIES)
 if (WIN32)
     set (HL_LIBRARIES ${HL_LIBRARIES} winmm.lib ) # TODO: Add required windows libraries
 endif ()
+
+
+
+
+######## Generated Headers ########
+configure_file (
+    "${PROJECT_SOURCE_DIR}/cmake/HulaVersion.h.in"
+    "${CMAKE_BINARY_DIR}/HulaVersion.h"
+)
+include_directories (${CMAKE_BINARY_DIR})
 
 
 
