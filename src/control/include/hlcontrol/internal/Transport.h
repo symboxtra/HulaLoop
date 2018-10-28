@@ -25,7 +25,6 @@ class Transport {
 
     public:
 
-
         #ifndef NDEBUG
         Transport(bool dryRun);
         #endif // END NDEBUG
@@ -41,6 +40,8 @@ class Transport {
         vector<Device *> getInputDevices() const;
         vector<Device *> getOutputDevices() const;
         Controller *getController() const;
+
+        void exportFile(std::string targetDirectory);
 
         TransportState getState() const;
         std::string stateToStr(const TransportState state) const;

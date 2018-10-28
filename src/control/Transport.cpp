@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "hlcontrol/internal/Export.h"
 #include "hlcontrol/internal/HulaControlError.h"
 #include "hlcontrol/internal/Transport.h"
 
@@ -111,6 +112,13 @@ std::string Transport::stateToStr(const TransportState state) const
 Controller *Transport::getController() const
 {
     return controller;
+}
+
+void Transport::exportFile(string targetDirectory)
+{
+    Export exp(targetDirectory);
+    // TODO: Make it an actual directory
+    exp.copyData("/tmp/temp.txt");
 }
 
 /**

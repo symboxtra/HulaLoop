@@ -1,6 +1,7 @@
-#include <string>
-
 #include "QMLBridge.h"
+
+#include <QUrl>
+#include <string>
 
 /**
  * Construct a new instance of the QMLBridge class.
@@ -141,4 +142,19 @@ QString QMLBridge::getOutputDevices()
     }
     Device::deleteDevices(vd);
     return QString::fromStdString(devices);
+}
+
+/**
+ * Get the directory the user wants to save to
+ *
+ * @param QString containing the directory
+ *
+ * @return String containing the directory
+ */
+void QMLBridge::saveFile(QString dir)
+{
+    // create a Qurl so it is easy to convert
+    QUrl url(dir);
+    string directory = url.path().toStdString();
+    transport->exportFile(directory);
 }
