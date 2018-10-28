@@ -99,7 +99,7 @@ pipeline {
                                         lcov -c -i -d build-linux -o build-linux/coverage.base
 
                                         cd ./build-linux
-                                        ctest -v
+                                        ctest -V
                                         cd ..
 
                                         lcov -c -d build-linux -o build-linux/coverage.actual
@@ -212,7 +212,7 @@ pipeline {
                                     lcov -c -i -d build-osx -o build-osx/coverage.base
 
                                     cd ./build-osx
-                                    ctest -v
+                                    ctest -V
                                     cd ..
 
                                     lcov -c -d build-osx -o build-osx/coverage.actual
@@ -317,7 +317,7 @@ pipeline {
                                     echo "Running test suite on ${ENV:HL_OS}..."
 
                                     # cd build-win
-                                    # ctest -C Debug -v
+                                    # ctest -C Debug -V
                                     # if ($LastExitCode -ne 0) {$host.SetShouldExit($LastExitCode)} # Exit with test error code
 
                                     # cd ..
