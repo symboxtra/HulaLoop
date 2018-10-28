@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <ICallback.h>
 #include <Controller.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,7 +10,7 @@
 #include <iostream>
 using namespace std;
 
-class TestAudioOutput : public ICallback, public ::testing::Test {
+class TestAudioOutput : public ::testing::Test {
     public:
         vector<byte *> combinedData;
         Controller *controller = nullptr;
@@ -19,18 +18,11 @@ class TestAudioOutput : public ICallback, public ::testing::Test {
         virtual void SetUp()
         {
             controller = new Controller();
-            controller->addBufferReadyCallback(this);
         }
 
         virtual void TearDown()
         {
-            controller->removeBufferReadyCallback(this);
             //delete controller; //TODO: Fix garbage collection
-        }
-
-        void handleData(byte *data, uint32_t size)
-        {
-            combinedData.push_back(data);
         }
 };
 
@@ -50,7 +42,7 @@ TEST_F(TestAudioOutput, checkAudioOutput)
 
 TEST_F(TestAudioOutput, checkDeviceList)
 {
-    ASSERT_FALSE(controller->getOutputDevices().empty());
+    ASSERT_FALSE(controller->getDevices(DeviceType::PLAYBACK).empty());
 
-    ASSERT_FALSE(controller->getInputDevices().empty());
+    ASSERT_FALSE(controller->getDevices((DeviceType)(DeviceType::LOOPBACK | DeviceType::RECORD)).empty());
 }

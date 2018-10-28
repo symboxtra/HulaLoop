@@ -17,7 +17,6 @@ class TestGUI : public ::testing::Test {
 
         virtual void SetUp()
         {
-
             int argc = 0;
             char **argv = nullptr;
 
@@ -27,21 +26,17 @@ class TestGUI : public ::testing::Test {
 
             engine = new QQmlApplicationEngine();
             engine->load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
-
         }
 
         virtual void TearDown()
         {
-
             app->exit();
             delete engine;
             delete app;
-
         }
 
         QString getTransportState()
         {
-
             QObject *label = engine->rootObjects()[0]->findChild<QObject *>(QString::fromStdString("transportState"));
 
             if (label)
@@ -59,7 +54,6 @@ class TestGUI : public ::testing::Test {
 
         bool isVisible(QString objName)
         {
-
             QObject *obj = engine->rootObjects()[0]->findChild<QObject *>(objName);
 
             if (obj)
@@ -72,19 +66,16 @@ class TestGUI : public ::testing::Test {
 
         void clickButton(QString objName)
         {
-
             QObject *btn = engine->rootObjects()[0]->findChild<QObject *>(objName);
 
             if (btn)
             {
                 QMetaObject::invokeMethod(btn, "clicked");
             }
-
         }
 
         void startTimers()
         {
-
             QObject *timer = engine->rootObjects()[0]->findChild<QObject *>("countDownTimer");
             QObject *delayIn = engine->rootObjects()[0]->findChild<QObject *>("delayInput");
             QObject *recordIn = engine->rootObjects()[0]->findChild<QObject *>("recordTimeInput");
@@ -97,7 +88,6 @@ class TestGUI : public ::testing::Test {
                 timer->setProperty("running", "true");
 
             }
-
         }
 
 };

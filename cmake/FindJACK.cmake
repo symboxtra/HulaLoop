@@ -18,5 +18,5 @@ find_path (
 if (NOT JACK_PATH)
     message(FATAL_ERROR "Could not find JACK headers.")
 else ()
-    message (STATUS "JACK Headers: ${PORTAUDIO_PATH}")
+    message (STATUS "JACK Headers: ${JACK_PATH}")
 endif ()

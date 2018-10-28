@@ -32,13 +32,25 @@ class Transport {
     public:
         Controller* controller;
 
+    public:
+
+        #ifndef NDEBUG
+        Transport(bool dryRun);
+        #endif // END NDEBUG
+
         Transport();
-        ~Transport();
+        virtual ~Transport();
 
         bool record();
         bool stop();
         bool play();
         bool pause();
+
+        vector<Device *> getInputDevices() const;
+        vector<Device *> getOutputDevices() const;
+        Controller *getController() const;
+
+        void exportFile(std::string targetDirectory);
 
         TransportState getState() const;
         std::string stateToStr(const TransportState state) const;

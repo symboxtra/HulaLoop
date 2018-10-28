@@ -16,11 +16,12 @@
  * Collection of error codes and information for global HulaLoop
  *
 ******************************************************************************/
+#define HL_PRINT_PREFIX "[HulaLoop] "
 #define HL_ERROR_PREFIX "[HulaLoop] "
 
 /******************************************************************************
  *
- * Collection of error codes and information for hl_audio
+ * Collection of error codes and information for hlaudio
  *
 ******************************************************************************/
 

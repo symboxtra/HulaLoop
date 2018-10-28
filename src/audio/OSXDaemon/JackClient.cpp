@@ -22,12 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include <errno.h>
 #include <jack/jack.h>
-
+#include <cerrno>
 #include <cstdio>
+#include <cstring>
 
-#include "../HulaAudioError.h"
+#include "hlaudio/internal/HulaAudioError.h"
 #include "JackClient.hpp"
 
 /**********************************************************************
@@ -97,11 +97,6 @@ JackClient::JackClient(const char *name, uint32_t flags)
     SampleRate = jack_get_sample_rate(client);
     BufSize = jack_get_buffer_size(client);
     cb_flags = flags;
-}
-
-JackClient::~JackClient()
-{
-    jack_client_close(client);
 }
 
 int JackClient::register_ports(const char *nameAin[], const char *nameAout[])
@@ -203,4 +198,29 @@ jack_transport_state_t JackClient::transport_query(jack_position_t *pos)
 int JackClient::transport_reposition(const jack_position_t *pos)
 {
     return jack_transport_reposition(client, pos);
+}
+
+JackClient::~JackClient()
+{
+    printf("%sJackClient destructor called\n", HL_PRINT_PREFIX);
+
+    if (!client)
+    {
+        return;
+    }
+
+    char *clientName = strdup(jack_get_client_name(client));
+
+    // Remove from process graph and disconnect all ports
+    int err = jack_deactivate(client);
+    if (err != 0)
+    {
+        fprintf(stderr, "%sCould not deactivate JACK client %s.\n", HL_ERROR_PREFIX, clientName);
+    }
+
+    err = jack_client_close(client);
+    if (err != 0)
+    {
+        fprintf(stderr, "%sCould not close JACK client %s.\n", HL_ERROR_PREFIX, clientName);
+    }
 }
