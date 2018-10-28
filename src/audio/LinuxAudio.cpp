@@ -2,12 +2,6 @@
 
 LinuxAudio::LinuxAudio()
 {
-    vector<Device *> t = getOutputDevices();
-    if (t.empty())
-    {
-        cerr << "No devices found" << endl;
-    }
-    // setActiveOutputDevice(t[0]);
 }
 
 vector<Device *> LinuxAudio::getDevices(DeviceType type)

@@ -55,16 +55,6 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
             return devices;
         }
 
-        vector<Device *> getInputDevices()
-        {
-            return getDevices((DeviceType)(RECORD | LOOPBACK));
-        }
-
-        vector<Device *> getOutputDevices()
-        {
-            return getDevices(PLAYBACK);
-        }
-
         bool checkRates(Device *device)
         {
             return true;

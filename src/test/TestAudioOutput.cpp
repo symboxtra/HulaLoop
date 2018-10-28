@@ -42,7 +42,7 @@ TEST_F(TestAudioOutput, checkAudioOutput)
 
 TEST_F(TestAudioOutput, checkDeviceList)
 {
-    ASSERT_FALSE(controller->getOutputDevices().empty());
+    ASSERT_FALSE(controller->getDevices(DeviceType::PLAYBACK).empty());
 
-    ASSERT_FALSE(controller->getInputDevices().empty());
+    ASSERT_FALSE(controller->getDevices((DeviceType)(DeviceType::LOOPBACK | DeviceType::RECORD)).empty());
 }

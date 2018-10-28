@@ -23,8 +23,6 @@ class OSXAudio : public OSAudio {
         bool checkRates(Device *device);
 
         std::vector<Device *> getDevices(DeviceType type);
-        std::vector<Device *> getInputDevices();
-        std::vector<Device *> getOutputDevices();
 
         static void test_capture(OSAudio *_this);
         void setActiveOutputDevice(Device *device);

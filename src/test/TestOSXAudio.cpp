@@ -39,7 +39,7 @@ OSXAudio *TestOSXAudio::audio = NULL;
  */
 TEST_F(TestOSXAudio, deprecated_get_input_devices)
 {
-    vector<Device *> devs = audio->getInputDevices();
+    vector<Device *> devs = audio->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
     EXPECT_GT(devs.size(), 0);
     Device::deleteDevices(devs);
 }
@@ -52,7 +52,7 @@ TEST_F(TestOSXAudio, deprecated_get_input_devices)
  */
 TEST_F(TestOSXAudio, deprecated_get_output_devices)
 {
-    vector<Device *> devs = audio->getOutputDevices();
+    vector<Device *> devs = audio->getDevices(DeviceType::PLAYBACK);
     EXPECT_GT(devs.size(), 0);
     Device::deleteDevices(devs);
 }
@@ -86,7 +86,7 @@ TEST_F(TestOSXAudio, get_input_devices)
  */
 TEST_F(TestOSXAudio, get_record_devices)
 {
-    vector<Device *> devs = audio->getDevices(RECORD);
+    vector<Device *> devs = audio->getDevices(DeviceType::RECORD);
     EXPECT_GT(devs.size(), 0);
 
     for (int i = 0; i < devs.size(); i++)
@@ -106,13 +106,13 @@ TEST_F(TestOSXAudio, get_record_devices)
  */
 TEST_F(TestOSXAudio, get_loopback_devices)
 {
-    vector<Device *> devs = audio->getDevices(LOOPBACK);
+    vector<Device *> devs = audio->getDevices(DeviceType::LOOPBACK);
     EXPECT_GT(devs.size(), 0);
 
     for (int i = 0; i < devs.size(); i++)
     {
         // Device should be loopback
-        EXPECT_TRUE(devs[i]->getType() & LOOPBACK);
+        EXPECT_TRUE(devs[i]->getType() & DeviceType::LOOPBACK);
     }
     Device::deleteDevices(devs);
 }
@@ -126,13 +126,13 @@ TEST_F(TestOSXAudio, get_loopback_devices)
  */
 TEST_F(TestOSXAudio, get_output_devices)
 {
-    vector<Device *> devs = audio->getDevices(PLAYBACK);
+    vector<Device *> devs = audio->getDevices(DeviceType::PLAYBACK);
     EXPECT_GT(devs.size(), 0);
 
     for (int i = 0; i < devs.size(); i++)
     {
         // Device should be playback
-        EXPECT_TRUE(devs[i]->getType() & PLAYBACK);
+        EXPECT_TRUE(devs[i]->getType() & DeviceType::PLAYBACK);
     }
     Device::deleteDevices(devs);
 }
