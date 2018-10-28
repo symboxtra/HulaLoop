@@ -2,6 +2,11 @@
 
 #include <QUrl>
 #include <string>
+#include <thread>
+#include <stdlib.h>
+#include <thread>     
+#include <chrono>
+
 
 /**
  * Construct a new instance of the QMLBridge class.
@@ -57,7 +62,12 @@ void QMLBridge::pause()
 {
     transport->pause();
     emit stateChanged();
+    cout<<"pause clicked\n";
+    getData();
+    //emit visData(dataFake);
 }
+
+
 
 /**
  * Match a string that the user chose to the input device list
@@ -158,3 +168,40 @@ void QMLBridge::saveFile(QString dir)
     string directory = url.path().toStdString();
     transport->exportFile(directory);
 }
+void QMLBridge::getData(){
+    rb=transport->getController()->createAndAddBuffer(.5);
+    //std::this_thread::sleep_for (std::chrono::seconds(1));
+    cout<<"in get data\n";
+    std::thread visThread(&updateVisualizer,this);
+    visThread.detach();
+
+}
+void QMLBridge::updateVisualizer(QMLBridge *_this){
+    /**CREATE BUFFER
+     * WHILE(1)
+     * READ FROM BUFFER
+     * GET NUM OF BINS
+     * PROCESS THE DATA
+     * UPDATE VISUALIZER
+     * SLEEP
+     * REPEAT
+     */
+    //FOR NOW JUST GIVE RANDOM DATA IN ARRAY
+    int maxSize = 256;
+    float * temp = new float[maxSize];
+    cout<<"before the for loop\n";
+    //for(int i=0;i<10;i++){
+    while(1){
+        size_t bytesRead=_this->rb->read(temp, maxSize);
+        //printf("Read %zu bytes.\n", bytesRead);
+        std::this_thread::sleep_for (std::chrono::milliseconds(5));
+    }
+   /* vector<qreal> dataFake;
+    for(int i=0;i<10;i++){
+        dataFake.push_back((qreal) .5);
+    }
+    _this->emit visData(dataFake);*/
+
+
+}
+

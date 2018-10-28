@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <vector>
 
 #include <hlaudio/hlaudio.h>
 #include <hlcontrol/hlcontrol.h>
@@ -17,6 +18,7 @@ class QMLBridge : public QObject {
 
     private:
         Transport *transport;
+        HulaRingBuffer * rb;
 
     public:
         explicit QMLBridge(QObject *parent = nullptr);
@@ -33,7 +35,8 @@ class QMLBridge : public QObject {
         Q_INVOKABLE void pause();
 
         Q_INVOKABLE void saveFile(QString dir);
-
+        void getData();
+        static void updateVisualizer(QMLBridge* _this);
     signals:
 
         /**
@@ -41,6 +44,10 @@ class QMLBridge : public QObject {
          * Keeps the UI's state machine on the same page.
          */
         void stateChanged();
+        /**
+         * Signal emitted when the visualizer needs to update
+         */
+        void visData(std::vector<qreal> dataIn);
 };
 
 #endif // QMLBRIDGE_H

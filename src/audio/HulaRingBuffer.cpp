@@ -81,7 +81,7 @@ int32_t HulaRingBuffer::read(SAMPLE *data, int32_t maxSamples)
     ring_buffer_size_t samplesRead = PaUtil_ReadRingBuffer(&this->rb, (void *)data, (ring_buffer_size_t)maxSamples);
     if (samplesRead > 0)
     {
-        printf("%sRead of %d elements.\n", HL_PRINT_PREFIX, samplesRead);
+        //printf("%sRead of %d elements.\n", HL_PRINT_PREFIX, samplesRead);
 
         // Does this need to be advanced
         // Advance the index after successful read
