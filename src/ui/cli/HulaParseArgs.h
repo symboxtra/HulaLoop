@@ -39,6 +39,8 @@ bool parseArgsQt(QCoreApplication &app, HulaSettings *settings)
     });
 
     parser.process(app);
+
+    return true;
 }
 
 #endif // END HULA_PARSE_ARGS_H
