@@ -147,7 +147,7 @@ Encoding HulaAudioSettings::getOutputFileEncoding()
  *
  * @return Length of the delay timer in seconds
  */
-int HulaAudioSettings::getDelayTimer()
+double HulaAudioSettings::getDelayTimer()
 {
     return getInstance()->delayTimer;
 }
@@ -158,9 +158,60 @@ int HulaAudioSettings::getDelayTimer()
  *
  * @return Length of record in seconds
  */
-int HulaAudioSettings::getRecordDuration()
+double HulaAudioSettings::getRecordDuration()
 {
     return getInstance()->recordDuration;
+}
+
+void HulaAudioSettings::setShowRecordDevices(bool val)
+{
+    getInstance()->showRecordDevices = val;
+}
+
+void HulaAudioSettings::setNumberOfChannels(int val)
+{
+    getInstance()->numberOfChannels = val;
+}
+
+void HulaAudioSettings::setSampleRate(int val)
+{
+    getInstance()->sampleRate = val;
+}
+
+void HulaAudioSettings::setSampleSize(int val)
+{
+    getInstance()->sampleSize = val;
+}
+
+
+void HulaAudioSettings::setDefaultInputDeviceName(std::string val)
+{
+    getInstance()->defaultInputDeviceName = val;
+}
+
+void HulaAudioSettings::setDefaultOutputDeviceName(std::string val)
+{
+    getInstance()->defaultOutputDeviceName = val;
+}
+
+void HulaAudioSettings::setOutputFilePath(std::string val)
+{
+    getInstance()->outputFilePath = val;
+}
+
+void HulaAudioSettings::setOutputFileEncoding(Encoding val)
+{
+    getInstance()->outputFileEncoding = val;
+}
+
+void HulaAudioSettings::setDelayTimer(double val)
+{
+    getInstance()->delayTimer = val;
+}
+
+void HulaAudioSettings::setRecordDuration(double val)
+{
+    getInstance()->recordDuration = val;
 }
 
 /**

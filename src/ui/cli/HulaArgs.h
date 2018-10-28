@@ -7,7 +7,7 @@
 #include <hlaudio/hlaudio.h>
 #include <hlcontrol/hlcontrol.h>
 
-typedef struct HulaImmediateArgs 
+typedef struct HulaImmediateArgs
 {
     bool startRecord = false;
 } HulaImmediateArgs;
@@ -29,6 +29,22 @@ void invalidArg(std::string name, QString arg, std::string message = "")
 }
 
 /**
+ * Print the accepted arguments in a nice format.
+ *
+ * @param settings Settings module to print
+ */
+void printArgs(HulaSettings *settings)
+{
+    printf("Output file:          '%s'\n", settings->getOutputFilePath().c_str());
+    printf("Delay:                %.2f s\n", settings->getDelayTimer());
+    printf("Length:               %.2f s\n", settings->getRecordDuration());
+    printf("Sample rate:          %'d Hz\n", settings->getSampleRate());
+    printf("Encoding:             %s\n", "WAV");
+    printf("Input device:         '%s'\n", settings->getDefaultInputDeviceName().c_str());
+    printf("Output device:        '%s'\n", settings->getDefaultOutputDeviceName().c_str());
+}
+
+/**
  * Parse the command line arguments using the Qt parser.
  *
  */
@@ -36,7 +52,7 @@ HulaSettings * parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
 {
     QCommandLineParser parser;
     parser.setApplicationDescription("Simple cross-platform audio loopback and recording.");
- 
+
     parser.addHelpOption();
     parser.addVersionOption();
 
@@ -75,7 +91,7 @@ HulaSettings * parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
     if (parser.isSet("delay"))
     {
         bool ok = false;
-        int delay = parser.value("out-file").toInt(&ok);
+        double delay = parser.value("delay").toDouble(&ok);
         if (!ok)
         {
             invalidArg("delay", parser.value("out-file"));
@@ -86,14 +102,14 @@ HulaSettings * parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
     if (parser.isSet("time"))
     {
         bool ok = false;
-        int time = parser.value("time").toInt(&ok);
+        double time = parser.value("time").toDouble(&ok);
         if (!ok)
         {
             invalidArg("time", parser.value("time"));
         }
         settings->setRecordDuration(time);
     }
-   
+
     if (parser.isSet("record"))
     {
         extraArgs.startRecord = true;
@@ -143,7 +159,7 @@ HulaSettings * parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
         vector<Device *> devices;
         if (settings->getShowRecordDevices())
         {
-            // TODO: 
+            // TODO:
             // devices = t.getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK | RECORD));
         }
         else

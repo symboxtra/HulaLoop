@@ -34,8 +34,8 @@ class HulaAudioSettings {
         std::string outputFilePath;
         Encoding outputFileEncoding;
 
-        int delayTimer;
-        int recordDuration;
+        double delayTimer;
+        double recordDuration;
 
     protected:
         HulaAudioSettings();
@@ -59,8 +59,8 @@ class HulaAudioSettings {
         std::string getOutputFilePath();
         Encoding getOutputFileEncoding();
 
-        int getDelayTimer();
-        int getRecordDuration();
+        double getDelayTimer();
+        double getRecordDuration();
 
         /**
          * Setters
@@ -78,8 +78,8 @@ class HulaAudioSettings {
         void setOutputFilePath(std::string);
         void setOutputFileEncoding(Encoding);
 
-        void setDelayTimer(int);
-        void setRecordDuration(int);
+        void setDelayTimer(double);
+        void setRecordDuration(double);
 
         ~HulaAudioSettings();
 };
