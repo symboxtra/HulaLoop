@@ -153,5 +153,6 @@ QString QMLBridge::getOutputDevices()
 void QMLBridge::saveFile(QString dir)
 {
     string directory = dir.toStdString();
-    transport->exportFile(directory);
+    cout << directory << endl;
+    // transport->exportFile(directory);
 }

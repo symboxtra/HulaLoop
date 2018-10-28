@@ -242,7 +242,8 @@ Rectangle {
             nameFilters: saveDialog.nameFilters
             folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
             onAccepted: {
-                console.log(saveDialog.currentFile.toString());
+                qmlbridge.saveFile(saveDialog.currentFile.toString());
+//                console.log(saveDialog.currentFile.toString());
             }
         }
 

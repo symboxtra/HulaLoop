@@ -7,9 +7,11 @@ using namespace std;
 
 class Export {
     private:
+        string targetDirectory;
 
     public:
-        Export(string targetDir);
+        Export(string targetDirectory);
+        void copyData(string inputFileDirectory);
 };
 
 #endif // HL_EXPORT_H
