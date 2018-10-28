@@ -1,3 +1,6 @@
+#ifndef HL_LINUX_AUDIO
+#define HL_LINUX_AUDIO
+
 #include <alsa/asoundlib.h>
 
 #include <stdlib.h>
@@ -26,6 +29,7 @@ class LinuxAudio : public OSAudio {
         LinuxAudio();
         ~LinuxAudio();
         void capture();
+        static void startPAVUControl();
         vector<Device *> getInputDevices();
         vector<Device *> getOutputDevices();
         vector<Device *> getDevices(DeviceType type);
@@ -35,3 +39,5 @@ class LinuxAudio : public OSAudio {
         void setActiveOutputDevice(Device *device);
 
 };
+
+#endif // HL_LINUX_AUDIO

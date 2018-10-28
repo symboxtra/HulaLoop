@@ -101,6 +101,7 @@ pipeline {
                                         # Run everything but the memtests.
                                         # These will run on PRs and master and should also be run locally if you think you're leaking.
                                         cd ./build-linux
+
                                         ctest -V -E ${HL_MEMCHECK_PREFIX}
                                         cd ..
 
@@ -236,6 +237,7 @@ pipeline {
                                     # Run everything but the memtests
                                     # These will run on PRs and master and should also be run locally if you think you're leaking
                                     cd ./build-osx
+
                                     ctest -V -E ${HL_MEMCHECK_PREFIX}
                                     cd ..
 
