@@ -74,22 +74,6 @@ class OSAudio {
         void removeBuffer(HulaRingBuffer *rb);
         void copyToBuffers(const void *data, uint32_t bytes);
 
-        /**
-         * Receive the list of available output audio devices connected to the OS
-         * and return them as Device instances
-         *
-         * @return vector of Device instances
-         */
-        virtual vector<Device *> getInputDevices() = 0;
-
-        /**
-         * Set the selected output device and restart capture threads with
-         * new device
-         *
-         * @param device Instance of Device that corresponds to the desired system device
-         */
-        virtual vector<Device *> getOutputDevices() = 0;
-
         virtual vector<Device *> getDevices(DeviceType type) = 0;
 
         /**

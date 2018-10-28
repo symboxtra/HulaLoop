@@ -66,7 +66,7 @@ void QMLBridge::setActiveInputDevice(QString QDeviceName)
 {
     cout << "SETACTIVEiDEVICECALLED" << endl;
     string deviceName = QDeviceName.toStdString();
-    vector<Device *> iDevices = transport->getController()->getInputDevices();
+    vector<Device *> iDevices = transport->getController()->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
     for (auto const &device : iDevices)
     {
         if (device->getName() == deviceName)
@@ -87,7 +87,7 @@ void QMLBridge::setActiveInputDevice(QString QDeviceName)
 void QMLBridge::setActiveOutputDevice(QString QDeviceName)
 {
     string deviceName = QDeviceName.toStdString();
-    vector<Device *> oDevices = transport->getController()->getOutputDevices();
+    vector<Device *> oDevices = transport->getController()->getDevices(DeviceType::PLAYBACK);
     for (auto const &device : oDevices)
     {
         if (device->getName() == deviceName)
@@ -109,7 +109,7 @@ void QMLBridge::setActiveOutputDevice(QString QDeviceName)
 QString QMLBridge::getInputDevices()
 {
     string devices;
-    vector<Device *> vd = transport->getController()->getInputDevices();
+    vector<Device *> vd = transport->getController()->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
     for (int i = 0; i < vd.size(); i++)
     {
         devices += vd[i]->getName();
@@ -130,7 +130,7 @@ QString QMLBridge::getInputDevices()
 QString QMLBridge::getOutputDevices()
 {
     string devices;
-    vector<Device *> vd = transport->getController()->getOutputDevices();
+    vector<Device *> vd = transport->getController()->getDevices(DeviceType::PLAYBACK);
     for (int i = 0; i < vd.size(); i++)
     {
         devices += vd[i]->getName();

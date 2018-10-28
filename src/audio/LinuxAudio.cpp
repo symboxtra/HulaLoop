@@ -10,16 +10,6 @@ LinuxAudio::LinuxAudio()
     // setActiveOutputDevice(t[0]);
 }
 
-vector<Device *> LinuxAudio::getInputDevices()
-{
-    return getDevices(DeviceType::RECORD);
-}
-
-vector<Device *> LinuxAudio::getOutputDevices()
-{
-    return getDevices(DeviceType::PLAYBACK);
-}
-
 vector<Device *> LinuxAudio::getDevices(DeviceType type)
 {
     // variables needed for the getting of devices to work

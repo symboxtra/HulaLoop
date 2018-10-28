@@ -103,20 +103,9 @@ HulaRingBuffer *Controller::createAndAddBuffer(float duration)
     return rb;
 }
 
-/**
- * Get input devices from OSAudio.
- */
-vector<Device *> Controller::getInputDevices() const
+vector<Device*> Controller::getDevices(DeviceType type) const
 {
-    return audio->getInputDevices();
-}
-
-/**
- * Get output devices from OSAudio.
- */
-vector<Device *> Controller::getOutputDevices() const
-{
-    return audio->getOutputDevices();
+    return audio->getDevices(type);
 }
 
 /**

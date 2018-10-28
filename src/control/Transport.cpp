@@ -104,26 +104,6 @@ std::string Transport::stateToStr(const TransportState state) const
 }
 
 /**
- * Get the current input devices
- *
- * @return vector containing current input devices
- */
-vector<Device *> Transport::getInputDevices() const
-{
-    return controller->getInputDevices();
-}
-
-/**
- * Get the current output devices
- *
- * @return vector containing current output devices
- */
-vector<Device *> Transport::getOutputDevices() const
-{
-    return controller->getOutputDevices();
-}
-
-/**
  * Get the controller instance
  *
  * @return pointer to controller

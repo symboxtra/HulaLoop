@@ -29,9 +29,6 @@ class Controller {
         HulaRingBuffer *createBuffer(float duration);
         HulaRingBuffer *createAndAddBuffer(float duration);
 
-        void handleData(uint8_t *data, uint32_t size);
-        vector<Device *> getInputDevices() const;
-        vector<Device *> getOutputDevices() const;
         vector<Device *> getDevices(DeviceType type) const;
 
         void setActiveInputDevice(Device *device) const;

@@ -158,29 +158,6 @@ Exit:
 }
 
 /**
- * Receive the list of available input audio devices connected to the OS
- * and return them as Device instances
- *
- * @return vector of Device instances
- */
-vector<Device *> WindowsAudio::getInputDevices()
-{
-    return getDevices(DeviceType::RECORD);
-}
-
-/**
- * Receive the list of available output audio devices connected to the OS
- * and return them as Device instances
- *
- * @return vector of Device instances
- */
-// TODO: Remove this after all branches are synced
-vector<Device *> WindowsAudio::getOutputDevices()
-{
-    return getDevices(DeviceType::LOOPBACK);
-}
-
-/**
  * Set the selected output device and restart capture threads with
  * new device
  *
