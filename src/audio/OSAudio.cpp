@@ -32,7 +32,7 @@ void OSAudio::addBuffer(HulaRingBuffer *rb)
         // Signal death and join all threads
         this->endCapture.store(true);
         joinAndKillThreads(inThreads);
-
+            
         // Start up the capture thread
         inThreads.emplace_back(std::thread(&backgroundCapture, this));
     }
@@ -92,11 +92,9 @@ void OSAudio::copyToBuffers(const void *data, uint32_t bytes)
 */
 void OSAudio::backgroundCapture(OSAudio *_this)
 {
-    // Don't start if we have no buffers to copy to
-    if (_this->rbs.size() == 0)
-    {
+    if(_this->rbs.size() == 0)
         return;
-    }
+
     if (_this->activeInputDevice == NULL)
     {
         vector<Device*> devices = _this->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));

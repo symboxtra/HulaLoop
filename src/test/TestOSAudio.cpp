@@ -131,6 +131,10 @@ TEST_F(TestOSAudio, add_starts_thread)
 {
     HulaRingBuffer *rb = new HulaRingBuffer(TEST_BUFFER_SIZE);
     setActiveInputDevice(this->testDevice);
+    
+    // Wait for a cycle, then add buffer
+    std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CAPTURE_TIME));
+    
     this->addBuffer(rb);
 
     // This should be running infinitely
