@@ -46,8 +46,6 @@ class Transport {
         bool play();
         bool pause();
 
-        vector<Device *> getInputDevices() const;
-        vector<Device *> getOutputDevices() const;
         Controller *getController() const;
 
         void exportFile(std::string targetDirectory);

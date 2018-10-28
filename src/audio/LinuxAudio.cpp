@@ -161,11 +161,6 @@ void LinuxAudio::startPAVUControl()
     system("/usr/bin/pavucontrol -t 2");
 }
 
-void LinuxAudio::test_capture(LinuxAudio *param)
-{
-    param->capture();
-}
-
 /*
    lengthOfRecording is in ms
    Device * recordingDevice is already formatted as hw:(int),(int)

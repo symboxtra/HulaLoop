@@ -36,8 +36,6 @@ class LinuxAudio : public OSAudio {
 
         bool checkRates(Device *device);
 
-        void clearDevices(vector<Device *> devices);
-        static void test_capture(LinuxAudio *param);
         void setActiveOutputDevice(Device *device);
 
 };

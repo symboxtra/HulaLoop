@@ -103,6 +103,14 @@ HulaRingBuffer *Controller::createAndAddBuffer(float duration)
     return rb;
 }
 
+/**
+ * Utility function to receive the list of devices corresponding to the provided
+ * combination of DeviceType
+ *
+ * @param type DeviceType that is combination from the DeviceType enum
+ *
+ * @return vector<Device*> A list of Device instances that carry the necessary device information
+ */
 vector<Device*> Controller::getDevices(DeviceType type) const
 {
     return audio->getDevices(type);
@@ -116,6 +124,12 @@ void Controller::setActiveInputDevice(Device *device) const
     audio->setActiveInputDevice(device);
 }
 
+/**
+ * Utility function to transfer setOutputDevice command from front-end
+ * to the OS backend
+ *
+ * @param device - Device instance that is to be set as the active output device
+ */
 void Controller::setActiveOutputDevice(Device *device) const
 {
     audio->setActiveOutputDevice(device);

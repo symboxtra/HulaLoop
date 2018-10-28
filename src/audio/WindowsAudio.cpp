@@ -11,8 +11,8 @@ WindowsAudio::WindowsAudio()
  * Receive the list of available record, playback and/or loopback audio devices
  * connected to the OS and return them as Device instances
  *
- * @param a type or a combination of type of devices to be received (LOOPBACK, PLAYBACK, RECORD)
- * @return vector of Device instances
+ * @param type DeviceType that is combination from the DeviceType enum
+ * @return vector<Device*> A list of Device instances that carry the necessary device information
  */
 vector<Device*> WindowsAudio::getDevices(DeviceType type)
 {

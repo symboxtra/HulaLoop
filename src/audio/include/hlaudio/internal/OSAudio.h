@@ -63,6 +63,9 @@ class OSAudio {
          */
         atomic<bool> endCapture;
 
+        /**
+         * Desired capture buffer size
+         */
         uint32_t captureBufferSize;
 
     public:
@@ -74,6 +77,13 @@ class OSAudio {
         void removeBuffer(HulaRingBuffer *rb);
         void copyToBuffers(const void *data, uint32_t bytes);
 
+        /**
+         * Receive the list of available record, playback and/or loopback audio devices
+         * connected to the OS and return them as Device instances
+         *
+         * @param type DeviceType that is combination from the DeviceType enum
+         * @return vector<Device*> A list of Device instances that carry the necessary device information
+         */
         virtual vector<Device *> getDevices(DeviceType type) = 0;
 
         /**
@@ -81,6 +91,10 @@ class OSAudio {
          */
         virtual void capture() = 0;
         static void backgroundCapture(OSAudio *_this);
+
+        /**
+         * Verify the bit rate of set rate with the hardware device compatibility
+         */
         virtual bool checkRates(Device *device) = 0;
 
         void setActiveInputDevice(Device *device);
