@@ -3,7 +3,6 @@
 
 #include <hlaudio/hlaudio.h>
 #include <string>
-using namespace std;
 
 /**
  * Available states for the recording/playback logic of the application.
