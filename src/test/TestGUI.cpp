@@ -6,6 +6,7 @@
 #include <QQmlProperty>
 #include <QQuickItem>
 #include <QTimer>
+#include <iostream>
 
 #include "QMLBridge.h"
 
@@ -64,6 +65,30 @@ class TestGUI : public ::testing::Test {
             return false;
         }
 
+        bool isEnabled(QString objName)
+        {
+            QObject *obj = engine->rootObjects()[0]->findChild<QObject *>(objName);
+
+            if (obj)
+            {
+                return obj->property("enabled").toBool();
+            }
+
+            return false;
+        }
+
+        bool isButtonPlay()
+        {
+            QObject* obj = engine->rootObjects()[0]->findChild<QObject *>("play_icon");
+
+            if (obj)
+            {
+                return QString::compare(obj->property("color").toString(), "#ffffff");
+            }
+
+            return false;
+        }
+
         void clickButton(QString objName)
         {
             QObject *btn = engine->rootObjects()[0]->findChild<QObject *>(objName);
@@ -103,48 +128,6 @@ TEST_F(TestGUI, init)
 
 }
 
-TEST_F(TestGUI, recordButton)
-{
-    clickButton("recordBtn");
-    ASSERT_TRUE(getTransportState() == "Recording");
-}
-
-TEST_F(TestGUI, stopButton)
-{
-    clickButton("recordBtn");
-    ASSERT_TRUE(getTransportState() == "Recording");
-
-    clickButton("stopBtn");
-    ASSERT_TRUE(getTransportState() == "Stopped");
-}
-
-TEST_F(TestGUI, playButton)
-{
-    clickButton("recordBtn");
-    ASSERT_TRUE(getTransportState() == "Recording");
-
-    clickButton("playpauseBtn");
-    ASSERT_TRUE(getTransportState() == "Paused");
-
-    clickButton("playpauseBtn");
-    ASSERT_TRUE(getTransportState() == "Playing");
-}
-
-TEST_F(TestGUI, pauseButton)
-{
-    clickButton("recordBtn");
-    ASSERT_TRUE(getTransportState() == "Recording");
-
-    clickButton("playpauseBtn");
-    ASSERT_TRUE(getTransportState() == "Paused");
-}
-
-TEST_F(TestGUI, timerButton)
-{
-    clickButton("timerBtn");
-    ASSERT_TRUE(isVisible("timerPopup"));
-}
-
 TEST_F(TestGUI, timers)
 {
     startTimers();
@@ -159,4 +142,239 @@ TEST_F(TestGUI, timers)
     {
         ASSERT_TRUE(getTransportState() == "Stopped");
     });
+}
+
+TEST_F(TestGUI, timerButton)
+{
+    clickButton("timerBtn");
+    ASSERT_TRUE(isVisible("timerPopup"));
+}
+
+
+/**
+ * UI State Machine Tests
+ *
+ * KEY :
+ *      R  - Record
+ *      S  - Stop
+ *      PL - Playback
+ *      PA - Pause
+ *      E  - Export
+ */
+
+/**
+ * Simulate button presses with different combination paths
+ *
+ * EXPECTED:
+ *      The buttons respond based on the following path:
+ *          R -> S -> E
+ */
+TEST_F(TestGUI, ui_state_machine_1)
+{
+    // Click Record button
+    clickButton("recordBtn");
+    ASSERT_EQ(getTransportState(), "Recording");
+
+    EXPECT_FALSE(isEnabled("recordBtn"));
+    EXPECT_TRUE(isEnabled("stopBtn"));
+    EXPECT_TRUE(isEnabled("playpauseBtn"));
+    EXPECT_FALSE(isEnabled("exportBtn"));
+
+    ASSERT_FALSE(isButtonPlay());
+
+    // Click Stop button
+    clickButton("stopBtn");
+    ASSERT_EQ(getTransportState(), "Stopped");
+
+    EXPECT_FALSE(isEnabled("stopBtn"));
+    EXPECT_TRUE(isEnabled("playpauseBtn"));
+    EXPECT_TRUE(isEnabled("exportBtn"));
+
+    ASSERT_TRUE(isButtonPlay());
+
+    // Click Export button
+    // TODO: Determine expected behavior
+}
+
+/**
+ * Simulate button presses with different combination paths
+ *
+ * EXPECTED:
+ *      The buttons respond based on the following path:
+ *          R -> S -> PL -> PA
+ */
+TEST_F(TestGUI, ui_state_machine_2)
+{
+    // Click Record button
+    clickButton("recordBtn");
+    ASSERT_EQ(getTransportState(), "Recording");
+
+    EXPECT_FALSE(isEnabled("recordBtn"));
+    EXPECT_TRUE(isEnabled("stopBtn"));
+    EXPECT_TRUE(isEnabled("playpauseBtn"));
+    EXPECT_FALSE(isEnabled("exportBtn"));
+
+    ASSERT_FALSE(isButtonPlay());
+
+    // Click Stop button
+    clickButton("stopBtn");
+    ASSERT_EQ(getTransportState(), "Stopped");
+
+    EXPECT_FALSE(isEnabled("recordBtn"));
+    EXPECT_FALSE(isEnabled("stopBtn"));
+    EXPECT_TRUE(isEnabled("playpauseBtn"));
+    EXPECT_TRUE(isEnabled("exportBtn"));
+
+    ASSERT_TRUE(isButtonPlay());
+
+    // Click Play button
+    clickButton("playpauseBtn");
+    ASSERT_EQ(getTransportState(), "Playing");
+
+    EXPECT_FALSE(isEnabled("recordBtn"));
+    EXPECT_FALSE(isEnabled("stopBtn"));
+    EXPECT_TRUE(isEnabled("playpauseBtn"));
+    EXPECT_TRUE(isEnabled("exportBtn"));
+
+    ASSERT_FALSE(isButtonPlay());
+
+    // Click Pause button
+    clickButton("playpauseBtn");
+    ASSERT_EQ(getTransportState(), "Paused");
+
+    EXPECT_FALSE(isEnabled("recordBtn"));
+    EXPECT_FALSE(isEnabled("stopBtn"));
+    EXPECT_TRUE(isEnabled("playpauseBtn"));
+    EXPECT_TRUE(isEnabled("exportBtn"));
+
+    ASSERT_TRUE(isButtonPlay());
+}
+
+/**
+ * Simulate button presses with different combination paths
+ *
+ * EXPECTED:
+ *      The buttons respond based on the following path:
+ *          R -> PA -> S
+ */
+TEST_F(TestGUI, ui_state_machine_3)
+{
+    // Click Record button
+    clickButton("recordBtn");
+    ASSERT_EQ(getTransportState(), "Recording");
+
+    EXPECT_FALSE(isEnabled("recordBtn"));
+    EXPECT_TRUE(isEnabled("stopBtn"));
+    EXPECT_TRUE(isEnabled("playpauseBtn"));
+    EXPECT_FALSE(isEnabled("exportBtn"));
+
+    ASSERT_FALSE(isButtonPlay());
+
+    // Click Pause button
+    clickButton("playpauseBtn");
+    ASSERT_EQ(getTransportState(), "Paused");
+
+    EXPECT_TRUE(isEnabled("recordBtn"));
+    EXPECT_TRUE(isEnabled("stopBtn"));
+    EXPECT_TRUE(isEnabled("playpauseBtn"));
+    EXPECT_FALSE(isEnabled("exportBtn"));
+
+    ASSERT_TRUE(isButtonPlay());
+
+    // Click Stop button
+    clickButton("stopBtn");
+    ASSERT_EQ(getTransportState(), "Stopped");
+
+    EXPECT_FALSE(isEnabled("recordBtn"));
+    EXPECT_FALSE(isEnabled("stopBtn"));
+    EXPECT_TRUE(isEnabled("playpauseBtn"));
+    EXPECT_TRUE(isEnabled("exportBtn"));
+
+    ASSERT_TRUE(isButtonPlay());
+}
+
+/**
+ * Simulate button presses with different combination paths
+ *
+ * EXPECTED:
+ *      The buttons respond based on the following path:
+ *          R -> PA -> R
+ */
+TEST_F(TestGUI, ui_state_machine_4)
+{
+    // Click Record button
+    clickButton("recordBtn");
+    ASSERT_EQ(getTransportState(), "Recording");
+
+    EXPECT_FALSE(isEnabled("recordBtn"));
+    EXPECT_TRUE(isEnabled("stopBtn"));
+    EXPECT_TRUE(isEnabled("playpauseBtn"));
+    EXPECT_FALSE(isEnabled("exportBtn"));
+
+    ASSERT_FALSE(isButtonPlay());
+
+    // Click Pause button
+    clickButton("playpauseBtn");
+    ASSERT_EQ(getTransportState(), "Paused");
+
+    EXPECT_TRUE(isEnabled("recordBtn"));
+    EXPECT_TRUE(isEnabled("stopBtn"));
+    EXPECT_TRUE(isEnabled("playpauseBtn"));
+    EXPECT_FALSE(isEnabled("exportBtn"));
+
+    ASSERT_TRUE(isButtonPlay());
+
+    // Click Record button
+    clickButton("recordBtn");
+    ASSERT_EQ(getTransportState(), "Recording");
+
+    EXPECT_FALSE(isEnabled("recordBtn"));
+    EXPECT_TRUE(isEnabled("stopBtn"));
+    EXPECT_TRUE(isEnabled("playpauseBtn"));
+    EXPECT_FALSE(isEnabled("exportBtn"));
+
+    ASSERT_FALSE(isButtonPlay());
+}
+
+/**
+ * Simulate button presses with different combination paths
+ *
+ * EXPECTED:
+ *      The buttons respond based on the following path:
+ *          R -> PA -> PL
+ */
+TEST_F(TestGUI, ui_state_machine_5)
+{
+    // Click Record button
+    clickButton("recordBtn");
+    ASSERT_EQ(getTransportState(), "Recording");
+
+    EXPECT_FALSE(isEnabled("recordBtn"));
+    EXPECT_TRUE(isEnabled("stopBtn"));
+    EXPECT_TRUE(isEnabled("playpauseBtn"));
+    EXPECT_FALSE(isEnabled("exportBtn"));
+
+    ASSERT_FALSE(isButtonPlay());
+
+    // Click Pause button
+    clickButton("playpauseBtn");
+    ASSERT_EQ(getTransportState(), "Paused");
+
+    EXPECT_TRUE(isEnabled("recordBtn"));
+    EXPECT_TRUE(isEnabled("stopBtn"));
+    EXPECT_TRUE(isEnabled("playpauseBtn"));
+    EXPECT_FALSE(isEnabled("././"));
+
+    ASSERT_TRUE(isButtonPlay());
+
+    // Click Record button
+    clickButton("playpauseBtn");
+    ASSERT_EQ(getTransportState(), "Playing");
+
+    EXPECT_FALSE(isEnabled("recordBtn"));
+    EXPECT_FALSE(isEnabled("stopBtn"));
+    EXPECT_TRUE(isEnabled("playpauseBtn"));
+    EXPECT_FALSE(isEnabled("exportBtn"));
+
+    ASSERT_FALSE(isButtonPlay());
 }

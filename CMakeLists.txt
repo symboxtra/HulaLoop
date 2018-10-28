@@ -191,7 +191,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     if (OSX)
         create_test ("src/test/TestOSXAudio.cpp" "" -1)
     elseif (WIN32)
-        create_test ("src/test/TestWindowsAudio.cpp" "" -1)
+        # create_test ("src/test/TestWindowsAudio.cpp" "" -1)
     endif ()
 
     if (NOT HL_BUILD_ONLY_AUDIO)

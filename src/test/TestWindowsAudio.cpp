@@ -144,7 +144,7 @@ TEST_F(TestWindowsAudio, short_capture)
     // Sleep for a few seconds to allow thread to start
     // and data to flow in
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    system("PowerShell -Command \"(New-Object Media.SoundPlayer (Resolve-Path ../src/test/test1.wav)).PlaySync()\"");
+    system("PowerShell -Command \"(New-Object Media.SoundPlayer (Resolve-Path ../../src/test/test.wav)).PlaySync()\"");
 
     // Read some samples
     int32_t samplesRead = rb->read(readData, maxSamples);

@@ -155,7 +155,7 @@ TEST(TestHulaRingBuffer, direct_read_buffer)
     EXPECT_EQ(count1, TEST_NUM_SAMPLES);
 
     // Should have cleared the second pair
-    EXPECT_TRUE(ptr2 != NULL);
+    EXPECT_TRUE(ptr2 == NULL);
     EXPECT_EQ(count2, 0);
 
     // Make sure the two are identical

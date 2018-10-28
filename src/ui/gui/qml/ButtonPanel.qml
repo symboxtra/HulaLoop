@@ -163,6 +163,7 @@ Rectangle {
                 display: AbstractButton.TextOnly
 
                 contentItem: Text {
+                    objectName: "play_icon"
                     font.family: "Material Design Icons"
                     font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                     text: MDFont.Icon.pause
