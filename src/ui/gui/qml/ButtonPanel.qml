@@ -239,30 +239,12 @@ Rectangle {
             id: saveDialog
             objectName: "saveDialog"
             fileMode: FileDialog.SaveFile
-            defaultSuffix: document.fileType
-            nameFilters: openDialog.nameFilters
-            selectedNameFilter.index: document.fileType === "txt" ? 0 : 1
+            nameFilters: saveDialog.nameFilters
             folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
             onAccepted: {
                 console.log(saveDialog.currentFile.toString());
             }
         }
-
-        //        FileDialog {
-        //            id: fileDialog
-        //            //fileMode:
-        //            title: "Please choose a file"
-        //            folder: shortcuts.home
-        //            onAccepted: {
-        //                console.log("You chose: " + fileDialog.fileUrls)
-        //                //Qt.quit()
-        //            }
-        //            onRejected: {
-        //                console.log("Canceled")
-        //                //Qt.quit()
-        //            }
-        //            Component.onCompleted: visible = false
-        //        }
 
         RowLayout {
             id: timeLabelLayout
