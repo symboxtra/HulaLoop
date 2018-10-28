@@ -8,18 +8,25 @@ include (cmake/Qt5.cmake)
 include (cmake/Utility.cmake)
 
 # Version
-set (VERSION_MAJOR 0)
-set (VERSION_MINOR 0)
-set (VERSION_REV 0)
-set (VERSION_BUILD 0)
-set (VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_REV}.${VERSION_BUILD}")
+set (HL_VERSION_MAJOR 0)
+set (HL_VERSION_MINOR 0)
+set (HL_VERSION_REV 0)
+set (HL_VERSION_BUILD 0)
+set (HL_VERSION_STR "${HL_VERSION_MAJOR}.${HL_VERSION_MINOR}.${HL_VERSION_REV}.${HL_VERSION_BUILD}")
 
 # Declare project
-project (HulaLoop VERSION ${VERSION} LANGUAGES CXX C)
+project (HulaLoop VERSION ${HL_VERSION_STR} LANGUAGES CXX C)
 
 message (STATUS "")
-message (STATUS "Building ${PROJECT_NAME} v${VERSION}")
+message (STATUS "Building ${PROJECT_NAME} v${HL_VERSION_STR}")
 message (STATUS "")
+
+# Generate version header
+configure_file (
+    "${PROJECT_SOURCE_DIR}/cmake/HulaVersion.h.in"
+    "${CMAKE_BINARY_DIR}/HulaVersion.h"
+)
+include_directories (${CMAKE_BINARY_DIR})
 
 # Set build type if not provided
 # Default to DEBUG
@@ -116,7 +123,6 @@ message (STATUS "Qt5_DIR: ${Qt5_DIR}")
 find_package (Qt5 REQUIRED
     Core
     Gui
-    Network
     Qml
     Quick
     QuickControls2
@@ -126,7 +132,6 @@ set (HL_LIBRARIES
     ${HL_LIBRARIES}
     Qt5::Core
     Qt5::Gui
-    Qt5::Network
     Qt5::Qml
     Qt5::Quick
     Qt5::QuickControls2
