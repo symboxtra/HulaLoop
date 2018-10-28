@@ -40,3 +40,11 @@ void Export::copyData(string inputFileDirectory)
     oFile.close();
     iFile.close();
 }
+
+/**
+ * Destroys the instance of Export
+ */
+Export::~Export()
+{
+
+}

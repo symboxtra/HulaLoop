@@ -12,6 +12,8 @@ class Export {
     public:
         Export(string targetDirectory);
         void copyData(string inputFileDirectory);
+
+        ~Export();
 };
 
 #endif // HL_EXPORT_H

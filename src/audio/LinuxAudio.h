@@ -1,3 +1,6 @@
+#ifndef HL_LINUX_AUDIO
+#define HL_LINUX_AUDIO
+
 #include <alsa/asoundlib.h>
 
 #include <stdlib.h>
@@ -36,3 +39,5 @@ class LinuxAudio : public OSAudio {
         void setActiveOutputDevice(Device *device);
 
 };
+
+#endif // HL_LINUX_AUDIO
