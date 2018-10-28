@@ -7,33 +7,17 @@ function (create_test _test_file _src_files _timeout)
     add_test (
         NAME ${_test_name}
         COMMAND ${_test_name} "--gtest_color=yes"
-        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin" #
+        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
     )
 
     if (_timeout GREATER 0)
         set_tests_properties (${_test_name} PROPERTIES TIMEOUT ${_timeout})
     endif ()
 
-    # Copy PortAudio DLLs to bin/test if not done so already
+    # Copy PortAudio DLLs to bin/test for successful testing
     if(WIN32)
-        if (NOT EXISTS ${CMAKE_BINARY_DIR}/bin/test/portaudio.dll AND NOT EXISTS ${CMAKE_BINARY_DIR}/bin/test/portaudio_x64.dll AND NOT EXISTS ${CMAKE_BINARY_DIR}/bin/test/portaudio_x86.dll)
-            if (64BIT)
-                if (EXISTS ${CMAKE_BINARY_DIR}/bin/portaudio.dll)
-                    set (PORTAUDIO_DLL ${CMAKE_BINARY_DIR}/bin/portaudio.dll)
-                else ()
-                    set (PORTAUDIO_DLL ${CMAKE_BINARY_DIR}/bin/portaudio_x64.dll)
-                endif ()
-            else ()
-                if (EXISTS ${CMAKE_BINARY_DIR}/bin/portaudio.dll)
-                    set (PORTAUDIO_DLL ${CMAKE_BINARY_DIR}/bin/portaudio.dll)
-                else ()
-                    set (PORTAUDIO_DLL ${CMAKE_BINARY_DIR}/bin/portaudio_x86.dll)
-                endif ()
-            endif ()
-
-            add_custom_command (TARGET ${_test_name} POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy ${PORTAUDIO_DLL} ${CMAKE_BINARY_DIR}/bin/test)
-        endif ()
+        add_custom_command (TARGET ${_test_name} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/cmake/MovePortAudioDLL.cmake)
     endif ()
 
 endfunction ()
