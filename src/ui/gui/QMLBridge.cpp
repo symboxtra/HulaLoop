@@ -1,7 +1,8 @@
 #include <string>
 
-#include "QMLBridge.h"
 #include <QUrl>
+
+#include "QMLBridge.h"
 
 /**
  * Construct a new instance of the QMLBridge class.

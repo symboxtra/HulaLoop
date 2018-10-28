@@ -1,8 +1,8 @@
 #include <iostream>
 
+#include "hlcontrol/internal/Export.h"
 #include "hlcontrol/internal/HulaControlError.h"
 #include "hlcontrol/internal/Transport.h"
-#include "hlcontrol/internal/Export.h"
 
 /**
  * Construct a new instance of the Transport class.
