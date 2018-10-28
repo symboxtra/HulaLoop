@@ -4,6 +4,7 @@ pipeline {
     environment {
         HL_WEBHOOK_URL = credentials('HULALOOP_WEBHOOK_URL')
         HL_CODECOV_TOKEN = credentials('HL_CODECOV_TOKEN')
+        HL_MEMCHECK_PREFIX = "memcheck"
     }
 
     options {
@@ -49,13 +50,12 @@ pipeline {
 
                     stages {
 
-                        // Generate CMake and build any required dependencies
-                        stage('Dependencies - Linux') {
+                        stage('Generate - Linux') {
 
                             steps {
 
                                 sh '''
-                                    echo "Configuring dependencies for ${HL_OS}..."
+                                    echo "CMake generation for ${HL_OS}..."
 
                                     env
                                     echo "Path: ${PATH}"
@@ -98,8 +98,11 @@ pipeline {
 
                                         lcov -c -i -d build-linux -o build-linux/coverage.base
 
+                                        # Run everything but the memtests.
+                                        # These will run on PRs and master and should also be run locally if you think you're leaking.
                                         cd ./build-linux
-                                        ctest -V
+
+                                        ctest -V -E ${HL_MEMCHECK_PREFIX}
                                         cd ..
 
                                         lcov -c -d build-linux -o build-linux/coverage.actual
@@ -110,6 +113,27 @@ pipeline {
 
                             }
 
+                        }
+
+                        stage('Memcheck - Linux') {
+                            when {
+                                anyOf {
+                                    branch 'master'
+                                    branch 'develop'
+                                    changeRequest target: 'master'
+                                    changeRequest target: 'develop'
+                                }
+                            }
+
+                            steps {
+
+                                sh '''
+                                    # Only run the memtests
+                                    # No need for code coverage since these are the same as above just inside valgrind
+                                    cd ./build-linux
+                                    ctest -V -R ${HL_MEMCHECK_PREFIX}
+                                '''
+                            }
                         }
 
                     } // END stages
@@ -155,12 +179,12 @@ pipeline {
 
                     stages {
 
-                        stage('Dependencies - OSX') {
+                        stage('Generate - OSX') {
 
                             steps {
 
                                 sh '''
-                                    echo "Configuring dependencies for ${HL_OS}..."
+                                    echo "CMake generation for ${HL_OS}..."
 
                                     echo "Path: ${PATH}"
                                     qmake -v
@@ -211,8 +235,11 @@ pipeline {
 
                                     lcov -c -i -d build-osx -o build-osx/coverage.base
 
+                                    # Run everything but the memtests
+                                    # These will run on PRs and master and should also be run locally if you think you're leaking
                                     cd ./build-osx
-                                    ctest -V
+
+                                    ctest -V -E ${HL_MEMCHECK_PREFIX}
                                     cd ..
 
                                     lcov -c -d build-osx -o build-osx/coverage.actual
@@ -234,6 +261,28 @@ pipeline {
                             }
 
                         }
+
+                        stage('Memcheck - OSX') {
+                            when {
+                                anyOf {
+                                    branch 'master'
+                                    branch 'develop'
+                                    changeRequest target: 'master'
+                                    changeRequest target: 'develop'
+                                }
+                            }
+
+                            steps {
+
+                                sh '''
+                                    # Only run the memtests
+                                    # No need for code coverage since these are the same as above just inside valgrind
+                                    cd ./build-osx
+                                    ctest -V -R ${HL_MEMCHECK_PREFIX}
+                                '''
+                            }
+                        }
+
                     } // END stages
 
                     post {
@@ -276,12 +325,12 @@ pipeline {
 
                     stages {
 
-                        stage('Dependencies - Windows') {
+                        stage('Generate - Windows') {
 
                             steps {
 
                                 powershell '''
-                                    echo "Configuring dependencies for ${ENV:HL_OS}..."
+                                    echo "CMake generation for ${ENV:HL_OS}..."
 
                                     # Not on path
                                     # qmake -v
@@ -316,8 +365,9 @@ pipeline {
                                 powershell '''
                                     echo "Running test suite on ${ENV:HL_OS}..."
 
+                                    # Run everything but the memtests.
                                     # cd build-win
-                                    # ctest -C Debug -V
+                                    # ctest -C Debug -V -E ${ENV:HL_MEMCHECK_PREFIX}
                                     # if ($LastExitCode -ne 0) {$host.SetShouldExit($LastExitCode)} # Exit with test error code
 
                                     # cd ..

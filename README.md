@@ -68,9 +68,16 @@ python -m pip install recommonmark
 ```
 
 #### Windows ####
-- Install Qt
-- Install CMake
-- Install Visual Studio or the MSVC build tools
+- Install [Qt](https://www.qt.io/download)
+- Install [Visual Studio](https://visualstudio.microsoft.com/downloads/) or the MSVC build tools
+- Install [Chocolatey](https://chocolatey.org/docs/installation) (package manager for Windows)
+- Install Chocolatey packages
+```powershell
+choco install git
+choco install cmake
+choco install doxygen
+```
+
 - Good luck...
 
 ### CMake ###
@@ -85,9 +92,22 @@ cmake --build .
 
 ### CTest ###
 
+All tests:
 ```bash
 cd build
 ctest -C Debug -V
+```
+
+Without checks for memory leaks:
+```bash
+cd build
+ctest -C Debug -V -E memcheck
+```
+
+Only memory leak checks:
+```bash
+cd build
+ctest -C Debug -V -R memcheck
 ```
 
 ### Build Tutorials and Documentation ###
