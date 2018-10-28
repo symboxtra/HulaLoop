@@ -37,6 +37,10 @@ sudo apt install python3-sphinx doxygen graphviz
 python -m pip install recommonmark
 ```
 
+If you want man pages:
+```bash
+sudo apt-get install help2man
+```
 
 #### OSX ####
 Install ```brew```:
