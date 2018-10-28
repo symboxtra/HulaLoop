@@ -29,6 +29,10 @@ void OSAudio::addBuffer(HulaRingBuffer *rb)
 
     if (rbs.size() == 1)
     {
+        // Signal death and join all threads
+        this->endCapture.store(true);
+        joinAndKillThreads(inThreads);
+
         // Start up the capture thread
         inThreads.emplace_back(std::thread(&backgroundCapture, this));
     }
@@ -99,7 +103,8 @@ void OSAudio::backgroundCapture(OSAudio *_this)
         if(devices.empty())
             return;
 
-        delete _this->activeInputDevice;
+        if(_this->activeInputDevice)
+            delete _this->activeInputDevice;
         _this->activeInputDevice = new Device(*devices[0]);
         Device::deleteDevices(devices);
     }
@@ -112,7 +117,7 @@ void OSAudio::backgroundCapture(OSAudio *_this)
 /**
  * Set the selected input device and restart capture threads with
  * new device
- *
+ *cmak
  * @param device Instance of Device that corresponds to the desired system device
  */
 void OSAudio::setActiveInputDevice(Device *device)
@@ -124,14 +129,15 @@ void OSAudio::setActiveInputDevice(Device *device)
     }
 
     // If this isn't a loopback or record device
-    if (device->getType() & LOOPBACK != LOOPBACK && device->getType() & RECORD != RECORD)
+    if (!(device->getType() & LOOPBACK || device->getType() & RECORD))
     {
         return;
     }
 
     this->checkRates(device);
 
-    delete this->activeInputDevice;
+    if(this->activeInputDevice)
+        delete this->activeInputDevice;
     this->activeInputDevice = new Device(*device);
 
     // Signal death and wait for all threads to catch the signal

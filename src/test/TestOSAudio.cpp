@@ -27,6 +27,7 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
         virtual void SetUp()
         {
             this->testDevice = new Device(NULL, "Device", RECORD);
+            this->activeInputDevice = NULL;
         }
 
         void capture()
@@ -80,7 +81,7 @@ TEST_F(TestOSAudio, null_does_not_switch)
 {
     setActiveInputDevice(this->testDevice);
     setActiveInputDevice(NULL);
-    EXPECT_EQ(this->activeInputDevice, this->testDevice);
+    EXPECT_EQ(this->activeInputDevice->getName(), this->testDevice->getName());
 
     waitForThreadDeathBeforeDestruction();
 }
@@ -98,7 +99,7 @@ TEST_F(TestOSAudio, wrong_type_does_not_switch)
     Device *d = new Device(NULL, "Device", PLAYBACK);
     setActiveInputDevice(d);
 
-    EXPECT_EQ(this->activeInputDevice, this->testDevice);
+    EXPECT_EQ(this->activeInputDevice->getName(), this->testDevice->getName());
 
     waitForThreadDeathBeforeDestruction();
 }
@@ -129,6 +130,7 @@ TEST_F(TestOSAudio, init_does_not_block)
 TEST_F(TestOSAudio, add_starts_thread)
 {
     HulaRingBuffer *rb = new HulaRingBuffer(TEST_BUFFER_SIZE);
+    setActiveInputDevice(this->testDevice);
     this->addBuffer(rb);
 
     // This should be running infinitely
