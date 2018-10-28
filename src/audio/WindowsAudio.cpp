@@ -310,6 +310,14 @@ Exit:
 }
 
 /**
+ * TODO: Fill in with something
+ */
+bool WindowsAudio::checkRates(Device *device)
+{
+    return true;
+}
+
+/**
  * Clear all global pointers
  */
 WindowsAudio::~WindowsAudio()

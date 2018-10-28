@@ -1,8 +1,9 @@
 import QtQuick 2.10
 import QtQuick.Layouts 1.3
-
+import QtQuick.Dialogs 1.0
 import QtQuick.Controls 2.3
-
+import QtQuick.Window 2.0
+import Qt.labs.platform 1.0
 import "../fonts/Icon.js" as MDFont
 
 Rectangle {
@@ -205,6 +206,45 @@ Rectangle {
 
                 onClicked: timerPopup.open()
             }
+
+            RoundButton {
+                id: exportBtn
+                objectName: "exportBtn"
+
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                display: AbstractButton.TextOnly
+
+                contentItem: Text {
+                    font.family: "Material Design Icons"
+                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                    text: MDFont.Icon.export
+                    color: "white"
+                    //transform: Rotation {angle: 270}
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                background: Rectangle {
+                    opacity: enabled ? 1 : 0.15
+                    color: exportBtn.pressed ? "grey" : "darkgrey"
+                    radius: exportBtn.width / 2
+                }
+
+                onClicked:saveDialog.open()
+            }
+
+        }
+        FileDialog {
+            id: saveDialog
+            objectName: "saveDialog"
+            fileMode: FileDialog.SaveFile
+            nameFilters: saveDialog.nameFilters
+            folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+            onAccepted: {
+                qmlbridge.saveFile(saveDialog.currentFile);
+//                console.log(saveDialog.fileUrl.toString());
+            }
         }
 
         RowLayout {
@@ -275,6 +315,7 @@ Rectangle {
                 }
                 onActivated: {
                     console.log("Audio device has been changed to: " + iDeviceInfoLabel.currentText);
+                    qmlbridge.setActiveInputDevice(iDeviceInfoLabel.currentText);
                 }
                 currentIndex: 0
             }
@@ -302,6 +343,7 @@ Rectangle {
                 }
                 onActivated: {
                     console.log("Audio device has been changed to: " + oDeviceInfoLabel.currentText);
+                    qmlbridge.setActiveOutputDevice(oDeviceInfoLabel.currentText);
                 }
                 currentIndex: 0
             }

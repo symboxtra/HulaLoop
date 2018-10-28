@@ -1,3 +1,6 @@
+#ifndef HL_LINUX_AUDIO
+#define HL_LINUX_AUDIO
+
 #include <alsa/asoundlib.h>
 
 #include <stdlib.h>
@@ -12,21 +15,29 @@
 #ifndef ALSA_PCM_NEW_HW_PARAMS_API
     #define ALSA_PCM_NEW_HW_PARAMS_API
 #endif
-#define FRAME_TIME 32
+#define FRAME_TIME 8192
 using namespace std;
 using byte = uint8_t;
 
 class LinuxAudio : public OSAudio {
     private:
         int bitrate;
+        vector<Device *> iDevices;
+        vector<Device *> oDevices;
 
     public:
         LinuxAudio();
         ~LinuxAudio();
         void capture();
+        static void startPAVUControl();
         vector<Device *> getInputDevices();
         vector<Device *> getOutputDevices();
+        vector<Device *> getDevices(DeviceType type);
+        bool checkRates(Device *device);
+        void clearDevices(vector<Device *> devices);
         static void test_capture(LinuxAudio *param);
         void setActiveOutputDevice(Device *device);
 
 };
+
+#endif // HL_LINUX_AUDIO
