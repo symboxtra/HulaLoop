@@ -163,52 +163,118 @@ double HulaAudioSettings::getRecordDuration()
     return getInstance()->recordDuration;
 }
 
+/**
+ * Set whether or not true record devices (i.e. microphones)
+ * should be displayed in the device lists.
+ *
+ * @param val Value of option.
+ */
 void HulaAudioSettings::setShowRecordDevices(bool val)
 {
     getInstance()->showRecordDevices = val;
 }
 
+/**
+ * Set the number of channels for the current global device
+ * configuration. This is the configuration that buffers and
+ * output files have been setup for. Changing it mid-anything may
+ * break stuff.
+ *
+ * @param val Number of channels that the application is currently configured for
+ */
 void HulaAudioSettings::setNumberOfChannels(int val)
 {
     getInstance()->numberOfChannels = val;
 }
 
+/**
+ * Set the number of channels for the current global device
+ * configuration. This is the configuration that buffers and
+ * output files have been setup for. Changing it mid-anything may
+ * break stuff.
+ *
+ * @param val Sample rate that the application is currentlyy configured for
+ */
 void HulaAudioSettings::setSampleRate(int val)
 {
     getInstance()->sampleRate = val;
 }
 
+/**
+ * Set the sample size for the current global device
+ * configuration. This is the configuration that buffers and
+ * output files have been setup for. Changing it mid-anything may
+ * break stuff.
+ *
+ * @param val Sample size that the application is currently configured for
+ */
 void HulaAudioSettings::setSampleSize(int val)
 {
     getInstance()->sampleSize = val;
 }
 
-
+/**
+ * Set the name of the device that should be initially selected
+ * for record.
+ *
+ * @param val Name of input device to default to or the empty string if not set
+ */
 void HulaAudioSettings::setDefaultInputDeviceName(std::string val)
 {
     getInstance()->defaultInputDeviceName = val;
 }
 
+/**
+ * Set the name of the device that should be initially selected
+ * for playback.
+ *
+ * @param val Name of the output device to default to or the empty string if not set
+ */
 void HulaAudioSettings::setDefaultOutputDeviceName(std::string val)
 {
     getInstance()->defaultOutputDeviceName = val;
 }
 
+/**
+ * Set the path of the output file specified at startup or during
+ * the file save routine.
+ *
+ * @param val Path to output file
+ */
 void HulaAudioSettings::setOutputFilePath(std::string val)
 {
     getInstance()->outputFilePath = val;
 }
 
+/**
+ * Set the output encoding for the current global
+ * configuration. This is the configuration that buffers and
+ * output files have been setup for. Changing it mid-anything may
+ * break stuff.
+ *
+ * @param val Encoding enum value indicating current encoding type
+ */
 void HulaAudioSettings::setOutputFileEncoding(Encoding val)
 {
     getInstance()->outputFileEncoding = val;
 }
 
+/**
+ * Set the length of the delay timer in seconds.
+ *
+ * @param val Length of the delay timer in seconds
+ */
 void HulaAudioSettings::setDelayTimer(double val)
 {
     getInstance()->delayTimer = val;
 }
 
+/**
+ * Get the length of the record in seconds.
+ * Use -1 for infinite record.
+ *
+ * @param val Length of record in seconds
+ */
 void HulaAudioSettings::setRecordDuration(double val)
 {
     getInstance()->recordDuration = val;

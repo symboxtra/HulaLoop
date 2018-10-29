@@ -77,6 +77,12 @@ class OSAudio {
          */
         atomic<bool> endCapture;
 
+        /**
+         * I don't really know what this is for right now
+         * but I'm going to add this comment so that Doxygen
+         * will quit complaining.
+         * Peace. Love. Happiness. Doxygen :)
+         */
         uint32_t captureBufferSize;
 
     public:

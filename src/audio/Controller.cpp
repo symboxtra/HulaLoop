@@ -166,6 +166,8 @@ HulaRingBuffer *Controller::createAndAddBuffer(float duration)
 
 /**
  * Get input devices from OSAudio.
+ *
+ * @return List of devices
  */
 vector<Device *> Controller::getInputDevices() const
 {
@@ -174,6 +176,8 @@ vector<Device *> Controller::getInputDevices() const
 
 /**
  * Get output devices from OSAudio.
+ *
+ * @return List of devices
  */
 vector<Device *> Controller::getOutputDevices() const
 {
@@ -181,13 +185,20 @@ vector<Device *> Controller::getOutputDevices() const
 }
 
 /**
- * Middle function to transfer the device from the front end
+ * Wrapper for OSAudio::setActiveOutputDevice.
+ *
+ * @param device Desired device. Will be copied into OSAudio.
  */
 void Controller::setActiveInputDevice(Device *device) const
 {
     audio->setActiveInputDevice(device);
 }
 
+/**
+ * Wrapper for OSAudio::setActiveOutputDevice.
+ *
+ * @param device Desired device. Will be copied into OSAudio.
+ */
 void Controller::setActiveOutputDevice(Device *device) const
 {
     audio->setActiveOutputDevice(device);

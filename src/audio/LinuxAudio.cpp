@@ -1,5 +1,8 @@
 #include "LinuxAudio.h"
 
+/**
+ * Construct a new instance of LinuxAudio.
+ */
 LinuxAudio::LinuxAudio()
 {
     vector<Device *> t = getOutputDevices();
@@ -10,16 +13,34 @@ LinuxAudio::LinuxAudio()
     // setActiveOutputDevice(t[0]);
 }
 
+/**
+ * DEPRECATED: To be replaced by getDevices(DeviceType)
+ */
 vector<Device *> LinuxAudio::getInputDevices()
 {
     return getDevices(DeviceType::RECORD);
 }
 
+/**
+ * DEPRECATED: To be replaced by getDevices(DeviceType)
+ */
 vector<Device *> LinuxAudio::getOutputDevices()
 {
     return getDevices(DeviceType::PLAYBACK);
 }
 
+/**
+ * Fetch devices of the specified type.
+ * These devices must be deleted by the caller using the
+ * Device::deleteDevices() method.
+ *
+ * The list is designed for one-time use. Get the list,
+ * use the device, delete the list immediately.
+ *
+ * DO NOT STORE THIS as it may become out-of-date.
+ *
+ * @return List of Device objects
+ */
 vector<Device *> LinuxAudio::getDevices(DeviceType type)
 {
     // variables needed for the getting of devices to work
@@ -95,6 +116,12 @@ vector<Device *> LinuxAudio::getDevices(DeviceType type)
     return devices;
 }
 
+/**
+ * Check with the hardware to ensure that the current audio settings
+ * are valid for the selected device.
+ *
+ * @param device Device to check against
+ */
 bool LinuxAudio::checkRates(Device *device)
 {
     int err;                     // return for commands that might return an error
@@ -142,6 +169,9 @@ bool LinuxAudio::checkRates(Device *device)
     return false;
 }
 
+/**
+ * DEPRECATED: To be replaced by OSAudio::setActiveOutputDevice.
+ */
 void LinuxAudio::setActiveOutputDevice(Device *device)
 {
     // Set the active output device
@@ -172,11 +202,19 @@ void LinuxAudio::setActiveOutputDevice(Device *device)
     // }
 }
 
+/**
+ * Open the program Pulse Audio Volume Control to the Record tab.
+ * This will allow the user to select the "Monitor of" source
+ * that they wish to capture loopback from.
+ */
 void LinuxAudio::startPAVUControl()
 {
     system("/usr/bin/pavucontrol -t 2");
 }
 
+/**
+ * DEPRECATED: To be removed
+ */
 void LinuxAudio::test_capture(LinuxAudio *param)
 {
     param->capture();
@@ -187,6 +225,9 @@ void LinuxAudio::test_capture(LinuxAudio *param)
    Device * recordingDevice is already formatted as hw:(int),(int)
    if Device is NULL then it chooses the default
    */
+/**
+ * Capture loop for LinuxAudio.
+ */
 void LinuxAudio::capture()
 {
     thread(&LinuxAudio::startPAVUControl).detach();
@@ -270,6 +311,9 @@ void LinuxAudio::capture()
     free(audioBuffer);
 }
 
+/**
+ * Destructor for LinuxAudio.
+ */
 LinuxAudio::~LinuxAudio()
 {
     // callbackList.clear();

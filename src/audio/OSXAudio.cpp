@@ -143,8 +143,16 @@ void OSXAudio::capture()
 }
 
 /**
- * Utility function for fetching the PortAudio devices of a given DeviceType.
+ * Fetch devices of the specified type.
+ * These devices must be deleted by the caller using the
+ * Device::deleteDevices() method.
  *
+ * The list is designed for one-time use. Get the list,
+ * use the device, delete the list immediately.
+ *
+ * DO NOT STORE THIS as it may become out-of-date.
+ *
+ * @return List of Device objects
  */
 vector<Device *> OSXAudio::getDevices(DeviceType type)
 {
@@ -196,6 +204,8 @@ vector<Device *> OSXAudio::getDevices(DeviceType type)
 }
 
 /**
+ * DEPRECATED: To be replaced by getDevices(DeviceType)
+ *
  * Fetch all PortAudio devices that are eligible for recording.
  * In our case, this includes all output devices since we want to do loopback.
  */

@@ -7,7 +7,12 @@
 #include <hlaudio/hlaudio.h>
 #include <hlcontrol/hlcontrol.h>
 
-typedef struct HulaImmediateArgs 
+/**
+ * Structure for args that are parsed out of the command
+ * line but do not need to be stored in the settings
+ * module since they are taken care of "immediately"
+ */
+typedef struct HulaImmediateArgs
 {
     bool startRecord = false;
 } HulaImmediateArgs;
@@ -36,7 +41,7 @@ HulaSettings * parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
 {
     QCommandLineParser parser;
     parser.setApplicationDescription("Simple cross-platform audio loopback and recording.");
- 
+
     parser.addHelpOption();
     parser.addVersionOption();
 
@@ -93,7 +98,7 @@ HulaSettings * parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
         }
         settings->setRecordDuration(time);
     }
-   
+
     if (parser.isSet("record"))
     {
         extraArgs.startRecord = true;
@@ -143,7 +148,7 @@ HulaSettings * parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
         vector<Device *> devices;
         if (settings->getShowRecordDevices())
         {
-            // TODO: 
+            // TODO: Once Neel merges his controller update
             // devices = t.getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK | RECORD));
         }
         else
