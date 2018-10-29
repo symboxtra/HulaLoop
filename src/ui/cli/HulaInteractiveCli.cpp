@@ -1,5 +1,7 @@
 #include "HulaInteractiveCli.h"
 
+#include <cstdio>
+#include <cstdlib>
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -110,6 +112,27 @@ void HulaInteractiveCli::start()
             else
             {
                 missingArg(EXPORT_ARG1);
+            }
+        }
+        else if (command == SYSTEM_SHORT || command == SYSTEM_LONG)
+        {
+            // Make sure there is a command processor available
+            if (system(NULL))
+            {
+                // Construct the sys command from args
+                std::string sysCommand = "";
+                for (int i = 0; i < args.size(); i++)
+                {
+                    sysCommand += args[i] + " ";
+                }
+
+                // Run the command
+                int ret = system(sysCommand.c_str());
+                printf("\n%sSystem command returned: %d\n", HL_PRINT_PREFIX, ret);
+            }
+            else
+            {
+                fprintf(stderr, "%sNo system command processor is available is available.\n", HL_ERROR_PREFIX);
             }
         }
         else if (command == EXIT_LONG)

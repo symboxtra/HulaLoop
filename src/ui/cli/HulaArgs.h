@@ -1,8 +1,8 @@
 #ifndef HULA_ARGS_H
 #define HULA_ARGS_H
 
+#include <cstdio>
 #include <QCommandLineParser>
-#include <QDebug>
 
 #include <hlaudio/hlaudio.h>
 #include <hlcontrol/hlcontrol.h>
@@ -57,6 +57,7 @@ void printArgs(HulaSettings *settings)
     printf("Encoding:             %s\n", "WAV");
     printf("Input device:         '%s'\n", settings->getDefaultInputDeviceName().c_str());
     printf("Output device:        '%s'\n", settings->getDefaultOutputDeviceName().c_str());
+    printf("\n");
 }
 
 /**
