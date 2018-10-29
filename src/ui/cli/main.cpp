@@ -33,6 +33,7 @@ int main(int argc, char **argv)
     if (!extraArgs.startRecord)
     {
         HulaInteractiveCli cli;
+        cli.start();
     }
     else
     {
