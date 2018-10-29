@@ -37,6 +37,7 @@ class QMLBridge : public QObject {
         Q_INVOKABLE void saveFile(QString dir);
         void getData();
         static void updateVisualizer(QMLBridge* _this);
+        static void reverseBits(size_t x, int n);
     signals:
 
         /**
