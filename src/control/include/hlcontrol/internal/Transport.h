@@ -4,6 +4,8 @@
 #include <hlaudio/hlaudio.h>
 #include <string>
 
+#include "Record.h"
+
 /**
  * Available states for the recording/playback logic of the application.
  */
@@ -21,7 +23,14 @@ enum TransportState
 class Transport {
     private:
         TransportState state;
-        Controller *controller;
+        bool recordState = true;
+        bool playbackState = false;
+
+    protected:
+        Record* recorder;
+
+    public:
+        Controller* controller;
 
     public:
 
@@ -37,8 +46,6 @@ class Transport {
         bool play();
         bool pause();
 
-        vector<Device *> getInputDevices() const;
-        vector<Device *> getOutputDevices() const;
         Controller *getController() const;
 
         void exportFile(std::string targetDirectory);

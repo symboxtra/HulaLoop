@@ -32,8 +32,6 @@ Controller::Controller()
         cerr << "OS Audio error !" << endl;
     } // TODO: Handle error
 
-    // Add current Controller instance as buffercallback to OSAudio
-    audio->addBufferReadyCallback(this);
 }
 
 #ifndef NDEBUG
@@ -51,65 +49,6 @@ Controller::Controller(bool dryRun)
     audio = NULL;
 }
 #endif
-
-/**
- * Callback function that is triggered when audio is captured
- * by OSAudio
- *
- * @param size Size of returned audio data (frames)
- * @param data Audio data in byte buffer
- */
-void Controller::handleData(uint8_t *data, uint32_t size)
-{
-    cout << "Data received: " << size << endl;
-
-    // Trigger upper layer callback functions
-    for (int i = 0; i < callbackList.size(); i++)
-    {
-        callbackList[i]->handleData(data, size);
-    }
-}
-
-/**
- * Add upper layer functions to the callback list
- *
- * @param func Derived instance of iCallback class
- */
-void Controller::addBufferReadyCallback(ICallback *func)
-{
-    // Add self to OSAudio callback when first callback is added
-    if (this->callbackList.size() == 0 && audio != NULL)
-    {
-        audio->addBufferReadyCallback(this);
-    }
-
-    // Check if callback function already exists
-    if (find(callbackList.begin(), callbackList.end(), func) == callbackList.end())
-    {
-        this->callbackList.push_back(func);
-    }
-}
-
-/**
- * Remove upper layer functions to the callback list
- *
- * @param func Derived instance of iCallback class
- */
-void Controller::removeBufferReadyCallback(ICallback *func)
-{
-    // Check if callback function exists to remove
-    vector<ICallback *>::iterator it = find(callbackList.begin(), callbackList.end(), func);
-    if (it != callbackList.end())
-    {
-        this->callbackList.erase(it);
-    }
-
-    // Remove self from callback when last callback is removed
-    if (this->callbackList.size() == 0 && audio != NULL)
-    {
-        audio->removeBufferReadyCallback(this);
-    }
-}
 
 /**
  * Add an initialized buffer to the list of buffers that receive audio data.
@@ -165,19 +104,16 @@ HulaRingBuffer *Controller::createAndAddBuffer(float duration)
 }
 
 /**
- * Get input devices from OSAudio.
+ * Utility function to receive the list of devices corresponding to the provided
+ * combination of DeviceType
+ *
+ * @param type DeviceType that is combination from the DeviceType enum
+ *
+ * @return vector<Device*> A list of Device instances that carry the necessary device information
  */
-vector<Device *> Controller::getInputDevices() const
+vector<Device*> Controller::getDevices(DeviceType type) const
 {
-    return audio->getInputDevices();
-}
-
-/**
- * Get output devices from OSAudio.
- */
-vector<Device *> Controller::getOutputDevices() const
-{
-    return audio->getOutputDevices();
+    return audio->getDevices(type);
 }
 
 /**
@@ -188,6 +124,12 @@ void Controller::setActiveInputDevice(Device *device) const
     audio->setActiveInputDevice(device);
 }
 
+/**
+ * Utility function to transfer setOutputDevice command from front-end
+ * to the OS backend
+ *
+ * @param device - Device instance that is to be set as the active output device
+ */
 void Controller::setActiveOutputDevice(Device *device) const
 {
     audio->setActiveOutputDevice(device);
@@ -199,8 +141,6 @@ void Controller::setActiveOutputDevice(Device *device) const
 Controller::~Controller()
 {
     printf("%sController destructor called\n", HL_PRINT_PREFIX);
-
-    callbackList.clear();
 
     // Don't do this until mem management is fixed
     if (audio)

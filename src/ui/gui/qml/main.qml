@@ -28,7 +28,7 @@ ApplicationWindow {
     ButtonPanel {
         id: btnPanel
     }
-    
+
     Visualizer {
         id: visualize
     }
@@ -38,6 +38,6 @@ ApplicationWindow {
         objectName: "transportState"
 
         anchors.top: btnPanel.bottom
-        text: "Initial State"
+        text: qmlbridge.getTransportState()
     }
 }

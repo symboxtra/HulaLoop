@@ -10,6 +10,7 @@
 Transport::Transport()
 {
     controller = new Controller();
+    recorder = new Record(controller);
 }
 
 #ifndef NDEBUG
@@ -35,7 +36,16 @@ bool Transport::record()
 {
     std::cout << "Record button clicked!" << std::endl;
     state = RECORDING;
-    return true;
+
+    if(recordState)
+    {
+        recorder->start();
+
+        recordState = false;
+
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -45,7 +55,17 @@ bool Transport::stop()
 {
     std::cout << "Stop button clicked!" << std::endl;
     state = STOPPED;
-    return true;
+
+    if(!recordState)
+    {
+        recorder->stop();
+
+        recordState = false;
+        playbackState = true;
+
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -55,7 +75,15 @@ bool Transport::play()
 {
     std::cout << "Play button clicked!" << std::endl;
     state = PLAYING;
-    return true;
+
+    if(playbackState)
+    {
+        // TODO: Add playback call
+        playbackState = false;
+
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -65,7 +93,24 @@ bool Transport::pause()
 {
     std::cout << "Pause button clicked!" << std::endl;
     state = PAUSED;
-    return true;
+
+    if(!recordState) // Pause record
+    {
+        recorder->stop();
+
+        recordState = true;
+        playbackState = true;
+
+        return true;
+    }
+    else if(!playbackState) // Pause playback
+    {
+        // TODO: Add playback pause call
+        playbackState = true;
+
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -102,26 +147,6 @@ std::string Transport::stateToStr(const TransportState state) const
 
     }
 
-}
-
-/**
- * Get the current input devices
- *
- * @return vector containing current input devices
- */
-vector<Device *> Transport::getInputDevices() const
-{
-    return controller->getInputDevices();
-}
-
-/**
- * Get the current output devices
- *
- * @return vector containing current output devices
- */
-vector<Device *> Transport::getOutputDevices() const
-{
-    return controller->getOutputDevices();
 }
 
 /**

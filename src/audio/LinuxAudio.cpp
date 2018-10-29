@@ -2,22 +2,6 @@
 
 LinuxAudio::LinuxAudio()
 {
-    vector<Device *> t = getOutputDevices();
-    if (t.empty())
-    {
-        cerr << "No devices found" << endl;
-    }
-    // setActiveOutputDevice(t[0]);
-}
-
-vector<Device *> LinuxAudio::getInputDevices()
-{
-    return getDevices(DeviceType::RECORD);
-}
-
-vector<Device *> LinuxAudio::getOutputDevices()
-{
-    return getDevices(DeviceType::PLAYBACK);
 }
 
 vector<Device *> LinuxAudio::getDevices(DeviceType type)
@@ -175,11 +159,6 @@ void LinuxAudio::setActiveOutputDevice(Device *device)
 void LinuxAudio::startPAVUControl()
 {
     system("/usr/bin/pavucontrol -t 2");
-}
-
-void LinuxAudio::test_capture(LinuxAudio *param)
-{
-    param->capture();
 }
 
 /*
