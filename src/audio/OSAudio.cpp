@@ -32,7 +32,7 @@ void OSAudio::addBuffer(HulaRingBuffer *rb)
         // Signal death and join all threads
         this->endCapture.store(true);
         joinAndKillThreads(inThreads);
-            
+
         // Start up the capture thread
         inThreads.emplace_back(std::thread(&backgroundCapture, this));
     }
@@ -115,7 +115,7 @@ void OSAudio::backgroundCapture(OSAudio *_this)
 /**
  * Set the selected input device and restart capture threads with
  * new device
- *cmak
+ *
  * @param device Instance of Device that corresponds to the desired system device
  */
 void OSAudio::setActiveInputDevice(Device *device)
@@ -167,7 +167,7 @@ void OSAudio::joinAndKillThreads(vector<thread> &threads)
 /**
  * Set the selected output device and restart capture threads with
  * new device
- *f
+ *
  * @param device Instance of Device that corresponds to the desired system device
  */
 void OSAudio::setActiveOutputDevice(Device *device)
