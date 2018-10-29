@@ -162,8 +162,17 @@ int main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
 
+    // Parse the path to the test executable
+    // Powershell's Resolve-Path will expand relative paths later
     path = std::string(argv[0]);
-    path = path.substr(0, path.find_last_of("\\") + 1);
+    size_t lastBSlash = path.find_last_of("\\");
+    size_t lastFSlash = path.find_last_of("/");
+
+    // Strip the executable name
+    if (lastBSlash != std::string::npos)
+        path = path.substr(0, lastBSlash + 1);
+    else if (lastFSlash != std::string::npos)
+        path = path.substr(0, lastFSlash + 1);
 
     return RUN_ALL_TESTS();
 }
