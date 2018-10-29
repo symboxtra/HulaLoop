@@ -31,8 +31,11 @@ function (create_test _test_file _src_files _timeout _do_memcheck)
 
     # Copy PortAudio DLLs to bin/test for successful testing
     if(WIN32)
-        add_custom_command (TARGET ${_test_name} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/cmake/MovePortAudioDLL.cmake)
+        add_custom_command (
+            TARGET ${_test_name}
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -DSOURCE_DIR="${PROJECT_SOURCE_DIR}" -DBINARY_DIR="${CMAKE_BINARY_DIR}" -P ${PROJECT_SOURCE_DIR}/cmake/MovePortAudioDLL.cmake
+        )
     endif ()
 
 endfunction ()
