@@ -30,6 +30,7 @@ class TestWindowsAudio : public ::testing::Test {
 };
 
 WindowsAudio *TestWindowsAudio::audio = NULL;
+std::string path = "";
 
 /**
  * Get input (record or loopback) devices.
@@ -61,7 +62,7 @@ TEST_F(TestWindowsAudio, get_input_devices)
 TEST_F(TestWindowsAudio, get_record_devices)
 {
     vector<Device *> devs = audio->getDevices(DeviceType::RECORD);
-    EXPECT_GT(devs.size(), 0);
+    EXPECT_GE(devs.size(), 0);
 
     for (int i = 0; i < devs.size(); i++)
     {
@@ -144,7 +145,8 @@ TEST_F(TestWindowsAudio, short_capture)
     // Sleep for a few seconds to allow thread to start
     // and data to flow in
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    system("PowerShell -Command \"(New-Object Media.SoundPlayer (Resolve-Path ../../src/test/test.wav)).PlaySync()\"");
+    std::string command = "PowerShell -Command \"(New-Object Media.SoundPlayer (Resolve-Path " + path + "test.wav)).PlaySync()\"";
+    system(command.c_str());
 
     // Read some samples
     int32_t samplesRead = rb->read(readData, maxSamples);
@@ -154,4 +156,14 @@ TEST_F(TestWindowsAudio, short_capture)
     audio->removeBuffer(rb);
     delete rb;
     delete [] readData;
+}
+
+int main(int argc, char **argv)
+{
+    ::testing::InitGoogleTest(&argc, argv);
+
+    path = std::string(argv[0]);
+    path = path.substr(0, path.find_last_of("\\") + 1);
+
+    return RUN_ALL_TESTS();
 }
