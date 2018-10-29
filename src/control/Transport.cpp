@@ -11,9 +11,6 @@ Transport::Transport()
 {
     controller = new Controller();
     recorder = new Record(controller);
-
-    recordState = true;
-    playbackState = false;
 }
 
 #ifndef NDEBUG
