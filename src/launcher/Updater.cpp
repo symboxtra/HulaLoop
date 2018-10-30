@@ -75,7 +75,6 @@ void Updater::downloadUpdate()
     file->open(QIODevice::WriteOnly);
 
     connect(reply, SIGNAL(readyRead()), this, SLOT(downloadReadyRead()));
-    connect(reply, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(updateDownloadProgress(qint64, qint64)));
     connect(reply, SIGNAL(finished()), this, SLOT(downloadFinished()));
 
 }
@@ -121,7 +120,7 @@ void Updater::updateQueryFinished(QNetworkReply *reply)
             QString assetName = obj["name"].toString();
             bool ok = false;
 
-            if(assetName.contains("core") || assetName.contains(HL_PACKAGE_TYPE))
+            if(assetName.contains(".tar") || assetName.contains(HL_PACKAGE_TYPE))
             {
 
                 downloadHostUrl = obj["browser_download_url"].toString();
@@ -148,13 +147,7 @@ void Updater::downloadReadyRead()
     numBytesDownloaded = reply->bytesAvailable();
     emit bytesDownloaded();
 
-    QDataStream out(file);
-    out << reply->read(numBytesDownloaded);
-
-}
-
-void Updater::updateDownloadProgress(qint64 read, qint64 total)
-{
+    file->write(reply->readAll());
 
 }
 
@@ -164,6 +157,18 @@ void Updater::downloadFinished()
     file->flush();
     file->close();
     reply->deleteLater();
+
+}
+
+void Updater::startHulaLoopInstaller()
+{
+
+    QProcess proc;
+    QString procName = QDir::tempPath() + "/hulaloop";
+
+    proc.setProgram(procName);
+    if(proc.startDetached())
+        exit(0);
 
 }
 

@@ -40,12 +40,12 @@ class Updater : public QObject
         Q_INVOKABLE void checkForUpdate();
         Q_INVOKABLE void downloadUpdate();
 
+        Q_INVOKABLE void startHulaLoopInstaller();
         Q_INVOKABLE void startHulaLoopApp();
 
     public slots:
         void updateQueryFinished(QNetworkReply *);
         void downloadReadyRead();
-        void updateDownloadProgress(qint64, qint64);
         void downloadFinished();
 
     signals:

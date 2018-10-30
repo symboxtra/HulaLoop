@@ -21,11 +21,9 @@ ApplicationWindow {
 
     Updater {
         id: updater
-        updateHostUrl: "https://api.github.com/repos/PierfrancescoSoffritti/android-youtube-player/releases/latest"
+        updateHostUrl: "https://api.github.com/repos/bmatzelle/gow/releases/latest"
 
-        onBytesDownloaded: {
-            progressBar.value = updater.getNumBytesDownloaded()
-        }
+        onBytesDownloaded: progressBar.value += (updater.getNumBytesDownloaded() / updater.getDownloadSize())
     }
 
     Item {
@@ -55,6 +53,7 @@ ApplicationWindow {
             antialiasing: true
 
             from: 0
+            to: 1
             value: 0
             visible: true
 	    }
@@ -74,7 +73,6 @@ ApplicationWindow {
                 if(updater.foundUpdate())
                 {
                     progressBar.indeterminate = false
-                    progressBar.to = updater.getDownloadSize()
                     status.text = qsTr("Downloading updates...")
 
                     updater.downloadUpdate()
