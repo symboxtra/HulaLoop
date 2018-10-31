@@ -184,7 +184,7 @@ vector<Device *> OSXAudio::getDevices(DeviceType type)
 
             // Print some debug device info for now
             // TODO: Remove
-            cout << "Device #" << i + 1 << ": " << paDevice->name << endl;
+            cout << "Device #" << i << ": " << paDevice->name << endl;
             cout << "Input Channels: " << paDevice->maxInputChannels << endl;
             cout << "Output Channels: " << paDevice->maxOutputChannels << endl;
             cout << "Default Sample Rate: " << paDevice->defaultSampleRate << endl;
