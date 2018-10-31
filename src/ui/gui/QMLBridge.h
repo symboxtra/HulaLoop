@@ -19,7 +19,7 @@ class QMLBridge : public QObject {
     private:
         Transport *transport;
         HulaRingBuffer * rb;
-        bool pauseNotPressed;
+        
 
     public:
         explicit QMLBridge(QObject *parent = nullptr);
@@ -39,6 +39,10 @@ class QMLBridge : public QObject {
         void getData();
         static void updateVisualizer(QMLBridge* _this);
         static void reverseBits(size_t x, int n);
+
+        bool pauseNotPressed;
+
+        bool getPauseState();
     signals:
 
         /**

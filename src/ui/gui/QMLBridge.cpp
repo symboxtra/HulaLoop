@@ -66,6 +66,7 @@ void QMLBridge::play()
     transport->play();
     emit stateChanged();
     getData();
+    //this.setPause(false);
     pauseNotPressed=true;
 }
 
@@ -77,6 +78,7 @@ void QMLBridge::pause()
     transport->pause();
     emit stateChanged();
     pauseNotPressed=false;
+    //this.setPause(true);
     //cout<<"pause clicked\n";
     
     //emit visData(dataFake);
@@ -206,7 +208,7 @@ void QMLBridge::updateVisualizer(QMLBridge *_this){
     float * temp = new float[maxSize];
     //cout<<"before the for loop\n";
     //for(int i=0;i<10;i++){
-    while(1){
+    while(1 && _this->getPauseState()){
         size_t bytesRead=_this->rb->read(temp, maxSize);
         //printf("Read %zu bytes.\n", bytesRead);
         vector<double> actualoutreal;
@@ -257,3 +259,6 @@ void QMLBridge::updateVisualizer(QMLBridge *_this){
     _this->emit visData(dataFake);*/
 }
 
+bool QMLBridge::getPauseState(){
+    return(this->pauseNotPressed);
+}
