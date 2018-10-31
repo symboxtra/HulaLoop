@@ -29,13 +29,13 @@ class LinuxAudio : public OSAudio {
         LinuxAudio();
         ~LinuxAudio();
         void capture();
+
         static void startPAVUControl();
-        vector<Device *> getInputDevices();
-        vector<Device *> getOutputDevices();
+
         vector<Device *> getDevices(DeviceType type);
+
         bool checkRates(Device *device);
-        void clearDevices(vector<Device *> devices);
-        static void test_capture(LinuxAudio *param);
+
         void setActiveOutputDevice(Device *device);
 
 };

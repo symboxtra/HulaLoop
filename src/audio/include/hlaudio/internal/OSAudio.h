@@ -9,7 +9,6 @@
 
 #include "Device.h"
 #include "HulaRingBuffer.h"
-#include "ICallback.h"
 
 using namespace std;
 
@@ -27,7 +26,11 @@ class OSAudio {
         /**
          * Constructor is protected since this class is abstract.
          */
-        OSAudio() {};
+        OSAudio()
+        {
+            this->activeInputDevice = NULL;
+            this->activeOutputDevice = NULL;
+        };
 
         /**
          * The selected input device
@@ -40,23 +43,10 @@ class OSAudio {
         Device *activeOutputDevice;
 
         /**
-         * List of all added callback function
-         */
-        vector<ICallback *> callbackList;
-
-        /**
          * List of all added ring buffers.
          * Data received from the operating system is copied into each of these buffers.
          */
         vector<HulaRingBuffer *> rbs;
-
-        /**
-         * List of all running threads.
-         *
-         * TODO: Remove
-         * Leave until WindowsAudio can be updated.
-         */
-        vector<thread> execThreads;
 
         /**
          * Thread for input device activities.
@@ -90,34 +80,28 @@ class OSAudio {
 
         void setBufferSize(uint32_t size);
 
-        void addBufferReadyCallback(ICallback *c);
-        void removeBufferReadyCallback(ICallback *func);
-
         void addBuffer(HulaRingBuffer *rb);
         void removeBuffer(HulaRingBuffer *rb);
         void copyToBuffers(const void *data, uint32_t bytes);
 
         /**
-         * Receive the list of available output audio devices connected to the OS
-         * and return them as Device instances
+         * Receive the list of available record, playback and/or loopback audio devices
+         * connected to the OS and return them as Device instances
          *
-         * @return vector of Device instances
+         * @param type DeviceType that is combination from the DeviceType enum
+         * @return vector<Device*> A list of Device instances that carry the necessary device information
          */
-        virtual vector<Device *> getInputDevices() = 0;
-
-        /**
-         * Set the selected output device and restart capture threads with
-         * new device
-         *
-         * @param device Instance of Device that corresponds to the desired system device
-         */
-        virtual vector<Device *> getOutputDevices() = 0;
+        virtual vector<Device *> getDevices(DeviceType type) = 0;
 
         /**
          * Execution loop for loopback capture
          */
         virtual void capture() = 0;
         static void backgroundCapture(OSAudio *_this);
+
+        /**
+         * Verify the bit rate of set rate with the hardware device compatibility
+         */
         virtual bool checkRates(Device *device) = 0;
 
         void setActiveInputDevice(Device *device);

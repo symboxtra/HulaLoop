@@ -5,28 +5,6 @@
  */
 LinuxAudio::LinuxAudio()
 {
-    vector<Device *> t = getOutputDevices();
-    if (t.empty())
-    {
-        cerr << "No devices found" << endl;
-    }
-    // setActiveOutputDevice(t[0]);
-}
-
-/**
- * DEPRECATED: To be replaced by getDevices(DeviceType)
- */
-vector<Device *> LinuxAudio::getInputDevices()
-{
-    return getDevices(DeviceType::RECORD);
-}
-
-/**
- * DEPRECATED: To be replaced by getDevices(DeviceType)
- */
-vector<Device *> LinuxAudio::getOutputDevices()
-{
-    return getDevices(DeviceType::PLAYBACK);
 }
 
 /**
@@ -210,14 +188,6 @@ void LinuxAudio::setActiveOutputDevice(Device *device)
 void LinuxAudio::startPAVUControl()
 {
     system("/usr/bin/pavucontrol -t 2");
-}
-
-/**
- * DEPRECATED: To be removed
- */
-void LinuxAudio::test_capture(LinuxAudio *param)
-{
-    param->capture();
 }
 
 /*

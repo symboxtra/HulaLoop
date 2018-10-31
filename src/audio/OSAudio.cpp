@@ -15,35 +15,6 @@ void OSAudio::setBufferSize(uint32_t size)
 }
 
 /**
- * Add upper layer functions to the callback list
- *
- * @param func Derived instance of ICallback class
- */
-void OSAudio::addBufferReadyCallback(ICallback *func)
-{
-    // Check if callback function already exists
-    if (find(callbackList.begin(), callbackList.end(), func) == callbackList.end())
-    {
-        this->callbackList.push_back(func);
-    }
-}
-
-/**
- * Remove upper layer functions to the callback list
- *
- * @param func Derived instance of ICallback class
- */
-void OSAudio::removeBufferReadyCallback(ICallback *callFunction)
-{
-    // Check if callback function exists to remove
-    vector<ICallback *>::iterator it = find(callbackList.begin(), callbackList.end(), callFunction);
-    if (it != callbackList.end())
-    {
-        this->callbackList.erase(it);
-    }
-}
-
-/**
  * Add an initialized buffer to the list of buffers that receive audio data.
  * If already present, the ring buffer will not be duplicated.
  *
@@ -58,6 +29,10 @@ void OSAudio::addBuffer(HulaRingBuffer *rb)
 
     if (rbs.size() == 1)
     {
+        // Signal death and join all threads
+        this->endCapture.store(true);
+        joinAndKillThreads(inThreads);
+
         // Start up the capture thread
         inThreads.emplace_back(std::thread(&backgroundCapture, this));
     }
@@ -117,10 +92,19 @@ void OSAudio::copyToBuffers(const void *data, uint32_t bytes)
 */
 void OSAudio::backgroundCapture(OSAudio *_this)
 {
-    // Don't start if we have no buffers to copy to
-    if (_this->rbs.size() == 0)
-    {
+    if(_this->rbs.size() == 0)
         return;
+
+    if (_this->activeInputDevice == NULL)
+    {
+        vector<Device*> devices = _this->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
+        if(devices.empty())
+            return;
+
+        if(_this->activeInputDevice)
+            delete _this->activeInputDevice;
+        _this->activeInputDevice = new Device(*devices[0]);
+        Device::deleteDevices(devices);
     }
 
     // Reset the thread interrupt flag
@@ -149,7 +133,10 @@ void OSAudio::setActiveInputDevice(Device *device)
     }
 
     this->checkRates(device);
-    this->activeInputDevice = device;
+
+    if(this->activeInputDevice)
+        delete this->activeInputDevice;
+    this->activeInputDevice = new Device(*device);
 
     // Signal death and wait for all threads to catch the signal
     this->endCapture.store(true);
@@ -186,6 +173,8 @@ void OSAudio::joinAndKillThreads(vector<thread> &threads)
 void OSAudio::setActiveOutputDevice(Device *device)
 {
     this->checkRates(device);
+
+
     this->activeOutputDevice = device;
 }
 

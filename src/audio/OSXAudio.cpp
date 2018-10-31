@@ -204,26 +204,6 @@ vector<Device *> OSXAudio::getDevices(DeviceType type)
 }
 
 /**
- * DEPRECATED: To be replaced by getDevices(DeviceType)
- *
- * Fetch all PortAudio devices that are eligible for recording.
- * In our case, this includes all output devices since we want to do loopback.
- */
-vector<Device *> OSXAudio::getInputDevices()
-{
-    return getDevices(DeviceType::RECORD);
-}
-
-/**
- * Fetch all PortAudio devices that are eligible for playback.
- *
- */
-vector<Device *> OSXAudio::getOutputDevices()
-{
-    return getDevices(DeviceType::PLAYBACK);
-}
-
-/**
  * Static function in the current instance of the class
  * to allow thread execution
  *
