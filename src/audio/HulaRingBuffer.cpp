@@ -81,11 +81,9 @@ int32_t HulaRingBuffer::read(SAMPLE *data, int32_t maxSamples)
     ring_buffer_size_t samplesRead = PaUtil_ReadRingBuffer(&this->rb, (void *)data, (ring_buffer_size_t)maxSamples);
     if (samplesRead > 0)
     {
-        printf("%sRead of %d elements.\n", HL_PRINT_PREFIX, samplesRead);
+        // printf("%sRead of %d elements.\n", HL_PRINT_PREFIX, samplesRead);
 
-        // Does this need to be advanced
-        // Advance the index after successful read
-        PaUtil_AdvanceRingBufferReadIndex(&this->rb, samplesRead);
+        // Do not call Advance here... It's called by PaUtil_ReadRingBuffer.
     }
 
     return samplesRead;
@@ -118,7 +116,7 @@ int32_t HulaRingBuffer::directRead(int32_t maxSamples, void **dataPtr1, int32_t 
     ring_buffer_size_t samplesRead = PaUtil_GetRingBufferReadRegions(&this->rb, samplesInBuffer, dataPtr1, (ring_buffer_size_t *)size1, dataPtr2, (ring_buffer_size_t *)size2);
     if (samplesRead > 0)
     {
-        printf("%sDirect read of %d elements.\n", HL_PRINT_PREFIX, samplesRead);
+        // printf("%sDirect read of %d elements.\n", HL_PRINT_PREFIX, samplesRead);
 
         // Advance the index after successful read
         PaUtil_AdvanceRingBufferReadIndex(&this->rb, samplesRead);
