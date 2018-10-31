@@ -44,7 +44,7 @@ ApplicationWindow {
         }
         onVisData: {
             for(var i =0;i<dataIn.length;i++){
-                rectgen.itemAt(i).height=dataIn[i]*2000
+                rectgen.itemAt(i).height=dataIn[i]
             }
         }
     }

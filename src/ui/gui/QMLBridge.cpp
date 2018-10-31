@@ -27,6 +27,7 @@
 QMLBridge::QMLBridge(QObject *parent) : QObject(parent)
 {
     transport = new Transport;
+    
 }
 
 /**
@@ -64,6 +65,8 @@ void QMLBridge::play()
 {
     transport->play();
     emit stateChanged();
+    getData();
+    pauseNotPressed=true;
 }
 
 /**
@@ -73,8 +76,9 @@ void QMLBridge::pause()
 {
     transport->pause();
     emit stateChanged();
+    pauseNotPressed=false;
     //cout<<"pause clicked\n";
-    getData();
+    
     //emit visData(dataFake);
 }
 
@@ -211,10 +215,10 @@ void QMLBridge::updateVisualizer(QMLBridge *_this){
             actualoutimag.push_back(temp[i]);
             actualoutreal.push_back(temp[i]);
         }
-        /*printf("before transform real vector:\n");
+        //printf("before transform real vector:\n");
         for(int i=0;i<bytesRead;i++){
-            printf("%f\n",actualoutreal[i]);
-        }
+            //printf("%d:%f\n",i,actualoutreal[i]);
+        }/*
          printf("before transform imag vector:\n");
         for(int i=0;i<bytesRead;i++){
             printf("%f\n",actualoutimag[i]);
@@ -236,23 +240,20 @@ void QMLBridge::updateVisualizer(QMLBridge *_this){
                 }
         }
         for(int i=0;i<heights.size();i++){
-        printf("height%d: %f\n",i,heights[i]);
+        //printf("height%d: %f\n",i,heights[i]);
         }
-        
         
         /* printf("after transform imag vector:\n");
         for(int i=0;i<bytesRead;i++){
             printf("%f\n",actualoutimag[i]);
         }*/
         _this->emit visData(heights);
-        std::this_thread::sleep_for (std::chrono::milliseconds(5));
+        std::this_thread::sleep_for (std::chrono::milliseconds(100));
     }
    /* vector<qreal> dataFake;
     for(int i=0;i<10;i++){
         dataFake.push_back((qreal) .5);
     }
     _this->emit visData(dataFake);*/
-
-
 }
 

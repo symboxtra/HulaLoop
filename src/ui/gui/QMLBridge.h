@@ -19,10 +19,11 @@ class QMLBridge : public QObject {
     private:
         Transport *transport;
         HulaRingBuffer * rb;
+        bool pauseNotPressed;
 
     public:
         explicit QMLBridge(QObject *parent = nullptr);
-
+        
         Q_INVOKABLE void setActiveInputDevice(QString QDeviceName);
         Q_INVOKABLE void setActiveOutputDevice(QString QDeviceName);
         Q_INVOKABLE QString getInputDevices();
