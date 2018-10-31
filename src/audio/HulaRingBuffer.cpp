@@ -133,7 +133,7 @@ int32_t HulaRingBuffer::write(const SAMPLE *data, int32_t maxSamples)
 
     ring_buffer_size_t elementsWritten = PaUtil_WriteRingBuffer(&this->rb, data, elementsToWrite);
 
-    printf("%sWrite: %d of %d samples written\n", HL_PRINT_PREFIX, elementsWritten, maxSamples);
+    printf("Samples wrote: %d\n", elementsWritten);
 
     if (elementsWritten < maxSamples)
     {

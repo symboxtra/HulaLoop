@@ -1,6 +1,8 @@
 #include "WindowsAudio.h"
 #include "hlaudio/internal/HulaAudioError.h"
 
+#include <sndfile.h>
+
 WindowsAudio::WindowsAudio()
 {
     pa_status = paNoError;
@@ -174,6 +176,12 @@ void WindowsAudio::capture()
 {
     cout << "In Capture Mode" << endl; // TODO: Remove this later
 
+    SF_INFO sfinfo;
+    sfinfo.samplerate = 48000;
+    sfinfo.channels = NUM_CHANNELS;
+    sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
+    SNDFILE* file = sf_open("C:\\Users\\patel\\AppData\\Local\\Temp\\time_t.wav", SFM_WRITE, &sfinfo);
+
     // Instantiate clients and services for audio capture
     IAudioCaptureClient *captureClient = NULL;
     IAudioClient *audioClient = NULL;
@@ -224,12 +232,14 @@ void WindowsAudio::capture()
     status = audioClient->Start();
     HANDLE_ERROR(status);
 
-    // Sleep duration
+    // Calculate the duration of the actual buffer
     duration = (double)REFTIMES_PER_SEC * captureBufferSize / pwfx->nSamplesPerSec;
 
     // Continue loop under process ends
-    while (!this->endCapture)
+    // Each loop fills half of the shared buffer
+    while (!this->endCapture.load())
     {
+        // Sleep for half the buffer duration
         Sleep(duration / (REFTIMES_PER_MILLISEC * 2));
 
         // Get the packet size of the next captured buffer
@@ -242,8 +252,21 @@ void WindowsAudio::capture()
             status = captureClient->GetBuffer(&pData, &numFramesAvailable, &flags, NULL, NULL);
             HANDLE_ERROR(status);
 
+            if (flags & AUDCLNT_BUFFERFLAGS_SILENT)
+                pData = NULL;
+
             // Copy to ringbuffers
-            this->copyToBuffers((void*)pData, numFramesAvailable * NUM_CHANNELS * sizeof(SAMPLE));
+            this->copyToBuffers(pData, numFramesAvailable * NUM_CHANNELS);
+            /*float* floatData = (float*)pData;
+            sf_count_t error = sf_writef_float(file, floatData, numFramesAvailable);
+            if (error != numFramesAvailable)
+            {
+                char errstr[256];
+                sf_error_str (0, errstr, sizeof (errstr) - 1);
+                fprintf (stderr, "cannot write sndfile (%s)\n", errstr);
+                fprintf(stderr, "%sWe done goofed...", HL_ERROR_PREFIX);
+                exit(1);
+            }*/
 
             // Release buffer after data is captured and handled
             status = captureClient->ReleaseBuffer(numFramesAvailable);
@@ -254,6 +277,7 @@ void WindowsAudio::capture()
             HANDLE_ERROR(status);
         }
     }
+    sf_close(file);
 
     // Stop the client capture once process exits
     status = audioClient->Stop();

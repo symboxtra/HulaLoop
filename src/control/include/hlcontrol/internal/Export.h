@@ -3,6 +3,7 @@
 
 #include <hlaudio/hlaudio.h>
 #include <string>
+
 using namespace std;
 
 class Export {
@@ -12,6 +13,8 @@ class Export {
     public:
         Export(string targetDirectory);
         void copyData(string inputFileDirectory);
+
+        static std::string getTempPath();
 
         ~Export();
 };

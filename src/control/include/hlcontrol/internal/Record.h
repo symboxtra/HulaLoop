@@ -21,7 +21,7 @@ class Record {
         Record(Controller* control);
         ~Record();
 
-        static void recorder(Record* _this);
+        void recorder();
 
         void start();
         void stop();

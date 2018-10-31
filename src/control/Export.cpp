@@ -3,6 +3,8 @@
 #include <fstream>
 #include <string>
 
+#include <QDir>
+
 /**
  * Construct a new instance of the Export class.
  *
@@ -11,6 +13,16 @@
 Export::Export(string targetDirectory)
 {
     this->targetDirectory = targetDirectory;
+}
+
+/**
+ * Gets the system temporary directory
+ *
+ * @return string the absolute path to the system temp directory
+ */
+std::string Export::getTempPath()
+{
+    return QDir::toNativeSeparators(QDir::tempPath()).toStdString();
 }
 
 /**

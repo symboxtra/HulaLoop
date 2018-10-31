@@ -23,8 +23,8 @@ enum TransportState
 class Transport {
     private:
         TransportState state;
-        bool recordState;
-        bool playbackState;
+        bool recordState = true;
+        bool playbackState = false;
 
     protected:
         Record* recorder;

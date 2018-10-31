@@ -78,6 +78,9 @@ if (WIN32)
     set (HL_LIBRARIES ${HL_LIBRARIES} winmm.lib ) # TODO: Add required windows libraries
 endif ()
 
+# Make sure we can find our Find<package>.cmake files
+list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
 
 
 
@@ -129,8 +132,11 @@ set (HL_LIBRARIES
     Qt5::QuickControls2
 )
 
+# Required Sndfile packages
+find_package (SndFile REQUIRED)
 
-
+add_include_dir (${LIBSNDFILE_INCLUDE})
+list (APPEND HL_LIBRARIES ${LIBSNDFILE_LIB})
 
 ######## Libraries ########
 
@@ -141,9 +147,6 @@ endif ()
 
 # Build and install portaudio to our build/lib folder
 add_subdirectory (src/libs/portaudio)
-
-# Make sure we can find our Find<package>.cmake files
-list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 # Add coverage flags for GCC after 3rd party libs are built
 set (CXX_FLAGS_NOCOV "${CMAKE_CXX_FLAGS}")
@@ -183,19 +186,19 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     include (cmake/Testing.cmake)
 
     # Test that only rely on the audio library
-    create_test ("src/test/TestOSAudio.cpp" "" 3)
-    create_test ("src/test/TestHulaRingBuffer.cpp" "" 0.5)
-    create_test ("src/test/TestController.cpp" "" -1)
-    #create_test ("src/test/TestAudioOutput.cpp" "" -1)
+    create_test ("src/test/TestOSAudio.cpp" "" 3 FALSE)
+    create_test ("src/test/TestHulaRingBuffer.cpp" "" 0.5 TRUE)
+    create_test ("src/test/TestController.cpp" "" -1 TRUE)
+    #create_test ("src/test/TestAudioOutput.cpp" "" -1 TRUE)
 
     if (OSX)
-        create_test ("src/test/TestOSXAudio.cpp" "" -1)
+        create_test ("src/test/TestOSXAudio.cpp" "" -1 FALSE)
     elseif (WIN32)
-        # create_test ("src/test/TestWindowsAudio.cpp" "" -1)
+        create_test ("src/test/TestWindowsAudio.cpp" "" -1 FALSE)
     endif ()
 
     if (NOT HL_BUILD_ONLY_AUDIO)
-        create_test ("src/test/TestTransport.cpp" "" -1)
+        create_test ("src/test/TestTransport.cpp" "" -1 TRUE)
     endif ()
 
 endif ()
