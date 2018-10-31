@@ -5,7 +5,7 @@
 #include <fstream>
 #include <sndfile.h>
 
-Record::Record(Controller* control, std::string path)
+Record::Record(Controller *control, std::string path)
 {
     this->controller = control;
     this->rb = NULL;
@@ -14,8 +14,10 @@ Record::Record(Controller* control, std::string path)
 
 void Record::start()
 {
-    if(this->rb == NULL)
+    if (this->rb == NULL)
+    {
         this->rb = this->controller->createAndAddBuffer(0.5);
+    }
 
     this->endRecord.store(false);
     recordThread = thread(&Record::recorder, this);
@@ -33,15 +35,15 @@ void Record::recorder()
 
     // Open the file write-only
     std::string file_path2 = Export::getTempPath() + "/time_stamped2.wav";
-    SNDFILE* file = sf_open(this->tempDirPath.c_str(), SFM_WRITE, &sfinfo);
+    SNDFILE *file = sf_open(this->tempDirPath.c_str(), SFM_WRITE, &sfinfo);
 
-    FILE* fd = fopen(file_path2.c_str(), "w");
+    FILE *fd = fopen(file_path2.c_str(), "w");
 
-    while(!this->endRecord.load())
+    while (!this->endRecord.load())
     {
         samplesRead = this->rb->read(buffer, 512);
 
-        if(samplesRead > 0)
+        if (samplesRead > 0)
         {
             printf("Address of read data: %p\n", buffer);
 
@@ -67,8 +69,10 @@ void Record::stop()
 {
     this->endRecord.store(true);
 
-    if(recordThread.joinable())
+    if (recordThread.joinable())
+    {
         recordThread.join();
+    }
 
     this->controller->removeBuffer(this->rb);
 }

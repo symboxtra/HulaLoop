@@ -56,7 +56,7 @@ bool Transport::record()
     std::cout << "Record button clicked!" << std::endl;
     state = RECORDING;
 
-    if(recordState)
+    if (recordState)
     {
         recorder->start();
 
@@ -75,7 +75,7 @@ bool Transport::stop()
     std::cout << "Stop button clicked!" << std::endl;
     state = STOPPED;
 
-    if(!playbackState || !recordState)
+    if (!playbackState || !recordState)
     {
         recorder->stop();
 
@@ -95,7 +95,7 @@ bool Transport::play()
     std::cout << "Play button clicked!" << std::endl;
     state = PLAYING;
 
-    if(playbackState)
+    if (playbackState)
     {
         // TODO: Add playback call
         playbackState = false;
@@ -113,7 +113,7 @@ bool Transport::pause()
     std::cout << "Pause button clicked!" << std::endl;
     state = PAUSED;
 
-    if(!recordState) // Pause record
+    if (!recordState) // Pause record
     {
         recorder->stop();
 
@@ -122,7 +122,7 @@ bool Transport::pause()
 
         return true;
     }
-    else if(!playbackState) // Pause playback
+    else if (!playbackState) // Pause playback
     {
         // TODO: Add playback pause call
         playbackState = true;
@@ -193,8 +193,12 @@ Transport::~Transport()
     printf("%sTransport destructor called\n", HL_PRINT_PREFIX);
 
     if (controller)
+    {
         delete controller;
+    }
 
-    if(recorder)
+    if (recorder)
+    {
         delete recorder;
+    }
 }

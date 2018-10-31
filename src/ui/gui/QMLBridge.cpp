@@ -154,14 +154,13 @@ QString QMLBridge::getOutputDevices()
  */
 void QMLBridge::saveFile(QString dir)
 {
-    // create a Qurl so it is easy to convert
-    QUrl url(dir);
-    string directory = url.path().toStdString();
-
-    // TODO: Remove OS dependent code and find way to use Qt to extract URL (Only for demo)
-    #if WIN32
-        directory = directory.substr(1);
-    #endif
-
+    string directory = dir.toStdString();
+    int substrLen = 7;
+    if (dir[9] == ':')
+    {
+        // WINDOWS
+        substrLen = 8;
+    }
+    directory = directory.substr(substrLen);
     transport->exportFile(directory);
 }

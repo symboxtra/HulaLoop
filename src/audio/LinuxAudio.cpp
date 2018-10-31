@@ -174,7 +174,7 @@ void LinuxAudio::capture()
     string defaultDevice;           // default hw id for the device
     snd_pcm_hw_params_t *param;     // object to store our paramets (they are just the default ones for now)
     int audioBufferSize;            // size of the buffer for the audio
-    byte *audioBuffer = NULL;       // buffer for the audio
+    uint8_t *audioBuffer = NULL;       // buffer for the audio
     snd_pcm_uframes_t *temp = NULL; // useless parameter because the api requires it
     int framesRead = 0;             // amount of frames read
 
@@ -220,7 +220,7 @@ void LinuxAudio::capture()
 
     // allocate memory for the buffer
     audioBufferSize = frame * NUM_CHANNELS * sizeof(SAMPLE);
-    audioBuffer = (byte *)malloc(audioBufferSize);
+    audioBuffer = (uint8_t *)malloc(audioBufferSize);
 
     while (!this->endCapture.load())
     {

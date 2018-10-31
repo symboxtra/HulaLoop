@@ -29,10 +29,10 @@ class Transport {
         std::string tempPath;
 
     protected:
-        Record* recorder;
+        Record *recorder;
 
     public:
-        Controller* controller;
+        Controller *controller;
 
     public:
 

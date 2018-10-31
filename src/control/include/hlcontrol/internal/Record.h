@@ -10,8 +10,8 @@ using namespace std;
 class Record {
 
     private:
-        Controller* controller;
-        HulaRingBuffer* rb;
+        Controller *controller;
+        HulaRingBuffer *rb;
 
         thread recordThread;
 
@@ -20,7 +20,7 @@ class Record {
         std::string tempDirPath;
 
     public:
-        Record(Controller* control, std::string path);
+        Record(Controller *control, std::string path);
         ~Record();
 
         void recorder();
