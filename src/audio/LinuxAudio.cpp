@@ -168,7 +168,7 @@ void LinuxAudio::startPAVUControl()
    */
 void LinuxAudio::capture()
 {
-    thread(&LinuxAudio::startPAVUControl).detach();
+    // thread(&LinuxAudio::startPAVUControl).detach();
     int err;                        // return for commands that might return an error
     snd_pcm_t *pcmHandle = NULL;    // default pcm handle
     string defaultDevice;           // default hw id for the device
@@ -222,7 +222,7 @@ void LinuxAudio::capture()
     audioBufferSize = frame * NUM_CHANNELS * sizeof(SAMPLE);
     audioBuffer = (byte *)malloc(audioBufferSize);
 
-    while (true)
+    while (!this->endCapture.load())
     {
         // while (callbackList.size() > 0)
         // {
@@ -244,8 +244,12 @@ void LinuxAudio::capture()
         copyToBuffers(audioBuffer, framesRead * NUM_CHANNELS * sizeof(SAMPLE));
     }
     // cleanup stuff
-    snd_pcm_drain(pcmHandle);
-    snd_pcm_close(pcmHandle);
+    err = snd_pcm_close(pcmHandle);
+    if (err < 0)
+    {
+        cerr << "Unable to close" << endl;
+        exit(1);
+    }
     free(audioBuffer);
 }
 

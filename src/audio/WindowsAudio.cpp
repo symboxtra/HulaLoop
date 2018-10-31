@@ -258,7 +258,6 @@ void WindowsAudio::capture()
 
             // Copy to ringbuffers
             float* floatData = (float*)pData;
-            printf("Address of incoming data: %p\n", floatData);
 
             this->copyToBuffers(floatData, numFramesAvailable * NUM_CHANNELS);
 
