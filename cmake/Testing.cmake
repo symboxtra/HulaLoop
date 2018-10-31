@@ -1,4 +1,4 @@
-function (create_test _test_file _src_files _timeout)
+function (create_test _test_file _src_files _timeout _do_memcheck)
 
     get_filename_component (_test_name ${_test_file} NAME_WE)
     add_executable (${_test_name} ${_test_file} ${_src_files})
@@ -10,14 +10,32 @@ function (create_test _test_file _src_files _timeout)
         WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
     )
 
+    # Add memory test
+    # We don't currently have a solution for Windows
+    if (_do_memcheck AND NOT WIN32)
+        if (NOT VALGRIND_EXECUTABLE)
+            message (STATUS "Valgrind could not be found. Skipping requested memcheck for ${_test_name}.")
+        else ()
+            add_test (
+                NAME memcheck_${_test_name}
+                COMMAND ${VALGRIND_EXECUTABLE} --leak-check=full --show-reachable=yes --error-exitcode=1 --track-origins=yes ./test/${_test_name}
+                WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+            )
+        endif ()
+    endif ()
+
+    # Don't apply a timeout to the memory checks since valgrind will slow things down
     if (_timeout GREATER 0)
         set_tests_properties (${_test_name} PROPERTIES TIMEOUT ${_timeout})
     endif ()
 
     # Copy PortAudio DLLs to bin/test for successful testing
     if(WIN32)
-        add_custom_command (TARGET ${_test_name} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/cmake/MovePortAudioDLL.cmake)
+        add_custom_command (
+            TARGET ${_test_name}
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -DSOURCE_DIR="${PROJECT_SOURCE_DIR}" -DBINARY_DIR="${CMAKE_BINARY_DIR}" -P ${PROJECT_SOURCE_DIR}/cmake/MovePortAudioDLL.cmake
+        )
     endif ()
 
 endfunction ()
@@ -37,6 +55,7 @@ endif ()
 set (CMAKE_CXX_FLAGS "${CXX_FLAGS_NOCOV}")
 
 # Enable testing and build googletest submodule
+include (CTest)
 enable_testing ()
 add_subdirectory (src/libs/googletest)
 
@@ -57,6 +76,11 @@ link_directories (
     ${CMAKE_BINARY_DIR}/bin
 )
 
+# Find valgrind for memcheck tests
+# This is not required; memchecks will just be skipped if not present
+find_program (VALGRIND_EXECUTABLE "valgrind")
+message (STATUS "Valgrind: ${VALGRIND_EXECUTABLE}")
+
 # Collect all test source files
 file (GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/src/test/*/*.cpp)
 
@@ -64,8 +88,8 @@ set (T_TEST_DIR "${PROJECT_SOURCE_DIR}/src/test")
 
 # Add the GUI tests to the bin directory instead of bin/test
 # GUI tests need the Qt DLLs in bin
-if (HL_INCLUDE_GUI_TESTS AND NOT BUILD_ONLY_AUDIO)
-    create_test ("src/test/TestGUI.cpp" "src/ui/gui/QMLBridge.cpp;src/ui/gui/qml.qrc" -1)
+if (HL_BUILD_GUI AND HL_INCLUDE_GUI_TESTS AND NOT HL_BUILD_ONLY_AUDIO)
+    create_test ("src/test/TestGUI.cpp" "src/ui/gui/QMLBridge.cpp;src/ui/gui/qml.qrc" -1 FALSE)
     target_link_libraries (TestGUI ${HL_LIBRARIES})
 else (NOT HL_INCLUDE_GUI_TESTS)
     message (STATUS "Ignoring GUI tests. Set HL_INCLUDE_GUI_TESTS=true to include.")

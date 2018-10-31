@@ -48,8 +48,17 @@ class TestGUI : public ::testing::Test {
                 {
                     return property.toString();
                 }
+                else
+                {
+                    ADD_FAILURE();
+                }
 
             }
+            else
+            {
+                ADD_FAILURE();
+            }
+
             return QString();
         }
 
@@ -60,6 +69,10 @@ class TestGUI : public ::testing::Test {
             if (obj)
             {
                 return obj->property("visible").toBool();
+            }
+            else
+            {
+                ADD_FAILURE();
             }
 
             return false;
@@ -73,6 +86,10 @@ class TestGUI : public ::testing::Test {
             {
                 return obj->property("enabled").toBool();
             }
+            else
+            {
+                ADD_FAILURE();
+            }
 
             return false;
         }
@@ -85,6 +102,10 @@ class TestGUI : public ::testing::Test {
             {
                 return QString::compare(obj->property("color").toString(), "#ffffff");
             }
+            else
+            {
+                ADD_FAILURE();
+            }
 
             return false;
         }
@@ -96,6 +117,10 @@ class TestGUI : public ::testing::Test {
             if (btn)
             {
                 QMetaObject::invokeMethod(btn, "clicked");
+            }
+            else
+            {
+                ADD_FAILURE();
             }
         }
 
@@ -112,6 +137,10 @@ class TestGUI : public ::testing::Test {
                 recordIn->setProperty("text", "00:00:01");
                 timer->setProperty("running", "true");
 
+            }
+            else
+            {
+                ADD_FAILURE();
             }
         }
 
@@ -363,7 +392,7 @@ TEST_F(TestGUI, ui_state_machine_5)
     EXPECT_TRUE(isEnabled("recordBtn"));
     EXPECT_TRUE(isEnabled("stopBtn"));
     EXPECT_TRUE(isEnabled("playpauseBtn"));
-    EXPECT_FALSE(isEnabled("././"));
+    EXPECT_FALSE(isEnabled("exportBtn"));
 
     ASSERT_TRUE(isButtonPlay());
 

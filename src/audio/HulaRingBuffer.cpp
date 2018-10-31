@@ -79,14 +79,6 @@ HulaRingBuffer::HulaRingBuffer(float maxDuration)
 int32_t HulaRingBuffer::read(SAMPLE *data, int32_t maxSamples)
 {
     ring_buffer_size_t samplesRead = PaUtil_ReadRingBuffer(&this->rb, (void *)data, (ring_buffer_size_t)maxSamples);
-    if (samplesRead > 0)
-    {
-        printf("%sRead of %d elements.\n", HL_PRINT_PREFIX, samplesRead);
-
-        // Does this need to be advanced
-        // Advance the index after successful read
-        PaUtil_AdvanceRingBufferReadIndex(&this->rb, samplesRead);
-    }
 
     return samplesRead;
 }
@@ -141,6 +133,8 @@ int32_t HulaRingBuffer::write(const SAMPLE *data, int32_t maxSamples)
 
     ring_buffer_size_t elementsWritten = PaUtil_WriteRingBuffer(&this->rb, data, elementsToWrite);
 
+    printf("%sWrite: %d of %d samples written\n", HL_PRINT_PREFIX, elementsWritten, maxSamples);
+
     if (elementsWritten < maxSamples)
     {
         printf("%sOverrun: %d of %d samples written\n", HL_PRINT_PREFIX, elementsWritten, maxSamples);
@@ -157,6 +151,6 @@ HulaRingBuffer::~HulaRingBuffer()
     if (this->rbMemory != NULL)
     {
         PaUtil_FlushRingBuffer(&this->rb);
-        delete this->rbMemory;
+        delete [] this->rbMemory;
     }
 }
