@@ -11,6 +11,9 @@
 // Do not move this before mmdeviceapi.h
 #include <functiondiscoverykeys_devpkey.h>
 
+// PortAudio
+#include <portaudio.h>
+
 // System
 #include <cstdio>
 #include <cstdlib>
@@ -24,14 +27,14 @@
 
 using namespace std;
 
-using byte = uint8_t;
-
 #define REFTIMES_PER_SEC  10000000
 #define REFTIMES_PER_MILLISEC  10000
 
 // Error handling
 #define HANDLE_ERROR(hres) \
             if (FAILED(hres)) { goto Exit; }
+#define HANDLE_PA_ERROR(hres) \
+            if (hres != paNoError) { goto Exit; }
 #define SAFE_RELEASE(punk) \
             if ((punk) != NULL) \
                 { (punk)->Release(); (punk) = NULL; }
@@ -48,6 +51,8 @@ class WindowsAudio : public OSAudio {
 
         // System necessary variables
         HRESULT status;
+        PaError pa_status;
+
         REFERENCE_TIME requestDuration = REFTIMES_PER_SEC;
         REFERENCE_TIME bufferDuration;
 
@@ -55,17 +60,15 @@ class WindowsAudio : public OSAudio {
         IMMDeviceCollection *deviceCollection = NULL;
 
         // Audio data
-        byte *pData;
+        uint8_t *pData;
 
     public:
         WindowsAudio();
         ~WindowsAudio();
 
         bool checkRates(Device *device);
-        vector<Device *> getInputDevices();
-        vector<Device *> getOutputDevices();
+        vector<Device *> getDevices(DeviceType type);
 
-        static void test_capture(WindowsAudio *param);
         void capture();
 
         void setActiveOutputDevice(Device *device);

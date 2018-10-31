@@ -18,7 +18,7 @@ function (create_test _test_file _src_files _timeout _do_memcheck)
         else ()
             add_test (
                 NAME memcheck_${_test_name}
-                COMMAND ${VALGRIND_EXECUTABLE} --leak-check=full --show-reachable=yes --error-exitcode=1 ./test/${_test_name}
+                COMMAND ${VALGRIND_EXECUTABLE} --leak-check=full --show-reachable=yes --error-exitcode=1 --track-origins=yes ./test/${_test_name}
                 WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
             )
         endif ()
@@ -27,6 +27,15 @@ function (create_test _test_file _src_files _timeout _do_memcheck)
     # Don't apply a timeout to the memory checks since valgrind will slow things down
     if (_timeout GREATER 0)
         set_tests_properties (${_test_name} PROPERTIES TIMEOUT ${_timeout})
+    endif ()
+
+    # Copy PortAudio DLLs to bin/test for successful testing
+    if(WIN32)
+        add_custom_command (
+            TARGET ${_test_name}
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -DSOURCE_DIR="${PROJECT_SOURCE_DIR}" -DBINARY_DIR="${CMAKE_BINARY_DIR}" -P ${PROJECT_SOURCE_DIR}/cmake/MovePortAudioDLL.cmake
+        )
     endif ()
 
 endfunction ()

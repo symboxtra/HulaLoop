@@ -58,6 +58,6 @@ ApplicationWindow {
         objectName: "transportState"
 
         anchors.top: btnPanel.bottom
-        text: "Initial State"
+        text: qmlbridge.getTransportState()
     }
 }
