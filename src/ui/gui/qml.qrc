@@ -5,5 +5,6 @@
         <file>fonts/Icon.js</file>
         <file>fonts/materialdesignicons-webfont.ttf</file>
         <file>qml/Visualizer.qml</file>
+        <file>qml/DynamicLine.qml</file>
     </qresource>
 </RCC>

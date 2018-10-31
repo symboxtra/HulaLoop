@@ -210,18 +210,23 @@ void QMLBridge::updateVisualizer(QMLBridge *_this){
     //cout<<"before the for loop\n";
     //for(int i=0;i<10;i++){
     while(1 && _this->getPauseState()){
-        size_t bytesRead=_this->rb->read(temp, maxSize);
-        //printf("Read %zu bytes.\n", bytesRead);
         vector<double> actualoutreal;
-	    vector<double> actualoutimag;
-        for(int i=0;i<bytesRead;i++){
-            actualoutimag.push_back(temp[i]);
-            actualoutreal.push_back(temp[i]);
+        vector<double> actualoutimag;
+        size_t bytesRead;
+        while(actualoutreal.size()<maxSize){
+            bytesRead=_this->rb->read(temp, maxSize);
+            //printf("Read %zu bytes.\n", bytesRead);
+
+            for(int i=0;i<bytesRead;i++){
+                actualoutimag.push_back(temp[i]);
+                actualoutreal.push_back(temp[i]);
+            }
         }
         //printf("before transform real vector:\n");
-        for(int i=0;i<bytesRead;i++){
+        //for(int i=0;i<bytesRead;i++){
             //printf("%d:%f\n",i,actualoutreal[i]);
-        }/*
+        //}
+    /*
          printf("before transform imag vector:\n");
         for(int i=0;i<bytesRead;i++){
             printf("%f\n",actualoutimag[i]);
@@ -251,7 +256,7 @@ void QMLBridge::updateVisualizer(QMLBridge *_this){
             printf("%f\n",actualoutimag[i]);
         }*/
         _this->emit visData(heights);
-        std::this_thread::sleep_for (std::chrono::milliseconds(100));
+        //std::this_thread::sleep_for (std::chrono::milliseconds(5));
     }
    /* vector<qreal> dataFake;
     for(int i=0;i<10;i++){
