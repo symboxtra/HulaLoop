@@ -128,6 +128,8 @@ int32_t HulaRingBuffer::directRead(int32_t maxSamples, void **dataPtr1, int32_t 
  */
 int32_t HulaRingBuffer::write(const SAMPLE *data, int32_t maxSamples)
 {
+    printf("Address of data to write: %p\n", data);
+
     ring_buffer_size_t elementsWriteable = PaUtil_GetRingBufferWriteAvailable(&this->rb);
     ring_buffer_size_t elementsToWrite = std::min(elementsWriteable, (ring_buffer_size_t)(maxSamples));
 
