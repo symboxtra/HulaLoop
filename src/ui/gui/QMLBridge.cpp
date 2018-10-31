@@ -65,9 +65,10 @@ void QMLBridge::play()
 {
     transport->play();
     emit stateChanged();
+    pauseNotPressed=true;
     getData();
     //this.setPause(false);
-    pauseNotPressed=true;
+    //pauseNotPressed=true;
 }
 
 /**

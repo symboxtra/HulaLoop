@@ -13,6 +13,14 @@ Rectangle {
     height: parent.height * 0.6
     color: "lightsteelblue"
     y: 98
+    Path{
+        startX:0
+        startY:0
+    PathLine{
+        x:100
+        y:100
+    }
+    }
 
     Row {
         y: parent.height-50
