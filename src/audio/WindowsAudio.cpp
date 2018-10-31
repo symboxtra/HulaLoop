@@ -176,11 +176,12 @@ void WindowsAudio::capture()
 {
     cout << "In Capture Mode" << endl; // TODO: Remove this later
 
+    // TODO: Keep this here until the ringbuffer is debugged
     SF_INFO sfinfo;
-    sfinfo.samplerate = 48000;
+    sfinfo.samplerate = 44100;
     sfinfo.channels = NUM_CHANNELS;
     sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
-    SNDFILE* file = sf_open("C:\\Users\\patel\\AppData\\Local\\Temp\\time_t.wav", SFM_WRITE, &sfinfo);
+    SNDFILE* file = sf_open("C:\\Users\\patel\\AppData\\Local\\Temp\\hulaloop_temp.wav", SFM_WRITE, &sfinfo);
 
     // Instantiate clients and services for audio capture
     IAudioCaptureClient *captureClient = NULL;
@@ -256,8 +257,12 @@ void WindowsAudio::capture()
                 pData = NULL;
 
             // Copy to ringbuffers
-            this->copyToBuffers(pData, numFramesAvailable * NUM_CHANNELS);
-            /*float* floatData = (float*)pData;
+            float* floatData = (float*)pData;
+            printf("Address of incoming data: %p\n", floatData);
+
+            this->copyToBuffers(floatData, numFramesAvailable * NUM_CHANNELS);
+
+            // TODO: Keep this here until the ringbuffer is debugged
             sf_count_t error = sf_writef_float(file, floatData, numFramesAvailable);
             if (error != numFramesAvailable)
             {
@@ -266,7 +271,7 @@ void WindowsAudio::capture()
                 fprintf (stderr, "cannot write sndfile (%s)\n", errstr);
                 fprintf(stderr, "%sWe done goofed...", HL_ERROR_PREFIX);
                 exit(1);
-            }*/
+            }
 
             // Release buffer after data is captured and handled
             status = captureClient->ReleaseBuffer(numFramesAvailable);
@@ -277,6 +282,8 @@ void WindowsAudio::capture()
             HANDLE_ERROR(status);
         }
     }
+
+    // TODO: Keep this here until the ringbuffer is debugged
     sf_close(file);
 
     // Stop the client capture once process exits

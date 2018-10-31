@@ -26,6 +26,8 @@ class Transport {
         bool recordState = true;
         bool playbackState = false;
 
+        std::string tempPath;
+
     protected:
         Record* recorder;
 

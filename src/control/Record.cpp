@@ -5,12 +5,11 @@
 #include <fstream>
 #include <sndfile.h>
 
-Record::Record(Controller* control)
+Record::Record(Controller* control, std::string path)
 {
     this->controller = control;
     this->rb = NULL;
-
-    //cout << "Temp Path: " << Export::getTempPath() << endl;
+    this->tempDirPath = path;
 }
 
 void Record::start()
@@ -33,9 +32,8 @@ void Record::recorder()
     sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
 
     // Open the file write-only
-    std::string file_path = Export::getTempPath() + "/time_stamped.wav";
     std::string file_path2 = Export::getTempPath() + "/time_stamped2.wav";
-    SNDFILE* file = sf_open(file_path.c_str(), SFM_WRITE, &sfinfo);
+    SNDFILE* file = sf_open(this->tempDirPath.c_str(), SFM_WRITE, &sfinfo);
 
     FILE* fd = fopen(file_path2.c_str(), "w");
 

@@ -17,8 +17,10 @@ class Record {
 
         atomic<bool> endRecord;
 
+        std::string tempDirPath;
+
     public:
-        Record(Controller* control);
+        Record(Controller* control, std::string path);
         ~Record();
 
         void recorder();

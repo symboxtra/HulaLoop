@@ -1,6 +1,7 @@
 #include "QMLBridge.h"
 
 #include <QUrl>
+#include <QDir>
 #include <string>
 
 /**
@@ -156,5 +157,11 @@ void QMLBridge::saveFile(QString dir)
     // create a Qurl so it is easy to convert
     QUrl url(dir);
     string directory = url.path().toStdString();
+
+    // TODO: Remove OS dependent code and find way to use Qt to extract URL (Only for demo)
+    #if WIN32
+        directory = directory.substr(1);
+    #endif
+
     transport->exportFile(directory);
 }

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <time.h>
 
 #include "hlcontrol/internal/Export.h"
 #include "hlcontrol/internal/HulaControlError.h"
@@ -10,7 +11,15 @@
 Transport::Transport()
 {
     controller = new Controller();
-    recorder = new Record(controller);
+
+    // TODO: Make the temp path dynamic so that we can congregate the files later (Only exists for demo)
+    char timestamp[20];
+    time_t now = time(0);
+    strftime(timestamp, 20, "%Y%m%d_%H%M%S", localtime(&now));
+    tempPath = Export::getTempPath() + "/hulaloop_" + std::string(timestamp);
+    recorder = new Record(controller, tempPath);
+
+
 }
 
 #ifndef NDEBUG
@@ -26,9 +35,15 @@ Transport::Transport()
 Transport::Transport(bool dryRun)
 {
     controller = new Controller(dryRun);
-    recorder = new Record(controller);
 
-    recordState = false;
+    // TODO: Make the temp path dynamic so that we can congregate the files later
+    char timestamp[20];
+    time_t now = time(0);
+    strftime(timestamp, 20, "%Y%m%d_%H%M%S", localtime(&now));
+    tempPath = Export::getTempPath() + "/hulaloop_" + std::string(timestamp);
+    recorder = new Record(controller, tempPath);
+
+    recordState = true;
     playbackState = false;
 }
 #endif
@@ -167,7 +182,7 @@ void Transport::exportFile(string targetDirectory)
 {
     Export exp(targetDirectory);
     // TODO: Make it an actual directory
-    exp.copyData("/tmp/temp.txt");
+    exp.copyData(tempPath);
 }
 
 /**
