@@ -457,10 +457,11 @@ Rectangle {
                         font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                         onClicked: {
                             // discard files
-
+                            qmlbridge.cleanTempFiles()
                             // start recording again
                             stopBtn.isStopped = false
                             recordBtn.onClicked()
+                            discardPopup.close()
                         }
                     }
                 }

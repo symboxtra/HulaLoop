@@ -49,6 +49,7 @@ class Transport {
         Controller *getController() const;
 
         void exportFile(std::string targetDirectory);
+        void deleteTempFiles();
 
         TransportState getState() const;
         std::string stateToStr(const TransportState state) const;

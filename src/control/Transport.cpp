@@ -44,6 +44,7 @@ bool Transport::record()
 
     if (recordState)
     {
+        cout << "STARTED RECORDING" << endl;
         recorder->start();
 
         recordState = false;
@@ -175,6 +176,16 @@ void Transport::exportFile(string targetDirectory)
     #else
         exp.copyData(recorder->getExportPaths());
     #endif
+}
+
+/**
+ * Send the files from record to export for deletion
+ */
+void Transport::deleteTempFiles()
+{
+    recordState = true;
+    playbackState = false;
+    Export::deleteTempFiles(recorder->getExportPaths());
 }
 
 /**

@@ -1,5 +1,6 @@
 #include "hlcontrol/internal/Export.h"
 
+#include <cstdio>
 #include <fstream>
 #include <string>
 
@@ -63,6 +64,19 @@ void Export::copyData(vector<std::string> dirs)
     }
 
     sf_close(out_file);
+}
+
+/**
+ * Deletes all the files in the vector
+ */
+void Export::deleteTempFiles(vector<std::string> dirs)
+{
+    // loop throught all the files
+    for(std::string file : dirs)
+    {
+        // no good c++ function so we'll just use the C one
+        remove((char *)file.c_str());
+    }
 }
 
 /**
