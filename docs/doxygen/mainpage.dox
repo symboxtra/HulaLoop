@@ -1,0 +1,197 @@
+/**
+@mainpage HulaLoop Documentation
+
+@section HulaLoop Overview
+
+
+@ref build_process \n
+@ref quick_start \n
+@ref public_api \n
+@ref memory_management \n
+
+@defgroup public_api HulaLoop API
+Exposed commands and classes related to the @c hlaudio and @c hlcontrol libraries.
+
+HulaLoop is built on an extensible backend designed to make
+cross-platform loopback simple and easy for any developer.
+
+
+
+
+@page build_process Building HulaLoop
+
+@section standalone-app Standalone Application
+
+To compile the standalone recording application, use the following set of commands:
+
+From the source directory (in the shell of your choice):
+
+Create an output directory and move into it.
+@code
+mkdir build
+cd build
+@endcode
+
+Generate the files used to build the project.
+A number of different flags can be passed to this command to configure the project.
+TODO: detail flags
+@code
+cmake ..
+@endcode
+
+Build the project.
+@code
+cmake --build .
+@endcode
+
+Move to the binary folder and list files.
+The build should have output two applications: hulaloop and hulaloop-cli
+@code
+cd bin
+ls
+@endcode
+
+
+@section standalone-library Standalone Library
+
+HulaLoop's audio libraries can also be compiled standalone for linking with another application.
+
+@code
+mkdir build
+cd build
+cmake .. -DHL_AUDIO_LIBRARY_ONLY=TRUE
+cmake --build .
+cd lib
+@endcode
+
+Static and dynamic libraries will be output to the @c lib directory as @c hlaudio.XXX
+On Windows, @c hlaudio.dll may be output to the @c bin
+
+@section cmake-library CMake Integrated Library
+
+HulaLoop can be compiled as a subproject/target in a larger CMake project.
+
+@c CMakeLists.txt
+@code
+set (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/lib)
+add_subdirectory (src/libs/hulaloop)
+@endcode
+
+
+
+
+@page quick_start Quick Start
+A quick start for getting HulaLoop'd audio into your application.
+
+Incorporating HulaLoop into your application should be simple and easy.
+
+To understand the simplest way to get started with HulaLoop, we'll break down the
+following example. See the @ref build_process page for help building and linking the library.
+
+@section Example
+@code
+#include <thread>
+#include <hlaudio/hlaudio.h>
+
+int main()
+{
+    // Create the controller object
+    Controller c;
+
+    // Set the active input device
+    std::vector<Device *> devices = c.getDevices(LOOPBACK);
+    if (devices.size() > 0)
+    {
+        // This calls the copy constructor on the selected device
+        c.setActiveInputDevice(devices[0]);
+    }
+
+    // Delete the devices
+    Device::deleteDevices(devices);
+
+    // Add a buffer to start receiving data
+    HL_RingBuffer * rb = c.createAndAddBuffer();
+    std::thread t = std::thread(&listen, rb);
+
+    t.join();
+
+    // Remove and delete the buffer
+    c.removeBuffer(rb);
+    delete rb;
+}
+
+void listen(HulaRingBuffer *rb)
+{
+    int maxSize = 256;
+    float *temp = new float[maxSize];
+
+    // Read 100 temp buffers
+    for (int i = 0; i < 100; i++)
+    {
+        size_t bytesRead = rb->read(temp, maxSize);
+        printf("Read %d bytes.@n", bytesRead);
+    }
+
+    delete [] temp;
+}
+
+@endcode
+
+Create an instance of Controller. This is the main component in in the audio backend.
+@code
+Controller c;
+@endcode
+
+Fetch the device list, set the active device, and delete the allocated the devices.
+@code
+// Set the active input device
+std::vector<Device *> devices = c.getDevices(LOOPBACK);
+if (devices.size() > 0)
+{
+    // This calls the copy constructor on the selected device
+    c.setActiveInputDevice(devices[0]);
+}
+
+// Delete the devices
+Device::deleteDevices(devices);
+@endcode
+
+Create a ring buffer and add it to the list of buffers that should receive audio data.
+@code
+HulaRingBuffer *rb = c.createAndAddBuffer();
+@endcode
+
+Since the loop (typically infinite), will block until the application terminates, start a thread with the "listen" routine.
+@code
+std::thread t = std::thread(&listen, rb);
+@endcode
+
+Create a function that handles reading the ring buffer and processing the data.
+@code
+void listen(HulaRingBuffer *rb);
+@endcode
+
+A local buffer that data will be read into.
+@code
+int maxSize = 256;
+float *temp = new float[maxSize];
+@endcode
+
+This loop would typically be infinite or rely on some flag to signal that capture should stop.
+For this example, we read a finite number of buffers as a proof of concept.
+@code
+for (int i = 0; i < 100; i++)
+@endcode
+
+Read data from the ring buffer into our local buffer.
+@code
+size_t bytesRead = rb->read(temp, maxSize);
+printf("Read %d bytes.@n", bytesRead);
+@endcode
+
+Clean up our local buffer.
+@code
+delete [] temp;
+@endcode
+
+ */

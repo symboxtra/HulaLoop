@@ -10,7 +10,10 @@
 
 // TODO: Add public description of class
 /**
- * A class that structures the receival of audio from the OS framework
+ * @ingroup public_api
+ *
+ * Central component of the audio backend.
+ * A class that structures the receival of audio from the OS framework.
  */
 class Controller {
     private:
