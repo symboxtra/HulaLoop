@@ -81,6 +81,11 @@ vector<Device *> LinuxAudio::getDevices(DeviceType type)
 
 bool LinuxAudio::checkRates(Device *device)
 {
+    if(device->getName() == "Pulse Audio Volume Control")
+    {
+        thread(&LinuxAudio::startPAVUControl).detach();
+        return true;
+    }
     int err;                     // return for commands that might return an error
     snd_pcm_t *pcmHandle = NULL; // default pcm handle
     snd_pcm_hw_params_t *param;  // defaults param for the pcm
@@ -126,39 +131,14 @@ bool LinuxAudio::checkRates(Device *device)
     return false;
 }
 
-void LinuxAudio::setActiveOutputDevice(Device *device)
-{
-    // Set the active output device
-    this->activeOutputDevice = device;
-    cout << checkRates(device) << endl;
-    // Interrupt all threads and make sure they stop
-    // for (auto &t : execThreads)
-    // {
-    //     // TODO: Find better way of safely terminating thread
-    //     t.detach();
-    //     t.~thread();
-    // }
-
-    // // Clean the threads after stopping all threads
-    // execThreads.clear();
-
-    // // Start up new threads with new selected device info
-
-    // // Start capture thread and add to thread vector
-    // execThreads.emplace_back(thread(&LinuxAudio::test_capture, this));
-
-    // // TODO: Add playback thread later
-
-    // // Detach new threads to run independently
-    // for (auto &t : execThreads)
-    // {
-    //     t.detach();
-    // }
-}
-
 void LinuxAudio::startPAVUControl()
 {
+    static bool pavuControlOpen = false;
+    if(pavuControlOpen)
+        return;
+    pavuControlOpen = true;
     system("/usr/bin/pavucontrol -t 2");
+    pavuControlOpen = false;
 }
 
 /*
@@ -168,7 +148,6 @@ void LinuxAudio::startPAVUControl()
    */
 void LinuxAudio::capture()
 {
-    // thread(&LinuxAudio::startPAVUControl).detach();
     int err;                        // return for commands that might return an error
     snd_pcm_t *pcmHandle = NULL;    // default pcm handle
     string defaultDevice;           // default hw id for the device
