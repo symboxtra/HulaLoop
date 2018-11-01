@@ -141,10 +141,10 @@ bool LinuxAudio::checkRates(Device *device)
     snd_config_update_free_global();
     if (samplingRateValid && formatValid)
     {
-        cout << "Sampling rate and format valid" << endl;
+        cout << "Sample rate and format valid." << endl;
         return true;
     }
-    cout << "Sampling rate or format invalid." << endl;
+    cout << "Sample rate or format invalid." << endl;
     return false;
 }
 

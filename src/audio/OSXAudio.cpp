@@ -6,6 +6,7 @@
 
 #include "OSXAudio.h"
 #include "hlaudio/internal/HulaAudioError.h"
+#include "hlaudio/internal/HulaAudioSettings.h"
 
 /**
  * Constructs an instance of OSXAudio class.
@@ -189,14 +190,6 @@ vector<Device *> OSXAudio::getDevices(DeviceType type)
         {
             Device *hlDevice = new Device(new uint32_t(i), string(paDevice->name), type);
             devices.push_back(hlDevice);
-
-            // Print some debug device info for now
-            // TODO: Remove
-            cout << "Device #" << i << ": " << paDevice->name << endl;
-            cout << "Input Channels: " << paDevice->maxInputChannels << endl;
-            cout << "Output Channels: " << paDevice->maxOutputChannels << endl;
-            cout << "Default Sample Rate: " << paDevice->defaultSampleRate << endl;
-            cout << endl;
         }
     }
 
@@ -235,7 +228,23 @@ void OSXAudio::setActiveOutputDevice(Device *device)
  */
 bool OSXAudio::checkRates(Device *device)
 {
-    return true;
+    PaStreamParameters inputParameters;
+    inputParameters.channelCount = NUM_CHANNELS;
+    inputParameters.device = *device->getID();
+    inputParameters.sampleFormat = paFloat32;
+
+    PaError err = Pa_IsFormatSupported(&inputParameters, NULL, HulaAudioSettings::getInstance()->getSampleRate());
+
+    if (err == paFormatIsSupported)
+    {
+        printf("Sample rate and format valid.\n");
+    }
+    else
+    {
+        printf("Sample rate or format invalid.\n");
+    }
+
+    return err == paFormatIsSupported;
 }
 
 /**
