@@ -31,10 +31,17 @@ Transport::Transport(bool dryRun)
 
 /**
  * Start and handle the process of recording.
+ *
+ * @param delay Time, in seconds, to wait before starting record
+ * @param duration Time, in seconds, to record for.
+ *
+ * @return Successful start of recording
  */
-bool Transport::record()
+bool Transport::record(int delay, int duration)
 {
-    std::cout << "Record button clicked!" << std::endl;
+    std::cout << "Record triggered!" << std::endl;
+    std::cout << "Delay set to: " << delay << std::endl;
+    std::cout << "Duration set to: " << duration << std::endl;
     state = RECORDING;
 
     if(recordState)
@@ -46,6 +53,17 @@ bool Transport::record()
         return true;
     }
     return false;
+}
+
+/**
+ * Overload of record with no delay and infinite
+ * record time.
+ *
+ * @return Successful start of recording
+ */
+bool Transport::record()
+{
+    return record(0, HL_INFINITE_RECORD);
 }
 
 /**

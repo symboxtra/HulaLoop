@@ -6,6 +6,8 @@
 
 #include "Record.h"
 
+#define HL_INFINITE_RECORD -1
+
 /**
  * Available states for the recording/playback logic of the application.
  */
@@ -43,6 +45,7 @@ class Transport {
         Transport();
         virtual ~Transport();
 
+        bool record(int delay, int duration);
         bool record();
         bool stop();
         bool play();

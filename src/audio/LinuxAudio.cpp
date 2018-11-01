@@ -39,8 +39,8 @@ vector<Device *> LinuxAudio::getDevices(DeviceType type)
     // add pavucontrol to loopback for now
     if (loopSet)
     {
-        string *pvc = new string("Pulse Audio Volume Control");
-        string temp = *pvc;
+        string *pvc = new string("default");
+        string temp = string("Pulse Audio Volume Control");
         devices.push_back(new Device(reinterpret_cast<uint32_t *>(pvc), temp, DeviceType::LOOPBACK));
     }
 
