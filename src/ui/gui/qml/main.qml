@@ -5,6 +5,7 @@ import QtQuick.Controls 2.3
 import QtQuick.Controls.Material 2.3
 
 import hulaloop.qmlbridge 1.0
+import hulaloop.systrayicon 1.0
 
 ApplicationWindow {
 
@@ -20,9 +21,26 @@ ApplicationWindow {
 
     QMLBridge {
         id: qmlbridge
+
         onStateChanged: {
+
+            if(qmlbridge.getTransportState() === "Recording")
+            {
+                systrayicon.showMessage("HulaLoop Information", "HulaLoop has started recording audio!")
+                systrayicon.setRecordIcon()
+            }
+            else
+                systrayicon.setDefaultIcon()
+
+            systrayicon.setToolTip(qsTr("HulaLoop - " + qmlbridge.getTransportState()))
             transportState.text = qmlbridge.getTransportState()
         }
+    }
+
+    SystemTrayIcon {
+        id: systrayicon
+
+        Component.onCompleted: systrayicon.init()
     }
 
     ButtonPanel {
@@ -40,4 +58,5 @@ ApplicationWindow {
         anchors.top: btnPanel.bottom
         text: qmlbridge.getTransportState()
     }
+
 }
