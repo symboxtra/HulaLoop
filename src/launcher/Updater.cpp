@@ -11,6 +11,8 @@
 #include <QNetworkRequest>
 #include <QProcess>
 
+#include <QtDebug>
+
 /**
  * Construct a new instance of the Updater class.
  *
@@ -125,6 +127,10 @@ void Updater::downloadUpdate()
     connect(reply, SIGNAL(readyRead()), this, SLOT(downloadReadyRead()));
     connect(reply, SIGNAL(finished()), this, SLOT(downloadFinished()));
 
+    QEventLoop eventLoop;
+    connect(reply, SIGNAL(finished()), &eventLoop, SLOT(quit()));
+    eventLoop.exec();
+
 }
 
 /**
@@ -236,7 +242,7 @@ void Updater::startHulaLoopInstaller()
 {
 
     QProcess proc;
-    QString procName = QDir::tempPath() + "/HulaLoop/" + downloadFileName;
+    QString procName = QDir::tempPath() + "/" + downloadFileName;
 
     proc.setProgram(procName);
     if(proc.startDetached())

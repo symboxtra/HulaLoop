@@ -21,7 +21,7 @@ ApplicationWindow {
 
     Updater {
         id: updater
-        updateHostUrl: "https://api.github.com/repos/bmatzelle/gow/releases/latest"
+        updateHostUrl: "https://api.github.com/repos/jmcker/HulaLoop/releases/latest"
 
         onBytesDownloaded: progressBar.value += (updater.getNumBytesDownloaded() / updater.getDownloadSize())
     }

@@ -30,10 +30,9 @@ int main(int argc, char *argv[])
         {
 
             Updater updater;
-            updater.setUpdateHost("https://api.github.com/repos/bmatzelle/gow/releases/latest");
+            updater.setUpdateHost("https://api.github.com/repos/jmcker/HulaLoop/releases/latest");
 
             updater.checkForUpdate();
-            updater.setUpdateAvailable(false);
 
             QMessageBox msgBox;
 
@@ -77,10 +76,10 @@ int main(int argc, char *argv[])
         {
 
             Updater updater;
-            updater.setUpdateHost("https://api.github.com/repos/bmatzelle/gow/releases/latest");
+            updater.setUpdateHost("https://api.github.com/repos/jmcker/HulaLoop/releases/latest");
 
             updater.checkForUpdate();
-            updater.setUpdateAvailable(true);
+            updater.setUpdateAvailable(false);
 
             QMessageBox msgBox;
 
@@ -116,6 +115,7 @@ int main(int argc, char *argv[])
                 msgBox.setStandardButtons(QMessageBox::Ok);
 
                 msgBox.exec();
+                updater.startHulaLoopApp();
 
             }
 
