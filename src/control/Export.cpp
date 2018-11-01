@@ -4,6 +4,7 @@
 #include <string>
 
 #include <QDir>
+#include <sndfile.h>
 
 /**
  * Construct a new instance of the Export class.
@@ -32,33 +33,36 @@ std::string Export::getTempPath()
  */
 void Export::copyData(vector<std::string> dirs)
 {
-    // Open target file
-    ofstream oFile(this->targetDirectory, ios::binary);
-    if (oFile.fail())
-    {
-        // TODO: Handle error
-        cerr << "Error opening file: " << this->targetDirectory << endl;
-    }
+    // Initialize libsndfile info.
+    SF_INFO sfinfo;
+    sfinfo.samplerate = SAMPLE_RATE;
+    sfinfo.channels = NUM_CHANNELS;
+    sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
+    float* buffer = new float[512];
 
-    cout << "Size: " << dirs.size() << endl;
+    SNDFILE *out_file = sf_open(this->targetDirectory.c_str(), SFM_WRITE, &sfinfo);
 
     for(int i = 0;i < dirs.size();i++)
     {
         // opens the files
-        ifstream iFile(dirs[i].c_str(), ios::binary);
-        if (iFile.fail())
+        SNDFILE* in_file = sf_open(dirs[i].c_str(), SFM_READ, &sfinfo);
+
+        while(true)
         {
-            // TODO: Handle error
-            cerr << "Error opening file: " << dirs[i] << endl;
+            sf_count_t framesRead = sf_readf_float(in_file, buffer, 512 / NUM_CHANNELS);
+            sf_count_t framesWritten = sf_writef_float(out_file, buffer, framesRead);
+
+            printf("Frames Read: %f\nFrames written: %f\n", framesRead, framesWritten);
+
+            if(framesRead != 512 / NUM_CHANNELS)
+                break;
         }
-        // Copies the file
-        oFile << iFile.rdbuf();
 
         // Close the file
-        iFile.close();
+        sf_close(in_file);
     }
 
-    oFile.close();
+    sf_close(out_file);
 }
 
 /**

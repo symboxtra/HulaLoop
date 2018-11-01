@@ -35,7 +35,7 @@ void Record::recorder()
     char timestamp[20];
     time_t now = time(0);
     strftime(timestamp, 20, "%Y-%m-%d_%H-%M-%S", localtime(&now));
-    std::string file_path = Export::getTempPath() + "/hulaloop_" + std::string(timestamp);
+    std::string file_path = Export::getTempPath() + "/hulaloop_" + std::string(timestamp) + ".wav";
     SNDFILE *file = sf_open(file_path.c_str(), SFM_WRITE, &sfinfo);
 
     // Add file_path to vector of files
