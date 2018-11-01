@@ -1,4 +1,5 @@
 #include "LinuxAudio.h"
+#include "hlaudio/internal/HulaAudioSettings.h"
 
 /**
  * Construct a new instance of LinuxAudio.
@@ -127,11 +128,11 @@ bool LinuxAudio::checkRates(Device *device)
 
     // test the desired sample rate
     // TODO: insert actual sampling rate
-    samplingRate = 44100;
+    samplingRate = HulaAudioSettings::getInstance()->getSampleRate();
     samplingRateValid = snd_pcm_hw_params_test_rate(pcmHandle, param, samplingRate, 0) == 0;
 
     // test the desired format (bit depth)
-    format = SND_PCM_FORMAT_S16_LE;
+    format = SND_PCM_FORMAT_FLOAT_LE;
     formatValid = snd_pcm_hw_params_test_format(pcmHandle, param, format) == 0;
 
     // clean up
@@ -143,7 +144,7 @@ bool LinuxAudio::checkRates(Device *device)
         cout << "Sampling rate and format valid" << endl;
         return true;
     }
-    cout << "Something invalid" << endl;
+    cout << "Sampling rate or format invalid." << endl;
     return false;
 }
 
