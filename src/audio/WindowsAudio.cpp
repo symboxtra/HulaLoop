@@ -315,7 +315,7 @@ Exit:
  */
 bool WindowsAudio::checkRates(Device *activeDevice)
 {
-    HRESULT status;
+    /*HRESULT status;
     IMMDevice* device = NULL;
     PROPVARIANT prop;
     IPropertyStore* store = nullptr;
@@ -360,6 +360,8 @@ bool WindowsAudio::checkRates(Device *activeDevice)
 Exit:
     cerr << "WASAPI init error!" << endl;
     return false;
+    */
+   return true;
 }
 
 /**
