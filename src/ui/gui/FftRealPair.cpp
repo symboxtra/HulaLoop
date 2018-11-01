@@ -22,14 +22,16 @@
  */
 
 #define _USE_MATH_DEFINES
-
 #include <cmath>
+#include "math.h"
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <stdexcept>
 #include "FftRealPair.h" 
-
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
 using std::size_t;
 using std::vector;
 
