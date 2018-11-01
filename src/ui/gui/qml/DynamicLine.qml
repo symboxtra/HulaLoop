@@ -48,7 +48,7 @@ Canvas {
 
     }
         onPaint: {
-            context.strokeStyle = Qt.rgba(0,0,0);
+            context.strokeStyle = Qt.rgba(itemarr.items[13]*10,itemarr.items[5]*10,itemarr.items[35]*10);
             context.path =dline;
             context.stroke();
 
