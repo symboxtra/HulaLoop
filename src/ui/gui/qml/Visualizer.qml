@@ -13,6 +13,7 @@ Rectangle {
     height: parent.height * 0.6
     color: "lightsteelblue"
     y: 98
+  
 
     Row {
         y: parent.height-50
@@ -32,11 +33,11 @@ Rectangle {
                     return Math.random() ;
             }
         }
-        Timer {
+        /*Timer {
             interval: 300; running: true; repeat: true
             triggeredOnStart: true
             onTriggered: gennums.generate(rectgen)
-        }
+        }*/
         Repeater{
             id:rectgen
             model: Math.round(visualize.width / 10)

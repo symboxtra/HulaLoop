@@ -1,10 +1,26 @@
 #include "QMLBridge.h"
+//#include "FftRealPair.h"
+#include "FftRealPair.cpp"
 
 #include <QCoreApplication>
 #include <QProcess>
 #include <QUrl>
 
 #include <string>
+#include <thread>
+#include <algorithm>
+#include <cmath>
+#include <cstdlib>
+#include <iomanip>
+#include <iostream>
+#include <random>
+#include <vector>
+#include <stdlib.h>
+#include <thread>     
+#include <chrono>
+#include <math.h>
+#include <stdio.h>
+
 
 /**
  * Construct a new instance of the QMLBridge class.
@@ -14,6 +30,8 @@
 QMLBridge::QMLBridge(QObject *parent) : QObject(parent)
 {
     transport = new Transport;
+    rb=transport->getController()->createBuffer(1);
+    
 }
 
 /**
@@ -51,6 +69,8 @@ void QMLBridge::play()
 {
     transport->play();
     emit stateChanged();
+    pauseNotPressed=true;
+    getData();
 }
 
 /**
@@ -60,7 +80,10 @@ void QMLBridge::pause()
 {
     transport->pause();
     emit stateChanged();
+    pauseNotPressed=false;
 }
+
+
 
 /**
  * Match a string that the user chose to the input device list
@@ -161,6 +184,48 @@ void QMLBridge::saveFile(QString dir)
     string directory = url.path().toStdString();
     transport->exportFile(directory);
 }
+void QMLBridge::getData(){
+    //rb=transport->getController()->createAndAddBuffer(.5);
+    std::thread visThread(&updateVisualizer,this);
+    visThread.detach();
+
+}
+void QMLBridge::updateVisualizer(QMLBridge *_this){
+    _this->transport->getController()->addBuffer(_this->rb);
+    int maxSize = 512;
+    float * temp = new float[maxSize];
+    while(1 && _this->getPauseState()){
+        vector<double> actualoutreal;
+        vector<double> actualoutimag;
+        size_t bytesRead;
+        while(actualoutreal.size()<maxSize){
+            bytesRead=_this->rb->read(temp, maxSize);
+            for(int i=0;i<bytesRead;i++){
+                actualoutimag.push_back(temp[i]);
+                actualoutreal.push_back(temp[i]);
+            }
+        }
+	    Fft::transform(actualoutreal, actualoutimag);
+        std::vector<double> heights;
+        double sum=0;
+        for(int i=0;i<bytesRead;i++){
+                if(i%8==0){
+                    sum=fabs(sum);
+                    heights.push_back(sum);
+                    sum=0;
+                }
+                else{
+                    sum+=actualoutreal[i];
+                }
+        }
+        _this->emit visData(heights);
+    }
+    _this->transport->getController()->removeBuffer(_this->rb);
+
+}
+
+bool QMLBridge::getPauseState(){
+    return(this->pauseNotPressed);
 
 /**
  * Launch the updater process.
