@@ -2,7 +2,10 @@
 //#include "FftRealPair.h"
 #include "FftRealPair.cpp"
 
+#include <QCoreApplication>
+#include <QProcess>
 #include <QUrl>
+
 #include <string>
 #include <thread>
 #include <algorithm>
@@ -223,4 +226,23 @@ void QMLBridge::updateVisualizer(QMLBridge *_this){
 
 bool QMLBridge::getPauseState(){
     return(this->pauseNotPressed);
+
+/**
+ * Launch the updater process.
+ */
+void QMLBridge::launchUpdateProcess()
+{
+
+    QProcess *proc = new QProcess(this);
+
+    QString procName = QCoreApplication::applicationDirPath() + "/hulaloop-launcher";
+    QStringList args;
+    args << "silent";
+
+    proc->setProgram(procName);
+    proc->setArguments(args);
+
+    proc->start(procName, args);
+    proc->waitForFinished();
+
 }

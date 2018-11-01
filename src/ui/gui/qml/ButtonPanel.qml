@@ -270,6 +270,32 @@ Rectangle {
                 onClicked:saveDialog.open()
             }
 
+            RoundButton {
+                id: checkUpdateBtn
+                objectName: "checkUpdateBtn"
+
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                display: AbstractButton.TextOnly
+
+                contentItem: Text {
+                    font.family: "Material Design Icons"
+                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                    text: MDFont.Icon.download
+                    color: "white"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                background: Rectangle {
+                    opacity: enabled ? 1 : 0.15
+                    color: timerBtn.pressed ? "grey" : "darkgrey"
+                    radius: timerBtn.width / 2
+                }
+
+                onClicked: qmlbridge.launchUpdateProcess()
+            }
+
         }
         FileDialog {
             id: saveDialog

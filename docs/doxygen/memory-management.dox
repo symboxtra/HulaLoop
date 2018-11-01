@@ -1,0 +1,61 @@
+/**
+
+@defgroup memory_management Memory Management
+Commands related to any memory management required of library end-users.
+
+A number of methods in the HulaLoop API return objects that must
+be deleted by the caller. Each of these is detailed below.
+
+The methods fall into two groups: buffers and devices.
+
+@section Example
+
+@code
+#include <thread>
+#include <hlaudio/hlaudio.h>
+
+int main()
+{
+    // Create the controller object
+    Controller c;
+
+    // Set the active input device
+    std::vector<Device *> devices = c.getDevices(LOOPBACK);
+    if (devices.size() > 0)
+    {
+        // This calls the copy constructor on the selected device
+        c.setActiveInputDevice(devices[0]);
+    }
+
+    // Delete the devices
+    Device::deleteDevices(devices);
+
+    // Add a buffer to start receiving data
+    HL_RingBuffer * rb = c.createAndAddBuffer();
+    std::thread t = std::thread(&listen, rb);
+
+    t.join();
+
+    // Remove and delete the buffer
+    c.removeBuffer(rb);
+    delete rb;
+}
+
+void listen(HulaRingBuffer *rb)
+{
+    int maxSize = 256;
+    float *temp = new float[maxSize];
+
+    // Read 100 temp buffers
+    for (int i = 0; i < 100; i++)
+    {
+        size_t bytesRead = rb->read(temp, maxSize);
+        printf("Read %d bytes.@n", bytesRead);
+    }
+
+    delete [] temp;
+}
+
+@endcode
+
+ */

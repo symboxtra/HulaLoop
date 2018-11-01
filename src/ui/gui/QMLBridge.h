@@ -41,8 +41,10 @@ class QMLBridge : public QObject {
         static void reverseBits(size_t x, int n);
 
         bool pauseNotPressed;
-
         bool getPauseState();
+
+        Q_INVOKABLE void launchUpdateProcess();
+
     signals:
 
         /**

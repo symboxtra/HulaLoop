@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 
 #include <QQmlProperty>
@@ -9,11 +9,12 @@
 #include <iostream>
 
 #include "QMLBridge.h"
+#include "SystemTrayIcon.h"
 
 class TestGUI : public ::testing::Test {
 
     protected:
-        QGuiApplication *app = nullptr;
+        QApplication *app = nullptr;
         QQmlApplicationEngine *engine = nullptr;
 
         virtual void SetUp()
@@ -21,9 +22,10 @@ class TestGUI : public ::testing::Test {
             int argc = 0;
             char **argv = nullptr;
 
-            app = new QGuiApplication(argc, argv);
+            app = new QApplication(argc, argv);
 
             qmlRegisterType<QMLBridge>("hulaloop.qmlbridge", 1, 0, "QMLBridge");
+            qmlRegisterType<SystemTrayIcon>("hulaloop.systrayicon", 1, 0, "SystemTrayIcon");
 
             engine = new QQmlApplicationEngine();
             engine->load(QUrl(QStringLiteral("qrc:/qml/main.qml")));

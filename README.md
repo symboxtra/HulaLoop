@@ -31,9 +31,14 @@ sudo apt install g++ build-essential cmake libgl1-mesa-dev libasound2 libasound2
 
 **IMPORTANT:** This application requires Qt 5.10+. This typically has to be installed using the Qt GUI installer since ```apt``` does not backport a recent enough version.
 
+If using GNOME (fixes system tray icons and notifications):
+```bash
+sudo apt install gnome-shell-extension-appindicator
+```
+
 If you want to compile documentation:
 ```bash
-sudo apt install python-sphinx doxygen graphviz
+sudo apt install python-sphinx doxygen graphviz help2man
 python -m pip install --user recommonmark
 ```
 
@@ -43,9 +48,14 @@ Required:
 sudo dnf install gcc-c++ make cmake qt5-devel qt5-qtquickcontrols2-devel alsa-lib alsa-lib-devel
 ```
 
+To enable the system tray icon and notifications the ```Topicons plus``` extension must be installed via ```dnf``` and enabled under *Tweaks->Extensions*.
+```bash
+sudo dnf install gnome-shell-extension-topicons-plus
+```
+
 If you want to compile documentation:
 ```bash
-sudo dnf install python-sphinx doxygen graphviz
+sudo dnf install python-sphinx doxygen graphviz help2man
 python -m pip install --user recommonmark
 ```
 
