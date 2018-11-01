@@ -23,6 +23,7 @@ class Updater : public QObject
         bool updateAvailable;
 
         QString downloadHostUrl;
+        QString downloadFileName;
         qint64 numBytesDownloaded;
         qint64 downloadSize;
         bool downloaded;

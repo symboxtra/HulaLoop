@@ -1,10 +1,10 @@
 #include "Updater.h"
 
+#include <QCoreApplication>
 #include <QDataStream>
 #include <QDir>
 #include <QEventLoop>
 #include <QFile>
-#include <QGuiApplication>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -21,6 +21,7 @@ Updater::Updater(QObject *parent) : QObject(parent)
     updateAvailable = false;
 
     downloadHostUrl = "";
+    downloadFileName = "";
     numBytesDownloaded = 0;
     downloadSize = 0;
     downloaded = false;
@@ -124,11 +125,13 @@ void Updater::updateQueryFinished(QNetworkReply *reply)
             {
 
                 downloadHostUrl = obj["browser_download_url"].toString();
+                downloadFileName = obj["name"].toString();
                 downloadSize = obj["size"].toVariant().toULongLong(&ok);
 
                 if(!ok)
                 {
                     downloadHostUrl = "";
+                    downloadFileName = "";
                     downloadSize = 0L;
                     return;
                 }
@@ -158,13 +161,15 @@ void Updater::downloadFinished()
     file->close();
     reply->deleteLater();
 
+    downloaded = true;
+
 }
 
 void Updater::startHulaLoopInstaller()
 {
 
     QProcess proc;
-    QString procName = QDir::tempPath() + "/hulaloop";
+    QString procName = QDir::tempPath() + "/HulaLoop/" + downloadFileName;
 
     proc.setProgram(procName);
     if(proc.startDetached())

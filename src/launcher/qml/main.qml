@@ -76,6 +76,8 @@ ApplicationWindow {
                     status.text = qsTr("Downloading updates...")
 
                     updater.downloadUpdate()
+                    if(updater.finishedDownload())
+                        updater.startHulaLoopInstaller()
                 }
                 else
                 {
