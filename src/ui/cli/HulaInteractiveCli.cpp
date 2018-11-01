@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+#include "HulaCliCommon.h"
 #include "HulaCommands.h"
 
 /**
@@ -65,6 +66,7 @@ void HulaInteractiveCli::malformedArg(const std::string &argName, const std::str
  */
 void HulaInteractiveCli::start()
 {
+    bool success = true;
     std::string line;
     std::string command;
     std::string arg;
@@ -73,6 +75,7 @@ void HulaInteractiveCli::start()
     // Command loop
     while (1)
     {
+        success = true;
         command = "";
         arg = "";
         args.clear();
@@ -113,12 +116,14 @@ void HulaInteractiveCli::start()
                 }
                 catch (std::invalid_argument &e)
                 {
-                    malformedArg(HL_DELAY_TIMER_LONG, args[0], "int");
+                    malformedArg(HL_DELAY_TIMER_ARG1, args[0], "int");
+                    continue;
                 }
             }
             else
             {
                 missingArg(HL_DELAY_TIMER_ARG1);
+                continue;
             }
         }
         else if (command == HL_RECORD_TIMER_SHORT || command == HL_RECORD_TIMER_LONG)
@@ -133,29 +138,31 @@ void HulaInteractiveCli::start()
                 }
                 catch (std::invalid_argument &e)
                 {
-                    malformedArg(HL_RECORD_TIMER_LONG, args[0], "int");
+                    malformedArg(HL_RECORD_TIMER_ARG1, args[0], "int");
+                    continue;
                 }
             }
             else
             {
                 missingArg(HL_RECORD_TIMER_ARG1);
+                continue
             }
         }
         else if (command == HL_RECORD_SHORT || command == HL_RECORD_LONG)
         {
-            t->record();
+            success = t->record();
         }
         else if (command == HL_STOP_SHORT || command == HL_STOP_LONG)
         {
-            t->stop();
+            success = t->stop();
         }
         else if (command == HL_PLAY_SHORT || command == HL_PLAY_LONG)
         {
-            t->play();
+            success = t->play();
         }
         else if (command == HL_PAUSE_SHORT || command == HL_PAUSE_LONG)
         {
-            t->pause();
+            success = t->pause();
         }
         else if (command == HL_EXPORT_SHORT || command == HL_EXPORT_LONG)
         {
@@ -171,31 +178,66 @@ void HulaInteractiveCli::start()
             else
             {
                 missingArg(HL_EXPORT_ARG1);
+                continue;
             }
         }
         else if (command == HL_LIST_SHORT || command == HL_LIST_LONG)
         {
-            vector<Device *> devices;
-            if (settings->getShowRecordDevices())
+            printDeviceList(t);
+        }
+        else if (command == HL_INPUT_SHORT || command == HL_INPUT_LONG)
+        {
+            Device *device = NULL;
+            // Make sure the arg exists
+            if (args.size() != 0)
             {
-                devices = t->getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK | RECORD));
+                device = findDevice(t, args[0], (DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
+            }
+            else if (settings->getDefaultInputDeviceName().size() != 0)
+            {
+                device = findDevice(t, settings->getDefaultInputDeviceName(), (DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
             }
             else
             {
-                devices = t->getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK));
+                missingArg(HL_INPUT_ARG1);
+                continue;
             }
 
-            printf("\n");
-            for (size_t i = 0; i < devices.size(); i++)
+            // Find device will already have printed a not-found error
+            if (device != NULL)
             {
-                printf("Device #%lu: %s\n", i, devices[i]->getName().c_str());
-                printf("Record:   %s\n", (devices[i]->getType() & DeviceType::RECORD) ? "true" : "false");
-                printf("Loopback: %s\n", (devices[i]->getType() & DeviceType::RECORD) ? "true" : "false");
-                printf("Output:   %s\n", (devices[i]->getType() & DeviceType::RECORD) ? "true" : "false");
-                printf("\n");
+                t->getController()->setActiveInputDevice(device);
+                printf("\nInput device set to: %s\n", device->getName().c_str());
+            }
+        }
+        else if (command == HL_OUTPUT_SHORT || command == HL_OUTPUT_SHORT)
+        {
+            Device *device = NULL;
+            // Make sure the arg exists
+            if (args.size() != 0)
+            {
+                device = findDevice(t, args[0], DeviceType::PLAYBACK);
+            }
+            else if (settings->getDefaultOutputDeviceName().size() != 0)
+            {
+                device = findDevice(t, settings->getDefaultOutputDeviceName(), DeviceType::PLAYBACK);
+            }
+            else
+            {
+                missingArg(HL_OUTPUT_ARG1);
+                continue;
             }
 
-            Device::deleteDevices(devices);
+            // Find device will already have printed a not-found error
+            if (device != NULL)
+            {
+                t->getController()->setActiveOutputDevice(device);
+                printf("\nOutput device set to: %s\n", device->getName().c_str());
+            }
+        }
+        else if (command == HL_PRINT_SHORT || command == HL_PRINT_LONG)
+        {
+            printSettings();
         }
         else if (command == HL_HELP_SHORT || command == HL_HELP_LONG)
         {
@@ -230,6 +272,12 @@ void HulaInteractiveCli::start()
         else
         {
             fprintf(stderr, "%sUnrecognized command '%s'\n", HL_ERROR_PREFIX, command.c_str());
+        }
+
+        // Make sure transport commands succeeded
+        if (!success)
+        {
+            fprintf(stderr, "Command failed with value of 'false'.\n");
         }
     }
 }
