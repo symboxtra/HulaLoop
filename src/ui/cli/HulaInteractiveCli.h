@@ -9,12 +9,14 @@
 class HulaInteractiveCli {
     private:
         Transport *t;
+        HulaSettings *settings;
 
     public:
         HulaInteractiveCli();
 
         void unusedArgs(const std::vector<std::string> &args, int numUsed) const;
         void missingArg(const std::string &argName) const;
+        void malformedArg(const std::string &argName, const std::string &val, const std::string &type) const;
 
         void start();
 

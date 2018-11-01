@@ -175,13 +175,25 @@ HulaSettings * parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
         vector<Device *> devices;
         if (settings->getShowRecordDevices())
         {
-            // TODO:
-            // devices = t.getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK | RECORD));
+            devices = t.getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK | RECORD));
         }
         else
         {
-            // devices = t.getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK));
+            devices = t.getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK));
         }
+
+        printf("-------- Device List --------\n\n");
+        for (size_t i = 0; i < devices.size(); i++)
+        {
+            printf("Device #%lu: %s\n", i, devices[i]->getName().c_str());
+            printf("Record:   %s\n", (devices[i]->getType() & DeviceType::RECORD) ? "true" : "false");
+            printf("Loopback: %s\n", (devices[i]->getType() & DeviceType::LOOPBACK) ? "true" : "false");
+            printf("Output:   %s\n", (devices[i]->getType() & DeviceType::PLAYBACK) ? "true" : "false");
+            printf("\n");
+        }
+
+        Device::deleteDevices(devices);
+        exit(0);
     }
 
     return settings;

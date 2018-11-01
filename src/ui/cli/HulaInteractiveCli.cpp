@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
+#include <string>
 #include <vector>
 
 #include "HulaCommands.h"
@@ -16,6 +17,7 @@
 HulaInteractiveCli::HulaInteractiveCli()
 {
     this->t = new Transport();
+    this->settings = HulaSettings::getInstance();
 }
 
 /**
@@ -41,6 +43,19 @@ void HulaInteractiveCli::unusedArgs(const std::vector<std::string> &args, int nu
 void HulaInteractiveCli::missingArg(const std::string &argName) const
 {
     fprintf(stderr, "%sMissing argument '%s'\n", HL_ERROR_PREFIX, argName.c_str());
+}
+
+/**
+ * Print a warning about a malformed argument.
+ *
+ * @param argName Name of the malformed argument
+ * @param val Value given by user
+ * @param type Expected type of value
+ */
+void HulaInteractiveCli::malformedArg(const std::string &argName, const std::string &val, const std::string &type) const
+{
+    fprintf(stderr, "%sMalformed argument '%s'\n", HL_ERROR_PREFIX, argName.c_str());
+    fprintf(stderr, "%s'%s' is not a valid %s\n", HL_ERROR_PREFIX, val.c_str(), type.c_str());
 }
 
 /**
@@ -86,35 +101,107 @@ void HulaInteractiveCli::start()
         {
             continue;
         }
-        else if (command == RECORD_SHORT || command == RECORD_LONG)
-        {
-            t->record();
-        }
-        else if (command == STOP_SHORT || command == STOP_LONG)
-        {
-            t->stop();
-        }
-        else if (command == PLAY_SHORT || command == PLAY_LONG)
-        {
-            t->play();
-        }
-        else if (command == PAUSE_SHORT || command == PAUSE_LONG)
-        {
-            t->pause();
-        }
-        else if (command == EXPORT_SHORT || command == EXPORT_LONG)
+        else if (command == HL_DELAY_TIMER_SHORT || command == HL_DELAY_TIMER_LONG)
         {
             // Make sure the arg exists
-            if (args.size() != 0 && args[0].size() != 0)
+            if (args.size() != 0)
             {
-                t->exportFile(arg);
+                int delay;
+                try
+                {
+                    delay = std::stoi(args[0], nullptr);
+                }
+                catch (std::invalid_argument &e)
+                {
+                    malformedArg(HL_DELAY_TIMER_LONG, args[0], "int");
+                }
             }
             else
             {
-                missingArg(EXPORT_ARG1);
+                missingArg(HL_DELAY_TIMER_ARG1);
             }
         }
-        else if (command == SYSTEM_SHORT || command == SYSTEM_LONG)
+        else if (command == HL_RECORD_TIMER_SHORT || command == HL_RECORD_TIMER_LONG)
+        {
+            // Make sure the arg exists
+            if (args.size() != 0)
+            {
+                int duration;
+                try
+                {
+                    duration = std::stoi(args[0], nullptr);
+                }
+                catch (std::invalid_argument &e)
+                {
+                    malformedArg(HL_RECORD_TIMER_LONG, args[0], "int");
+                }
+            }
+            else
+            {
+                missingArg(HL_RECORD_TIMER_ARG1);
+            }
+        }
+        else if (command == HL_RECORD_SHORT || command == HL_RECORD_LONG)
+        {
+            t->record();
+        }
+        else if (command == HL_STOP_SHORT || command == HL_STOP_LONG)
+        {
+            t->stop();
+        }
+        else if (command == HL_PLAY_SHORT || command == HL_PLAY_LONG)
+        {
+            t->play();
+        }
+        else if (command == HL_PAUSE_SHORT || command == HL_PAUSE_LONG)
+        {
+            t->pause();
+        }
+        else if (command == HL_EXPORT_SHORT || command == HL_EXPORT_LONG)
+        {
+            // Make sure the arg exists
+            if (args.size() != 0)
+            {
+                t->exportFile(arg);
+            }
+            else if (settings->getOutputFilePath().size() != 0)
+            {
+                t->exportFile(settings->getOutputFilePath());
+            }
+            else
+            {
+                missingArg(HL_EXPORT_ARG1);
+            }
+        }
+        else if (command == HL_LIST_SHORT || command == HL_LIST_LONG)
+        {
+            vector<Device *> devices;
+            if (settings->getShowRecordDevices())
+            {
+                devices = t->getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK | RECORD));
+            }
+            else
+            {
+                devices = t->getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK));
+            }
+
+            printf("\n");
+            for (size_t i = 0; i < devices.size(); i++)
+            {
+                printf("Device #%lu: %s\n", i, devices[i]->getName().c_str());
+                printf("Record:   %s\n", (devices[i]->getType() & DeviceType::RECORD) ? "true" : "false");
+                printf("Loopback: %s\n", (devices[i]->getType() & DeviceType::RECORD) ? "true" : "false");
+                printf("Output:   %s\n", (devices[i]->getType() & DeviceType::RECORD) ? "true" : "false");
+                printf("\n");
+            }
+
+            Device::deleteDevices(devices);
+        }
+        else if (command == HL_HELP_SHORT || command == HL_HELP_LONG)
+        {
+            printf("%s", HL_HELP_TEXT);
+        }
+        else if (command == HL_SYSTEM_SHORT || command == HL_SYSTEM_LONG)
         {
             // Make sure there is a command processor available
             if (system(NULL))
@@ -135,7 +222,7 @@ void HulaInteractiveCli::start()
                 fprintf(stderr, "%sNo system command processor is available is available.\n", HL_ERROR_PREFIX);
             }
         }
-        else if (command == EXIT_LONG)
+        else if (command == HL_EXIT_LONG)
         {
             // TODO: Make sure nothing unsaved is happening
             break;
