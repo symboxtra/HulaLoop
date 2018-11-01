@@ -31,10 +31,10 @@ class Transport {
         bool playbackState = false;
 
     protected:
-        Record* recorder;
+        Record *recorder;
 
     public:
-        Controller* controller;
+        Controller *controller;
 
     public:
 
@@ -54,6 +54,7 @@ class Transport {
         Controller *getController() const;
 
         void exportFile(std::string targetDirectory);
+        void deleteTempFiles();
 
         TransportState getState() const;
         std::string stateToStr(const TransportState state) const;

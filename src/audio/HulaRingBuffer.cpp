@@ -80,12 +80,6 @@ HulaRingBuffer::HulaRingBuffer(float maxDuration)
 int32_t HulaRingBuffer::read(SAMPLE *data, int32_t maxSamples)
 {
     ring_buffer_size_t samplesRead = PaUtil_ReadRingBuffer(&this->rb, (void *)data, (ring_buffer_size_t)maxSamples);
-    if (samplesRead > 0)
-    {
-        // printf("%sRead of %d elements.\n", HL_PRINT_PREFIX, samplesRead);
-
-        // Do not call Advance here... It's called by PaUtil_ReadRingBuffer.
-    }
 
     return samplesRead;
 }
@@ -139,6 +133,8 @@ int32_t HulaRingBuffer::write(const SAMPLE *data, int32_t maxSamples)
     ring_buffer_size_t elementsToWrite = std::min(elementsWriteable, (ring_buffer_size_t)(maxSamples));
 
     ring_buffer_size_t elementsWritten = PaUtil_WriteRingBuffer(&this->rb, data, elementsToWrite);
+
+    printf("Samples wrote: %d\n", elementsWritten);
 
     if (elementsWritten < maxSamples)
     {

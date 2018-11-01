@@ -145,7 +145,7 @@ TEST_F(TestWindowsAudio, short_capture)
     // Sleep for a few seconds to allow thread to start
     // and data to flow in
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    std::string command = "PowerShell -Command \"(New-Object Media.SoundPlayer (Resolve-Path \'" + path + "test.wav\')).PlaySync()\"";
+    std::string command = "PowerShell -Command \"(New-Object Media.SoundPlayer (Resolve-Path " + path + "test.wav)).PlaySync()\"";
     system(command.c_str());
 
     // Read some samples
@@ -170,9 +170,13 @@ int main(int argc, char **argv)
 
     // Strip the executable name
     if (lastBSlash != std::string::npos)
+    {
         path = path.substr(0, lastBSlash + 1);
+    }
     else if (lastFSlash != std::string::npos)
+    {
         path = path.substr(0, lastFSlash + 1);
+    }
 
     return RUN_ALL_TESTS();
 }

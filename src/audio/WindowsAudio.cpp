@@ -1,6 +1,8 @@
 #include "WindowsAudio.h"
 #include "hlaudio/internal/HulaAudioError.h"
 
+#include <sndfile.h>
+
 WindowsAudio::WindowsAudio()
 {
     pa_status = paNoError;
@@ -14,7 +16,7 @@ WindowsAudio::WindowsAudio()
  * @param type DeviceType that is combination from the DeviceType enum
  * @return vector<Device*> A list of Device instances that carry the necessary device information
  */
-vector<Device*> WindowsAudio::getDevices(DeviceType type)
+vector<Device *> WindowsAudio::getDevices(DeviceType type)
 {
 
     // Check if the following enums are set in the params
@@ -23,11 +25,11 @@ vector<Device*> WindowsAudio::getDevices(DeviceType type)
     bool isPlaySet = (type & DeviceType::PLAYBACK) == DeviceType::PLAYBACK;
 
     // Vector to store acquired list of output devices
-    vector<Device*> deviceList;
+    vector<Device *> deviceList;
 
     // Get devices from WASAPI if loopback and/or playback devices
     // are requested
-    if(isLoopSet | isPlaySet)
+    if (isLoopSet | isPlaySet)
     {
         // Setup capture environment
         status = CoInitialize(NULL);
@@ -91,7 +93,7 @@ vector<Device*> WindowsAudio::getDevices(DeviceType type)
     }
 
     // Get devices from PortAudio if record devices are requested
-    if(isRecSet)
+    if (isRecSet)
     {
 
         // Initialize PortAudio and update audio devices
@@ -100,7 +102,7 @@ vector<Device*> WindowsAudio::getDevices(DeviceType type)
 
         // Get the total count of audio devices
         int numDevices = Pa_GetDeviceCount();
-        if(numDevices < 0)
+        if (numDevices < 0)
         {
             pa_status = numDevices;
             HANDLE_PA_ERROR(pa_status);
@@ -108,25 +110,25 @@ vector<Device*> WindowsAudio::getDevices(DeviceType type)
 
         //
         const PaDeviceInfo *deviceInfo;
-        for(int i = 0;i < numDevices;i++)
+        for (int i = 0; i < numDevices; i++)
         {
             deviceInfo = Pa_GetDeviceInfo(i);
 
-            if(deviceInfo->maxInputChannels != 0 && deviceInfo->hostApi == (Pa_GetDefaultHostApi()+1))
+            if (deviceInfo->maxInputChannels != 0 && deviceInfo->hostApi == (Pa_GetDefaultHostApi() + 1))
             {
                 // Create instance of Device using acquired data
-                Device* audio = new Device(NULL, string(deviceInfo->name), DeviceType::RECORD);
+                Device *audio = new Device(NULL, string(deviceInfo->name), DeviceType::RECORD);
 
                 // Add to devicelist
                 deviceList.push_back(audio);
 
                 // Print some debug device info for now
-            // TODO: Remove
-            cout << "Device #" << i + 1 << ": " << deviceInfo->name << endl;
-            cout << "Input Channels: " << deviceInfo->maxInputChannels << endl;
-            cout << "Output Channels: " << deviceInfo->maxOutputChannels << endl;
-            cout << "Default Sample Rate: " << deviceInfo->defaultSampleRate << endl;
-            cout << endl;
+                // TODO: Remove
+                cout << "Device #" << i + 1 << ": " << deviceInfo->name << endl;
+                cout << "Input Channels: " << deviceInfo->maxInputChannels << endl;
+                cout << "Output Channels: " << deviceInfo->maxOutputChannels << endl;
+                cout << "Default Sample Rate: " << deviceInfo->defaultSampleRate << endl;
+                cout << endl;
             }
         }
 
@@ -173,6 +175,13 @@ void WindowsAudio::setActiveOutputDevice(Device *device)
 void WindowsAudio::capture()
 {
     cout << "In Capture Mode" << endl; // TODO: Remove this later
+
+    // TODO: Keep this here until the ringbuffer is debugged
+    SF_INFO sfinfo;
+    sfinfo.samplerate = 44100;
+    sfinfo.channels = NUM_CHANNELS;
+    sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
+    SNDFILE *file = sf_open("C:\\Users\\patel\\AppData\\Local\\Temp\\hulaloop_temp.wav", SFM_WRITE, &sfinfo);
 
     // Instantiate clients and services for audio capture
     IAudioCaptureClient *captureClient = NULL;
@@ -224,12 +233,14 @@ void WindowsAudio::capture()
     status = audioClient->Start();
     HANDLE_ERROR(status);
 
-    // Sleep duration
+    // Calculate the duration of the actual buffer
     duration = (double)REFTIMES_PER_SEC * captureBufferSize / pwfx->nSamplesPerSec;
 
     // Continue loop under process ends
-    while (!this->endCapture)
+    // Each loop fills half of the shared buffer
+    while (!this->endCapture.load())
     {
+        // Sleep for half the buffer duration
         Sleep(duration / (REFTIMES_PER_MILLISEC * 2));
 
         // Get the packet size of the next captured buffer
@@ -242,8 +253,26 @@ void WindowsAudio::capture()
             status = captureClient->GetBuffer(&pData, &numFramesAvailable, &flags, NULL, NULL);
             HANDLE_ERROR(status);
 
+            if (flags & AUDCLNT_BUFFERFLAGS_SILENT)
+            {
+                pData = NULL;
+            }
+
             // Copy to ringbuffers
-            this->copyToBuffers((void*)pData, numFramesAvailable * NUM_CHANNELS * sizeof(SAMPLE));
+            float *floatData = (float *)pData;
+
+            this->copyToBuffers(floatData, numFramesAvailable * NUM_CHANNELS);
+
+            // TODO: Keep this here until the ringbuffer is debugged
+            sf_count_t error = sf_writef_float(file, floatData, numFramesAvailable);
+            if (error != numFramesAvailable)
+            {
+                char errstr[256];
+                sf_error_str (0, errstr, sizeof (errstr) - 1);
+                fprintf (stderr, "cannot write sndfile (%s)\n", errstr);
+                fprintf(stderr, "%sWe done goofed...", HL_ERROR_PREFIX);
+                exit(1);
+            }
 
             // Release buffer after data is captured and handled
             status = captureClient->ReleaseBuffer(numFramesAvailable);
@@ -254,6 +283,9 @@ void WindowsAudio::capture()
             HANDLE_ERROR(status);
         }
     }
+
+    // TODO: Keep this here until the ringbuffer is debugged
+    sf_close(file);
 
     // Stop the client capture once process exits
     status = audioClient->Stop();
@@ -267,7 +299,7 @@ Exit:
     SAFE_RELEASE(audioClient);
     SAFE_RELEASE(captureClient);
 
-    if(FAILED(status))
+    if (FAILED(status))
     {
         _com_error err(status);
         LPCTSTR errMsg = err.ErrorMessage();

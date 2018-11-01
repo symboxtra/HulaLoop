@@ -124,7 +124,7 @@ void Controller::removeBuffer(HulaRingBuffer *rb)
  *
  * @return vector<Device*> A list of Device instances that carry the necessary device information
  */
-vector<Device*> Controller::getDevices(DeviceType type) const
+vector<Device *> Controller::getDevices(DeviceType type) const
 {
     return audio->getDevices(type);
 }
