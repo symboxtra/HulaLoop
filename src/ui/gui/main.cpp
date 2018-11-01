@@ -1,5 +1,5 @@
-#include <QFontDatabase>
 #include <QApplication>
+#include <QFontDatabase>
 #include <QIcon>
 #include <QQmlApplicationEngine>
 #include <QQmlDebuggingEnabler>
