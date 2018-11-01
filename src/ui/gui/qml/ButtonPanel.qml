@@ -25,8 +25,11 @@ Rectangle {
             if (textCountdown.time == 0) {
                 textCountdown.text = 0
                 countDownTimer.stop()
-                qmlbridge.record()
-                recordingTimer.start()
+
+                recordBtn.onClicked()
+
+                if(textCountdown.time2 == 0)
+                    recordingTimer.inf = true
             } else {
                 textCountdown.text = textCountdown.time
                 textCountdown.time--
@@ -41,12 +44,14 @@ Rectangle {
         interval: 1000
         running: false
         repeat: true
+        property bool inf: false
         onTriggered: {
             // Since the timer starts at 0, go to endTime - 1
-            if (textCountdown.time >= textCountdown.time2 - 1) {
+            console.log(recordingTimer.inf + " Timer time: " + textCountdown.time);
+            if (!recordingTimer.inf && textCountdown.time >= textCountdown.time2 - 1) {
                 textCountdown.text = textCountdown.time + 1
-                qmlbridge.stop()
-                recordingTimer.stop()
+
+                stopBtn.onClicked()
             } else {
                 textCountdown.text = textCountdown.time + 1
                 textCountdown.time++
@@ -97,8 +102,20 @@ Rectangle {
                         return
                     }
 
-                    console.log("RECORD CLICKED")
+                    if(textCountdown.time != 0)
+                    {
+                        countDownTimer.start()
+                        return
+                    }
+
+                    if(textCountdown.time2 == 0)
+                    {
+                        recordingTimer.inf = true
+                    }
+
                     let success = qmlbridge.record()
+
+                    recordingTimer.start()
 
                     if(qmlbridge.getTransportState() === "Recording") // TODO: Check record call success
                     {
@@ -156,6 +173,9 @@ Rectangle {
                         playpauseBtn.contentItem.color = "green";
 
                         exportBtn.enabled = true;
+
+                        textCountdown.time = 0
+                        recordingTimer.stop()
                     }
                 }
             }
@@ -203,6 +223,7 @@ Rectangle {
                                 stopBtn.enabled = true;
                                 recordBtn.enabled = true;
                             }
+                            recordingTimer.stop()
                         }
                     }
                     else
@@ -555,7 +576,6 @@ Rectangle {
                     Layout.alignment: Qt.AlignRight
                     id: okBtn
                     onClicked: {
-                        countDownTimer.start()
                         timerPopup.close()
                     }
 
