@@ -38,7 +38,7 @@ sudo apt install gnome-shell-extension-appindicator
 
 If you want to compile documentation:
 ```bash
-sudo apt install python-sphinx doxygen graphviz
+sudo apt install python-sphinx doxygen graphviz help2man
 python -m pip install --user recommonmark
 ```
 
@@ -55,7 +55,7 @@ sudo dnf install gnome-shell-extension-topicons-plus
 
 If you want to compile documentation:
 ```bash
-sudo dnf install python-sphinx doxygen graphviz
+sudo dnf install python-sphinx doxygen graphviz help2man
 python -m pip install --user recommonmark
 ```
 
