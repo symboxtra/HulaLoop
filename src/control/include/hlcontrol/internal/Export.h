@@ -3,6 +3,7 @@
 
 #include <hlaudio/hlaudio.h>
 #include <string>
+#include <vector>
 
 class Export {
     private:
@@ -13,6 +14,7 @@ class Export {
         void copyData(vector<std::string> dirs);
 
         static std::string getTempPath();
+        static void deleteTempFiles(vector<std::string> dirs);
 
         ~Export();
 };

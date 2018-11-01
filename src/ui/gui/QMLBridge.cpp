@@ -164,3 +164,11 @@ void QMLBridge::saveFile(QString dir)
     directory = directory.substr(substrLen);
     transport->exportFile(directory);
 }
+
+/**
+ * Deletes all the temp files that the program has created
+ */
+void QMLBridge::cleanTempFiles()
+{
+    transport->deleteTempFiles();
+}

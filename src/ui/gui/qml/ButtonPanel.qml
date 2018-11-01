@@ -25,9 +25,7 @@ Rectangle {
             if (textCountdown.time == 0) {
                 textCountdown.text = 0
                 countDownTimer.stop()
-
-                recordBtn.onClicked();
-
+                qmlbridge.record()
                 recordingTimer.start()
             } else {
                 textCountdown.text = textCountdown.time
@@ -47,9 +45,7 @@ Rectangle {
             // Since the timer starts at 0, go to endTime - 1
             if (textCountdown.time >= textCountdown.time2 - 1) {
                 textCountdown.text = textCountdown.time + 1
-
-                stopBtn.onClicked();
-
+                qmlbridge.stop()
                 recordingTimer.stop()
             } else {
                 textCountdown.text = textCountdown.time + 1
@@ -95,7 +91,13 @@ Rectangle {
                 }
 
                 onClicked: {
+                    if(stopBtn.isStopped)
+                    {
+                        discardPopup.open()
+                        return
+                    }
 
+                    console.log("RECORD CLICKED")
                     let success = qmlbridge.record()
 
                     if(qmlbridge.getTransportState() === "Recording") // TODO: Check record call success
@@ -146,7 +148,7 @@ Rectangle {
                     {
                         enabled = false;
 
-                        recordBtn.enabled = false;
+                        recordBtn.enabled = true;
                         isStopped = true;
 
                         playpauseBtn.enabled = true;
@@ -354,30 +356,19 @@ Rectangle {
                     }
                 }
                 onActivated: {
-                    if(iDeviceInfoLabel.currentText == "")
-                    {
-                        console.error("Please select a valid device....Defaulting to the first device " + iDeviceItems.get(0).text);
-                        currentIndex = 0;
-                        qmlbridge.setActiveInputDevice(iDeviceInfoLabel.currentText);
-                    }
-                    else
-                    {
-                        console.log("Audio device has been changed to: " + iDeviceInfoLabel.currentText);
-                        qmlbridge.setActiveInputDevice(iDeviceInfoLabel.currentText);
-                    }
+                    console.log("Audio device has been changed to: " + iDeviceInfoLabel.currentText);
+                    qmlbridge.setActiveInputDevice(iDeviceInfoLabel.currentText);
                 }
 
                 onPressedChanged: {
                     model.clear();
                     var idevices = qmlbridge.getInputDevices().split(',')
-                    var i
-                    for (i = 0; i < idevices.length; i++) {
-                        model.append({
-                            "text": idevices[i]
+                        var i
+                        for (i = 0; i < idevices.length; i++) {
+                            model.append({
+                                       "text": idevices[i]
                                    })
-                    }
-                    currentIndex = 0;
-                    qmlbridge.setActiveInputDevice(iDeviceInfoLabel.currentText);
+                        }
                 }
                 currentIndex: 0
             }
@@ -417,8 +408,6 @@ Rectangle {
                                        "text": odevices[i]
                                    })
                         }
-                    currentIndex = 0;
-                    qmlbridge.setActiveInputDevice(iDeviceInfoLabel.currentText);
                 }
                 currentIndex: 0
             }
@@ -426,6 +415,57 @@ Rectangle {
 
         Item {
             Layout.preferredWidth: 10
+        }
+    }
+
+    Popup {
+        id: discardPopup
+        objectName: "discardPopup"
+
+        x: Math.round((window.width - width) / 2)
+        y: Math.round((window.height - height) / 2)
+
+        modal: true
+        focus: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        ColumnLayout {
+            spacing: Math.round(window.height * 0.15)
+            ColumnLayout {
+                spacing: Math.round(discardPopup.height * 0.15)
+                RowLayout{
+                    Text {
+                        id: textbot
+                        color: "white"
+                        font.pointSize: Math.round((window.height + window.width) / 96)
+                        text: qsTr("Are you sure you want to discard?")
+                    }
+                }
+                RowLayout {
+                    Layout.alignment: Qt.AlignCenter
+                    spacing: Math.round(buttonPanel.width * 0.05)
+                    width: gridLayout.width / 2
+                    Button {
+                        text: "No"
+                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                        onClicked: {
+                            discardPopup.close()
+                        }
+                    }
+
+                    Button {
+                        text: "Yes"
+                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                        onClicked: {
+                            // discard files
+                            qmlbridge.cleanTempFiles()
+                            // start recording again
+                            stopBtn.isStopped = false
+                            recordBtn.onClicked()
+                            discardPopup.close()
+                        }
+                    }
+                }
+            }
         }
     }
 
