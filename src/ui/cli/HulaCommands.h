@@ -73,8 +73,8 @@
 "  " HL_PAUSE_SHORT   ", " HL_PAUSE_LONG  "\t\t\t\t Pause playback or recording.\n" \
 "  " HL_EXPORT_SHORT  ", " HL_EXPORT_LONG " <" HL_EXPORT_ARG1 ">\t\t\t Export captured audio to the specified file.\n" \
 "\n" \
-"  " HL_INPUT_SHORT   ", " HL_INPUT_LONG  " <" HL_INPUT_ARG1 ">\t\t Set the input device.\n" \
-"  " HL_OUTPUT_SHORT  ", " HL_OUTPUT_LONG " <" HL_OUTPUT_ARG1 ">\t\t Set the output device.\n" \
+"  " HL_INPUT_SHORT   ", " HL_INPUT_LONG  " <" HL_INPUT_ARG1 ">\t\t\t Set the input device.\n" \
+"  " HL_OUTPUT_SHORT  ", " HL_OUTPUT_LONG " <" HL_OUTPUT_ARG1 ">\t\t\t Set the output device.\n" \
 "\n" \
 "  " HL_DELAY_TIMER_SHORT  ", " HL_DELAY_TIMER_LONG  " <" HL_DELAY_TIMER_ARG1  ">" \
 "\t\t\t Set the duration, in seconds, of the\n" \

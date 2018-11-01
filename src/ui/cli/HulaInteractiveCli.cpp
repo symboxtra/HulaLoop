@@ -164,7 +164,52 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
     }
     else if (command == HL_RECORD_SHORT || command == HL_RECORD_LONG)
     {
-        success = t->record();
+        int delay = 0;
+        int duration = HL_INFINITE_RECORD;
+
+        // Make sure the arg exists
+        if (args.size() == 2)
+        {
+            try
+            {
+                delay = std::stoi(args[0], nullptr);
+            }
+            catch (std::invalid_argument &e)
+            {
+                malformedArg(HL_RECORD_ARG1, args[0], "int");
+                return HulaCliStatus::HULA_CLI_FAILURE;
+            }
+
+            try
+            {
+                duration = std::stoi(args[1], nullptr);
+            }
+            catch (std::invalid_argument &e)
+            {
+                malformedArg(HL_RECORD_ARG2, args[1], "int");
+                return HulaCliStatus::HULA_CLI_FAILURE;
+            }
+
+            success = t->record(delay, duration);
+        }
+        else if (settings->getOutputFilePath().size() != 0)
+        {
+            try
+            {
+                delay = std::stoi(args[0], nullptr);
+            }
+            catch (std::invalid_argument &e)
+            {
+                malformedArg(HL_RECORD_ARG1, args[0], "int");
+                return HulaCliStatus::HULA_CLI_FAILURE;
+            }
+
+            success = t->record(delay, HL_INFINITE_RECORD);
+        }
+        else
+        {
+            success = t->record();
+        }
     }
     else if (command == HL_STOP_SHORT || command == HL_STOP_LONG)
     {

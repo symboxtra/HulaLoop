@@ -43,6 +43,7 @@ class Transport {
         Transport();
         virtual ~Transport();
 
+        bool record(int delay, int duration);
         bool record();
         bool stop();
         bool play();
