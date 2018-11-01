@@ -1,5 +1,6 @@
 #include "WindowsAudio.h"
 #include "hlaudio/internal/HulaAudioError.h"
+#include "hlaudio/internal/HulaAudioSettings.h"
 
 #include <sndfile.h>
 
@@ -312,9 +313,53 @@ Exit:
 /**
  * TODO: Fill in with something
  */
-bool WindowsAudio::checkRates(Device *device)
+bool WindowsAudio::checkRates(Device *activeDevice)
 {
+    HRESULT status;
+    IMMDevice* device = NULL;
+    PROPVARIANT prop;
+    IPropertyStore* store = nullptr;
+    PWAVEFORMATEX deviceProperties;
+
+    // Setup capture environment
+    status = CoInitialize(NULL);
+    HANDLE_ERROR(status);
+
+    // Creates a system instance of the device enumerator
+    status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
+    HANDLE_ERROR(status);
+
+    // Select the current active record/loopback device
+    status = pEnumerator->GetDevice(reinterpret_cast<LPCWSTR>(activeDevice->getID()), &device);
+    HANDLE_ERROR(status);
+
+    status = device->OpenPropertyStore(STGM_READ, &store);
+    HANDLE_ERROR(status);
+
+    status = store->GetValue(PKEY_AudioEngine_DeviceFormat, &prop);
+    HANDLE_ERROR(status);
+
+    deviceProperties = (PWAVEFORMATEX)prop.blob.pBlobData;
+
+    // Check number of channels
+    if(deviceProperties->nChannels != HulaAudioSettings::getInstance()->getNumberOfChannels())
+    {
+        cerr << "Invalid number of channels" << endl;
+        return false;
+    }
+
+    // Check sample rate
+    if(deviceProperties->nSamplesPerSec != HulaAudioSettings::getInstance()->getSampleRate())
+    {
+        cerr << "Invalid sample rate" << endl;
+        return false;
+    }
+
     return true;
+
+Exit:
+    cerr << "WASAPI init error!" << endl;
+    return false;
 }
 
 /**

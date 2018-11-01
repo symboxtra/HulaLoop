@@ -5,6 +5,7 @@
 #include <Audioclient.h>
 #include <comdef.h>
 #include <endpointvolume.h>
+#include <initguid.h>
 #include <mmdeviceapi.h>
 #include <windows.h>
 
