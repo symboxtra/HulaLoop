@@ -143,7 +143,7 @@ TEST_F(TestOSXAudio, short_capture)
 
     // Sleep for a few seconds to allow thread to start
     // and data to flow in
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    std::this_thread::sleep_for(std::chrono::milliseconds(400));
 
     // Read some samples
     int32_t samplesRead = rb->read(readData, maxSamples);

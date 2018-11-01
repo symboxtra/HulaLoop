@@ -70,11 +70,11 @@ void OSXAudio::capture()
     PaStream           *stream;
     PaError             err = paNoError;
 
-    // TODO: Grab HulaLoop driver specifically/make this grabbable for RECORD devices
-    inputParameters.device = Pa_GetDefaultInputDevice();
+    inputParameters.device = *(this->activeInputDevice->getID());
+    printf("Device id: %d\n", inputParameters.device);
     if (inputParameters.device == paNoDevice)
     {
-        fprintf(stderr, "%sNo default input device found.\n", HL_ERROR_PREFIX);
+        fprintf(stderr, "%sNo device found.\n", HL_ERROR_PREFIX);
         exit(1); // TODO: Handle error
     }
 
@@ -179,12 +179,12 @@ vector<Device *> OSXAudio::getDevices(DeviceType type)
         // This needs to be freed elsewhere
         if (type & checkType)
         {
-            Device *hlDevice = new Device(NULL, string(paDevice->name), type);
+            Device *hlDevice = new Device(new uint32_t(i), string(paDevice->name), type);
             devices.push_back(hlDevice);
 
             // Print some debug device info for now
             // TODO: Remove
-            cout << "Device #" << i + 1 << ": " << paDevice->name << endl;
+            cout << "Device #" << i << ": " << paDevice->name << endl;
             cout << "Input Channels: " << paDevice->maxInputChannels << endl;
             cout << "Output Channels: " << paDevice->maxOutputChannels << endl;
             cout << "Default Sample Rate: " << paDevice->defaultSampleRate << endl;
