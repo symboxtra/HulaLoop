@@ -45,6 +45,8 @@ DeviceType Device::getType()
 }
 
 /**
+ * \ingroup memory_management
+ *
  * Delete all the device pointers inside the vector
  */
 void Device::deleteDevices(vector<Device *> devices)
@@ -58,7 +60,14 @@ void Device::deleteDevices(vector<Device *> devices)
 }
 
 /**
- * Deconstructs the device instance
+ * \ingroup memory_management
+ *
+ * Free any resources associated with the Device.
+ *
+ * This does not typically need to be called directly.
+ * A call to Device::deleteDevices() using the vector
+ * received from Controller::getDevices() is usually
+ * more appropriate.
  */
 Device::~Device()
 {

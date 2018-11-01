@@ -20,7 +20,9 @@ enum TransportState
 };
 
 /**
- * Utility class for managing state of application and all audio related processes.
+ * @ingroup public_api
+ *
+ * Extra class for managing the state of the application and all audio related processes.
  */
 class Transport {
     private:
