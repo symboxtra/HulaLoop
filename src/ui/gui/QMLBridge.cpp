@@ -1,6 +1,7 @@
 #include "QMLBridge.h"
 
 #include <QUrl>
+#include <QDir>
 #include <string>
 
 /**
@@ -153,8 +154,21 @@ QString QMLBridge::getOutputDevices()
  */
 void QMLBridge::saveFile(QString dir)
 {
-    // create a Qurl so it is easy to convert
-    QUrl url(dir);
-    string directory = url.path().toStdString();
+    string directory = dir.toStdString();
+    int substrLen = 7;
+    if (dir[9] == ':')
+    {
+        // WINDOWS
+        substrLen = 8;
+    }
+    directory = directory.substr(substrLen);
     transport->exportFile(directory);
+}
+
+/**
+ * Deletes all the temp files that the program has created
+ */
+void QMLBridge::cleanTempFiles()
+{
+    transport
 }

@@ -35,14 +35,16 @@ else ()
 endif ()
 
 # Add hlaudio library
-include_directories (${EXTRA_INCLUDES})
+# TODO: Remove ${INCLUDE_DIRS} once recording debug is complete
+include_directories (${EXTRA_INCLUDES} ${INCLUDE_DIRS})
 add_library_target (${HL_LIBRARY_NAME} "${AUDIO_SRC_FILES};${EXTRA_INCLUDES}")
 
 # Force portaudio to build first
 add_dependencies (${HL_LIBRARY_NAME} portaudio portaudio_static)
 
 # Link external libraries to new generated library
-target_link_libraries (${HL_LIBRARY_NAME} ${AUDIO_LIBS})
+# TODO: Remove ${HL_LIBRARIES} once recording debug is completed
+target_link_libraries (${HL_LIBRARY_NAME} ${AUDIO_LIBS} ${HL_LIBRARIES})
 
 # Make these include directories available to the rest of the project
 add_include_dir (include)

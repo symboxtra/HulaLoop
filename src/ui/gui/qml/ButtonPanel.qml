@@ -25,7 +25,9 @@ Rectangle {
             if (textCountdown.time == 0) {
                 textCountdown.text = 0
                 countDownTimer.stop()
-                qmlbridge.record()
+
+                recordBtn.onClicked();
+
                 recordingTimer.start()
             } else {
                 textCountdown.text = textCountdown.time
@@ -45,7 +47,9 @@ Rectangle {
             // Since the timer starts at 0, go to endTime - 1
             if (textCountdown.time >= textCountdown.time2 - 1) {
                 textCountdown.text = textCountdown.time + 1
-                qmlbridge.stop()
+
+                stopBtn.onClicked();
+
                 recordingTimer.stop()
             } else {
                 textCountdown.text = textCountdown.time + 1
@@ -350,19 +354,30 @@ Rectangle {
                     }
                 }
                 onActivated: {
-                    console.log("Audio device has been changed to: " + iDeviceInfoLabel.currentText);
-                    qmlbridge.setActiveInputDevice(iDeviceInfoLabel.currentText);
+                    if(iDeviceInfoLabel.currentText == "")
+                    {
+                        console.error("Please select a valid device....Defaulting to the first device " + iDeviceItems.get(0).text);
+                        currentIndex = 0;
+                        qmlbridge.setActiveInputDevice(iDeviceInfoLabel.currentText);
+                    }
+                    else
+                    {
+                        console.log("Audio device has been changed to: " + iDeviceInfoLabel.currentText);
+                        qmlbridge.setActiveInputDevice(iDeviceInfoLabel.currentText);
+                    }
                 }
 
                 onPressedChanged: {
                     model.clear();
                     var idevices = qmlbridge.getInputDevices().split(',')
-                        var i
-                        for (i = 0; i < idevices.length; i++) {
-                            model.append({
-                                       "text": idevices[i]
+                    var i
+                    for (i = 0; i < idevices.length; i++) {
+                        model.append({
+                            "text": idevices[i]
                                    })
-                        }
+                    }
+                    currentIndex = 0;
+                    qmlbridge.setActiveInputDevice(iDeviceInfoLabel.currentText);
                 }
                 currentIndex: 0
             }
@@ -402,6 +417,8 @@ Rectangle {
                                        "text": odevices[i]
                                    })
                         }
+                    currentIndex = 0;
+                    qmlbridge.setActiveInputDevice(iDeviceInfoLabel.currentText);
                 }
                 currentIndex: 0
             }

@@ -170,9 +170,13 @@ int main(int argc, char **argv)
 
     // Strip the executable name
     if (lastBSlash != std::string::npos)
+    {
         path = path.substr(0, lastBSlash + 1);
+    }
     else if (lastFSlash != std::string::npos)
+    {
         path = path.substr(0, lastFSlash + 1);
+    }
 
     return RUN_ALL_TESTS();
 }

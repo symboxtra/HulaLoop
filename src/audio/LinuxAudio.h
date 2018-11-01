@@ -17,7 +17,6 @@
 #endif
 #define FRAME_TIME 8192
 using namespace std;
-using byte = uint8_t;
 
 class LinuxAudio : public OSAudio {
     private:
