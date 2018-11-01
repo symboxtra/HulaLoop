@@ -43,7 +43,8 @@
 
 /**
  * Create a new ring buffer.
- * The ring buffer's size is determined using maxDuration * sampleRate * channelCount * sizeof(SAMPLE).
+ * The ring buffer's size is determined using the formula:
+ * \code maxDuration * sampleRate * channelCount * sampleSize \endcode
  *
  * @param maxDuration The maximum length in seconds that the ring buffer should be capable of holding.
  */
@@ -148,7 +149,13 @@ int32_t HulaRingBuffer::write(const SAMPLE *data, int32_t maxSamples)
 }
 
 /**
+ * \ingroup memory_management
+ *
  * Destructor for the ring buffer.
+ *
+ * A HulaRingBuffer should only be deleted after is has been
+ * removed from the OSAudio ring buffer list using a call to
+ * Controller::removeBuffer().
  */
 HulaRingBuffer::~HulaRingBuffer()
 {

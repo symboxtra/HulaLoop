@@ -118,6 +118,7 @@ find_package (Qt5 REQUIRED
     Qml
     Quick
     QuickControls2
+    Widgets
 )
 
 set (HL_LIBRARIES
@@ -127,6 +128,7 @@ set (HL_LIBRARIES
     Qt5::Qml
     Qt5::Quick
     Qt5::QuickControls2
+    Qt5::Widgets
 )
 
 
