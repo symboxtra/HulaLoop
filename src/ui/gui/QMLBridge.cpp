@@ -51,6 +51,8 @@ void QMLBridge::record()
 {
     transport->record();
     emit stateChanged();
+    pauseNotPressed=true;
+    getData();
 }
 
 /**
@@ -226,7 +228,7 @@ void QMLBridge::updateVisualizer(QMLBridge *_this){
 
 bool QMLBridge::getPauseState(){
     return(this->pauseNotPressed);
-
+}
 /**
  * Launch the updater process.
  */

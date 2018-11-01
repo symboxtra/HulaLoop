@@ -42,7 +42,7 @@ ApplicationWindow {
             Repeater{
                 id:rectgen
                 model: Math.round(visualize.width / 10)
-                Rectangle { id: testrec; width: window.width/64; border.width: 1; border.color: "black"; transform: Rotation { origin.x: 25; origin.y: 25; angle: 180} }
+                Rectangle { id: testrec; color: "grey"; width: window.width/64; border.width: 1; border.color: "black"; transform: Rotation { origin.x: 25; origin.y: 25; angle: 180} }
             }
         }
     }
@@ -66,7 +66,7 @@ ApplicationWindow {
         onVisData: {
             for(var i =0;i<dataIn.length;i++){
                 rectgen.itemAt(i).height=dataIn[i]*100
-                rectgen.itemAt(i).color=Qt.rgba(dataIn[i]*100,dataIn[i]*100,0)
+                //rectgen.itemAt(i).color=Qt.rgba(dataIn[i]*100,dataIn[i]*100,0)
             }
             canvas.readValues(dataIn)
             canvas.clear()
