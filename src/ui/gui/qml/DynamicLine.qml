@@ -6,11 +6,18 @@ Canvas {
     width: 400; height: 200
     contextType: "2d"
     z:bluerect.z+5
+    function clear(){
+        var ctx=getContext('2d');
+        ctx.reset();
+        canvas.requestPaint();
+    }
+
     function readValues(anArray) {
-        /*for (var i=0; i<anArray.length; i++){
+        for (var i=0; i<anArray.length; i++){
             //console.log("Array item:", anArray[i])
-           var items=anArray;
-        }*/
+           //var items=anArray;
+            //itemarr.items[i]=window.height-anArray[i];
+        }
         itemarr.items=anArray
 
 
@@ -32,12 +39,13 @@ Canvas {
     Path {
 
             id: dline
-            startX: 0; startY: 100
+            startY: 500
 
-            PathCurve { x: 75; y: itemarr.items[0]}
-            PathCurve { x: 200; y: itemarr.items[1] }
-            PathCurve { x: 325; y: itemarr.items[2]}
-            PathCurve { x: 400; y: itemarr.items[3] }
+
+            PathCurve { x: 0; y: 100-itemarr.items[0]}
+            PathCurve { x: 20; y: 100-itemarr.items[1] }
+            PathCurve { x: 40; y: 100-itemarr.items[2]}
+            PathCurve { x: 60; y: 100-itemarr.items[3] }
 
         }
 

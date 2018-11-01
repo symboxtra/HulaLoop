@@ -27,6 +27,7 @@
 QMLBridge::QMLBridge(QObject *parent) : QObject(parent)
 {
     transport = new Transport;
+    rb=transport->getController()->createBuffer(1);
     
 }
 
@@ -187,7 +188,7 @@ void QMLBridge::saveFile(QString dir)
     transport->exportFile(directory);
 }
 void QMLBridge::getData(){
-    rb=transport->getController()->createAndAddBuffer(.5);
+    //rb=transport->getController()->createAndAddBuffer(.5);
     //std::this_thread::sleep_for (std::chrono::seconds(1));
     //cout<<"in get data\n";
     std::thread visThread(&updateVisualizer,this);
@@ -195,16 +196,7 @@ void QMLBridge::getData(){
 
 }
 void QMLBridge::updateVisualizer(QMLBridge *_this){
-    /**CREATE BUFFER
-     * WHILE(1)
-     * READ FROM BUFFER
-     * GET NUM OF BINS
-     * PROCESS THE DATA
-     * UPDATE VISUALIZER
-     * SLEEP
-     * REPEAT
-     */
-    //FOR NOW JUST GIVE RANDOM DATA IN ARRAY
+    _this->transport->getController()->addBuffer(_this->rb);
     int maxSize = 512;
     float * temp = new float[maxSize];
     //cout<<"before the for loop\n";
@@ -258,6 +250,7 @@ void QMLBridge::updateVisualizer(QMLBridge *_this){
         _this->emit visData(heights);
         //std::this_thread::sleep_for (std::chrono::milliseconds(5));
     }
+    _this->transport->getController()->removeBuffer(_this->rb);
    /* vector<qreal> dataFake;
     for(int i=0;i<10;i++){
         dataFake.push_back((qreal) .5);
