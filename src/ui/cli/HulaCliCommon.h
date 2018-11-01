@@ -1,6 +1,7 @@
 #ifndef HULA_CLI_COMMON_H
 #define HULA_CLI_COMMON_H
 
+#include <string>
 #include <vector>
 
 #include <hlaudio/hlaudio.h>
@@ -67,14 +68,31 @@ inline Device * findDevice(Transport *t, const std::string &name, DeviceType typ
     vector<Device *> devices;
     devices = t->getController()->getDevices(type);
 
+    // Check if we got a numeric id
+    // Since we all do this differently,
+    // we'll just use the relative ordering to pick
+    // ids
+    int id = -1;
+    try
+    {
+        id = std::stoi(name, nullptr);
+    }
+    catch (std::invalid_argument &e)
+    {
+        // Wasn't an id
+    }
+
     for (size_t i = 0; i < devices.size(); i++)
     {
-        if (devices[i]->getName() == name)
+        // Check id and name
+        if (i == id || devices[i]->getName() == name)
         {
             device = devices[i];
+            break;
         }
     }
 
+    // Make a copy so that we can delete
     if (device != NULL)
     {
         device = new Device(*device);

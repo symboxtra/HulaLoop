@@ -37,11 +37,11 @@
 
 #define HL_INPUT_SHORT   "i"
 #define HL_INPUT_LONG    "input"
-#define HL_INPUT_ARG1    "device-name"
+#define HL_INPUT_ARG1    "name|id"
 
 #define HL_OUTPUT_SHORT  "o"
 #define HL_OUTPUT_LONG   "output"
-#define HL_OUTPUT_ARG1   "device-name"
+#define HL_OUTPUT_ARG1   "name|id"
 
 #define HL_PRINT_SHORT   "p"
 #define HL_PRINT_LONG    "print"
