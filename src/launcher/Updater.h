@@ -34,6 +34,7 @@ class Updater : public QObject
 
         Q_INVOKABLE void setUpdateHost(QString);
         Q_INVOKABLE bool foundUpdate();
+        void setUpdateAvailable(bool);
         Q_INVOKABLE qint64 getDownloadSize();
         Q_INVOKABLE qint64 getNumBytesDownloaded();
         Q_INVOKABLE bool finishedDownload();

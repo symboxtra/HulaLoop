@@ -53,6 +53,14 @@ bool Updater::foundUpdate()
 }
 
 /**
+ * Sets a bool.
+ */
+void Updater::setUpdateAvailable(bool val)
+{
+    updateAvailable = val;
+}
+
+/**
  * Method to check the size of the download.
  *
  * @return qint64 - The size of the download file
