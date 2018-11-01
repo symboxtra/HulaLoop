@@ -11,6 +11,11 @@
 #include <QNetworkRequest>
 #include <QProcess>
 
+/**
+ * Construct a new instance of the Updater class.
+ *
+ * @param parent Object which Updater should be child of.
+ */
 Updater::Updater(QObject *parent) : QObject(parent)
 {
     manager = new QNetworkAccessManager(this);
@@ -27,31 +32,60 @@ Updater::Updater(QObject *parent) : QObject(parent)
     downloaded = false;
 }
 
+/**
+ * Sets the update host for the Updater
+ *
+ * @param updateHostUrl - String host URL
+ */
 void Updater::setUpdateHost(QString updateHostUrl)
 {
     this->updateHostUrl = updateHostUrl;
 }
 
+/**
+ * Method to check if an update was found.
+ *
+ * @return bool - If an update was found
+ */
 bool Updater::foundUpdate()
 {
     return updateAvailable;
 }
 
+/**
+ * Method to check the size of the download.
+ *
+ * @return qint64 - The size of the download file
+ */
 qint64 Updater::getDownloadSize()
 {
     return downloadSize;
 }
 
+/**
+ * Method to check how many bytes have been downloaded.
+ *
+ * @return qint64 - The number of bytes downloaded
+ */
 qint64 Updater::getNumBytesDownloaded()
 {
     return numBytesDownloaded;
 }
 
+/**
+ * Method to check if the download has finished.
+ *
+ * @return bool - If the download has finished
+ */
 bool Updater::finishedDownload()
 {
     return downloaded;
 }
 
+/**
+ * Creates the network request using the updateHostUrl.
+ * This method blocks until the finished signal is caught.
+ */
 void Updater::checkForUpdate()
 {
 
@@ -64,6 +98,11 @@ void Updater::checkForUpdate()
 
 }
 
+/**
+ * Creates the network request using the downloadHostUrl.
+ * This method writes incrementally to a file in the system's
+ * temporary directory.
+ */
 void Updater::downloadUpdate()
 {
 
@@ -80,6 +119,12 @@ void Updater::downloadUpdate()
 
 }
 
+/**
+ * Parses the network reply based off the GitHub Releases API to check
+ * if an update is available.
+ *
+ * @param reply - NetworkReply that is received by the update check
+ */
 void Updater::updateQueryFinished(QNetworkReply *reply)
 {
 
@@ -146,6 +191,10 @@ void Updater::updateQueryFinished(QNetworkReply *reply)
     reply = nullptr;
 }
 
+/**
+ * This method catches the readyRead signal and writes the number of read
+ * bytes to the file.
+ */
 void Updater::downloadReadyRead()
 {
 
@@ -156,6 +205,10 @@ void Updater::downloadReadyRead()
 
 }
 
+/**
+ * This method catches the finished signal and runs cleanup code to handle
+ * the open file and NetworkReply.
+ */
 void Updater::downloadFinished()
 {
 
@@ -167,6 +220,10 @@ void Updater::downloadFinished()
 
 }
 
+/**
+ * Opens the HulaLoop installer application. This method is called only if
+ * an update was found.
+ */
 void Updater::startHulaLoopInstaller()
 {
 
@@ -179,6 +236,10 @@ void Updater::startHulaLoopInstaller()
 
 }
 
+/**
+ * Opens the HulaLoop application. This method is called only if
+ * no update was found.
+ */
 void Updater::startHulaLoopApp()
 {
 
@@ -191,6 +252,9 @@ void Updater::startHulaLoopApp()
 
 }
 
+/**
+ * Destroys the Updater object.
+ */
 Updater::~Updater()
 {
     delete manager;
