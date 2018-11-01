@@ -226,9 +226,11 @@ void QMLBridge::updateVisualizer(QMLBridge *_this){
 
 }
 
-bool QMLBridge::getPauseState(){
+bool QMLBridge::getPauseState()
+{
     return(this->pauseNotPressed);
 }
+
 /**
  * Launch the updater process.
  */
