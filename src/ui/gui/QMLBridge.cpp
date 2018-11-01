@@ -170,5 +170,5 @@ void QMLBridge::saveFile(QString dir)
  */
 void QMLBridge::cleanTempFiles()
 {
-    transport
+    // transport
 }
