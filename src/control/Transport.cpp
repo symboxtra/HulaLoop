@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include "hlcontrol/internal/Export.h"
+#include "hlcontrol/internal/HulaControlError.h"
 #include "hlcontrol/internal/Transport.h"
 
 /**
@@ -8,7 +10,24 @@
 Transport::Transport()
 {
     controller = new Controller();
+    recorder = new Record(controller);
 }
+
+#ifndef NDEBUG
+/**
+ * ---------------- FOR TESTING/DEBUG BUILDS ONLY -----------------
+ *
+ * A "dry run" is a run in which full application functionality is not
+ * required. This is usually used by unit tests targeting upper-level
+ * modules that don't require the initialization of lower-level modules.
+ *
+ * This constructor is designed for testing purposes and exists only in debug builds.
+ */
+Transport::Transport(bool dryRun)
+{
+    controller = new Controller(dryRun);
+}
+#endif
 
 /**
  * Start and handle the process of recording.
@@ -17,7 +36,16 @@ bool Transport::record()
 {
     std::cout << "Record button clicked!" << std::endl;
     state = RECORDING;
-    return true;
+
+    if(recordState)
+    {
+        recorder->start();
+
+        recordState = false;
+
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -27,7 +55,17 @@ bool Transport::stop()
 {
     std::cout << "Stop button clicked!" << std::endl;
     state = STOPPED;
-    return true;
+
+    if(!recordState)
+    {
+        recorder->stop();
+
+        recordState = false;
+        playbackState = true;
+
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -37,7 +75,15 @@ bool Transport::play()
 {
     std::cout << "Play button clicked!" << std::endl;
     state = PLAYING;
-    return true;
+
+    if(playbackState)
+    {
+        // TODO: Add playback call
+        playbackState = false;
+
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -47,7 +93,24 @@ bool Transport::pause()
 {
     std::cout << "Pause button clicked!" << std::endl;
     state = PAUSED;
-    return true;
+
+    if(!recordState) // Pause record
+    {
+        recorder->stop();
+
+        recordState = true;
+        playbackState = true;
+
+        return true;
+    }
+    else if(!playbackState) // Pause playback
+    {
+        // TODO: Add playback pause call
+        playbackState = true;
+
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -87,9 +150,31 @@ std::string Transport::stateToStr(const TransportState state) const
 }
 
 /**
+ * Get the controller instance
+ *
+ * @return pointer to controller
+ */
+Controller *Transport::getController() const
+{
+    return controller;
+}
+
+void Transport::exportFile(string targetDirectory)
+{
+    Export exp(targetDirectory);
+    // TODO: Make it an actual directory
+    exp.copyData("/tmp/temp.txt");
+}
+
+/**
  * Delete the controller we created
  */
 Transport::~Transport()
 {
-    delete controller;
+    printf("%sTransport destructor called\n", HL_PRINT_PREFIX);
+
+    if (controller)
+    {
+        delete controller;
+    }
 }

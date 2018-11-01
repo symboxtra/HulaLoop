@@ -75,15 +75,14 @@ endforeach ()
 # Set output for libs compiled with --target install
 # Allow override via -DCMAKE_INSTALL_PREFIX=blah
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND CMAKE_BUILD_TYPE MATCHES "Debug")
-    set (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/lib)
-    set (CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/lib) # Should this be here?
+    set (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/lib CACHE PATH "Installation path" FORCE)
+    set (CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/lib CACHE PATH "" FORCE) # Should this be here?
 endif ()
 
 message (STATUS "System Platform: ${CMAKE_SYSTEM_NAME} ${CMAKE_GENERATOR_PLATFORM}")
 message (STATUS "Install Prefix: ${CMAKE_INSTALL_PREFIX}\n")
 
 # Initialize lists
-set (SRC_FILES)
 set (INCLUDE_DIRS)
 set (HL_LIBRARIES)
 
@@ -142,6 +141,7 @@ find_package (Qt5 REQUIRED
     Qml
     Quick
     QuickControls2
+    Widgets
 )
 
 set (HL_LIBRARIES
@@ -151,6 +151,7 @@ set (HL_LIBRARIES
     Qt5::Qml
     Qt5::Quick
     Qt5::QuickControls2
+    Qt5::Widgets
 )
 
 
@@ -164,9 +165,7 @@ if (WIN32 AND 64BIT)
 endif ()
 
 # Build and install portaudio to our build/lib folder
-if (OSX)
-    generate_and_install_lib("${PROJECT_SOURCE_DIR}/src/libs/portaudio" "${HL_EXT_LIB_FLAGS}")
-endif ()
+add_subdirectory (src/libs/portaudio)
 
 # Make sure we can find our Find<package>.cmake files
 list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
@@ -210,11 +209,19 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     include (cmake/Testing.cmake)
 
     # Test that only rely on the audio library
-    create_test("src/test/TestController.cpp" "" -1)
-    #create_test("src/test/TestAudioOutput.cpp" "" -1)
+    create_test ("src/test/TestOSAudio.cpp" "" 3 FALSE)
+    create_test ("src/test/TestHulaRingBuffer.cpp" "" 0.5 TRUE)
+    create_test ("src/test/TestController.cpp" "" -1 TRUE)
+    #create_test ("src/test/TestAudioOutput.cpp" "" -1 TRUE)
+
+    if (OSX)
+        create_test ("src/test/TestOSXAudio.cpp" "" -1 FALSE)
+    elseif (WIN32)
+        create_test ("src/test/TestWindowsAudio.cpp" "" -1 FALSE)
+    endif ()
 
     if (NOT HL_BUILD_ONLY_AUDIO)
-        create_test("src/test/TestCTInterface.cpp" "" -1)
+        create_test ("src/test/TestTransport.cpp" "" -1 TRUE)
     endif ()
 
 endif ()

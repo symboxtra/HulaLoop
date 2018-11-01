@@ -21,6 +21,8 @@ class QMLBridge : public QObject {
     public:
         explicit QMLBridge(QObject *parent = nullptr);
 
+        Q_INVOKABLE void setActiveInputDevice(QString QDeviceName);
+        Q_INVOKABLE void setActiveOutputDevice(QString QDeviceName);
         Q_INVOKABLE QString getInputDevices();
         Q_INVOKABLE QString getOutputDevices();
 
@@ -29,6 +31,8 @@ class QMLBridge : public QObject {
         Q_INVOKABLE void stop();
         Q_INVOKABLE void play();
         Q_INVOKABLE void pause();
+
+        Q_INVOKABLE void saveFile(QString dir);
 
     signals:
 

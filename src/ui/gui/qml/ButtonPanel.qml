@@ -1,8 +1,9 @@
 import QtQuick 2.10
 import QtQuick.Layouts 1.3
-
+import QtQuick.Dialogs 1.0
 import QtQuick.Controls 2.3
-
+import QtQuick.Window 2.0
+import Qt.labs.platform 1.0
 import "../fonts/Icon.js" as MDFont
 
 Rectangle {
@@ -90,14 +91,30 @@ Rectangle {
                 }
 
                 onClicked: {
-                    // Add JavaScript for delay timer
-                    qmlbridge.record()
+
+                    let success = qmlbridge.record()
+
+                    if(qmlbridge.getTransportState() === "Recording") // TODO: Check record call success
+                    {
+                        // Update stop button
+                        stopBtn.enabled = true;
+
+                        // Update play/pause button
+                        playpauseBtn.enabled = true;
+                        playpauseBtn.contentItem.text = MDFont.Icon.pause;
+                        playpauseBtn.contentItem.color = "white";
+
+                        // Update self
+                        enabled = false;
+                    }
                 }
             }
 
             RoundButton {
                 id: stopBtn
                 objectName: "stopBtn"
+                enabled: false
+                property bool isStopped: false
 
                 display: AbstractButton.TextOnly
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
@@ -119,47 +136,34 @@ Rectangle {
                 }
 
                 onClicked: {
-                    // Add JavaScript for recording time
-                    qmlbridge.stop()
+                    let success = qmlbridge.stop()
+
+                    if(qmlbridge.getTransportState() === "Stopped")
+                    {
+                        enabled = false;
+
+                        recordBtn.enabled = false;
+                        isStopped = true;
+
+                        playpauseBtn.enabled = true;
+                        playpauseBtn.contentItem.text = MDFont.Icon.play;
+                        playpauseBtn.contentItem.color = "green";
+
+                        exportBtn.enabled = true;
+                    }
                 }
             }
 
             RoundButton {
-                id: playBtn
-                objectName: "playBtn"
-
-                display: AbstractButton.TextOnly
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-
-                contentItem: Text {
-                    font.family: "Material Design Icons"
-                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                    text: MDFont.Icon.play
-                    color: "green"
-
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                }
-
-                background: Rectangle {
-                    opacity: enabled ? 1 : 0.15
-                    color: playBtn.pressed ? "grey" : "darkgrey"
-                    radius: playBtn.width / 2
-                }
-
-                onClicked: {
-                    qmlbridge.play()
-                }
-            }
-
-            RoundButton {
-                id: pauseBtn
-                objectName: "pauseBtn"
+                id: playpauseBtn
+                objectName: "playpauseBtn"
+                enabled: false
 
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 display: AbstractButton.TextOnly
 
                 contentItem: Text {
+                    objectName: "play_icon"
                     font.family: "Material Design Icons"
                     font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                     text: MDFont.Icon.pause
@@ -171,12 +175,44 @@ Rectangle {
 
                 background: Rectangle {
                     opacity: enabled ? 1 : 0.15
-                    color: pauseBtn.pressed ? "grey" : "darkgrey"
-                    radius: pauseBtn.width / 2
+                    color: playpauseBtn.pressed ? "grey" : "darkgrey"
+                    radius: playpauseBtn.width / 2
                 }
 
                 onClicked: {
-                    qmlbridge.pause()
+
+                    let success;
+
+                    if(contentItem.text == MDFont.Icon.pause)
+                    {
+                        success = qmlbridge.pause();
+
+                        if(qmlbridge.getTransportState() === "Paused")
+                        {
+                            contentItem.text = MDFont.Icon.play;
+                            contentItem.color = "green";
+
+                            if(!stopBtn.isStopped)
+                            {
+                                stopBtn.enabled = true;
+                                recordBtn.enabled = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        success = qmlbridge.play();
+
+                        if(qmlbridge.getTransportState() === "Playing")
+                        {
+                            contentItem.text = MDFont.Icon.pause;
+                            contentItem.color = "white";
+
+                            stopBtn.enabled = false; // TODO: Determine final state of playback button
+                            recordBtn.enabled = false;
+                        }
+                    }
+
                 }
             }
 
@@ -204,6 +240,46 @@ Rectangle {
                 }
 
                 onClicked: timerPopup.open()
+            }
+
+            RoundButton {
+                id: exportBtn
+                objectName: "exportBtn"
+                enabled: false
+
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                display: AbstractButton.TextOnly
+
+                contentItem: Text {
+                    font.family: "Material Design Icons"
+                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                    text: MDFont.Icon.export
+                    color: "white"
+                    //transform: Rotation {angle: 270}
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                background: Rectangle {
+                    opacity: enabled ? 1 : 0.15
+                    color: exportBtn.pressed ? "grey" : "darkgrey"
+                    radius: exportBtn.width / 2
+                }
+
+                onClicked:saveDialog.open()
+            }
+
+        }
+        FileDialog {
+            id: saveDialog
+            objectName: "saveDialog"
+            fileMode: FileDialog.SaveFile
+            nameFilters: saveDialog.nameFilters
+            folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+            onAccepted: {
+                qmlbridge.saveFile(saveDialog.currentFile);
+//                console.log(saveDialog.fileUrl.toString());
             }
         }
 
@@ -275,6 +351,18 @@ Rectangle {
                 }
                 onActivated: {
                     console.log("Audio device has been changed to: " + iDeviceInfoLabel.currentText);
+                    qmlbridge.setActiveInputDevice(iDeviceInfoLabel.currentText);
+                }
+
+                onPressedChanged: {
+                    model.clear();
+                    var idevices = qmlbridge.getInputDevices().split(',')
+                        var i
+                        for (i = 0; i < idevices.length; i++) {
+                            model.append({
+                                       "text": idevices[i]
+                                   })
+                        }
                 }
                 currentIndex: 0
             }
@@ -302,6 +390,18 @@ Rectangle {
                 }
                 onActivated: {
                     console.log("Audio device has been changed to: " + oDeviceInfoLabel.currentText);
+                    qmlbridge.setActiveOutputDevice(oDeviceInfoLabel.currentText);
+                }
+
+                onPressedChanged: {
+                    model.clear();
+                    var odevices = qmlbridge.getOutputDevices().split(',')
+                        var i
+                        for (i = 0; i < odevices.length; i++) {
+                            model.append({
+                                       "text": odevices[i]
+                                   })
+                        }
                 }
                 currentIndex: 0
             }

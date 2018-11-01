@@ -2,12 +2,13 @@
 #define OS_AUDIO
 
 // System
+#include <atomic>
 #include <cstdlib>
 #include <thread>
 #include <vector>
 
 #include "Device.h"
-#include "ICallback.h"
+#include "HulaRingBuffer.h"
 
 using namespace std;
 
@@ -17,7 +18,19 @@ using namespace std;
  * specfic classes.
  */
 class OSAudio {
+    private:
+        void joinAndKillThreads(vector<thread> &threads);
+
     protected:
+
+        /**
+         * Constructor is protected since this class is abstract.
+         */
+        OSAudio()
+        {
+            this->activeInputDevice = NULL;
+            this->activeOutputDevice = NULL;
+        };
 
         /**
          * The selected input device
@@ -30,15 +43,33 @@ class OSAudio {
         Device *activeOutputDevice;
 
         /**
-         * List of all added callback function
+         * List of all added ring buffers.
+         * Data received from the operating system is copied into each of these buffers.
          */
-        vector<ICallback *> callbackList;
+        vector<HulaRingBuffer *> rbs;
 
         /**
-         * List of all running threads
+         * Thread for input device activities.
          */
-        vector<thread> execThreads;
+        vector<thread> inThreads;
 
+        /**
+         * Thread for output device activities.
+         */
+        vector<thread> outThreads;
+
+        /**
+         * Flag to syncronize the capture thread for an instance.
+         * This is used to break the capture loop when switching devices
+         * or when 0 buffers are present.
+         *
+         * Should never be set directly. Only by setActiveXXXDevice().
+         */
+        atomic<bool> endCapture;
+
+        /**
+         * Desired capture buffer size
+         */
         uint32_t captureBufferSize;
 
     public:
@@ -46,32 +77,32 @@ class OSAudio {
 
         void setBufferSize(uint32_t size);
 
-        void addBufferReadyCallback(ICallback *c);
-        void removeBufferReadyCallback(ICallback *func);
+        void addBuffer(HulaRingBuffer *rb);
+        void removeBuffer(HulaRingBuffer *rb);
+        void copyToBuffers(const void *data, uint32_t bytes);
 
         /**
-         * Receive the list of available output audio devices connected to the OS
-         * and return them as Device instances
+         * Receive the list of available record, playback and/or loopback audio devices
+         * connected to the OS and return them as Device instances
          *
-         * @return vector of Device instances
+         * @param type DeviceType that is combination from the DeviceType enum
+         * @return vector<Device*> A list of Device instances that carry the necessary device information
          */
-        virtual vector<Device *> getInputDevices() = 0;
-
-        /**
-         * Set the selected output device and restart capture threads with
-         * new device
-         *
-         * @param device Instance of Device that corresponds to the desired system device
-         */
-        virtual vector<Device *> getOutputDevices() = 0;
+        virtual vector<Device *> getDevices(DeviceType type) = 0;
 
         /**
          * Execution loop for loopback capture
          */
         virtual void capture() = 0;
+        static void backgroundCapture(OSAudio *_this);
 
-        void setActiveRecordDevice(Device *device); //TODO: Make virtual or maybe remove if can combine into one function
-        virtual void setActiveOutputDevice(Device *device) = 0;
+        /**
+         * Verify the bit rate of set rate with the hardware device compatibility
+         */
+        virtual bool checkRates(Device *device) = 0;
+
+        void setActiveInputDevice(Device *device);
+        void setActiveOutputDevice(Device *device);
 };
 
 #endif

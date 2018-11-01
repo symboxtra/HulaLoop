@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -11,6 +12,12 @@ enum DeviceType
     RECORD = 1,
     PLAYBACK = 2,
     LOOPBACK = 4
+};
+
+union DeviceID
+{
+    string linuxID;
+    uint32_t *windowsID;
 };
 
 /**
@@ -29,13 +36,12 @@ class Device {
         ~Device();
 
         uint32_t *getID();
-        void setID(uint32_t *id);
 
         string getName();
-        void setName(string name);
 
         DeviceType getType();
-        void setType(DeviceType t);
+
+        static void deleteDevices(vector<Device *> devices);
 };
 
 #endif
