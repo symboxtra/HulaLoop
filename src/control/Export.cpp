@@ -10,7 +10,7 @@
  *
  * @param The target directory of the file
  */
-Export::Export(string targetDirectory)
+Export::Export(std::string targetDirectory)
 {
     this->targetDirectory = targetDirectory;
 }
@@ -30,15 +30,9 @@ std::string Export::getTempPath()
  *
  * @param The input file directory to copy from
  */
-void Export::copyData(string inputFileDirectory)
+void Export::copyData(vector<std::string> dirs)
 {
-    // opens the files
-    ifstream iFile(inputFileDirectory, ios::binary);
-    if (iFile.fail())
-    {
-        // TODO: Handle error
-        cerr << "Error opening file: " << inputFileDirectory << endl;
-    }
+    // Open target file
     ofstream oFile(this->targetDirectory, ios::binary);
     if (oFile.fail())
     {
@@ -46,12 +40,25 @@ void Export::copyData(string inputFileDirectory)
         cerr << "Error opening file: " << this->targetDirectory << endl;
     }
 
-    // copies the file
-    oFile << iFile.rdbuf();
+    cout << "Size: " << dirs.size() << endl;
 
-    // close the file
+    for(int i = 0;i < dirs.size();i++)
+    {
+        // opens the files
+        ifstream iFile(dirs[i].c_str(), ios::binary);
+        if (iFile.fail())
+        {
+            // TODO: Handle error
+            cerr << "Error opening file: " << dirs[i] << endl;
+        }
+        // Copies the file
+        oFile << iFile.rdbuf();
+
+        // Close the file
+        iFile.close();
+    }
+
     oFile.close();
-    iFile.close();
 }
 
 /**

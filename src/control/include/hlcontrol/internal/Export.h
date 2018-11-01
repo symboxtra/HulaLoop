@@ -4,15 +4,13 @@
 #include <hlaudio/hlaudio.h>
 #include <string>
 
-using namespace std;
-
 class Export {
     private:
-        string targetDirectory;
+        std::string targetDirectory;
 
     public:
-        Export(string targetDirectory);
-        void copyData(string inputFileDirectory);
+        Export(std::string targetDirectory);
+        void copyData(vector<std::string> dirs);
 
         static std::string getTempPath();
 

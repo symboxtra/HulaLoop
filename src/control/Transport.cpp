@@ -11,15 +11,7 @@
 Transport::Transport()
 {
     controller = new Controller();
-
-    // TODO: Make the temp path dynamic so that we can congregate the files later (Only exists for demo)
-    char timestamp[20];
-    time_t now = time(0);
-    strftime(timestamp, 20, "%Y%m%d_%H%M%S", localtime(&now));
-    tempPath = Export::getTempPath() + "/hulaloop_" + std::string(timestamp);
-    recorder = new Record(controller, tempPath);
-
-
+    recorder = new Record(controller);
 }
 
 #ifndef NDEBUG
@@ -35,13 +27,7 @@ Transport::Transport()
 Transport::Transport(bool dryRun)
 {
     controller = new Controller(dryRun);
-
-    // TODO: Make the temp path dynamic so that we can congregate the files later
-    char timestamp[20];
-    time_t now = time(0);
-    strftime(timestamp, 20, "%Y%m%d_%H%M%S", localtime(&now));
-    tempPath = Export::getTempPath() + "/hulaloop_" + std::string(timestamp);
-    recorder = new Record(controller, tempPath);
+    recorder = new Record(controller);
 
     recordState = true;
     playbackState = false;
@@ -181,11 +167,13 @@ Controller *Transport::getController() const
 void Transport::exportFile(string targetDirectory)
 {
     Export exp(targetDirectory);
-    // TODO: Make it an actual directory
+    // TODO: Remove harcoded path (Only for demo)
     #if WIN32
-        exp.copyData("C:\\Users\\patel\\AppData\\Local\\Temp\\hulaloop_temp.wav");
+        vector<std::string> temp;
+        temp.push_back("C:\\Users\\patel\\AppData\\Local\\Temp\\hulaloop_temp.wav");
+        exp.copyData(temp);
     #else
-        exp.copyData(tempPath);
+        exp.copyData(recorder->getExportPaths());
     #endif
 }
 

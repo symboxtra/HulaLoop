@@ -5,19 +5,16 @@
 #include <fstream>
 #include <sndfile.h>
 
-Record::Record(Controller *control, std::string path)
+Record::Record(Controller *control)
 {
     this->controller = control;
     this->rb = NULL;
-    this->tempDirPath = path;
 }
 
 void Record::start()
 {
     if (this->rb == NULL)
-    {
-        this->rb = this->controller->createAndAddBuffer(0.5);
-    }
+        this->rb = this->controller->createBuffer(0.5);
 
     this->endRecord.store(false);
     recordThread = thread(&Record::recorder, this);
@@ -28,26 +25,34 @@ void Record::recorder()
     uint32_t samplesRead;
     float buffer[512];
 
+    // Initialize libsndfile info.
     SF_INFO sfinfo;
     sfinfo.samplerate = SAMPLE_RATE;
     sfinfo.channels = NUM_CHANNELS;
     sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
 
-    // Open the file write-only
-    std::string file_path2 = Export::getTempPath() + "/time_stamped2.wav";
-    SNDFILE *file = sf_open(this->tempDirPath.c_str(), SFM_WRITE, &sfinfo);
+    // Create a timestamped file name
+    char timestamp[20];
+    time_t now = time(0);
+    strftime(timestamp, 20, "%Y-%m-%d_%H-%M-%S", localtime(&now));
+    std::string file_path = Export::getTempPath() + "/hulaloop_" + std::string(timestamp);
+    SNDFILE *file = sf_open(file_path.c_str(), SFM_WRITE, &sfinfo);
 
-    FILE *fd = fopen(file_path2.c_str(), "w");
+    // Add file_path to vector of files
+    exportPaths.push_back(file_path);
 
+    // Add ringbuffer to buffer list
+    this->controller->addBuffer(this->rb);
+
+    // Keep recording until recording is stopped
     while (!this->endRecord.load())
     {
         samplesRead = this->rb->read(buffer, 512);
 
         if (samplesRead > 0)
         {
-            printf("Address of read data: %p\n", buffer);
-
             printf("Samples read: %d\n", samplesRead);
+
             sf_count_t error = sf_writef_float(file, buffer, samplesRead / NUM_CHANNELS);
             if (error != samplesRead / NUM_CHANNELS)
             {
@@ -57,12 +62,10 @@ void Record::recorder()
                 fprintf(stderr, "%sWe done goofed...", HL_ERROR_PREFIX);
                 exit(1);
             }
-            fwrite(buffer, sizeof(float), samplesRead, fd);
         }
     }
-    fclose(fd);
-    //myfile.close();
     sf_close(file);
+    this->controller->removeBuffer(this->rb);
 }
 
 void Record::stop()
@@ -70,11 +73,15 @@ void Record::stop()
     this->endRecord.store(true);
 
     if (recordThread.joinable())
-    {
         recordThread.join();
-    }
+}
 
-    this->controller->removeBuffer(this->rb);
+vector<std::string> Record::getExportPaths()
+{
+    vector<std::string> path_copy = exportPaths;
+    exportPaths.clear();
+
+    return path_copy;
 }
 
 Record::~Record()

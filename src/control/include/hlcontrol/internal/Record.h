@@ -17,13 +17,15 @@ class Record {
 
         atomic<bool> endRecord;
 
-        std::string tempDirPath;
+        vector<std::string> exportPaths;
 
     public:
-        Record(Controller *control, std::string path);
+        Record(Controller *control);
         ~Record();
 
         void recorder();
+
+        vector<std::string> getExportPaths();
 
         void start();
         void stop();
