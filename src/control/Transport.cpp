@@ -182,7 +182,11 @@ void Transport::exportFile(string targetDirectory)
 {
     Export exp(targetDirectory);
     // TODO: Make it an actual directory
-    exp.copyData(tempPath);
+    #if WIN32
+        exp.copyData("C:\\Users\\patel\\AppData\\Local\\Temp\\hulaloop_temp.wav");
+    #else
+        exp.copyData(tempPath);
+    #endif
 }
 
 /**
