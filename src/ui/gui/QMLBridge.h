@@ -34,6 +34,8 @@ class QMLBridge : public QObject {
 
         Q_INVOKABLE void saveFile(QString dir);
 
+        Q_INVOKABLE void launchUpdateProcess();
+
     signals:
 
         /**

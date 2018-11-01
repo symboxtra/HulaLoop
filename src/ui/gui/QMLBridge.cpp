@@ -1,6 +1,9 @@
 #include "QMLBridge.h"
 
+#include <QCoreApplication>
+#include <QProcess>
 #include <QUrl>
+
 #include <string>
 
 /**
@@ -157,4 +160,24 @@ void QMLBridge::saveFile(QString dir)
     QUrl url(dir);
     string directory = url.path().toStdString();
     transport->exportFile(directory);
+}
+
+/**
+ * Launch the updater process.
+ */
+void QMLBridge::launchUpdateProcess()
+{
+
+    QProcess *proc = new QProcess(this);
+
+    QString procName = QCoreApplication::applicationDirPath() + "/hulaloop-launcher";
+    QStringList args;
+    args << "silent";
+
+    proc->setProgram(procName);
+    proc->setArguments(args);
+
+    proc->start(procName, args);
+    proc->waitForFinished();
+
 }
