@@ -110,6 +110,8 @@ void Updater::updateQueryFinished(QNetworkReply *reply)
     else
         return;
 
+    // updateAvailable = false;
+
     if(updateAvailable)
     {
 

@@ -1,14 +1,9 @@
-<<<<<<< Updated upstream
-=======
-#include <QCoreApplication>
-#include <QProcess>
-
-#include <string>
-
->>>>>>> Stashed changes
 #include "QMLBridge.h"
 
+#include <QCoreApplication>
+#include <QProcess>
 #include <QUrl>
+
 #include <string>
 
 /**
@@ -173,12 +168,16 @@ void QMLBridge::saveFile(QString dir)
 void QMLBridge::launchUpdateProcess()
 {
 
-    QProcess proc;
+    QProcess *proc = new QProcess(this);
+
     QString procName = QCoreApplication::applicationDirPath() + "/hulaloop-launcher";
     QStringList args;
+    args << "silent";
 
-    proc.start(procName, args);
-    // if(proc.startDetached())
-    //     exit(0);
+    proc->setProgram(procName);
+    proc->setArguments(args);
+
+    proc->start(procName, args);
+    proc->waitForFinished();
 
 }

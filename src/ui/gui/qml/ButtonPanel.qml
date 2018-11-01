@@ -270,18 +270,6 @@ Rectangle {
                 onClicked:saveDialog.open()
             }
 
-        }
-        FileDialog {
-            id: saveDialog
-            objectName: "saveDialog"
-            fileMode: FileDialog.SaveFile
-            nameFilters: saveDialog.nameFilters
-            folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
-            onAccepted: {
-                qmlbridge.saveFile(saveDialog.currentFile);
-//                console.log(saveDialog.fileUrl.toString());
-            }
-
             RoundButton {
                 id: checkUpdateBtn
                 objectName: "checkUpdateBtn"
@@ -306,6 +294,18 @@ Rectangle {
                 }
 
                 onClicked: qmlbridge.launchUpdateProcess()
+            }
+
+        }
+        FileDialog {
+            id: saveDialog
+            objectName: "saveDialog"
+            fileMode: FileDialog.SaveFile
+            nameFilters: saveDialog.nameFilters
+            folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+            onAccepted: {
+                qmlbridge.saveFile(saveDialog.currentFile);
+//                console.log(saveDialog.fileUrl.toString());
             }
         }
 
