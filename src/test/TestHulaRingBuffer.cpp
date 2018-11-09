@@ -15,7 +15,8 @@ bool verifySamples(SAMPLE *samples, int numSamples)
 {
     for (int i = 0; i < numSamples; i++)
     {
-        if (memcmp(samples + i, &sampleData, sizeof(SAMPLE)))
+        SAMPLE val = sampleData * i;
+        if (memcmp(samples + i, &val, sizeof(SAMPLE)))
         {
             return false;
         }
@@ -33,7 +34,7 @@ bool verifySamples(SAMPLE *samples, int numSamples)
  *
  * @return Array of TEST_NUM_SAMPLES samples.
  */
-SAMPLE *createTestSamples()
+SAMPLE * createTestSamples()
 {
     // This needs to change when we un-define SAMPLE
     // Assume 32-bit float is biggest sample
@@ -42,8 +43,8 @@ SAMPLE *createTestSamples()
 
     for (int i = 0; i < TEST_NUM_SAMPLES; i++)
     {
-        // Copy the same data to each sample
-        memcpy(samples + i, &sampleData, sizeof(SAMPLE));
+        SAMPLE val = sampleData * i;
+        memcpy(samples + i, &val, sizeof(SAMPLE));
     }
 
     if (!verifySamples(samples, TEST_NUM_SAMPLES))
