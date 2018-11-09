@@ -7,7 +7,8 @@
 #include <hlaudio/hlaudio.h>
 #include <hlcontrol/hlcontrol.h>
 
-#define HL_VERSION_STR "0.0.0"
+#include <HulaVersion.h>
+
 #define HL_ASCII_HEADER "\n" \
     "   _    _       _       _\n" \
     "  | |  | |     | |     | |\n" \

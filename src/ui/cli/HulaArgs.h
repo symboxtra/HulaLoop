@@ -10,23 +10,33 @@
 #include "HulaCliCommon.h"
 
 /**
- * Define the long opt strings
+ * Define the short opt and long opt strings
  * These are used in multiple places, so defining
  * will make them easier to replace
  */
+#define HL_OUT_FILE_SO        "f"
 #define HL_OUT_FILE_LO        "out-file"
+#define HL_DELAY_TIME_SO      "d"
 #define HL_DELAY_TIME_LO      "delay"
+#define HL_RECORD_TIME_SO     "t"
 #define HL_RECORD_TIME_LO     "time"
+#define HL_TRIGGER_RECORD_SO  "r"
 #define HL_TRIGGER_RECORD_LO  "record"
+#define HL_SAMPLE_RATE_SO     "s"
 #define HL_SAMPLE_RATE_LO     "sample-rate"
+#define HL_ENCODING_SO        "e"
 #define HL_ENCODING_LO        "encoding"
+#define HL_INPUT_DEVICE_SO    "i"
 #define HL_INPUT_DEVICE_LO    "input-device"
+#define HL_OUTPUT_DEVICE_SO   "o"
 #define HL_OUTPUT_DEVICE_LO   "output-device"
+#define HL_LIST_DEVICES_SO    "l"
 #define HL_LIST_DEVICES_LO    "list"
 
 typedef struct HulaImmediateArgs
 {
     bool startRecord = false;
+    bool exit = false;
 } HulaImmediateArgs;
 
 /**
@@ -36,20 +46,21 @@ typedef struct HulaImmediateArgs
  */
 void invalidArg(std::string name, QString arg, std::string message = "")
 {
-    fprintf(stderr, "Invalid argument '%s' provided to option '%s'\n", arg.toStdString().c_str(), name.c_str());
+    fprintf(stderr, "Invalid argument '%s' provided to option '%s'.\n", arg.toStdString().c_str(), name.c_str());
     if (message.size() > 0)
     {
         fprintf(stderr, "%s\n", message.c_str());
     }
-
-    exit(1);
 }
 
 /**
  * Parse the command line arguments using the Qt parser.
  *
+ * @param app Reference QtApplication associated with parse
+ * @param extraArgs Reference to extraArgs struct where values will be updated
+ * @return bool True if parse was successful. False otherwise
  */
-HulaSettings * parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
+bool parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
 {
     QCommandLineParser parser;
     parser.setApplicationDescription("Simple cross-platform audio loopback and recording.");
@@ -58,16 +69,16 @@ HulaSettings * parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
     parser.addVersionOption();
 
     parser.addOptions({
-        {{"f", HL_OUT_FILE_LO}, QCoreApplication::translate("main", "Path to audio output file."), QCoreApplication::translate("main", "out-file-path")},
-        {{"d", HL_DELAY_TIME_LO}, QCoreApplication::translate("main", "Duration, in seconds, of the countdown timer before record."), QCoreApplication::translate("main", "delay")},
-        {{"t", HL_RECORD_TIME_LO}, QCoreApplication::translate("main", "Duration, in seconds, of the record."), QCoreApplication::translate("main", "record duration")},
-        {{"r", HL_TRIGGER_RECORD_LO}, QCoreApplication::translate("main", "Start the countdown/record immediately.")},
-        {{"s", HL_SAMPLE_RATE_LO}, QCoreApplication::translate("main", "Desired sample rate of the output file."), QCoreApplication::translate("main", "sample rate")},
+        {{HL_OUT_FILE_SO, HL_OUT_FILE_LO}, QCoreApplication::translate("main", "Path to audio output file."), QCoreApplication::translate("main", "out-file-path")},
+        {{HL_DELAY_TIME_SO, HL_DELAY_TIME_LO}, QCoreApplication::translate("main", "Duration, in seconds, of the countdown timer before record."), QCoreApplication::translate("main", "delay")},
+        {{HL_RECORD_TIME_SO, HL_RECORD_TIME_LO}, QCoreApplication::translate("main", "Duration, in seconds, of the record."), QCoreApplication::translate("main", "record duration")},
+        {{HL_TRIGGER_RECORD_SO, HL_TRIGGER_RECORD_LO}, QCoreApplication::translate("main", "Start the countdown/record immediately.")},
+        {{HL_SAMPLE_RATE_SO, HL_SAMPLE_RATE_LO}, QCoreApplication::translate("main", "Desired sample rate of the output file."), QCoreApplication::translate("main", "sample rate")},
         //{{"b", "bit-depth"}, QCoreApplication::translate("main", "Sample format for the output file. Valid options are 8, 8u, 16, 16u, 32, 32u, 32f. This will default to 32f.")},
-        {{"e", HL_ENCODING_LO}, QCoreApplication::translate("main", "Encoding format for the output file. Valid options are WAV and MP3. This will default to WAV."), QCoreApplication::translate("main", "encoding")},
-        {{"i", HL_INPUT_DEVICE_LO}, QCoreApplication::translate("main", "System name of the input device. This will default if not provided."), QCoreApplication::translate("main", "input-device-name")},
-        {{"o", HL_OUTPUT_DEVICE_LO}, QCoreApplication::translate("main", "System name of the output device. This will default if not provided."), QCoreApplication::translate("main", "output-device-name")},
-        {{"l", HL_LIST_DEVICES_LO}, QCoreApplication::translate("main", "List available input and output devices.")}
+        {{HL_ENCODING_SO, HL_ENCODING_LO}, QCoreApplication::translate("main", "Encoding format for the output file. Valid options are WAV and MP3. This will default to WAV."), QCoreApplication::translate("main", "encoding")},
+        {{HL_INPUT_DEVICE_SO, HL_INPUT_DEVICE_LO}, QCoreApplication::translate("main", "System name of the input device. This will default if not provided."), QCoreApplication::translate("main", "input-device-name")},
+        {{HL_OUTPUT_DEVICE_SO, HL_OUTPUT_DEVICE_LO}, QCoreApplication::translate("main", "System name of the output device. This will default if not provided."), QCoreApplication::translate("main", "output-device-name")},
+        {{HL_LIST_DEVICES_SO, HL_LIST_DEVICES_LO}, QCoreApplication::translate("main", "List available input and output devices.")}
 
         // -d --delay  Countdown timer before record.
         // -l --length Record duration.
@@ -95,7 +106,8 @@ HulaSettings * parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
         double delay = parser.value(HL_DELAY_TIME_LO).toDouble(&ok);
         if (!ok)
         {
-            invalidArg(HL_DELAY_TIME_LO, parser.value("out-file"));
+            invalidArg(HL_DELAY_TIME_LO, parser.value(HL_DELAY_TIME_LO));
+            return false;
         }
         settings->setDelayTimer(delay);
     }
@@ -107,6 +119,7 @@ HulaSettings * parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
         if (!ok)
         {
             invalidArg(HL_RECORD_TIME_LO, parser.value(HL_RECORD_TIME_LO));
+            return false;
         }
         settings->setRecordDuration(time);
     }
@@ -123,6 +136,7 @@ HulaSettings * parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
         if (!ok)
         {
             invalidArg(HL_SAMPLE_RATE_LO, parser.value(HL_SAMPLE_RATE_LO));
+            return false;
         }
         settings->setSampleRate(rate);
     }
@@ -137,6 +151,7 @@ HulaSettings * parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
         else
         {
             invalidArg(HL_ENCODING_LO, parser.value(HL_ENCODING_LO), "Only WAV format is supported at this time.");
+            return false;
         }
     }
 
@@ -161,10 +176,10 @@ HulaSettings * parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
         printf("\n-------- Device List --------\n");
         printDeviceList(&t);
 
-        exit(0);
+        extraArgs.exit = true;
     }
 
-    return settings;
+    return true;
 }
 
 #endif // END HULA_ARGS_H
