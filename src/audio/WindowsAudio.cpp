@@ -79,7 +79,7 @@ std::vector<Device*> WindowsAudio::getDevices(DeviceType type)
             HANDLE_ERROR(status);
 
             // Convert wide-char string to std::string
-            wstring fun(varName.pwszVal);
+            std::wstring fun(varName.pwszVal);
             std::string str(fun.begin(), fun.end());
 
             // Create instance of Device using acquired data
@@ -124,11 +124,11 @@ std::vector<Device*> WindowsAudio::getDevices(DeviceType type)
 
                 // Print some debug device info for now
             // TODO: Remove
-            cout << "Device #" << i + 1 << ": " << deviceInfo->name << std::endl;
-            cout << "Input Channels: " << deviceInfo->maxInputChannels << std::endl;
-            cout << "Output Channels: " << deviceInfo->maxOutputChannels << std::endl;
-            cout << "Default Sample Rate: " << deviceInfo->defaultSampleRate << std::endl;
-            cout << std::endl;
+            std::cout << "Device #" << i + 1 << ": " << deviceInfo->name << std::endl;
+            std::cout << "Input Channels: " << deviceInfo->maxInputChannels << std::endl;
+            std::cout << "Output Channels: " << deviceInfo->maxOutputChannels << std::endl;
+            std::cout << "Default Sample Rate: " << deviceInfo->defaultSampleRate << std::endl;
+            std::cout << std::endl;
             }
         }
 
@@ -174,7 +174,7 @@ void WindowsAudio::setActiveOutputDevice(Device *device)
  */
 void WindowsAudio::capture()
 {
-    cout << "In Capture Mode" << std::endl; // TODO: Remove this later
+    std::cout << "In Capture Mode" << std::endl; // TODO: Remove this later
 
     // Instantiate clients and services for audio capture
     IAudioCaptureClient *captureClient = NULL;
@@ -200,7 +200,7 @@ void WindowsAudio::capture()
     status = pEnumerator->GetDevice(reinterpret_cast<LPCWSTR>(activeInputDevice->getID()), &audioDevice);
     // status = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &audioDevice);
     HANDLE_ERROR(status);
-    cout << "Selected Device: " << activeInputDevice->getName() << std::endl; // TODO: Remove this later
+    std::cout << "Selected Device: " << activeInputDevice->getName() << std::endl; // TODO: Remove this later
 
     // Activate the IMMDevice
     status = audioDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void **)&audioClient);
