@@ -59,4 +59,18 @@ ApplicationWindow {
         text: qmlbridge.getTransportState()
     }
 
+    onClosing: {
+        // This gets called when the user presses the exit btn
+        var hasUnsavedFiles = qmlbridge.checkIfUnsavedFiles();
+        if(hasUnsavedFiles)
+        {
+            // user has unsaved files, prompt to ask if they are sure they want to exit
+            close.accepted = false;
+        }
+        else
+        {
+            // user has no unsaved files, just exit
+
+        }
+    }
 }

@@ -165,6 +165,16 @@ void QMLBridge::saveFile(QString dir)
 }
 
 /**
+ * Get if the user has unsaved files
+ *
+ * @return true if the user has unsaved files
+ */
+bool QMLBridge::checkIfUnsavedFiles()
+{
+
+}
+
+/**
  * Launch the updater process.
  */
 void QMLBridge::launchUpdateProcess()
