@@ -9,23 +9,12 @@
 #define LONG_OPT "--"
 #define SHORT_OPT "-"
 
-#define DO_PARSE()                                 \
-    TestCLIArgs t(args);                           \
-    bool success = t.parse();                      \
-    HulaSettings *s = HulaSettings::getInstance(); \
-
-#define OPT_TEST_NO_ARG(name)                      \
-    std::vector<std::string> args;                 \
-    args.push_back(name);                          \
-                                                   \
-    DO_PARSE();                                    \
-
-#define OPT_TEST(name, arg)                        \
-    std::vector<std::string> args;                 \
-    args.push_back(name);                          \
-    args.push_back(arg);                           \
-                                                   \
-    DO_PARSE();                                    \
+#define OPT_TEST(name, ...)                           \
+    std::vector<std::string> args{name, __VA_ARGS__}; \
+                                                      \
+    TestCLIArgs t(args);                              \
+    bool success = t.parse();                         \
+    HulaSettings *s = HulaSettings::getInstance();    \
 
 
 class TestCLIArgs {
@@ -224,7 +213,7 @@ TEST(TestCLIArgs, NAN_arg_long_opt_duration)
  */
 TEST(TestCLIArgs, short_opt_record)
 {
-    OPT_TEST_NO_ARG(SHORT_OPT HL_TRIGGER_RECORD_SO);
+    OPT_TEST(SHORT_OPT HL_TRIGGER_RECORD_SO);
 
     EXPECT_TRUE(t.extraArgs.startRecord);
 }
@@ -237,7 +226,7 @@ TEST(TestCLIArgs, short_opt_record)
  */
 TEST(TestCLIArgs, long_opt_record)
 {
-    OPT_TEST_NO_ARG(LONG_OPT HL_TRIGGER_RECORD_LO);
+    OPT_TEST(LONG_OPT HL_TRIGGER_RECORD_LO);
 
     EXPECT_TRUE(t.extraArgs.startRecord);
 }
@@ -394,7 +383,7 @@ TEST(TestCLIArgs, long_opt_output_device)
  */
 TEST(TestCLIArgs, short_opt_list_device)
 {
-    OPT_TEST_NO_ARG(SHORT_OPT HL_LIST_DEVICES_SO);
+    OPT_TEST(SHORT_OPT HL_LIST_DEVICES_SO);
 }
 
 /**
@@ -405,5 +394,5 @@ TEST(TestCLIArgs, short_opt_list_device)
  */
 TEST(TestCLIArgs, long_opt_list_device)
 {
-    OPT_TEST_NO_ARG(LONG_OPT HL_LIST_DEVICES_LO);
+    OPT_TEST(LONG_OPT HL_LIST_DEVICES_LO);
 }
