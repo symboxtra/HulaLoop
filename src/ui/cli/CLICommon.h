@@ -83,6 +83,7 @@ inline Device * findDevice(Transport *t, const std::string &name, DeviceType typ
     catch (std::invalid_argument &e)
     {
         // Wasn't an id
+        (void)e;
     }
 
     for (size_t i = 0; i < devices.size(); i++)
@@ -122,7 +123,7 @@ inline void printSettings()
     printf("Output file:          '%s'\n", settings->getOutputFilePath().c_str());
     printf("Delay:                %.2f s\n", settings->getDelayTimer());
     printf("Length:               %.2f s\n", settings->getRecordDuration());
-    printf("Sample rate:          %'d Hz\n", settings->getSampleRate());
+    printf("Sample rate:          %d Hz\n", settings->getSampleRate());
     printf("Encoding:             %s\n", "WAV");
     printf("Input device:         '%s'\n", settings->getDefaultInputDeviceName().c_str());
     printf("Output device:        '%s'\n", settings->getDefaultOutputDeviceName().c_str());

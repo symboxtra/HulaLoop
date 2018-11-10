@@ -137,6 +137,8 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
             }
             catch (std::invalid_argument &e)
             {
+                (void)e;
+
                 malformedArg(HL_DELAY_TIMER_ARG1, args[0], "double");
                 return HulaCliStatus::HULA_CLI_FAILURE;
             }
@@ -160,6 +162,8 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
             }
             catch (std::invalid_argument &e)
             {
+                (void)e;
+
                 malformedArg(HL_RECORD_TIMER_ARG1, args[0], "double");
                 return HulaCliStatus::HULA_CLI_FAILURE;
             }
@@ -184,6 +188,8 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
             }
             catch (std::invalid_argument &e)
             {
+                (void)e;
+
                 malformedArg(HL_RECORD_ARG1, args[0], "double");
                 return HulaCliStatus::HULA_CLI_FAILURE;
             }
@@ -194,6 +200,8 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
             }
             catch (std::invalid_argument &e)
             {
+                (void)e;
+
                 malformedArg(HL_RECORD_ARG2, args[1], "double");
                 return HulaCliStatus::HULA_CLI_FAILURE;
             }
@@ -208,6 +216,8 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
             }
             catch (std::invalid_argument &e)
             {
+                (void)e;
+
                 malformedArg(HL_RECORD_ARG1, args[0], "double");
                 return HulaCliStatus::HULA_CLI_FAILURE;
             }
