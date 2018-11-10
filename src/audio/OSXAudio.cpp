@@ -69,7 +69,7 @@ static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
  */
 void OSXAudio::capture()
 {
-    PaStreamParameters  inputParameters;
+    PaStreamParameters  inputParameters = {0};
     PaStream           *stream;
     PaError             err = paNoError;
 
@@ -230,7 +230,7 @@ void OSXAudio::setActiveOutputDevice(Device *device)
  */
 bool OSXAudio::checkRates(Device *device)
 {
-    PaStreamParameters inputParameters;
+    PaStreamParameters inputParameters = {0};
     inputParameters.channelCount = NUM_CHANNELS;
     inputParameters.device = *device->getID();
     inputParameters.sampleFormat = paFloat32;
