@@ -1,5 +1,5 @@
-#ifndef UPDATER_H
-#define UPDATER_H
+#ifndef HL_UPDATER_H
+#define HL_UPDATER_H
 
 #include <HulaVersion.h>
 
@@ -55,4 +55,4 @@ class Updater : public QObject
 
 };
 
-#endif // UPDATER_H
+#endif // HL_UPDATER_H

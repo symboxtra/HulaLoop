@@ -1,5 +1,5 @@
-#ifndef OSX_DAEMON_H
-#define OSX_DAEMON_H
+#ifndef HL_OSX_DAEMON_H
+#define HL_OSX_DAEMON_H
 
 #include "JackClient.hpp"
 #include "JackBridge.h"
@@ -27,4 +27,4 @@ class OSXDaemon : public JackClient, public JackBridgeDriverIF {
 
 };
 
-#endif // END OSX_DAEMON_H
+#endif // END HL_OSX_DAEMON_H

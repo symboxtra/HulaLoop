@@ -1,5 +1,5 @@
-#ifndef __HL_AUDIO_H__
-#define __HL_AUDIO_H__
+#ifndef HL_AUDIO_H
+#define HL_AUDIO_H
 
 /**
  * @file hlaudio.h <hlaudio/hlaudio.h>
@@ -10,4 +10,4 @@
 #include "hlaudio/internal/HulaAudioError.h"
 #include "hlaudio/internal/HulaRingBuffer.h"
 
-#endif // __HL_AUDIO_H__
+#endif // HL_AUDIO_H

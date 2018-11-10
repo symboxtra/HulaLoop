@@ -1,5 +1,5 @@
-#ifndef TRANSPORT_H
-#define TRANSPORT_H
+#ifndef HL_TRANSPORT_H
+#define HL_TRANSPORT_H
 
 #include <hlaudio/hlaudio.h>
 #include <string>
@@ -59,4 +59,4 @@ class Transport {
         std::string stateToStr(const TransportState state) const;
 };
 
-#endif // TRANSPORT_H
+#endif // HL_TRANSPORT_H

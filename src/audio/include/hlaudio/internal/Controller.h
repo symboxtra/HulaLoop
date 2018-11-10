@@ -1,5 +1,5 @@
-#ifndef CONTROL
-#define CONTROL
+#ifndef HL_CONTROLLER_H
+#define HL_CONTROLLER_H
 
 #include <iostream>
 #include <vector>
@@ -38,4 +38,4 @@ class Controller {
         void setActiveOutputDevice(Device *device) const;
 };
 
-#endif
+#endif // END HL_CONTROLLER_H

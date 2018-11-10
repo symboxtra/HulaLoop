@@ -1,5 +1,5 @@
-#ifndef HL_LINUX_AUDIO
-#define HL_LINUX_AUDIO
+#ifndef HL_LINUX_AUDIO_H
+#define HL_LINUX_AUDIO_H
 
 #include <alsa/asoundlib.h>
 
@@ -40,4 +40,4 @@ class LinuxAudio : public OSAudio {
 
 };
 
-#endif // HL_LINUX_AUDIO
+#endif // HL_LINUX_AUDIO_H

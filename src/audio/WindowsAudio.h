@@ -1,5 +1,5 @@
-#ifndef WIN_AUDIO
-#define WIN_AUDIO
+#ifndef HL_WIN_AUDIO_H
+#define HL_WIN_AUDIO_H
 
 // Windows Audio
 #include <Audioclient.h>
@@ -74,4 +74,4 @@ class WindowsAudio : public OSAudio {
         void setActiveOutputDevice(Device *device);
 };
 
-#endif
+#endif // END HL_WIN_AUDIO_H

@@ -1,5 +1,5 @@
-#ifndef OS_AUDIO
-#define OS_AUDIO
+#ifndef HL_OS_AUDIO_H
+#define HL_OS_AUDIO_H
 
 // System
 #include <atomic>
@@ -108,4 +108,4 @@ class OSAudio {
         void setActiveOutputDevice(Device *device);
 };
 
-#endif
+#endif // END HL_OS_AUDIO_H

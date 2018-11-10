@@ -1,5 +1,5 @@
-#ifndef HULA_AUDIO_ERROR_H
-#define HULA_AUDIO_ERROR_H
+#ifndef HL_AUDIO_ERROR_H
+#define HL_AUDIO_ERROR_H
 
 /**
  *
@@ -26,4 +26,4 @@
 ******************************************************************************/
 
 
-#endif // END HULA_AUDIO_ERROR_H
+#endif // END HL_AUDIO_ERROR_H

@@ -24,8 +24,8 @@ SOFTWARE.
 
 #include <jack/jack.h>
 
-#ifndef __JACKCLIENT_HPP__
-#define __JACKCLIENT_HPP__
+#ifndef HL_JACK_CLIENT_HPP
+#define HL_JACK_CLIENT_HPP
 #define MAX_PORT_NUM 16
 typedef jack_default_audio_sample_t sample_t;
 
@@ -89,4 +89,4 @@ class JackClient {
 
         int register_ports(const char * nameAin[], const char * nameAout[]);
 };
-#endif
+#endif // END HL_JACK_CLIENT_HPP

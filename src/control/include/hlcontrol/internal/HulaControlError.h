@@ -1,5 +1,5 @@
-#ifndef HULA_CONTROL_ERROR_H
-#define HULA_CONTROL_ERROR_H
+#ifndef HL_CONTROL_ERROR_H
+#define HL_CONTROL_ERROR_H
 
 /******************************************************************************
  *
@@ -8,4 +8,4 @@
 ******************************************************************************/
 
 
-#endif // END HULA_CONTROL_ERROR_H
+#endif // END HL_CONTROL_ERROR_H

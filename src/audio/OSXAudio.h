@@ -1,5 +1,5 @@
-#ifndef OSXAUDIO_H
-#define OSXAUDIO_H
+#ifndef HL_OSX_AUDIO_H
+#define HL_OSX_AUDIO_H
 
 #include <thread>
 #include <vector>
@@ -29,4 +29,4 @@ class OSXAudio : public OSAudio {
 
 };
 
-#endif // END OSXAUDIO_H
+#endif // END HL_OSX_AUDIO_H

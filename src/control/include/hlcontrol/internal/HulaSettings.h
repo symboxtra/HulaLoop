@@ -1,5 +1,5 @@
-#ifndef HULA_SETTINGS_H
-#define HULA_SETTINGS_H
+#ifndef HL_SETTINGS_H
+#define HL_SETTINGS_H
 
 #include <hlaudio/internal/HulaAudioSettings.h>
 
@@ -26,4 +26,4 @@ class HulaSettings : public HulaAudioSettings {
 
 };
 
-#endif // END HULA_SETTINGS_H
+#endif // END HL_SETTINGS_H

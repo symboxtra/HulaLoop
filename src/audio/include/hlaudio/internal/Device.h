@@ -1,5 +1,5 @@
-#ifndef SYS_DEVICE
-#define SYS_DEVICE
+#ifndef HL_DEVICE_H
+#define HL_DEVICE_H
 
 #include <cstdint>
 #include <string>
@@ -44,4 +44,4 @@ class Device {
         static void deleteDevices(vector<Device *> devices);
 };
 
-#endif
+#endif // END HL_DEVICE_H

@@ -36,8 +36,8 @@
  * license above.
  */
 
-#ifndef HULA_RING_BUFFER_H
-#define HULA_RING_BUFFER_H
+#ifndef HL_RING_BUFFER_H
+#define HL_RING_BUFFER_H
 
 #include <pa_ringbuffer.h>
 #include <pa_util.h>
@@ -121,4 +121,4 @@ class HulaRingBuffer {
 
 };
 
-#endif // END HULA_RING_BUFFER_H
+#endif // END HL_RING_BUFFER_H

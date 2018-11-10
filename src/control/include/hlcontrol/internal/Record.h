@@ -1,5 +1,5 @@
-#ifndef RECORD_H
-#define RECORD_H
+#ifndef HL_RECORD_H
+#define HL_RECORD_H
 
 #include <hlaudio/hlaudio.h>
 
@@ -16,4 +16,4 @@ class Record {
         void stop();
 };
 
-#endif
+#endif // END HL_RECORD_H
