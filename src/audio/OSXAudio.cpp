@@ -190,7 +190,7 @@ std::vector<Device *> OSXAudio::getDevices(DeviceType type)
         // This needs to be freed elsewhere
         if (type & checkType)
         {
-            Device *hlDevice = new Device(new uint32_t(i), std::string(paDevice->name), type);
+            Device *hlDevice = new Device(new uint32_t(i), std::string(paDevice->name), checkType);
             devices.push_back(hlDevice);
         }
     }

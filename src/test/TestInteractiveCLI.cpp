@@ -474,7 +474,7 @@ TEST(TestInteractiveCLI, select_non_existent_long_output)
 /************************************************************/
 
 /**
- * List devices.
+ * List devices using short command.
  *
  * EXPECTED:
  *      process returns success
@@ -487,13 +487,30 @@ TEST(TestInteractiveCLI, short_list)
 }
 
 /**
- * List devices.
+ * List devices using long command.
  *
  * EXPECTED:
  *      process returns success
  */
 TEST(TestInteractiveCLI, long_list)
 {
+    OPT_TEST(HL_LIST_SHORT);
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
+}
+
+/**
+ * List devices when RECORD devices are set
+ * as hidden.
+ *
+ * EXPECTED:
+ *      process returns success
+ */
+TEST(TestInteractiveCLI, list_devices_when_record_devices_are_hidden)
+{
+    HulaSettings *set = HulaSettings::getInstance();
+    set->setShowRecordDevices(false);
+
     OPT_TEST(HL_LIST_SHORT);
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
