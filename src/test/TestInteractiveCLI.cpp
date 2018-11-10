@@ -412,8 +412,6 @@ TEST(TestInteractiveCLI, select_by_id_long_input)
     OPT_TEST(HL_INPUT_LONG, "0");
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
-
-    restoreState();
 }
 
 /**
