@@ -351,7 +351,7 @@ pipeline {
 
                                 powershell '''
                                     echo "Building application for ${ENV:HL_OS}..."
-                                    cmake --build ./build-win
+                                    cmake --build ./build-win -- /verbosity:minimal
                                 '''
 
                             }
