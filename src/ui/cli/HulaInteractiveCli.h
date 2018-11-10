@@ -31,6 +31,7 @@ class HulaInteractiveCli {
 
         void start();
         HulaCliStatus processCommand(const std::string &command, const std::vector<std::string> &args);
+        TransportState getState();
 
         ~HulaInteractiveCli();
 };

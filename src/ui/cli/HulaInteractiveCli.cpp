@@ -106,6 +106,13 @@ void HulaInteractiveCli::start()
     }
 }
 
+/**
+ * Proccess the command entered by the user.
+ *
+ * @param command Name of command in short or long form
+ * @param args Vector of arguments that should be used with the command
+ * @return HulaCliStatus Outcome of the command
+ */
 HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, const std::vector<std::string> &args)
 {
     bool success = true;
@@ -121,15 +128,15 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
         // Make sure the arg exists
         if (args.size() != 0)
         {
-            int delay;
+            double delay;
             try
             {
-                delay = std::stoi(args[0], nullptr);
+                delay = std::stod(args[0], nullptr);
                 HulaSettings::getInstance()->setDelayTimer(delay);
             }
             catch (std::invalid_argument &e)
             {
-                malformedArg(HL_DELAY_TIMER_ARG1, args[0], "int");
+                malformedArg(HL_DELAY_TIMER_ARG1, args[0], "double");
                 return HulaCliStatus::HULA_CLI_FAILURE;
             }
         }
@@ -144,15 +151,15 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
         // Make sure the arg exists
         if (args.size() != 0)
         {
-            int duration;
+            double duration;
             try
             {
-                duration = std::stoi(args[0], nullptr);
+                duration = std::stod(args[0], nullptr);
                 HulaSettings::getInstance()->setRecordDuration(duration);
             }
             catch (std::invalid_argument &e)
             {
-                malformedArg(HL_RECORD_TIMER_ARG1, args[0], "int");
+                malformedArg(HL_RECORD_TIMER_ARG1, args[0], "double");
                 return HulaCliStatus::HULA_CLI_FAILURE;
             }
         }
@@ -164,43 +171,43 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
     }
     else if (command == HL_RECORD_SHORT || command == HL_RECORD_LONG)
     {
-        int delay = 0;
-        int duration = HL_INFINITE_RECORD;
+        double delay = 0;
+        double duration = HL_INFINITE_RECORD;
 
         // Make sure the arg exists
         if (args.size() == 2)
         {
             try
             {
-                delay = std::stoi(args[0], nullptr);
+                delay = std::stod(args[0], nullptr);
             }
             catch (std::invalid_argument &e)
             {
-                malformedArg(HL_RECORD_ARG1, args[0], "int");
+                malformedArg(HL_RECORD_ARG1, args[0], "double");
                 return HulaCliStatus::HULA_CLI_FAILURE;
             }
 
             try
             {
-                duration = std::stoi(args[1], nullptr);
+                duration = std::stod(args[1], nullptr);
             }
             catch (std::invalid_argument &e)
             {
-                malformedArg(HL_RECORD_ARG2, args[1], "int");
+                malformedArg(HL_RECORD_ARG2, args[1], "double");
                 return HulaCliStatus::HULA_CLI_FAILURE;
             }
 
             success = t->record(delay, duration);
         }
-        else if (settings->getOutputFilePath().size() != 0)
+        else if (args.size() == 1)
         {
             try
             {
-                delay = std::stoi(args[0], nullptr);
+                delay = std::stod(args[0], nullptr);
             }
             catch (std::invalid_argument &e)
             {
-                malformedArg(HL_RECORD_ARG1, args[0], "int");
+                malformedArg(HL_RECORD_ARG1, args[0], "double");
                 return HulaCliStatus::HULA_CLI_FAILURE;
             }
 
@@ -327,6 +334,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
         else
         {
             fprintf(stderr, "%sNo system command processor is available is available.\n", HL_ERROR_PREFIX);
+            return HulaCliStatus::HULA_CLI_FAILURE;
         }
     }
     else if (command == HL_EXIT_LONG)
@@ -336,6 +344,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
     else
     {
         fprintf(stderr, "%sUnrecognized command '%s'\n", HL_ERROR_PREFIX, command.c_str());
+        return HulaCliStatus::HULA_CLI_FAILURE;
     }
 
     // Make sure transport commands succeeded
@@ -346,6 +355,16 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
     }
 
     return HulaCliStatus::HULA_CLI_SUCCESS;
+}
+
+/**
+ * Destroy the Hula Interactive Cli:: Hula Interactive Cli object
+ *
+ * @return State of the transport
+ */
+TransportState HulaInteractiveCli::getState()
+{
+    return this->t->getState();
 }
 
 /**

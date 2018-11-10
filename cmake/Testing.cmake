@@ -2,7 +2,7 @@ function (create_test _test_file _src_files _timeout _do_memcheck)
 
     get_filename_component (_test_name ${_test_file} NAME_WE)
     add_executable (${_test_name} ${_test_file} ${_src_files})
-    add_dependencies (${_test_name} hulaloop hulaloop-cli) # Make sure the real application builds first
+    add_dependencies (${_test_name} hulaloop hulaloop-cli hulaloop-launcher) # Make sure the real application builds first
     target_link_libraries (${_test_name} ${HL_LIBRARIES} gtest gtest_main ${CMAKE_THREAD_LIBS_INIT})
 
     add_test (

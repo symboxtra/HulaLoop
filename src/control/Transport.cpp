@@ -37,7 +37,7 @@ Transport::Transport(bool dryRun)
  *
  * @return Successful start of recording
  */
-bool Transport::record(int delay, int duration)
+bool Transport::record(double delay, double duration)
 {
     std::cout << "Record triggered!" << std::endl;
     std::cout << "Delay set to: " << delay << std::endl;
@@ -130,6 +130,22 @@ bool Transport::pause()
     }
     return false;
 }
+
+/**
+ * Discard any recorded audio and reset the state.
+ *
+ * @return bool Success of command
+ */
+/*
+bool Transport::Discard()
+{
+    state = INITIAL;
+    recordState = true;
+    playbackState = false;
+
+    return true;
+}
+*/
 
 /**
  * Return the current state of the Transport object.

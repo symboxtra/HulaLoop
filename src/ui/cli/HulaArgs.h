@@ -115,13 +115,13 @@ bool parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
     if (parser.isSet(HL_RECORD_TIME_LO))
     {
         bool ok = false;
-        double time = parser.value(HL_RECORD_TIME_LO).toDouble(&ok);
+        double duration = parser.value(HL_RECORD_TIME_LO).toDouble(&ok);
         if (!ok)
         {
             invalidArg(HL_RECORD_TIME_LO, parser.value(HL_RECORD_TIME_LO));
             return false;
         }
-        settings->setRecordDuration(time);
+        settings->setRecordDuration(duration);
     }
 
     if (parser.isSet(HL_TRIGGER_RECORD_LO))
