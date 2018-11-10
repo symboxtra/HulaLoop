@@ -3,6 +3,8 @@
 #include <fstream>
 #include <string>
 
+using namespace hula;
+
 /**
  * Construct a new instance of the Export class.
  *

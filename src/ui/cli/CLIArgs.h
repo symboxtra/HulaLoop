@@ -9,6 +9,8 @@
 
 #include "CLICommon.h"
 
+using namespace hula;
+
 /**
  * Define the short opt and long opt strings
  * These are used in multiple places, so defining

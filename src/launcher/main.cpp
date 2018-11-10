@@ -7,6 +7,8 @@
 
 #include "Updater.h"
 
+using namespace hula;
+
 int main(int argc, char *argv[])
 {
 

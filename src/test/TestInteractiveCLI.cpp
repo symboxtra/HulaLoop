@@ -6,6 +6,8 @@
 #include "CLICommands.h"
 #include "InteractiveCLI.h"
 
+using namespace hula;
+
 // Single instance since Transport has to be created
 HulaInteractiveCli cli;
 

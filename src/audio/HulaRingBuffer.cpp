@@ -41,6 +41,8 @@
 #include "hlaudio/internal/HulaAudioError.h"
 #include "hlaudio/internal/HulaRingBuffer.h"
 
+using namespace hula;
+
 /**
  * Create a new ring buffer.
  * The ring buffer's size is determined using the formula:

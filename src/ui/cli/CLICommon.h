@@ -9,6 +9,8 @@
 
 #include <HulaVersion.h>
 
+using namespace hula;
+
 #define HL_ASCII_HEADER "\n" \
     "   _    _       _       _\n" \
     "  | |  | |     | |     | |\n" \

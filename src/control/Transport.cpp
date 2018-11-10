@@ -4,6 +4,8 @@
 #include "hlcontrol/internal/HulaControlError.h"
 #include "hlcontrol/internal/Transport.h"
 
+using namespace hula;
+
 /**
  * Construct a new instance of the Transport class.
  */

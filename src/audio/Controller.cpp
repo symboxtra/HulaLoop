@@ -12,6 +12,8 @@
     #include "OSXAudio.h"
 #endif
 
+using namespace hula;
+
 /**
  * Construct an instance of Controller class.
  * Acts as a bridge between the higher levels and OS level functions

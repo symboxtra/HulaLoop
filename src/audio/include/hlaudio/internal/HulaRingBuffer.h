@@ -78,47 +78,50 @@
 #define BYTES_TO_SAMPLES(bytes) ((bytes) / (sizeof(SAMPLE)))
 #define SAMPLES_TO_BYTES(samples) ((samples) * (sizeof(SAMPLE)))
 
-/**
- * HulaLoop wrapper class for PortAudio ring buffer.
- */
-class HulaRingBuffer {
+namespace hula
+{
+    /**
+     * HulaLoop wrapper class for PortAudio ring buffer.
+     */
+    class HulaRingBuffer {
 
-    private:
-        /**
-         * Underlying memory allocated for the ring buffer.
-         */
-        SAMPLE *rbMemory;
+        private:
+            /**
+             * Underlying memory allocated for the ring buffer.
+             */
+            SAMPLE *rbMemory;
 
-        /**
-         * PortAudio ring buffer structure.
-         */
-        PaUtilRingBuffer rb;
+            /**
+             * PortAudio ring buffer structure.
+             */
+            PaUtilRingBuffer rb;
 
-        /**
-        * Helper function for determining the next power of two.
-        *
-        * @return Next power of 2 from val
-        */
-        static uint32_t nextPowerOf2(uint32_t val)
-        {
-            val--;
-            val = (val >> 1) | val;
-            val = (val >> 2) | val;
-            val = (val >> 4) | val;
-            val = (val >> 8) | val;
-            val = (val >> 16) | val;
-            return ++val;
-        };
+            /**
+            * Helper function for determining the next power of two.
+            *
+            * @return Next power of 2 from val
+            */
+            static uint32_t nextPowerOf2(uint32_t val)
+            {
+                val--;
+                val = (val >> 1) | val;
+                val = (val >> 2) | val;
+                val = (val >> 4) | val;
+                val = (val >> 8) | val;
+                val = (val >> 16) | val;
+                return ++val;
+            };
 
-    public:
-        HulaRingBuffer(float maxDuration);
+        public:
+            HulaRingBuffer(float maxDuration);
 
-        int32_t read(SAMPLE *data, int32_t maxSamples);
-        int32_t directRead(int32_t maxSamples, void **dataPtr1, int32_t *size1, void **dataPtr2, int32_t *size2);
-        int32_t write(const SAMPLE *data, int32_t maxSamples);
+            int32_t read(SAMPLE *data, int32_t maxSamples);
+            int32_t directRead(int32_t maxSamples, void **dataPtr1, int32_t *size1, void **dataPtr2, int32_t *size2);
+            int32_t write(const SAMPLE *data, int32_t maxSamples);
 
-        ~HulaRingBuffer();
+            ~HulaRingBuffer();
 
-};
+    };
+}
 
 #endif // END HL_RING_BUFFER_H

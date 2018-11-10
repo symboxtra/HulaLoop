@@ -11,6 +11,8 @@
 #include "QMLBridge.h"
 #include "SystemTrayIcon.h"
 
+using namespace hula;
+
 class TestGUI : public ::testing::Test {
 
     protected:

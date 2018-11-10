@@ -9,6 +9,8 @@
 #include "CLICommands.h"
 #include "InteractiveCLI.h"
 
+using namespace hula;
+
 /**
  * Constuct a new instance of HulaInteractiveCli.
  *

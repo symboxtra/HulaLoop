@@ -4,6 +4,8 @@
 #include "hlaudio/internal/HulaAudioError.h"
 #include "hlaudio/internal/OSAudio.h"
 
+using namespace hula;
+
 /**
  * Set the desired capture buffer size
  *

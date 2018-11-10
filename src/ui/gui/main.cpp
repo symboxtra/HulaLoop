@@ -10,6 +10,8 @@
 #include "QMLBridge.h"
 #include "SystemTrayIcon.h"
 
+using namespace hula;
+
 int main(int argc, char *argv[])
 {
 

@@ -8,51 +8,54 @@
 #include <QNetworkReply>
 #include <QObject>
 
-class Updater : public QObject
+namespace hula
 {
-    Q_OBJECT
-    Q_PROPERTY(QString updateHostUrl WRITE setUpdateHost)
-    Q_PROPERTY(qint64 numBytesDownloaded READ getNumBytesDownloaded)
+    class Updater : public QObject
+    {
+        Q_OBJECT
+        Q_PROPERTY(QString updateHostUrl WRITE setUpdateHost)
+        Q_PROPERTY(qint64 numBytesDownloaded READ getNumBytesDownloaded)
 
-    private:
-        QNetworkAccessManager *manager;
-        QNetworkReply *reply;
-        QFile *file;
+        private:
+            QNetworkAccessManager *manager;
+            QNetworkReply *reply;
+            QFile *file;
 
-        QString updateHostUrl;
-        bool updateAvailable;
+            QString updateHostUrl;
+            bool updateAvailable;
 
-        QString downloadHostUrl;
-        QString downloadFileName;
-        qint64 numBytesDownloaded;
-        qint64 downloadSize;
-        bool downloaded;
+            QString downloadHostUrl;
+            QString downloadFileName;
+            qint64 numBytesDownloaded;
+            qint64 downloadSize;
+            bool downloaded;
 
-    public:
-        explicit Updater(QObject *parent = nullptr);
-        ~Updater();
+        public:
+            explicit Updater(QObject *parent = nullptr);
+            ~Updater();
 
-        Q_INVOKABLE void setUpdateHost(QString);
-        Q_INVOKABLE bool foundUpdate();
-        void setUpdateAvailable(bool);
-        Q_INVOKABLE qint64 getDownloadSize();
-        Q_INVOKABLE qint64 getNumBytesDownloaded();
-        Q_INVOKABLE bool finishedDownload();
+            Q_INVOKABLE void setUpdateHost(QString);
+            Q_INVOKABLE bool foundUpdate();
+            void setUpdateAvailable(bool);
+            Q_INVOKABLE qint64 getDownloadSize();
+            Q_INVOKABLE qint64 getNumBytesDownloaded();
+            Q_INVOKABLE bool finishedDownload();
 
-        Q_INVOKABLE void checkForUpdate();
-        Q_INVOKABLE void downloadUpdate();
+            Q_INVOKABLE void checkForUpdate();
+            Q_INVOKABLE void downloadUpdate();
 
-        Q_INVOKABLE void startHulaLoopInstaller();
-        Q_INVOKABLE void startHulaLoopApp();
+            Q_INVOKABLE void startHulaLoopInstaller();
+            Q_INVOKABLE void startHulaLoopApp();
 
-    public slots:
-        void updateQueryFinished(QNetworkReply *);
-        void downloadReadyRead();
-        void downloadFinished();
+        public slots:
+            void updateQueryFinished(QNetworkReply *);
+            void downloadReadyRead();
+            void downloadFinished();
 
-    signals:
-        void bytesDownloaded();
+        signals:
+            void bytesDownloaded();
 
-};
+    };
+}
 
 #endif // HL_UPDATER_H

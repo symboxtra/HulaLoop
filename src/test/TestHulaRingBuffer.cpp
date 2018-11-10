@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <hlaudio/hlaudio.h>
 
+using namespace hula;
+
 #define TEST_BUFFER_SIZE 0.2f
 #define TEST_NUM_SAMPLES 200 // Don't pick a power of 2
 SAMPLE sampleData = (SAMPLE)7.7;

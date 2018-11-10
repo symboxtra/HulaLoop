@@ -8,6 +8,8 @@
 #include "hlaudio/internal/HulaAudioError.h"
 #include "hlaudio/internal/HulaAudioSettings.h"
 
+using namespace hula;
+
 /**
  * Constructs an instance of OSXAudio class.
  *

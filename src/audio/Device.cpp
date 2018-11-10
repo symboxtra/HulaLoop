@@ -1,5 +1,7 @@
 #include "hlaudio/internal/Device.h"
 
+using namespace hula;
+
 /**
  * Constructs an instance of the Device object
  *

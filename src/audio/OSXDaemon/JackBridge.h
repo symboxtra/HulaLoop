@@ -85,122 +85,125 @@ typedef float sample_t;
     #define ERROR(pri, str, code) fprintf(stderr, str, code);
 #endif
 
-class JackBridgeDriverIF {
-    protected:
-        uint32_t instance;
-        int shm_fd;
-        sample_t *buf_up[2];
-        sample_t *buf_down[2];
-        uint64_t   FrameNumber;
-        int        FramesPerBuffer;
-        volatile uint64_t     *shmNumberTimeStamps;
-        volatile uint64_t     *shmZeroHostTime;
-        volatile uint64_t     *shmSeed;
-        volatile uint64_t     *shmSyncMode;
-        volatile uint64_t     *shmBufferSize;
-        volatile uint64_t     *shmDriverStatus;
-#define JB_DRV_STATUS_INIT      0
-#define JB_DRV_STATUS_ACTIVE    1
-#define JB_DRV_STATUS_STARTED   2
-        volatile uint64_t     *shmReadFrameNumber[2];
-        volatile uint64_t     *shmWriteFrameNumber[2];
+namespace hula
+{
+    class JackBridgeDriverIF {
+        protected:
+            uint32_t instance;
+            int shm_fd;
+            sample_t *buf_up[2];
+            sample_t *buf_down[2];
+            uint64_t   FrameNumber;
+            int        FramesPerBuffer;
+            volatile uint64_t     *shmNumberTimeStamps;
+            volatile uint64_t     *shmZeroHostTime;
+            volatile uint64_t     *shmSeed;
+            volatile uint64_t     *shmSyncMode;
+            volatile uint64_t     *shmBufferSize;
+            volatile uint64_t     *shmDriverStatus;
+    #define JB_DRV_STATUS_INIT      0
+    #define JB_DRV_STATUS_ACTIVE    1
+    #define JB_DRV_STATUS_STARTED   2
+            volatile uint64_t     *shmReadFrameNumber[2];
+            volatile uint64_t     *shmWriteFrameNumber[2];
 
-        int create_shm()
-        {
-            struct stat stat;
-            ERROR(LOG_INFO, "HulaLoop: Initializing shared memory to communicate with jack(%d).", 0);
-            shm_fd = shm_open(JACK_SHMPATH, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-            if (shm_fd < 0)
+            int create_shm()
             {
-                ERROR(LOG_ERR, "shm cannot be opened with %s.\n", strerror(errno));
-                return -1;
-            }
-
-            if (fstat(shm_fd, &stat) < 0)
-            {
-                ERROR(LOG_ERR, "Couldn't get shm stat with %s.\n", strerror(errno));
-                close(shm_fd);
-                return -1;
-            }
-
-            if (stat.st_size != JACK_SHMSIZE)
-            {
-                if (ftruncate(shm_fd, JACK_SHMSIZE) == -1)
+                struct stat stat;
+                ERROR(LOG_INFO, "HulaLoop: Initializing shared memory to communicate with jack(%d).", 0);
+                shm_fd = shm_open(JACK_SHMPATH, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+                if (shm_fd < 0)
                 {
-                    ERROR(LOG_INFO, "shm cannot be truncated with %s. Try to recreate shm.\n", strerror(errno));
-                    close(shm_fd);
-                    shm_unlink(JACK_SHMPATH);
-                    shm_fd = shm_open(JACK_SHMPATH, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-                    if (shm_fd < 0)
-                    {
-                        ERROR(LOG_ERR, "shm cannot be recreated with %s.\n", strerror(errno));
-                        return -1;
-                    }
+                    ERROR(LOG_ERR, "shm cannot be opened with %s.\n", strerror(errno));
+                    return -1;
                 }
-                ERROR(LOG_INFO, "Recreated shm because shm size is not matched as expected. (%d)\n", 0);
-            }
-            close(shm_fd);
-            return 0;
-        }
 
-        int attach_shm()
-        {
-            struct stat stat;
+                if (fstat(shm_fd, &stat) < 0)
+                {
+                    ERROR(LOG_ERR, "Couldn't get shm stat with %s.\n", strerror(errno));
+                    close(shm_fd);
+                    return -1;
+                }
 
-            shm_fd = shm_open(JACK_SHMPATH, O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-            if (shm_fd < 0)
-            {
-                ERROR(LOG_ERR, "shm_open() failed with %s.\n", strerror(errno));
-                return -1;
-            }
-
-            if (fstat(shm_fd, &stat) < 0)
-            {
-                ERROR(LOG_ERR, "fstat() failed with %s.\n", strerror(errno));
-                return -1;
-            }
-            else
-            {
                 if (stat.st_size != JACK_SHMSIZE)
                 {
-                    ERROR(LOG_ERR, "does not match shmsize(%lld). May be driver version mismatch\n", stat.st_size);
+                    if (ftruncate(shm_fd, JACK_SHMSIZE) == -1)
+                    {
+                        ERROR(LOG_INFO, "shm cannot be truncated with %s. Try to recreate shm.\n", strerror(errno));
+                        close(shm_fd);
+                        shm_unlink(JACK_SHMPATH);
+                        shm_fd = shm_open(JACK_SHMPATH, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+                        if (shm_fd < 0)
+                        {
+                            ERROR(LOG_ERR, "shm cannot be recreated with %s.\n", strerror(errno));
+                            return -1;
+                        }
+                    }
+                    ERROR(LOG_INFO, "Recreated shm because shm size is not matched as expected. (%d)\n", 0);
                 }
+                close(shm_fd);
+                return 0;
             }
 
-            char *shm_base = (char *)mmap(NULL, REGSMAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, instance * REGSMAP_BOUNDARY);
-            // char* shm_base = (char*)mmap(NULL, JACK_SHMSIZE, PROT_READ|PROT_WRITE, MAP_SHARED, shm_fd, 0);
-            if (shm_base == MAP_FAILED)
+            int attach_shm()
             {
-                ERROR(LOG_ERR, "mmap() failed with %s\n", strerror(errno));
-                return -1;
+                struct stat stat;
+
+                shm_fd = shm_open(JACK_SHMPATH, O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+                if (shm_fd < 0)
+                {
+                    ERROR(LOG_ERR, "shm_open() failed with %s.\n", strerror(errno));
+                    return -1;
+                }
+
+                if (fstat(shm_fd, &stat) < 0)
+                {
+                    ERROR(LOG_ERR, "fstat() failed with %s.\n", strerror(errno));
+                    return -1;
+                }
+                else
+                {
+                    if (stat.st_size != JACK_SHMSIZE)
+                    {
+                        ERROR(LOG_ERR, "does not match shmsize(%lld). May be driver version mismatch\n", stat.st_size);
+                    }
+                }
+
+                char *shm_base = (char *)mmap(NULL, REGSMAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, instance * REGSMAP_BOUNDARY);
+                // char* shm_base = (char*)mmap(NULL, JACK_SHMSIZE, PROT_READ|PROT_WRITE, MAP_SHARED, shm_fd, 0);
+                if (shm_base == MAP_FAILED)
+                {
+                    ERROR(LOG_ERR, "mmap() failed with %s\n", strerror(errno));
+                    return -1;
+                }
+
+                buf_up[0]   = (sample_t *)(shm_base + STRBUF_UP(0));
+                buf_down[0] = (sample_t *)(shm_base + STRBUF_DOWN(0));
+                buf_up[1]   = (sample_t *)(shm_base + STRBUF_UP(1));
+                buf_down[1] = (sample_t *)(shm_base + STRBUF_DOWN(1));
+
+                shmNumberTimeStamps = (uint64_t *)(shm_base + 0x100);
+                shmZeroHostTime = (uint64_t *)(shm_base + 0x108);
+                shmSeed = (uint64_t *)(shm_base + 0x110);
+                shmSyncMode = (uint64_t *)(shm_base + 0x118);
+                shmBufferSize = (uint64_t *)(shm_base + 0x120);
+                shmDriverStatus = (uint64_t *)(shm_base + 0x128);
+                shmReadFrameNumber[0] = (uint64_t *)(shm_base + 0x180);
+                shmWriteFrameNumber[0] = (uint64_t *)(shm_base + 0x188);
+                shmReadFrameNumber[1] = (uint64_t *)(shm_base + 0x190);
+                shmWriteFrameNumber[1] = (uint64_t *)(shm_base + 0x198);
+                return 0;
             }
 
-            buf_up[0]   = (sample_t *)(shm_base + STRBUF_UP(0));
-            buf_down[0] = (sample_t *)(shm_base + STRBUF_DOWN(0));
-            buf_up[1]   = (sample_t *)(shm_base + STRBUF_UP(1));
-            buf_down[1] = (sample_t *)(shm_base + STRBUF_DOWN(1));
+        public:
+            JackBridgeDriverIF(uint32_t _instance)
+            {
+                this->instance = _instance;
+            }
 
-            shmNumberTimeStamps = (uint64_t *)(shm_base + 0x100);
-            shmZeroHostTime = (uint64_t *)(shm_base + 0x108);
-            shmSeed = (uint64_t *)(shm_base + 0x110);
-            shmSyncMode = (uint64_t *)(shm_base + 0x118);
-            shmBufferSize = (uint64_t *)(shm_base + 0x120);
-            shmDriverStatus = (uint64_t *)(shm_base + 0x128);
-            shmReadFrameNumber[0] = (uint64_t *)(shm_base + 0x180);
-            shmWriteFrameNumber[0] = (uint64_t *)(shm_base + 0x188);
-            shmReadFrameNumber[1] = (uint64_t *)(shm_base + 0x190);
-            shmWriteFrameNumber[1] = (uint64_t *)(shm_base + 0x198);
-            return 0;
-        }
-
-    public:
-        JackBridgeDriverIF(uint32_t _instance)
-        {
-            this->instance = _instance;
-        }
-
-        ~JackBridgeDriverIF()
-        {
-            printf("%sJackBridgeDriverIF destructor called\n", HL_PRINT_PREFIX);
-        }
-};
+            ~JackBridgeDriverIF()
+            {
+                printf("%sJackBridgeDriverIF destructor called\n", HL_PRINT_PREFIX);
+            }
+    };
+}

@@ -3,17 +3,20 @@
 
 #include <hlaudio/hlaudio.h>
 
-class Record {
+namespace hula
+{
+    class Record {
 
-    private:
-        Controller* controller;
+        private:
+            Controller* controller;
 
-    public:
-        Record(Controller* control);
-        ~Record();
+        public:
+            Record(Controller* control);
+            ~Record();
 
-        void start();
-        void stop();
-};
+            void start();
+            void stop();
+    };
+}
 
 #endif // END HL_RECORD_H

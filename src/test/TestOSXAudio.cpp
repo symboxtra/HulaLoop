@@ -3,6 +3,8 @@
 
 #include "../audio/OSXAudio.h"
 
+using namespace hula;
+
 // Don't extend OSXAudio.
 // Use a shared instance of it since setup is so expensive.
 // This is black-box testing of OSXAudio since we can't extend

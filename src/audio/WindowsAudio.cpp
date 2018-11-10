@@ -1,6 +1,8 @@
 #include "WindowsAudio.h"
 #include "hlaudio/internal/HulaAudioError.h"
 
+using namespace hula;
+
 WindowsAudio::WindowsAudio()
 {
     pa_status = paNoError;

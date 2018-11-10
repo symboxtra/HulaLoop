@@ -1,6 +1,8 @@
 #include "LinuxAudio.h"
 #include "hlaudio/internal/HulaAudioSettings.h"
 
+using namespace hula;
+
 /**
  * Construct a new instance of LinuxAudio.
  */

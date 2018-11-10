@@ -4,15 +4,18 @@
 #include <hlaudio/hlaudio.h>
 #include <string>
 
-class Export {
-    private:
-        std::string targetFile;
+namespace hula
+{
+    class Export {
+        private:
+            std::string targetFile;
 
-    public:
-        Export(std::string targetFile);
-        void copyData(std::string inputFileDirectory);
+        public:
+            Export(std::string targetFile);
+            void copyData(std::string inputFileDirectory);
 
-        ~Export();
-};
+            ~Export();
+    };
+}
 
 #endif // HL_EXPORT_H
