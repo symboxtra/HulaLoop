@@ -268,8 +268,7 @@ TEST(TestInteractiveCLI, delay_and_dur_long_record)
  * Start record with non-numeric delay.
  *
  * EXPECTED:
- *      process returns success
- *      Transport state switches to RECORD
+ *      process returns failure
  */
 TEST(TestInteractiveCLI, NAN_delay_long_record)
 {
@@ -281,15 +280,29 @@ TEST(TestInteractiveCLI, NAN_delay_long_record)
 }
 
 /**
+ * Start record with normal delay and non-numeric duration.
+ *
+ * EXPECTED:
+ *      process returns failure
+ */
+TEST(TestInteractiveCLI, delay_and_NAN_dur_long_record)
+{
+    OPT_TEST(HL_RECORD_LONG, "not_a_number", "not_a_number");
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_FAILURE);
+
+    restoreState();
+}
+
+/**
  * Start record with non-numeric delay and duration.
  *
  * EXPECTED:
- *      process returns success
- *      Transport state switches to RECORD
+ *      process returns failure
  */
 TEST(TestInteractiveCLI, NAN_delay_and_dur_long_record)
 {
-    OPT_TEST(HL_RECORD_LONG, "not_a_number", "not_a_number");
+    OPT_TEST(HL_RECORD_LONG, "5.9", "not_a_number");
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_FAILURE);
 
