@@ -1,5 +1,5 @@
-#ifndef HULA_ARGS_H
-#define HULA_ARGS_H
+#ifndef HL_CLI_ARGS_H
+#define HL_CLI_ARGS_H
 
 #include <cstdio>
 #include <QCommandLineParser>
@@ -7,7 +7,7 @@
 #include <hlaudio/hlaudio.h>
 #include <hlcontrol/hlcontrol.h>
 
-#include "HulaCliCommon.h"
+#include "CLICommon.h"
 
 /**
  * Define the short opt and long opt strings
@@ -182,4 +182,4 @@ bool parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
     return true;
 }
 
-#endif // END HULA_ARGS_H
+#endif // END HL_CLI_ARGS_H

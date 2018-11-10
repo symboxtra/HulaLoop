@@ -1,5 +1,5 @@
-#ifndef HULA_INTERACTIVE_CLI_H
-#define HULA_INTERACTIVE_CLI_H
+#ifndef HL_INTERACTIVE_CLI_H
+#define HL_INTERACTIVE_CLI_H
 
 #include <hlcontrol/hlcontrol.h>
 
@@ -36,4 +36,4 @@ class HulaInteractiveCli {
         ~HulaInteractiveCli();
 };
 
-#endif // END HULA_INTERACTIVE_CLI_H
+#endif // END HL_INTERACTIVE_CLI_H

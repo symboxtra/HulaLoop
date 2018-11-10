@@ -1,5 +1,5 @@
-#ifndef HULA_COMMANDS_H
-#define HULA_COMMANDS_H
+#ifndef HL_CLI_COMMANDS_H
+#define HL_CLI_COMMANDS_H
 
 #define HL_ORANGE "\033[48;2;255;165;0m"
 #define HL_NC     "\033[0m"
@@ -95,4 +95,4 @@
 "  " HL_SYSTEM_SHORT  ", " HL_SYSTEM_LONG "\t\t\t\t Run a system command from within HulaLoop.\n" \
 "\n"
 
-#endif // END HULA_COMMANDS_H
+#endif // END HL_CLI_COMMANDS_H

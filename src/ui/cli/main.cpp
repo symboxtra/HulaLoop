@@ -3,9 +3,9 @@
 #include <hlaudio/hlaudio.h>
 #include <hlcontrol/hlcontrol.h>
 
-#include "HulaArgs.h"
-#include "HulaCliCommon.h"
-#include "HulaInteractiveCli.h"
+#include "CLIArgs.h"
+#include "CLICommon.h"
+#include "InteractiveCLI.h"
 
 int main(int argc, char **argv)
 {

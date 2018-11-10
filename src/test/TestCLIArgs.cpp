@@ -3,7 +3,7 @@
 #include <QApplication>
 #include <vector>
 
-#include "HulaArgs.h"
+#include "CLIArgs.h"
 
 #define DEFAULT_ARGS 1
 #define LONG_OPT "--"

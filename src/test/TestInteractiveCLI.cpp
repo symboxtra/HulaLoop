@@ -3,8 +3,8 @@
 #include <hlaudio/hlaudio.h>
 #include <hlcontrol/hlcontrol.h>
 
-#include "HulaCommands.h"
-#include "HulaInteractiveCli.h"
+#include "CLICommands.h"
+#include "InteractiveCLI.h"
 
 // Single instance since Transport has to be created
 HulaInteractiveCli cli;

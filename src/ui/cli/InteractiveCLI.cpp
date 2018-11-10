@@ -1,5 +1,3 @@
-#include "HulaInteractiveCli.h"
-
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
@@ -7,8 +5,9 @@
 #include <string>
 #include <vector>
 
-#include "HulaCliCommon.h"
-#include "HulaCommands.h"
+#include "CLICommon.h"
+#include "CLICommands.h"
+#include "InteractiveCLI.h"
 
 /**
  * Constuct a new instance of HulaInteractiveCli.

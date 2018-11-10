@@ -213,7 +213,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     create_test ("src/test/TestHulaRingBuffer.cpp" "" 0.5 TRUE)
     create_test ("src/test/TestController.cpp" "" -1 TRUE)
     create_test ("src/test/TestCLIArgs.cpp" "" -1 FALSE) # TODO: memcheck can be turned on once Device::id is fixed
-    create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/HulaInteractiveCli.cpp" -1 FALSE)
+    create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/InteractiveCLI.cpp" -1 FALSE)
 
     if (OSX)
         create_test ("src/test/TestOSXAudio.cpp" "" -1 FALSE)
