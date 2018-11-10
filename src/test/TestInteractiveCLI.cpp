@@ -11,22 +11,11 @@ using namespace hula;
 // Single instance since Transport has to be created
 HulaInteractiveCli cli;
 
-#define OPT_TEST_NO_ARG(name)                          \
-    std::vector<std::string> args;                     \
+#define OPT_TEST(name, ...)                            \
+    std::vector<std::string> args{__VA_ARGS__};        \
                                                        \
     HulaCliStatus r = cli.processCommand(name, args);  \
     HulaSettings *s = HulaSettings::getInstance();     \
-
-#define OPT_TEST(name, arg)                            \
-    std::vector<std::string> args;                     \
-    args.push_back(arg);                               \
-                                                       \
-    HulaCliStatus r = cli.processCommand(name, args);  \
-    HulaSettings *s = HulaSettings::getInstance();     \
-
-#define RESET_STATE()                                  \
-    OPT_TEST_NO_ARG(HL_STOP_LONG);                     \
-    OPT_TEST_NO_ARG(HL_DISCARD_LONG);                  \
 
 /**
  * Utility function for restoring state of CLI.
@@ -41,6 +30,46 @@ void restoreState()
 
     args.push_back(HL_DISCARD_ARG1);
     cli.processCommand(HL_DISCARD_LONG, args);
+}
+
+/**
+ * Send an empty command.
+ *
+ * EXPECTED:
+ *      process returns success and does nothing
+ */
+TEST(TestInteractiveCLI, empty_line)
+{
+    OPT_TEST("");
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
+}
+
+/**
+ * Send a non-existent command.
+ *
+ * EXPECTED:
+ *      process returns failure
+ */
+TEST(TestInteractiveCLI, non_existent_command)
+{
+    OPT_TEST("non_existent");
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_FAILURE);
+}
+
+/**
+ * Provide extra args to a command.
+ *
+ * EXPECTED:
+ *      process still returns success
+ *      TODO: warning is printed (has not been enabled yet)
+ */
+TEST(TestInteractiveCLI, extra_args)
+{
+    OPT_TEST("print", "extra_arg");
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
 }
 
 /**
@@ -82,7 +111,22 @@ TEST(TestInteractiveCLI, long_delay)
  */
 TEST(TestInteractiveCLI, no_arg_long_delay)
 {
-    OPT_TEST_NO_ARG(HL_DELAY_TIMER_LONG);
+    OPT_TEST(HL_DELAY_TIMER_LONG);
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_FAILURE);
+    EXPECT_EQ(s->getDelayTimer(), 5.9);
+}
+
+/**
+ * Delay long command with non-numeric argument.
+ *
+ * EXPECTED:
+ *      process returns failure
+ *      delay remains unchanged
+ */
+TEST(TestInteractiveCLI, NAN_arg_long_delay)
+{
+    OPT_TEST(HL_DELAY_TIMER_LONG, "not_a_number");
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_FAILURE);
     EXPECT_EQ(s->getDelayTimer(), 5.9);
@@ -129,7 +173,22 @@ TEST(TestInteractiveCLI, long_duration)
  */
 TEST(TestInteractiveCLI, no_arg_long_duration)
 {
-    OPT_TEST_NO_ARG(HL_RECORD_TIMER_LONG);
+    OPT_TEST(HL_RECORD_TIMER_LONG);
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_FAILURE);
+    EXPECT_EQ(s->getRecordDuration(), 5.9);
+}
+
+/**
+ * Duration long command with non-numeric argument.
+ *
+ * EXPECTED:
+ *      process returns failure
+ *      duration remains unchanged
+ */
+TEST(TestInteractiveCLI, NAN_arg_long_duration)
+{
+    OPT_TEST(HL_RECORD_TIMER_LONG, "not_a_number");
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_FAILURE);
     EXPECT_EQ(s->getRecordDuration(), 5.9);
@@ -146,7 +205,7 @@ TEST(TestInteractiveCLI, no_arg_long_duration)
  */
 TEST(TestInteractiveCLI, short_record)
 {
-    OPT_TEST_NO_ARG(HL_RECORD_SHORT);
+    OPT_TEST(HL_RECORD_SHORT);
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
     EXPECT_EQ(cli.getState(), TransportState::RECORDING);
@@ -163,10 +222,76 @@ TEST(TestInteractiveCLI, short_record)
  */
 TEST(TestInteractiveCLI, long_record)
 {
-    OPT_TEST_NO_ARG(HL_RECORD_LONG);
+    OPT_TEST(HL_RECORD_LONG);
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
     EXPECT_EQ(cli.getState(), TransportState::RECORDING);
+
+    restoreState();
+}
+
+/**
+ * Start record with delay.
+ *
+ * EXPECTED:
+ *      process returns success
+ *      Transport state switches to RECORD
+ */
+TEST(TestInteractiveCLI, delay_long_record)
+{
+    OPT_TEST(HL_RECORD_LONG, "5.7");
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
+    EXPECT_EQ(cli.getState(), TransportState::RECORDING);
+
+    restoreState();
+}
+
+/**
+ * Start record with delay and duration.
+ *
+ * EXPECTED:
+ *      process returns success
+ *      Transport state switches to RECORD
+ */
+TEST(TestInteractiveCLI, delay_and_dur_long_record)
+{
+    OPT_TEST(HL_RECORD_LONG, "5.7", "-1");
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
+    EXPECT_EQ(cli.getState(), TransportState::RECORDING);
+
+    restoreState();
+}
+
+/**
+ * Start record with non-numeric delay.
+ *
+ * EXPECTED:
+ *      process returns success
+ *      Transport state switches to RECORD
+ */
+TEST(TestInteractiveCLI, NAN_delay_long_record)
+{
+    OPT_TEST(HL_RECORD_LONG, "not_a_number");
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_FAILURE);
+
+    restoreState();
+}
+
+/**
+ * Start record with non-numeric delay and duration.
+ *
+ * EXPECTED:
+ *      process returns success
+ *      Transport state switches to RECORD
+ */
+TEST(TestInteractiveCLI, NAN_delay_and_dur_long_record)
+{
+    OPT_TEST(HL_RECORD_LONG, "not_a_number", "not_a_number");
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_FAILURE);
 
     restoreState();
 }
@@ -182,7 +307,7 @@ TEST(TestInteractiveCLI, long_record)
  */
 TEST(TestInteractiveCLI, DISABLED_short_stop)
 {
-    OPT_TEST_NO_ARG(HL_STOP_SHORT);
+    OPT_TEST(HL_STOP_SHORT);
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
     EXPECT_EQ(cli.getState(), TransportState::STOPPED);
@@ -199,7 +324,7 @@ TEST(TestInteractiveCLI, DISABLED_short_stop)
  */
 TEST(TestInteractiveCLI, DISABLED_long_stop)
 {
-    OPT_TEST_NO_ARG(HL_STOP_LONG);
+    OPT_TEST(HL_STOP_LONG);
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
     EXPECT_EQ(cli.getState(), TransportState::STOPPED);
@@ -218,7 +343,7 @@ TEST(TestInteractiveCLI, DISABLED_long_stop)
  */
 TEST(TestInteractiveCLI, DISABLED_short_pause)
 {
-    OPT_TEST_NO_ARG(HL_PAUSE_SHORT);
+    OPT_TEST(HL_PAUSE_SHORT);
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
     EXPECT_EQ(cli.getState(), TransportState::PAUSED);
@@ -235,12 +360,117 @@ TEST(TestInteractiveCLI, DISABLED_short_pause)
  */
 TEST(TestInteractiveCLI, DISABLED_long_pause)
 {
-    OPT_TEST_NO_ARG(HL_PAUSE_LONG);
+    OPT_TEST(HL_PAUSE_LONG);
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
     EXPECT_EQ(cli.getState(), TransportState::PAUSED);
 
     restoreState();
+}
+
+/************************************************************/
+
+/**
+ * Export with no argument.
+ *
+ * EXPECTED:
+ *      process returns failure
+ */
+TEST(TestInteractiveCLI, no_arg_long_export)
+{
+    OPT_TEST(HL_EXPORT_LONG);
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_FAILURE);
+}
+
+/************************************************************/
+
+/**
+ * Set input device with no argument.
+ *
+ * This MUST come before select_by_id_long_input
+ * until we stop using setting's defaultInputDevice
+ *
+ * EXPECTED:
+ *      process returns failure
+ */
+TEST(TestInteractiveCLI, no_arg_long_input_select)
+{
+    OPT_TEST(HL_INPUT_LONG);
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_FAILURE);
+}
+
+/**
+ * Set input device using ID.
+ *
+ * EXPECTED:
+ *      process returns success
+ */
+TEST(TestInteractiveCLI, select_by_id_long_input)
+{
+    OPT_TEST(HL_INPUT_LONG, "0");
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
+
+    restoreState();
+}
+
+/**
+ * Set input to non-existent device.
+ *
+ * EXPECTED:
+ *      process returns failure
+ */
+TEST(TestInteractiveCLI, select_non_existent_long_input)
+{
+    OPT_TEST(HL_INPUT_LONG, "non_existent");
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_FAILURE);
+}
+
+/************************************************************/
+
+/**
+ * Set ouput device with no argument.
+ *
+ * This MUST come before select_by_id_long_output
+ * until we stop using setting's defaultOutputDevice
+ *
+ * EXPECTED:
+ *      process returns failure
+ */
+TEST(TestInteractiveCLI, no_arg_long_ouput_select)
+{
+    OPT_TEST(HL_OUTPUT_LONG);
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_FAILURE);
+}
+
+/**
+ * Set ouput device using ID.
+ *
+ * EXPECTED:
+ *      process returns success
+ */
+TEST(TestInteractiveCLI, select_by_id_long_output)
+{
+    OPT_TEST(HL_OUTPUT_LONG, "0");
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
+}
+
+/**
+ * Set ouput to non-existent device.
+ *
+ * EXPECTED:
+ *      process returns failure
+ */
+TEST(TestInteractiveCLI, select_non_existent_long_output)
+{
+    OPT_TEST(HL_OUTPUT_LONG, "non_existent");
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_FAILURE);
 }
 
 /************************************************************/
@@ -253,7 +483,7 @@ TEST(TestInteractiveCLI, DISABLED_long_pause)
  */
 TEST(TestInteractiveCLI, short_list)
 {
-    OPT_TEST_NO_ARG(HL_LIST_SHORT);
+    OPT_TEST(HL_LIST_SHORT);
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
 }
@@ -266,7 +496,7 @@ TEST(TestInteractiveCLI, short_list)
  */
 TEST(TestInteractiveCLI, long_list)
 {
-    OPT_TEST_NO_ARG(HL_LIST_SHORT);
+    OPT_TEST(HL_LIST_SHORT);
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
 }
@@ -281,7 +511,7 @@ TEST(TestInteractiveCLI, long_list)
  */
 TEST(TestInteractiveCLI, short_print)
 {
-    OPT_TEST_NO_ARG(HL_PRINT_SHORT);
+    OPT_TEST(HL_PRINT_SHORT);
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
 }
@@ -294,7 +524,35 @@ TEST(TestInteractiveCLI, short_print)
  */
 TEST(TestInteractiveCLI, long_print)
 {
-    OPT_TEST_NO_ARG(HL_PRINT_LONG);
+    OPT_TEST(HL_PRINT_LONG);
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
+}
+
+/************************************************************/
+
+/**
+ * Print version using short option.
+ *
+ * EXPECTED:
+ *      process returns success
+ */
+TEST(TestInteractiveCLI, short_version)
+{
+    OPT_TEST(HL_VERSION_SHORT);
+
+    ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
+}
+
+/**
+ * Print version using long option.
+ *
+ * EXPECTED:
+ *      process returns success
+ */
+TEST(TestInteractiveCLI, long_version)
+{
+    OPT_TEST(HL_VERSION_LONG);
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
 }
@@ -309,7 +567,7 @@ TEST(TestInteractiveCLI, long_print)
  */
 TEST(TestInteractiveCLI, short_help)
 {
-    OPT_TEST_NO_ARG(HL_HELP_SHORT);
+    OPT_TEST(HL_HELP_SHORT);
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
 }
@@ -322,7 +580,7 @@ TEST(TestInteractiveCLI, short_help)
  */
 TEST(TestInteractiveCLI, long_help)
 {
-    OPT_TEST_NO_ARG(HL_HELP_LONG);
+    OPT_TEST(HL_HELP_LONG);
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
 }
@@ -363,7 +621,7 @@ TEST(TestInteractiveCLI, long_sys)
  */
 TEST(TestInteractiveCLI, no_args_long_sys)
 {
-    OPT_TEST_NO_ARG(HL_SYSTEM_LONG);
+    OPT_TEST(HL_SYSTEM_LONG);
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
 }
@@ -378,7 +636,7 @@ TEST(TestInteractiveCLI, no_args_long_sys)
  */
 TEST(TestInteractiveCLI, long_exit)
 {
-    OPT_TEST_NO_ARG(HL_EXIT_LONG);
+    OPT_TEST(HL_EXIT_LONG);
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_EXIT);
 }

@@ -11,7 +11,8 @@
 
 using namespace hula;
 
-#define HL_ASCII_HEADER "\n" \
+#define HL_CLI_NAME "hulaloop-cli"
+#define HL_CLI_ASCII_HEADER "\n" \
     "   _    _       _       _\n" \
     "  | |  | |     | |     | |\n" \
     "  | |__| |_   _| | __ _| |     ___   ___  _ __\n" \

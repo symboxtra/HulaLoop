@@ -10,9 +10,9 @@
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
-    QCoreApplication::setApplicationName("hulaloop-cli");
+    QCoreApplication::setApplicationName(HL_CLI_NAME);
     QCoreApplication::setOrganizationName("Symboxtra Software");
-    QCoreApplication::setApplicationVersion(HL_VERSION_STR); // TODO: Needs to use the version header
+    QCoreApplication::setApplicationVersion(HL_VERSION_STR);
 
     HulaImmediateArgs extraArgs;
     bool success = parseArgsQt(app, extraArgs);
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
         exit(0);
     }
 
-    fprintf(stdout, "%s", HL_ASCII_HEADER);
+    fprintf(stdout, "%s", HL_CLI_ASCII_HEADER);
 
     // Print the arguments provided
     printSettings();

@@ -6,6 +6,7 @@
     "files.associations": {
         "xstring": "cpp",
         "deque": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "stdexcept": "cpp"
     }
 }

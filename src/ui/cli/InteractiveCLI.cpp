@@ -33,7 +33,7 @@ void HulaInteractiveCli::unusedArgs(const std::vector<std::string> &args, int nu
 {
     for (size_t i = numUsed - 1; i < args.size(); i++)
     {
-        fprintf(stderr, "%sWarning: Unused argument '%s'\n", HL_ERROR_PREFIX, args[i].c_str());
+        fprintf(stderr, "%sWarning: Unused argument '%s'.\n", HL_ERROR_PREFIX, args[i].c_str());
     }
 }
 
@@ -57,7 +57,7 @@ void HulaInteractiveCli::missingArg(const std::string &argName) const
 void HulaInteractiveCli::malformedArg(const std::string &argName, const std::string &val, const std::string &type) const
 {
     fprintf(stderr, "%sMalformed argument '%s'\n", HL_ERROR_PREFIX, argName.c_str());
-    fprintf(stderr, "%s'%s' is not a valid %s\n", HL_ERROR_PREFIX, val.c_str(), type.c_str());
+    fprintf(stderr, "%s'%s' is not a valid %s.\n", HL_ERROR_PREFIX, val.c_str(), type.c_str());
 }
 
 /**
@@ -289,8 +289,12 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
             // TODO: Settings shouldn't really store this
             settings->setDefaultInputDeviceName(device->getName());
         }
+        else
+        {
+            return HulaCliStatus::HULA_CLI_FAILURE;
+        }
     }
-    else if (command == HL_OUTPUT_SHORT || command == HL_OUTPUT_SHORT)
+    else if (command == HL_OUTPUT_SHORT || command == HL_OUTPUT_LONG)
     {
         Device *device = NULL;
         // Make sure the arg exists
@@ -317,14 +321,22 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
             // TODO: Settings shouldn't really store this
             settings->setDefaultOutputDeviceName(device->getName());
         }
+        else
+        {
+            return HulaCliStatus::HULA_CLI_FAILURE;
+        }
     }
     else if (command == HL_PRINT_SHORT || command == HL_PRINT_LONG)
     {
         printSettings();
     }
+    else if (command == HL_VERSION_SHORT || command == HL_VERSION_LONG)
+    {
+        printf("%s v%s\n", HL_CLI_NAME, HL_VERSION_STR);
+    }
     else if (command == HL_HELP_SHORT || command == HL_HELP_LONG)
     {
-        printf("%s", HL_HELP_TEXT);
+        printf(HL_HELP_TEXT);
     }
     else if (command == HL_SYSTEM_SHORT || command == HL_SYSTEM_LONG)
     {
