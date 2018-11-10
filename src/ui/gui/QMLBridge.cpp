@@ -68,9 +68,9 @@ void QMLBridge::pause()
  */
 void QMLBridge::setActiveInputDevice(QString QDeviceName)
 {
-    cout << "setActiveDevice() called" << endl;
-    string deviceName = QDeviceName.toStdString();
-    vector<Device *> iDevices = transport->getController()->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
+    std::cout << "setActiveDevice() called" << std::endl;
+    std::string deviceName = QDeviceName.toStdString();
+    std::vector<Device *> iDevices = transport->getController()->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
     for (auto const &device : iDevices)
     {
         if (device->getName() == deviceName)
@@ -81,7 +81,7 @@ void QMLBridge::setActiveInputDevice(QString QDeviceName)
         }
     }
     //Should not get here should have found the device
-    cerr << "Input device not found: " << deviceName << endl;
+    std::cerr << "Input device not found: " << deviceName << std::endl;
 }
 
 /**
@@ -90,8 +90,8 @@ void QMLBridge::setActiveInputDevice(QString QDeviceName)
  */
 void QMLBridge::setActiveOutputDevice(QString QDeviceName)
 {
-    string deviceName = QDeviceName.toStdString();
-    vector<Device *> oDevices = transport->getController()->getDevices(DeviceType::PLAYBACK);
+    std::string deviceName = QDeviceName.toStdString();
+    std::vector<Device *> oDevices = transport->getController()->getDevices(DeviceType::PLAYBACK);
     for (auto const &device : oDevices)
     {
         if (device->getName() == deviceName)
@@ -102,7 +102,7 @@ void QMLBridge::setActiveOutputDevice(QString QDeviceName)
         }
     }
     //Should not get here should have found the device
-    cerr << "Output device not found: " << deviceName << endl;
+    std::cerr << "Output device not found: " << deviceName << std::endl;
 }
 
 /**
@@ -112,8 +112,8 @@ void QMLBridge::setActiveOutputDevice(QString QDeviceName)
  */
 QString QMLBridge::getInputDevices()
 {
-    string devices;
-    vector<Device *> vd = transport->getController()->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
+    std::string devices;
+    std::vector<Device *> vd = transport->getController()->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
     for (int i = 0; i < vd.size(); i++)
     {
         devices += vd[i]->getName();
@@ -133,8 +133,8 @@ QString QMLBridge::getInputDevices()
  */
 QString QMLBridge::getOutputDevices()
 {
-    string devices;
-    vector<Device *> vd = transport->getController()->getDevices(DeviceType::PLAYBACK);
+    std::string devices;
+    std::vector<Device *> vd = transport->getController()->getDevices(DeviceType::PLAYBACK);
     for (int i = 0; i < vd.size(); i++)
     {
         devices += vd[i]->getName();
@@ -158,7 +158,7 @@ void QMLBridge::saveFile(QString dir)
 {
     // create a Qurl so it is easy to convert
     QUrl url(dir);
-    string directory = url.path().toStdString();
+    std::string directory = url.path().toStdString();
     transport->exportFile(directory);
 }
 

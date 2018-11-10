@@ -29,7 +29,7 @@ inline void printDeviceList(Transport *t)
 {
     HulaSettings *settings = HulaSettings::getInstance();
 
-    vector<Device *> devices;
+    std::vector<Device *> devices;
     if (settings->getShowRecordDevices())
     {
         devices = t->getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK | RECORD));
@@ -66,7 +66,7 @@ inline void printDeviceList(Transport *t)
 inline Device * findDevice(Transport *t, const std::string &name, DeviceType type)
 {
     Device *device = NULL;
-    vector<Device *> devices;
+    std::vector<Device *> devices;
     devices = t->getController()->getDevices(type);
 
     // Check if we got a numeric id

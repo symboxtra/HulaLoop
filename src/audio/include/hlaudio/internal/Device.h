@@ -5,8 +5,10 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
+/**
+ * Denotes type of Device.
+ * Meant to be bitwise or'd together to support multiple capabilities.
+ */
 enum DeviceType
 {
     RECORD = 1,
@@ -14,34 +16,37 @@ enum DeviceType
     LOOPBACK = 4
 };
 
+/**
+ * Union for the three types of device ID.
+ */
 union DeviceID
 {
-    string linuxID;
+    std::string linuxID;
     uint32_t *windowsID;
+    int osxID;
 };
 
 /**
- * Defines a system audio device
+ * Wrapper for OS specific device information.
  */
-// TODO: Add better public description
 class Device {
     private:
         uint32_t *deviceID;
-        string deviceName;
+        std::string deviceName;
 
         DeviceType type;
 
     public:
-        Device(uint32_t *id, string name, DeviceType t);
+        Device(uint32_t *id, std::string name, DeviceType t);
         ~Device();
 
         uint32_t *getID();
 
-        string getName();
+        std::string getName();
 
         DeviceType getType();
 
-        static void deleteDevices(vector<Device *> devices);
+        static void deleteDevices(std::vector<Device *> devices);
 };
 
 #endif // END HL_DEVICE_H

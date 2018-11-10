@@ -25,8 +25,6 @@
 #include "hlaudio/internal/Device.h"
 #include "hlaudio/internal/OSAudio.h"
 
-using namespace std;
-
 #define REFTIMES_PER_SEC  10000000
 #define REFTIMES_PER_MILLISEC  10000
 
@@ -67,7 +65,7 @@ class WindowsAudio : public OSAudio {
         ~WindowsAudio();
 
         bool checkRates(Device *device);
-        vector<Device *> getDevices(DeviceType type);
+        std::vector<Device *> getDevices(DeviceType type);
 
         void capture();
 

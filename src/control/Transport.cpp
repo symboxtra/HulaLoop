@@ -193,7 +193,7 @@ Controller *Transport::getController() const
     return controller;
 }
 
-void Transport::exportFile(string targetDirectory)
+void Transport::exportFile(std::string targetDirectory)
 {
     Export exp(targetDirectory);
     // TODO: Make it an actual directory

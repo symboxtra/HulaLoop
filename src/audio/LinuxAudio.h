@@ -16,14 +16,13 @@
     #define ALSA_PCM_NEW_HW_PARAMS_API
 #endif
 #define FRAME_TIME 8192
-using namespace std;
 using byte = uint8_t;
 
 class LinuxAudio : public OSAudio {
     private:
         int bitrate;
-        vector<Device *> iDevices;
-        vector<Device *> oDevices;
+        std::vector<Device *> iDevices;
+        std::vector<Device *> oDevices;
 
     public:
         LinuxAudio();
@@ -32,7 +31,7 @@ class LinuxAudio : public OSAudio {
 
         static void startPAVUControl();
 
-        vector<Device *> getDevices(DeviceType type);
+        std::vector<Device *> getDevices(DeviceType type);
 
         bool checkRates(Device *device);
 

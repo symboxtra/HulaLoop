@@ -155,7 +155,7 @@ void OSXAudio::capture()
  *
  * @return List of Device objects
  */
-vector<Device *> OSXAudio::getDevices(DeviceType type)
+std::vector<Device *> OSXAudio::getDevices(DeviceType type)
 {
     int deviceCount = Pa_GetDeviceCount();
     if (deviceCount < 0)
@@ -164,7 +164,7 @@ vector<Device *> OSXAudio::getDevices(DeviceType type)
         exit(1); // TODO: Handle error
     }
 
-    vector<Device *> devices;
+    std::vector<Device *> devices;
     for (uint32_t i = 0; i < deviceCount; i++)
     {
         const PaDeviceInfo *paDevice = Pa_GetDeviceInfo(i);

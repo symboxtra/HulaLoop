@@ -3,15 +3,14 @@
 
 #include <hlaudio/hlaudio.h>
 #include <string>
-using namespace std;
 
 class Export {
     private:
-        string targetDirectory;
+        std::string targetFile;
 
     public:
-        Export(string targetDirectory);
-        void copyData(string inputFileDirectory);
+        Export(std::string targetFile);
+        void copyData(std::string inputFileDirectory);
 
         ~Export();
 };

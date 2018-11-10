@@ -10,16 +10,13 @@
 #include "Device.h"
 #include "HulaRingBuffer.h"
 
-using namespace std;
-
-// TODO: Add better public description
 /**
- * An abstract class that defines the components of the particular OS
- * specfic classes.
+ * Abstract class that defines the required components
+ * for OS specfic audio classes.
  */
 class OSAudio {
     private:
-        void joinAndKillThreads(vector<thread> &threads);
+        void joinAndKillThreads(std::vector<std::thread> &threads);
 
     protected:
 
@@ -46,17 +43,17 @@ class OSAudio {
          * List of all added ring buffers.
          * Data received from the operating system is copied into each of these buffers.
          */
-        vector<HulaRingBuffer *> rbs;
+        std::vector<HulaRingBuffer *> rbs;
 
         /**
          * Thread for input device activities.
          */
-        vector<thread> inThreads;
+        std::vector<std::thread> inThreads;
 
         /**
          * Thread for output device activities.
          */
-        vector<thread> outThreads;
+        std::vector<std::thread> outThreads;
 
         /**
          * Flag to syncronize the capture thread for an instance.
@@ -65,7 +62,7 @@ class OSAudio {
          *
          * Should never be set directly. Only by setActiveXXXDevice().
          */
-        atomic<bool> endCapture;
+        std::atomic<bool> endCapture;
 
         /**
          * I don't really know what this is for right now
@@ -89,9 +86,9 @@ class OSAudio {
          * connected to the OS and return them as Device instances
          *
          * @param type DeviceType that is combination from the DeviceType enum
-         * @return vector<Device*> A list of Device instances that carry the necessary device information
+         * @return std::vector<Device*> A list of Device instances that carry the necessary device information
          */
-        virtual vector<Device *> getDevices(DeviceType type) = 0;
+        virtual std::vector<Device *> getDevices(DeviceType type) = 0;
 
         /**
          * Execution loop for loopback capture

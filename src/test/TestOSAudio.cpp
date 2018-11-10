@@ -45,9 +45,9 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
             return true;
         }
 
-        vector<Device *> getDevices(DeviceType type)
+        std::vector<Device *> getDevices(DeviceType type)
         {
-            vector<Device *> devices;
+            std::vector<Device *> devices;
             return devices;
         }
 

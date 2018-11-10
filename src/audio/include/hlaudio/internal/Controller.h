@@ -8,7 +8,6 @@
 #include "OSAudio.h"
 #include "HulaRingBuffer.h"
 
-// TODO: Add public description of class
 /**
  * @ingroup public_api
  *
@@ -32,7 +31,7 @@ class Controller {
         HulaRingBuffer *createBuffer(float duration);
         HulaRingBuffer *createAndAddBuffer(float duration);
 
-        vector<Device *> getDevices(DeviceType type) const;
+        std::vector<Device *> getDevices(DeviceType type) const;
 
         void setActiveInputDevice(Device *device) const;
         void setActiveOutputDevice(Device *device) const;
