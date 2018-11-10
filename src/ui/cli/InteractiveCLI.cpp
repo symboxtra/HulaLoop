@@ -329,8 +329,11 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
             }
 
             // Run the command
-            int ret = system(sysCommand.c_str());
-            printf("\n%sSystem command returned: %d\n", HL_PRINT_PREFIX, ret);
+            if (sysCommand.size() > 0)
+            {
+                int ret = system(sysCommand.c_str());
+                printf("\n%sSystem command returned: %d\n", HL_PRINT_PREFIX, ret);
+            }
         }
         else
         {
