@@ -44,8 +44,8 @@ pipeline {
                         QT_PLUGIN_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/plugins"
                         QML_IMPORT_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/qml"
                         QML2_IMPORT_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/qml"
-                        QT_DEBUG_PLUGINS = 1
-                        QT_IMPORT_TRACE = 1
+                        QT_DEBUG_PLUGINS = 0
+                        QT_IMPORT_TRACE = 0
                     }
 
                     stages {
