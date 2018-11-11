@@ -61,16 +61,16 @@ ApplicationWindow {
 
     onClosing: {
         // This gets called when the user presses the exit btn
-        var hasUnsavedFiles = qmlbridge.checkIfUnsavedFiles();
-        if(hasUnsavedFiles)
+        var wannaClose = qmlbridge.wannaClose();
+        if(wannaClose)
         {
-            // user has unsaved files, prompt to ask if they are sure they want to exit
-            close.accepted = false;
+            // user closed due to not saving files or they have no unsaved files
+            close.accepted = true;
         }
         else
         {
-            // user has no unsaved files, just exit
-
+            // user cancelled and wants to save the files
+            close.accepted = false;
         }
     }
 }

@@ -35,7 +35,7 @@ namespace hula
             Q_INVOKABLE void pause();
 
             Q_INVOKABLE void saveFile(QString dir);
-            Q_INVOKABLE bool checkIfUnsavedFiles();
+            Q_INVOKABLE bool wannaClose();
 
             Q_INVOKABLE void launchUpdateProcess();
 
