@@ -1,4 +1,5 @@
 #include <iostream>
+#include <time.h>
 
 #include "hlcontrol/internal/Export.h"
 #include "hlcontrol/internal/HulaControlError.h"
@@ -28,6 +29,10 @@ Transport::Transport()
 Transport::Transport(bool dryRun)
 {
     controller = new Controller(dryRun);
+    recorder = new Record(controller);
+
+    recordState = true;
+    playbackState = false;
 }
 #endif
 
@@ -46,8 +51,9 @@ bool Transport::record(double delay, double duration)
     std::cout << "Duration set to: " << duration << std::endl;
     state = RECORDING;
 
-    if(recordState)
+    if (recordState)
     {
+        cout << "STARTED RECORDING" << endl;
         recorder->start();
 
         recordState = false;
@@ -76,7 +82,7 @@ bool Transport::stop()
     std::cout << "Stop button clicked!" << std::endl;
     state = STOPPED;
 
-    if(!recordState)
+    if (!playbackState || !recordState)
     {
         recorder->stop();
 
@@ -96,7 +102,7 @@ bool Transport::play()
     std::cout << "Play button clicked!" << std::endl;
     state = PLAYING;
 
-    if(playbackState)
+    if (playbackState)
     {
         // TODO: Add playback call
         playbackState = false;
@@ -114,7 +120,7 @@ bool Transport::pause()
     std::cout << "Pause button clicked!" << std::endl;
     state = PAUSED;
 
-    if(!recordState) // Pause record
+    if (!recordState) // Pause record
     {
         recorder->stop();
 
@@ -123,7 +129,7 @@ bool Transport::pause()
 
         return true;
     }
-    else if(!playbackState) // Pause playback
+    else if (!playbackState) // Pause playback
     {
         // TODO: Add playback pause call
         playbackState = true;
@@ -198,8 +204,24 @@ Controller *Transport::getController() const
 void Transport::exportFile(std::string targetDirectory)
 {
     Export exp(targetDirectory);
-    // TODO: Make it an actual directory
-    exp.copyData("/tmp/temp.txt");
+    // TODO: Remove harcoded path (Only for demo)
+    #if WIN32
+    vector<std::string> temp;
+    temp.push_back("C:\\Users\\patel\\AppData\\Local\\Temp\\hulaloop_temp.wav");
+    exp.copyData(temp);
+    #else
+    exp.copyData(recorder->getExportPaths());
+    #endif
+}
+
+/**
+ * Send the files from record to export for deletion
+ */
+void Transport::deleteTempFiles()
+{
+    recordState = true;
+    playbackState = false;
+    Export::deleteTempFiles(recorder->getExportPaths());
 }
 
 /**
@@ -212,5 +234,10 @@ Transport::~Transport()
     if (controller)
     {
         delete controller;
+    }
+
+    if (recorder)
+    {
+        delete recorder;
     }
 }

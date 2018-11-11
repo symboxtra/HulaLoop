@@ -91,6 +91,9 @@ if (WIN32)
     set (HL_LIBRARIES ${HL_LIBRARIES} winmm.lib ) # TODO: Add required windows libraries
 endif ()
 
+# Make sure we can find our Find<package>.cmake files
+list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
 
 
 
@@ -154,8 +157,11 @@ set (HL_LIBRARIES
     Qt5::Widgets
 )
 
+# Required Sndfile packages
+find_package (SndFile REQUIRED)
 
-
+add_include_dir (${LIBSNDFILE_INCLUDE})
+list (APPEND HL_LIBRARIES ${LIBSNDFILE_LIB})
 
 ######## Libraries ########
 
@@ -166,9 +172,6 @@ endif ()
 
 # Build and install portaudio to our build/lib folder
 add_subdirectory (src/libs/portaudio)
-
-# Make sure we can find our Find<package>.cmake files
-list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 # Add coverage flags for GCC after 3rd party libs are built
 set (CXX_FLAGS_NOCOV "${CMAKE_CXX_FLAGS}")
@@ -223,6 +226,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
     if (NOT HL_BUILD_ONLY_AUDIO)
         create_test ("src/test/TestTransport.cpp" "" -1 TRUE)
+        create_test ("src/test/TestRecord.cpp" "" -1 FALSE)
     endif ()
 
 endif ()

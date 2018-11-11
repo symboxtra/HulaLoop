@@ -100,7 +100,7 @@ class TestGUI : public ::testing::Test {
 
         bool isButtonPlay()
         {
-            QObject* obj = engine->rootObjects()[0]->findChild<QObject *>("play_icon");
+            QObject *obj = engine->rootObjects()[0]->findChild<QObject *>("play_icon");
 
             if (obj)
             {

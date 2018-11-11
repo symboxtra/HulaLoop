@@ -3,19 +3,23 @@
 
 #include <hlaudio/hlaudio.h>
 #include <string>
+#include <vector>
 
 namespace hula
 {
-    class Export {
-        private:
-            std::string targetFile;
+class Export {
+    private:
+        std::string targetFile;
 
-        public:
-            Export(std::string targetFile);
-            void copyData(std::string inputFileDirectory);
+    public:
+        Export(std::string targetFile);
+        void copyData(std::vector<std::string> dirs);
 
-            ~Export();
-    };
+        static std::string getTempPath();
+        static void deleteTempFiles(std::vector<std::string> dirs);
+
+        ~Export();
+};
 }
 
 #endif // HL_EXPORT_H

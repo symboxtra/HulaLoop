@@ -145,53 +145,65 @@ void Updater::updateQueryFinished(QNetworkReply *reply)
 {
 
     QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
-    if(doc.isNull())
+    if (doc.isNull())
+    {
         return;
+    }
 
     QJsonObject rootObj = doc.object();
-    if(rootObj.isEmpty())
+    if (rootObj.isEmpty())
+    {
         return;
+    }
 
     QString tagName = rootObj["tag_name"].toString();
     // tagName.remove(0, 1); // Remove the 'v' before the version string
 
     QStringList versionParts = tagName.split('.', QString::SkipEmptyParts);
 
-    if(versionParts.size() >= 3)
+    if (versionParts.size() >= 3)
     {
 
-        if(versionParts[0] > HL_VERSION_MAJOR)
+        if (versionParts[0] > HL_VERSION_MAJOR)
+        {
             updateAvailable = true;
-        if(versionParts[1] > HL_VERSION_MINOR)
+        }
+        if (versionParts[1] > HL_VERSION_MINOR)
+        {
             updateAvailable = true;
-        if(versionParts[2] > HL_VERSION_REV)
+        }
+        if (versionParts[2] > HL_VERSION_REV)
+        {
             updateAvailable = true;
+        }
 
     }
     else
+    {
         return;
+    }
 
     // updateAvailable = false;
 
-    if(updateAvailable)
+    if (updateAvailable)
     {
 
         QJsonArray assets = rootObj["assets"].toArray();
-        for(int i = 0; i < assets.size(); i++)
+        for (int i = 0; i < assets.size(); i++)
         {
 
             QJsonObject obj = assets[i].toObject();
             QString assetName = obj["name"].toString();
             bool ok = false;
 
-            if(assetName.contains(".tar") || assetName.contains(HL_PACKAGE_TYPE))
+            if (assetName.contains(".tar") || assetName.contains(HL_PACKAGE_TYPE))
             {
 
                 downloadHostUrl = obj["browser_download_url"].toString();
                 downloadFileName = obj["name"].toString();
                 downloadSize = obj["size"].toVariant().toULongLong(&ok);
 
-                if(!ok)
+                if (!ok)
                 {
                     downloadHostUrl = "";
                     downloadFileName = "";
@@ -247,8 +259,10 @@ void Updater::startHulaLoopInstaller()
     QString procName = QDir::tempPath() + "/" + downloadFileName;
 
     proc.setProgram(procName);
-    if(proc.startDetached())
+    if (proc.startDetached())
+    {
         exit(0);
+    }
 
 }
 
@@ -263,8 +277,10 @@ void Updater::startHulaLoopApp()
     QString procName = QCoreApplication::applicationDirPath() + "/hulaloop";
 
     proc.setProgram(procName);
-    if(proc.startDetached())
+    if (proc.startDetached())
+    {
         exit(0);
+    }
 
 }
 

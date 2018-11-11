@@ -10,34 +10,34 @@
 
 namespace hula
 {
-    /**
-     * @ingroup public_api
-     *
-     * Central component of the audio backend.
-     * A class that structures the receival of audio from the OS framework.
-     */
-    class Controller {
-        private:
-            OSAudio *audio;
+/**
+ * @ingroup public_api
+ *
+ * Central component of the audio backend.
+ * A class that structures the receival of audio from the OS framework.
+ */
+class Controller {
+    private:
+        OSAudio *audio;
 
-        public:
-            #ifndef NDEBUG
-            Controller(bool dryRun);
-            #endif // END NDEBUG
+    public:
+        #ifndef NDEBUG
+        Controller(bool dryRun);
+        #endif // END NDEBUG
 
-            Controller();
-            virtual ~Controller();
+        Controller();
+        virtual ~Controller();
 
-            void addBuffer(HulaRingBuffer *rb);
-            void removeBuffer(HulaRingBuffer *rb);
-            HulaRingBuffer *createBuffer(float duration);
-            HulaRingBuffer *createAndAddBuffer(float duration);
+        void addBuffer(HulaRingBuffer *rb);
+        void removeBuffer(HulaRingBuffer *rb);
+        HulaRingBuffer *createBuffer(float duration);
+        HulaRingBuffer *createAndAddBuffer(float duration);
 
-            std::vector<Device *> getDevices(DeviceType type) const;
+        std::vector<Device *> getDevices(DeviceType type) const;
 
-            void setActiveInputDevice(Device *device) const;
-            void setActiveOutputDevice(Device *device) const;
-    };
+        void setActiveInputDevice(Device *device) const;
+        void setActiveOutputDevice(Device *device) const;
+};
 }
 
 #endif // END HL_CONTROLLER_H

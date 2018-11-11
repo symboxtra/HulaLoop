@@ -16,29 +16,28 @@
     #define ALSA_PCM_NEW_HW_PARAMS_API
 #endif
 #define FRAME_TIME 8192
-using byte = uint8_t;
 
 namespace hula
 {
-    class LinuxAudio : public OSAudio {
-        private:
-            int bitrate;
-            std::vector<Device *> iDevices;
-            std::vector<Device *> oDevices;
+class LinuxAudio : public OSAudio {
+    private:
+        int bitrate;
+        std::vector<Device *> iDevices;
+        std::vector<Device *> oDevices;
 
-        public:
-            LinuxAudio();
-            ~LinuxAudio();
-            void capture();
+    public:
+        LinuxAudio();
+        ~LinuxAudio();
+        void capture();
 
-            static void startPAVUControl();
+        static void startPAVUControl();
 
-            std::vector<Device *> getDevices(DeviceType type);
+        std::vector<Device *> getDevices(DeviceType type);
 
-            bool checkRates(Device *device);
+        bool checkRates(Device *device);
 
-            void setActiveOutputDevice(Device *device);
-    };
+        void setActiveOutputDevice(Device *device);
+};
 }
 
 #endif // HL_LINUX_AUDIO_H

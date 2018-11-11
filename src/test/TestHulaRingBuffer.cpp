@@ -36,7 +36,7 @@ bool verifySamples(SAMPLE *samples, int numSamples)
  *
  * @return Array of TEST_NUM_SAMPLES samples.
  */
-SAMPLE * createTestSamples()
+SAMPLE *createTestSamples()
 {
     // This needs to change when we un-define SAMPLE
     // Assume 32-bit float is biggest sample
@@ -113,9 +113,24 @@ TEST(TestHulaRingBuffer, read_buffer)
     int32_t samplesWritten = rb->write(writeData, TEST_NUM_SAMPLES);
     EXPECT_EQ(samplesWritten, TEST_NUM_SAMPLES);
 
+    int32_t samplesWritten2 = rb->write(writeData, TEST_NUM_SAMPLES);
+    EXPECT_EQ(samplesWritten2, TEST_NUM_SAMPLES);
+
+    int32_t samplesWritten3 = rb->write(writeData, TEST_NUM_SAMPLES);
+    EXPECT_EQ(samplesWritten3, TEST_NUM_SAMPLES);
+
+    int32_t samplesWritten4 = rb->write(writeData, TEST_NUM_SAMPLES);
+    EXPECT_EQ(samplesWritten4, TEST_NUM_SAMPLES);
+
     SAMPLE *readData = new SAMPLE[TEST_NUM_SAMPLES];
     int32_t samplesRead = rb->read(readData, TEST_NUM_SAMPLES);
     EXPECT_EQ(samplesRead, TEST_NUM_SAMPLES);
+
+    // Make sure the two are identical
+    EXPECT_TRUE(verifySamples(readData, TEST_NUM_SAMPLES));
+
+    int32_t samplesRead2 = rb->read(readData, TEST_NUM_SAMPLES);
+    EXPECT_EQ(samplesRead2, TEST_NUM_SAMPLES);
 
     // Make sure the two are identical
     EXPECT_TRUE(verifySamples(readData, TEST_NUM_SAMPLES));

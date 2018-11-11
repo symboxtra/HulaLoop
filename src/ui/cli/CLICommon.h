@@ -66,7 +66,7 @@ inline void printDeviceList(Transport *t)
  * @return Pointer to newly allocated Device object if found
  * @return NULL if not found
  */
-inline Device * findDevice(Transport *t, const std::string &name, DeviceType type)
+inline Device *findDevice(Transport *t, const std::string &name, DeviceType type)
 {
     Device *device = NULL;
     std::vector<Device *> devices;

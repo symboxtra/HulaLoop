@@ -12,8 +12,7 @@
 #include <QtDebug>
 #include <QMessageBox>
 #include <QtWidgets>
-
-
+#include <QDir>
 #include <string>
 
 using namespace hula;
@@ -168,9 +167,14 @@ QString QMLBridge::getOutputDevices()
  */
 void QMLBridge::saveFile(QString dir)
 {
-    // create a Qurl so it is easy to convert
-    QUrl url(dir);
-    std::string directory = url.path().toStdString();
+    string directory = dir.toStdString();
+    int substrLen = 7;
+    if (dir[9] == ':')
+    {
+        // WINDOWS
+        substrLen = 8;
+    }
+    directory = directory.substr(substrLen);
     transport->exportFile(directory);
 }
 
@@ -192,10 +196,12 @@ bool QMLBridge::wannaClose()
     QIcon ico = QApplication::style()->standardIcon(QStyle::SP_DialogYesButton);
     goBackAndSave->setIcon(ico);
     msgBox.addButton(QMessageBox::Discard);
-    if(msgBox.exec() == QMessageBox::AcceptRole){
+    if (msgBox.exec() == QMessageBox::AcceptRole)
+    {
         return false;
     }
-    else{
+    else
+    {
         return true;
     }
 }
@@ -218,4 +224,12 @@ void QMLBridge::launchUpdateProcess()
     proc->start(procName, args);
     proc->waitForFinished();
 
+}
+
+/**
+ * Deletes all the temp files that the program has created
+ */
+void QMLBridge::cleanTempFiles()
+{
+    transport->deleteTempFiles();
 }

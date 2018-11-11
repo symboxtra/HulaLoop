@@ -105,6 +105,11 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
  */
 bool LinuxAudio::checkRates(Device *device)
 {
+    if (device->getName() == "Pulse Audio Volume Control")
+    {
+        std::thread(&LinuxAudio::startPAVUControl).detach();
+        return true;
+    }
     int err;                     // return for commands that might return an error
     snd_pcm_t *pcmHandle = NULL; // default pcm handle
     snd_pcm_hw_params_t *param;  // defaults param for the pcm
@@ -151,46 +156,20 @@ bool LinuxAudio::checkRates(Device *device)
 }
 
 /**
- * DEPRECATED: To be replaced by OSAudio::setActiveOutputDevice.
- */
-void LinuxAudio::setActiveOutputDevice(Device *device)
-{
-    // Set the active output device
-    this->activeOutputDevice = device;
-    std::cout << checkRates(device) << std::endl;
-    // Interrupt all threads and make sure they stop
-    // for (auto &t : execThreads)
-    // {
-    //     // TODO: Find better way of safely terminating thread
-    //     t.detach();
-    //     t.~thread();
-    // }
-
-    // // Clean the threads after stopping all threads
-    // execThreads.clear();
-
-    // // Start up new threads with new selected device info
-
-    // // Start capture thread and add to thread vector
-    // execThreads.emplace_back(std::thread(&LinuxAudio::test_capture, this));
-
-    // // TODO: Add playback thread later
-
-    // // Detach new threads to run independently
-    // for (auto &t : execThreads)
-    // {
-    //     t.detach();
-    // }
-}
-
-/**
  * Open the program Pulse Audio Volume Control to the Record tab.
  * This will allow the user to select the "Monitor of" source
  * that they wish to capture loopback from.
  */
 void LinuxAudio::startPAVUControl()
 {
+    static bool pavuControlOpen = false;
+    if (pavuControlOpen)
+    {
+        return;
+    }
+    pavuControlOpen = true;
     system("/usr/bin/pavucontrol -t 2");
+    pavuControlOpen = false;
 }
 
 /*
@@ -203,13 +182,12 @@ void LinuxAudio::startPAVUControl()
  */
 void LinuxAudio::capture()
 {
-    std::thread(&LinuxAudio::startPAVUControl).detach();
     int err;                        // return for commands that might return an error
     snd_pcm_t *pcmHandle = NULL;    // default pcm handle
     std::string defaultDevice;           // default hw id for the device
     snd_pcm_hw_params_t *param;     // object to store our paramets (they are just the default ones for now)
     int audioBufferSize;            // size of the buffer for the audio
-    byte *audioBuffer = NULL;       // buffer for the audio
+    uint8_t *audioBuffer = NULL;       // buffer for the audio
     snd_pcm_uframes_t *temp = NULL; // useless parameter because the api requires it
     int framesRead = 0;             // amount of frames read
 
@@ -255,9 +233,9 @@ void LinuxAudio::capture()
 
     // allocate memory for the buffer
     audioBufferSize = frame * NUM_CHANNELS * sizeof(SAMPLE);
-    audioBuffer = (byte *)malloc(audioBufferSize);
+    audioBuffer = (uint8_t *)malloc(audioBufferSize);
 
-    while (true)
+    while (!this->endCapture.load())
     {
         // while (callbackList.size() > 0)
         // {
@@ -279,8 +257,12 @@ void LinuxAudio::capture()
         copyToBuffers(audioBuffer, framesRead * NUM_CHANNELS * sizeof(SAMPLE));
     }
     // cleanup stuff
-    snd_pcm_drain(pcmHandle);
-    snd_pcm_close(pcmHandle);
+    err = snd_pcm_close(pcmHandle);
+    if (err < 0)
+    {
+        std::cerr << "Unable to close" << std::endl;
+        exit(1);
+    }
     free(audioBuffer);
 }
 
