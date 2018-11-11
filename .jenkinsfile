@@ -99,8 +99,7 @@ pipeline {
 
                                         lcov -c -i -d build-linux -o build-linux/coverage.base
 
-                                        # Run everything but the memtests.
-                                        # These will run on PRs and master and should also be run locally if you think you're leaking.
+                                        # These will run on PRs and master and should also be run locally if you think you are leaking.
                                         cd ./build-linux
 
                                         ctest -V -E ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER}
@@ -116,7 +115,7 @@ pipeline {
 
                         }
 
-                        stage('Memcheck - Linux') {
+                        stage('Master Only - Linux') {
                             when {
                                 anyOf {
                                     branch 'master'
@@ -129,8 +128,6 @@ pipeline {
                             steps {
 
                                 sh '''
-                                    # Only run the memtests
-                                    # No need for code coverage since these are the same as above just inside valgrind
                                     cd ./build-linux
                                     ctest -V -R ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER}
                                 '''
@@ -237,7 +234,7 @@ pipeline {
                                     lcov -c -i -d build-osx -o build-osx/coverage.base
 
                                     # Run everything but the memtests
-                                    # These will run on PRs and master and should also be run locally if you think you're leaking
+                                    # These will run on PRs and master and should also be run locally if you think you are leaking
                                     cd ./build-osx
 
                                     ctest -V -E ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER}
@@ -263,7 +260,7 @@ pipeline {
 
                         }
 
-                        stage('Memcheck - OSX') {
+                        stage('Master Only - OSX') {
                             when {
                                 anyOf {
                                     branch 'master'
@@ -276,8 +273,6 @@ pipeline {
                             steps {
 
                                 sh '''
-                                    # Only run the memtests
-                                    # No need for code coverage since these are the same as above just inside valgrind
                                     cd ./build-osx
                                     ctest -V -R ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER}
                                 '''
@@ -366,18 +361,36 @@ pipeline {
                                 powershell '''
                                     echo "Running test suite on ${ENV:HL_OS}..."
 
-                                    # Run everything but the memtests.
                                     # cd build-win
                                     # ctest -C Debug -V -E ${ENV:HL_MEMCHECK_PREFIX} ${ENV:HL_ONLY_MASTER}
                                     # if ($LastExitCode -ne 0) {$host.SetShouldExit($LastExitCode)} # Exit with test error code
 
                                     # cd ..
 
-                                    ./win-coverage.ps1 build-win ${ENV:HL_ONLY_MASTER}
+                                    ./win-coverage.ps1 build-win -E ${ENV:HL_ONLY_MASTER}
                                 '''
 
                             }
 
+                        }
+
+                        stage('Master Only - Windows') {
+                            when {
+                                anyOf {
+                                    branch 'master'
+                                    branch 'develop'
+                                    changeRequest target: 'master'
+                                    changeRequest target: 'develop'
+                                }
+                            }
+
+                            steps {
+
+                                powershell '''
+                                    cd ./build-win
+                                    ./win-coverage.ps1 build-win -R ${ENV:HL_ONLY_MASTER}
+                                '''
+                            }
                         }
                     } // END stages
 
