@@ -48,6 +48,16 @@ void Updater::setUpdateHost(QString updateHostUrl)
  *
  * @return QString - The name of the downloaded file
  */
+QString Updater::getUpdateHost()
+{
+    return updateHostUrl;
+}
+
+/**
+ * Method to check the downloaded file name.
+ *
+ * @return QString - The name of the downloaded file
+ */
 QString Updater::getDownloadFileName()
 {
     return downloadFileName;

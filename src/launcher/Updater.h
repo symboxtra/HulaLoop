@@ -13,7 +13,7 @@ namespace hula
     class Updater : public QObject
     {
         Q_OBJECT
-        Q_PROPERTY(QString updateHostUrl WRITE setUpdateHost)
+        Q_PROPERTY(QString updateHostUrl READ getUpdateHost WRITE setUpdateHost)
         Q_PROPERTY(qint64 downloadSize READ getDownloadSize)
         Q_PROPERTY(qint64 numBytesDownloaded READ getNumBytesDownloaded)
 
@@ -34,6 +34,7 @@ namespace hula
             ~Updater();
 
             void setUpdateHost(QString);
+            QString getUpdateHost();
 
             QString getDownloadFileName();
             qint64 getNumBytesDownloaded();

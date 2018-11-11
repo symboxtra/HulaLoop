@@ -32,7 +32,7 @@ class TestUpdater : public ::testing::Test {
 
 };
 
-/* TEST_F(TestUpdater, checkAndDownloadUpdate)
+TEST_F(TestUpdater, checkAndDownloadUpdate)
 {
     updater->setUpdateHost("https://api.github.com/repos/jmcker/HulaLoop/releases/latest");
     ASSERT_TRUE(updater->checkForUpdate());
@@ -41,7 +41,7 @@ class TestUpdater : public ::testing::Test {
     QFile *file = new QFile(QDir::tempPath() + "/" + updater->getDownloadFileName());
     ASSERT_TRUE(file->exists());
     ASSERT_TRUE(file->size() == updater->getDownloadSize());
-} */
+}
 
 TEST_F(TestUpdater, checkForUpdateError)
 {
