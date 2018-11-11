@@ -116,7 +116,7 @@ int32_t HulaRingBuffer::directRead(int32_t maxSamples, void **dataPtr1, int32_t 
     *size2 = 0;
 
     // By using PaUtil_GetRingBufferReadRegions, we can read directly from the ring buffer
-    ring_buffer_size_t samplesRead = PaUtil_GetRingBufferReadRegions(&this->rb, samplesInBuffer, dataPtr1, (ring_buffer_size_t *)size1, dataPtr2, (ring_buffer_size_t *)size2);
+    ring_buffer_size_t samplesRead = PaUtil_GetRingBufferReadRegions(&this->rb, samplesToWrite, dataPtr1, (ring_buffer_size_t *)size1, dataPtr2, (ring_buffer_size_t *)size2);
     if (samplesRead > 0)
     {
         // printf("%sDirect read of %d elements.\n", HL_PRINT_PREFIX, samplesRead);
