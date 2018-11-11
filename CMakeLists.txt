@@ -202,6 +202,7 @@ endif ()
 
 ######## Testing ########
 # GUI tests are in Testing.cmake
+# Updater tests are in Testing.cmake
 
 # Build settings for DEBUG builds only
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
