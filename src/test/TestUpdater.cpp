@@ -6,6 +6,8 @@
 
 #include "Updater.h"
 
+using namespace hula;
+
 class TestUpdater : public ::testing::Test {
 
     protected:
