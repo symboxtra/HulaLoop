@@ -150,7 +150,9 @@ TEST_F(TestOSXAudio, short_capture)
     {
         samplesRead = rb->read(readData, maxSamples);
         if (samplesRead > 0)
+        {
             break;
+        }
 
         // Sleep for a bit to let some data flow in
         std::this_thread::sleep_for(std::chrono::milliseconds(20));

@@ -24,11 +24,11 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    if(argc > 1)
+    if (argc > 1)
     {
 
         QString arg(argv[1]);
-        if(arg == "silent")
+        if (arg == "silent")
         {
 
             Updater updater;
@@ -38,13 +38,13 @@ int main(int argc, char *argv[])
             msgBox.setWindowTitle("HulaLoop Updater");
             msgBox.setIconPixmap(QPixmap(":/res/hulaloop-logo.png"));
 
-            if(updater.checkForUpdate())
+            if (updater.checkForUpdate())
             {
 
                 msgBox.setText("A newer version has been detected!\n\nClick Ok to update!");
                 msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
 
-                if(msgBox.exec() == QMessageBox::Ok)
+                if (msgBox.exec() == QMessageBox::Ok)
                 {
 
                     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));

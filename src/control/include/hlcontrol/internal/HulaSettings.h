@@ -21,7 +21,7 @@ namespace hula
             HulaSettings();
 
         public:
-            static HulaSettings * getInstance();
+            static HulaSettings *getInstance();
 
             ~HulaSettings();
 

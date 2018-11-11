@@ -38,7 +38,7 @@ HulaAudioSettings::HulaAudioSettings()
  *
  * @return Pointer to the HulaAudioSettings instance.
  */
-HulaAudioSettings * HulaAudioSettings::getInstance()
+HulaAudioSettings *HulaAudioSettings::getInstance()
 {
     if (hlaudio_instance == nullptr)
     {

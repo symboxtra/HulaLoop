@@ -70,7 +70,8 @@ bool parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
     parser.addHelpOption();
     parser.addVersionOption();
 
-    parser.addOptions({
+    parser.addOptions(
+    {
         {{HL_OUT_FILE_SO, HL_OUT_FILE_LO}, QCoreApplication::translate("main", "Path to audio output file."), QCoreApplication::translate("main", "out-file-path")},
         {{HL_DELAY_TIME_SO, HL_DELAY_TIME_LO}, QCoreApplication::translate("main", "Duration, in seconds, of the countdown timer before record."), QCoreApplication::translate("main", "delay")},
         {{HL_RECORD_TIME_SO, HL_RECORD_TIME_LO}, QCoreApplication::translate("main", "Duration, in seconds, of the record."), QCoreApplication::translate("main", "record duration")},

@@ -10,12 +10,11 @@
 
 namespace hula
 {
-    class Updater : public QObject
-    {
-        Q_OBJECT
-        Q_PROPERTY(QString updateHostUrl READ getUpdateHost WRITE setUpdateHost)
-        Q_PROPERTY(qint64 downloadSize READ getDownloadSize)
-        Q_PROPERTY(qint64 numBytesDownloaded READ getNumBytesDownloaded)
+    class Updater : public QObject {
+            Q_OBJECT
+            Q_PROPERTY(QString updateHostUrl READ getUpdateHost WRITE setUpdateHost)
+            Q_PROPERTY(qint64 downloadSize READ getDownloadSize)
+            Q_PROPERTY(qint64 numBytesDownloaded READ getNumBytesDownloaded)
 
         private:
             QNetworkAccessManager *manager;

@@ -95,10 +95,12 @@ QList<int> Updater::parseTagName(const QString &tagName)
     QList<int> versionParts({-1, -1, -1, -1});
     QStringList tagSegments = tagName.split('.', QString::SkipEmptyParts);
 
-    if(tagSegments.size() < 3)
+    if (tagSegments.size() < 3)
+    {
         return versionParts;
+    }
 
-    for(int i = 0; i < tagSegments.size(); i++)
+    for (int i = 0; i < tagSegments.size(); i++)
     {
 
         QString segment = tagSegments.at(i);
@@ -125,65 +127,78 @@ bool Updater::checkForUpdate()
     bool updateAvailable = false;
     reply = manager->get(QNetworkRequest(QUrl(updateHostUrl)));
 
-    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [=](QNetworkReply::NetworkError code) {
+    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [ = ](QNetworkReply::NetworkError code)
+    {
         // throw exception
         reply->deleteLater();
         return false;
     });
 
-    connect(reply, &QNetworkReply::sslErrors, [=] {
+    connect(reply, &QNetworkReply::sslErrors, [ = ]
+    {
         // throw exception
         reply->deleteLater();
         return false;
     });
 
-    connect(reply, &QNetworkReply::finished, [&] {
+    connect(reply, &QNetworkReply::finished, [&]
+    {
 
         QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
-        if(doc.isNull())
+        if (doc.isNull())
             return false;
 
         QJsonObject rootObj = doc.object();
-        if(rootObj.isEmpty())
+        if (rootObj.isEmpty())
             return false;
 
         QList<int> versionParts = parseTagName(rootObj["tag_name"].toString());
-        if(versionParts.size() == 4)
+        if (versionParts.size() == 4)
         {
 
-            if(versionParts.at(0) > HL_VERSION_MAJOR)
+            if (versionParts.at(0) > HL_VERSION_MAJOR)
+            {
                 updateAvailable = true;
-            else if(versionParts.at(1) > HL_VERSION_MINOR)
+            }
+            else if (versionParts.at(1) > HL_VERSION_MINOR)
+            {
                 updateAvailable = true;
-            else if(versionParts.at(2) > HL_VERSION_REV)
+            }
+            else if (versionParts.at(2) > HL_VERSION_REV)
+            {
                 updateAvailable = true;
-            else if(versionParts.at(3) > HL_VERSION_BUILD)
+            }
+            else if (versionParts.at(3) > HL_VERSION_BUILD)
+            {
                 updateAvailable = true;
+            }
 
         }
         else
+        {
             return false;
+        }
 
         // Found an update, check the assets of the release
-        if(updateAvailable)
+        if (updateAvailable)
         {
 
             QJsonArray assets = rootObj["assets"].toArray();
-            for(int i = 0; i < assets.size(); i++)
+            for (int i = 0; i < assets.size(); i++)
             {
 
                 QJsonObject obj = assets[i].toObject();
                 QString assetName = obj["name"].toString();
                 bool ok = false;
 
-                if(assetName.contains(".tar") || assetName.contains(HL_PACKAGE_TYPE))
+                if (assetName.contains(".tar") || assetName.contains(HL_PACKAGE_TYPE))
                 {
 
                     downloadHostUrl = obj["browser_download_url"].toString();
                     downloadFileName = obj["name"].toString();
                     downloadSize = obj["size"].toVariant().toULongLong(&ok);
 
-                    if(!ok)
+                    if (!ok)
                     {
                         // TODO: Handle exception
                         downloadHostUrl = "";
@@ -227,7 +242,8 @@ bool Updater::downloadUpdate()
     file = new QFile(QDir::tempPath() + "/" + fileName);
     file->open(QIODevice::WriteOnly);
 
-    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [=](QNetworkReply::NetworkError code) {
+    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [ = ](QNetworkReply::NetworkError code)
+    {
         // throw exception
         file->close();
         delete file;
@@ -235,7 +251,8 @@ bool Updater::downloadUpdate()
         return false;
     });
 
-    connect(reply, &QNetworkReply::sslErrors, [=] {
+    connect(reply, &QNetworkReply::sslErrors, [ = ]
+    {
         // throw exception
         file->close();
         delete file;
@@ -243,7 +260,8 @@ bool Updater::downloadUpdate()
         return false;
     });
 
-    connect(reply, &QNetworkReply::readyRead, [&] {
+    connect(reply, &QNetworkReply::readyRead, [&]
+    {
 
         numBytesDownloaded = reply->bytesAvailable();
         emit bytesDownloaded();
@@ -251,7 +269,8 @@ bool Updater::downloadUpdate()
 
     });
 
-    connect(reply, &QNetworkReply::finished, [&] {
+    connect(reply, &QNetworkReply::finished, [&]
+    {
 
         file->flush();
         file->close();
@@ -281,8 +300,10 @@ void Updater::startHulaLoopInstaller()
     QString procName = QDir::tempPath() + "/" + downloadFileName;
 
     proc.setProgram(procName);
-    if(proc.startDetached())
+    if (proc.startDetached())
+    {
         exit(0);
+    }
 
 }
 
@@ -297,8 +318,10 @@ void Updater::startHulaLoopApp()
     QString procName = QCoreApplication::applicationDirPath() + "/hulaloop";
 
     proc.setProgram(procName);
-    if(proc.startDetached())
+    if (proc.startDetached())
+    {
         exit(0);
+    }
 
 }
 

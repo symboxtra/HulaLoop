@@ -33,10 +33,10 @@ namespace hula
             bool playbackState = false;
 
         protected:
-            Record* recorder;
+            Record *recorder;
 
         public:
-            Controller* controller;
+            Controller *controller;
 
         public:
 

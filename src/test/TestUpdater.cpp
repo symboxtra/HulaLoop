@@ -52,7 +52,7 @@ TEST_F(TestUpdater, checkForUpdateError)
 TEST_F(TestUpdater, parseTag1)
 {
     QList<int> versionParts = updater->parseTagName("0.0.0.0b");
-    for(int i = 0; i < versionParts.size(); i++)
+    for (int i = 0; i < versionParts.size(); i++)
     {
         ASSERT_TRUE(versionParts.at(i) == 0);
     }
@@ -70,7 +70,7 @@ TEST_F(TestUpdater, parseTag2)
 TEST_F(TestUpdater, parseTag3)
 {
     QList<int> versionParts = updater->parseTagName("0a.0.0.0");
-    for(int i = 0; i < versionParts.size(); i++)
+    for (int i = 0; i < versionParts.size(); i++)
     {
         ASSERT_TRUE(versionParts.at(i) == 0);
     }
@@ -79,7 +79,7 @@ TEST_F(TestUpdater, parseTag3)
 TEST_F(TestUpdater, parseTag4)
 {
     QList<int> versionParts = updater->parseTagName("0000");
-    for(int i = 0; i < versionParts.size(); i++)
+    for (int i = 0; i < versionParts.size(); i++)
     {
         ASSERT_TRUE(versionParts.at(i) == -1);
     }
@@ -97,7 +97,7 @@ TEST_F(TestUpdater, parseTag5)
 TEST_F(TestUpdater, parseTag6)
 {
     QList<int> versionParts = updater->parseTagName("");
-    for(int i = 0; i < versionParts.size(); i++)
+    for (int i = 0; i < versionParts.size(); i++)
     {
         ASSERT_TRUE(versionParts.at(i) == -1);
     }
@@ -106,7 +106,7 @@ TEST_F(TestUpdater, parseTag6)
 TEST_F(TestUpdater, parseTag7)
 {
     QList<int> versionParts = updater->parseTagName("a.b.c.d");
-    for(int i = 0; i < versionParts.size(); i++)
+    for (int i = 0; i < versionParts.size(); i++)
     {
         ASSERT_TRUE(versionParts.at(i) == -1);
     }

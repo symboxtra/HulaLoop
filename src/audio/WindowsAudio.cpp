@@ -16,7 +16,7 @@ WindowsAudio::WindowsAudio()
  * @param type DeviceType that is combination from the DeviceType enum
  * @return std::vector<Device*> A list of Device instances that carry the necessary device information
  */
-std::vector<Device*> WindowsAudio::getDevices(DeviceType type)
+std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
 {
 
     // Check if the following enums are set in the params
@@ -25,11 +25,11 @@ std::vector<Device*> WindowsAudio::getDevices(DeviceType type)
     bool isPlaySet = (type & DeviceType::PLAYBACK) == DeviceType::PLAYBACK;
 
     // Vector to store acquired list of output devices
-    std::vector<Device*> deviceList;
+    std::vector<Device *> deviceList;
 
     // Get devices from WASAPI if loopback and/or playback devices
     // are requested
-    if(isLoopSet | isPlaySet)
+    if (isLoopSet | isPlaySet)
     {
         // Setup capture environment
         status = CoInitialize(NULL);
@@ -93,7 +93,7 @@ std::vector<Device*> WindowsAudio::getDevices(DeviceType type)
     }
 
     // Get devices from PortAudio if record devices are requested
-    if(isRecSet)
+    if (isRecSet)
     {
 
         // Initialize PortAudio and update audio devices
@@ -102,7 +102,7 @@ std::vector<Device*> WindowsAudio::getDevices(DeviceType type)
 
         // Get the total count of audio devices
         int numDevices = Pa_GetDeviceCount();
-        if(numDevices < 0)
+        if (numDevices < 0)
         {
             pa_status = numDevices;
             HANDLE_PA_ERROR(pa_status);
@@ -110,25 +110,25 @@ std::vector<Device*> WindowsAudio::getDevices(DeviceType type)
 
         //
         const PaDeviceInfo *deviceInfo;
-        for(int i = 0;i < numDevices;i++)
+        for (int i = 0; i < numDevices; i++)
         {
             deviceInfo = Pa_GetDeviceInfo(i);
 
-            if(deviceInfo->maxInputChannels != 0 && deviceInfo->hostApi == (Pa_GetDefaultHostApi()+1))
+            if (deviceInfo->maxInputChannels != 0 && deviceInfo->hostApi == (Pa_GetDefaultHostApi() + 1))
             {
                 // Create instance of Device using acquired data
-                Device* audio = new Device(NULL, std::string(deviceInfo->name), DeviceType::RECORD);
+                Device *audio = new Device(NULL, std::string(deviceInfo->name), DeviceType::RECORD);
 
                 // Add to devicelist
                 deviceList.push_back(audio);
 
                 // Print some debug device info for now
-            // TODO: Remove
-            std::cout << "Device #" << i + 1 << ": " << deviceInfo->name << std::endl;
-            std::cout << "Input Channels: " << deviceInfo->maxInputChannels << std::endl;
-            std::cout << "Output Channels: " << deviceInfo->maxOutputChannels << std::endl;
-            std::cout << "Default Sample Rate: " << deviceInfo->defaultSampleRate << std::endl;
-            std::cout << std::endl;
+                // TODO: Remove
+                std::cout << "Device #" << i + 1 << ": " << deviceInfo->name << std::endl;
+                std::cout << "Input Channels: " << deviceInfo->maxInputChannels << std::endl;
+                std::cout << "Output Channels: " << deviceInfo->maxOutputChannels << std::endl;
+                std::cout << "Default Sample Rate: " << deviceInfo->defaultSampleRate << std::endl;
+                std::cout << std::endl;
             }
         }
 
@@ -245,7 +245,7 @@ void WindowsAudio::capture()
             HANDLE_ERROR(status);
 
             // Copy to ringbuffers
-            this->copyToBuffers((void*)pData, numFramesAvailable * NUM_CHANNELS * sizeof(SAMPLE));
+            this->copyToBuffers((void *)pData, numFramesAvailable * NUM_CHANNELS * sizeof(SAMPLE));
 
             // Release buffer after data is captured and handled
             status = captureClient->ReleaseBuffer(numFramesAvailable);
@@ -269,7 +269,7 @@ Exit:
     SAFE_RELEASE(audioClient);
     SAFE_RELEASE(captureClient);
 
-    if(FAILED(status))
+    if (FAILED(status))
     {
         _com_error err(status);
         LPCTSTR errMsg = err.ErrorMessage();

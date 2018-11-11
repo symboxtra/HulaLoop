@@ -101,9 +101,9 @@ namespace hula
             volatile uint64_t     *shmSyncMode;
             volatile uint64_t     *shmBufferSize;
             volatile uint64_t     *shmDriverStatus;
-    #define JB_DRV_STATUS_INIT      0
-    #define JB_DRV_STATUS_ACTIVE    1
-    #define JB_DRV_STATUS_STARTED   2
+#define JB_DRV_STATUS_INIT      0
+#define JB_DRV_STATUS_ACTIVE    1
+#define JB_DRV_STATUS_STARTED   2
             volatile uint64_t     *shmReadFrameNumber[2];
             volatile uint64_t     *shmWriteFrameNumber[2];
 
