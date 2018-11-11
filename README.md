@@ -100,6 +100,16 @@ cmake --build .
 ./bin/<executable name>
 ```
 
+#### Windows Tips ####
+We've found the ```msbuild``` output on Windows to be rather unruly.
+Passing the ```/verbosity:minimal``` or ```/v:m``` options at build time makes the output much more make-like.
+Relevant information, warnings, and errors are still displayed.
+
+```console
+cmake --build . -- /verbosity:minimal
+cmake --build . -- /v:m
+```
+
 ### CTest ###
 
 All tests:

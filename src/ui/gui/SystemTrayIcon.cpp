@@ -4,6 +4,8 @@
 #include <QApplication>
 #include <QIcon>
 
+using namespace hula;
+
 /**
  * Construct a new instance of the SystemTrayIcon class.
  *

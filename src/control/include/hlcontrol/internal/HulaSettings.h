@@ -1,29 +1,32 @@
-#ifndef HULA_SETTINGS_H
-#define HULA_SETTINGS_H
+#ifndef HL_SETTINGS_H
+#define HL_SETTINGS_H
 
 #include <hlaudio/internal/HulaAudioSettings.h>
 
-/**
- * Singleton class containing all settings for the application.
- * This includes audio specific settings.
- */
-class HulaSettings : public HulaAudioSettings {
+namespace hula
+{
+    /**
+     * Singleton class containing all settings for the application.
+     * This includes audio specific settings.
+     */
+    class HulaSettings : public HulaAudioSettings {
 
-    private:
-        /**
-         * Private instance.
-         */
-        static HulaSettings *hlcontrol_instance;
+        private:
+            /**
+             * Private instance.
+             */
+            static HulaSettings *hlcontrol_instance;
 
-    protected:
-        HulaSettings();
+        protected:
+            HulaSettings();
 
-    public:
-        static HulaSettings * getInstance();
+        public:
+            static HulaSettings * getInstance();
 
-        ~HulaSettings();
+            ~HulaSettings();
 
 
-};
+    };
+}
 
-#endif // END HULA_SETTINGS_H
+#endif // END HL_SETTINGS_H

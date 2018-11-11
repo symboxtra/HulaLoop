@@ -2,5 +2,11 @@
     "files.eol": "\n",
     "files.trimTrailingWhitespace": true,
     "jenkins.pipeline.linter.connector.url": "https://jenkins.symboxtra.dynu.net/pipeline-model-converter/validate",
-    "jenkins.pipeline.linter.connector.user": "symboxtra"
+    "jenkins.pipeline.linter.connector.user": "symboxtra",
+    "files.associations": {
+        "xstring": "cpp",
+        "deque": "cpp",
+        "vector": "cpp",
+        "stdexcept": "cpp"
+    }
 }

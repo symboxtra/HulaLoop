@@ -1,5 +1,7 @@
 #include "hlaudio/internal/HulaAudioSettings.h"
 
+using namespace hula;
+
 HulaAudioSettings *HulaAudioSettings::hlaudio_instance = nullptr;
 
 /**

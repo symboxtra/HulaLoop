@@ -12,6 +12,8 @@
 #include <QProcess>
 #include <QRegularExpression>
 
+using namespace hula;
+
 /**
  * Construct a new instance of the Updater class.
  *

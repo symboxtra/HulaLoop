@@ -7,8 +7,12 @@
 #include <hlaudio/hlaudio.h>
 #include <hlcontrol/hlcontrol.h>
 
-#define HL_VERSION_STR "0.0.0"
-#define HL_ASCII_HEADER "\n" \
+#include <HulaVersion.h>
+
+using namespace hula;
+
+#define HL_CLI_NAME "hulaloop-cli"
+#define HL_CLI_ASCII_HEADER "\n" \
     "   _    _       _       _\n" \
     "  | |  | |     | |     | |\n" \
     "  | |__| |_   _| | __ _| |     ___   ___  _ __\n" \
@@ -28,7 +32,7 @@ inline void printDeviceList(Transport *t)
 {
     HulaSettings *settings = HulaSettings::getInstance();
 
-    vector<Device *> devices;
+    std::vector<Device *> devices;
     if (settings->getShowRecordDevices())
     {
         devices = t->getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK | RECORD));
@@ -65,7 +69,7 @@ inline void printDeviceList(Transport *t)
 inline Device * findDevice(Transport *t, const std::string &name, DeviceType type)
 {
     Device *device = NULL;
-    vector<Device *> devices;
+    std::vector<Device *> devices;
     devices = t->getController()->getDevices(type);
 
     // Check if we got a numeric id
@@ -80,6 +84,7 @@ inline Device * findDevice(Transport *t, const std::string &name, DeviceType typ
     catch (std::invalid_argument &e)
     {
         // Wasn't an id
+        (void)e;
     }
 
     for (size_t i = 0; i < devices.size(); i++)
@@ -119,7 +124,7 @@ inline void printSettings()
     printf("Output file:          '%s'\n", settings->getOutputFilePath().c_str());
     printf("Delay:                %.2f s\n", settings->getDelayTimer());
     printf("Length:               %.2f s\n", settings->getRecordDuration());
-    printf("Sample rate:          %'d Hz\n", settings->getSampleRate());
+    printf("Sample rate:          %d Hz\n", settings->getSampleRate());
     printf("Encoding:             %s\n", "WAV");
     printf("Input device:         '%s'\n", settings->getDefaultInputDeviceName().c_str());
     printf("Output device:        '%s'\n", settings->getDefaultOutputDeviceName().c_str());

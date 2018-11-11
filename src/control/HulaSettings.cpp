@@ -1,6 +1,8 @@
 
 #include "hlcontrol/internal/HulaSettings.h"
 
+using namespace hula;
+
 HulaSettings *HulaSettings::hlcontrol_instance = nullptr;
 
 /**

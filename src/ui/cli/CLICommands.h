@@ -1,18 +1,18 @@
-#ifndef HULA_COMMANDS_H
-#define HULA_COMMANDS_H
+#ifndef HL_CLI_COMMANDS_H
+#define HL_CLI_COMMANDS_H
 
 #define HL_ORANGE "\033[48;2;255;165;0m"
 #define HL_NC     "\033[0m"
 
 #define HL_PROMPT "\nHulaLoop> "
 
-#define HL_DELAY_TIMER_LONG    "d-timer"
-#define HL_DELAY_TIMER_SHORT   "dt"
-#define HL_DELAY_TIMER_ARG1    "delay"
+#define HL_DELAY_TIMER_LONG    "delay"
+#define HL_DELAY_TIMER_SHORT   "de"
+#define HL_DELAY_TIMER_ARG1    "seconds"
 
-#define HL_RECORD_TIMER_LONG   "r-timer"
-#define HL_RECORD_TIMER_SHORT  "rt"
-#define HL_RECORD_TIMER_ARG1   "duration"
+#define HL_RECORD_TIMER_LONG   "duration"
+#define HL_RECORD_TIMER_SHORT  "du"
+#define HL_RECORD_TIMER_ARG1   "seconds"
 
 #define HL_RECORD_SHORT  "r"
 #define HL_RECORD_LONG   "record"
@@ -31,6 +31,10 @@
 #define HL_EXPORT_SHORT  "e"
 #define HL_EXPORT_LONG   "export"
 #define HL_EXPORT_ARG1   "filepath"
+
+#define HL_DISCARD_SHORT "di"
+#define HL_DISCARD_LONG  "discard"
+#define HL_DISCARD_ARG1  "-f"
 
 #define HL_LIST_SHORT    "l"
 #define HL_LIST_LONG     "list"
@@ -72,6 +76,8 @@
 "  " HL_PLAY_SHORT    ", " HL_PLAY_LONG   "\t\t\t\t Playback captured audio.\n" \
 "  " HL_PAUSE_SHORT   ", " HL_PAUSE_LONG  "\t\t\t\t Pause playback or recording.\n" \
 "  " HL_EXPORT_SHORT  ", " HL_EXPORT_LONG " <" HL_EXPORT_ARG1 ">\t\t\t Export captured audio to the specified file.\n" \
+"  " HL_DISCARD_SHORT ", " HL_DISCARD_SHORT " [" HL_DISCARD_ARG1 "]"\
+"\t\t\t Discard the current recording\n" \
 "\n" \
 "  " HL_INPUT_SHORT   ", " HL_INPUT_LONG  " <" HL_INPUT_ARG1 ">\t\t\t Set the input device.\n" \
 "  " HL_OUTPUT_SHORT  ", " HL_OUTPUT_LONG " <" HL_OUTPUT_ARG1 ">\t\t\t Set the output device.\n" \
@@ -89,4 +95,4 @@
 "  " HL_SYSTEM_SHORT  ", " HL_SYSTEM_LONG "\t\t\t\t Run a system command from within HulaLoop.\n" \
 "\n"
 
-#endif // END HULA_COMMANDS_H
+#endif // END HL_CLI_COMMANDS_H

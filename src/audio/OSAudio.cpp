@@ -4,6 +4,8 @@
 #include "hlaudio/internal/HulaAudioError.h"
 #include "hlaudio/internal/OSAudio.h"
 
+using namespace hula;
+
 /**
  * Set the desired capture buffer size
  *
@@ -49,7 +51,7 @@ void OSAudio::addBuffer(HulaRingBuffer *rb)
 */
 void OSAudio::removeBuffer(HulaRingBuffer *rb)
 {
-    vector<HulaRingBuffer *>::iterator it = find(rbs.begin(), rbs.end(), rb);
+    std::vector<HulaRingBuffer *>::iterator it = find(rbs.begin(), rbs.end(), rb);
     if (it != rbs.end())
     {
         this->rbs.erase(it);
@@ -72,7 +74,7 @@ void OSAudio::copyToBuffers(const void *data, uint32_t bytes)
     SAMPLE *samples = (SAMPLE *)data;
     uint32_t sampleCount = BYTES_TO_SAMPLES(bytes);
 
-    vector<HulaRingBuffer *>::iterator it;
+    std::vector<HulaRingBuffer *>::iterator it;
     for (it = rbs.begin(); it != rbs.end(); it++)
     {
         (*it)->write(samples, sampleCount);
@@ -97,7 +99,7 @@ void OSAudio::backgroundCapture(OSAudio *_this)
 
     if (_this->activeInputDevice == NULL)
     {
-        vector<Device*> devices = _this->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
+        std::vector<Device*> devices = _this->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
         if(devices.empty())
             return;
 
@@ -152,7 +154,7 @@ void OSAudio::setActiveInputDevice(Device *device)
  *
  * @param threads Vector of threads to join and kill.
  */
-void OSAudio::joinAndKillThreads(vector<thread> &threads)
+void OSAudio::joinAndKillThreads(std::vector<std::thread> &threads)
 {
     for (auto &t : threads)
     {

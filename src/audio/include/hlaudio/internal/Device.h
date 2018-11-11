@@ -1,47 +1,55 @@
-#ifndef SYS_DEVICE
-#define SYS_DEVICE
+#ifndef HL_DEVICE_H
+#define HL_DEVICE_H
 
 #include <cstdint>
 #include <string>
 #include <vector>
 
-using namespace std;
-
-enum DeviceType
+namespace hula
 {
-    RECORD = 1,
-    PLAYBACK = 2,
-    LOOPBACK = 4
-};
+    /**
+     * Denotes type of Device.
+     * Meant to be bitwise or'd together to support multiple capabilities.
+     */
+    enum DeviceType
+    {
+        RECORD = 1,
+        PLAYBACK = 2,
+        LOOPBACK = 4
+    };
 
-union DeviceID
-{
-    string linuxID;
-    uint32_t *windowsID;
-};
+    /**
+     * Union for the three types of device ID.
+     */
+    union DeviceID
+    {
+        std::string linuxID;
+        uint32_t *windowsID;
+        int osxID;
+    };
 
-/**
- * Defines a system audio device
- */
-// TODO: Add better public description
-class Device {
-    private:
-        uint32_t *deviceID;
-        string deviceName;
+    /**
+     * Wrapper for OS specific device information.
+     */
+    class Device {
+        private:
+            uint32_t *deviceID;
+            std::string deviceName;
 
-        DeviceType type;
+            DeviceType type;
 
-    public:
-        Device(uint32_t *id, string name, DeviceType t);
-        ~Device();
+        public:
+            Device(uint32_t *id, std::string name, DeviceType t);
+            ~Device();
 
-        uint32_t *getID();
+            uint32_t *getID();
 
-        string getName();
+            std::string getName();
 
-        DeviceType getType();
+            DeviceType getType();
 
-        static void deleteDevices(vector<Device *> devices);
-};
+            static void deleteDevices(std::vector<Device *> devices);
+    };
+}
 
-#endif
+#endif // END HL_DEVICE_H

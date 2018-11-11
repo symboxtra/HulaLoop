@@ -8,6 +8,8 @@
 #include "hlaudio/internal/HulaAudioError.h"
 #include "hlaudio/internal/HulaAudioSettings.h"
 
+using namespace hula;
+
 /**
  * Constructs an instance of OSXAudio class.
  *
@@ -67,7 +69,7 @@ static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
  */
 void OSXAudio::capture()
 {
-    PaStreamParameters  inputParameters;
+    PaStreamParameters  inputParameters = {0};
     PaStream           *stream;
     PaError             err = paNoError;
 
@@ -155,7 +157,7 @@ void OSXAudio::capture()
  *
  * @return List of Device objects
  */
-vector<Device *> OSXAudio::getDevices(DeviceType type)
+std::vector<Device *> OSXAudio::getDevices(DeviceType type)
 {
     int deviceCount = Pa_GetDeviceCount();
     if (deviceCount < 0)
@@ -164,7 +166,7 @@ vector<Device *> OSXAudio::getDevices(DeviceType type)
         exit(1); // TODO: Handle error
     }
 
-    vector<Device *> devices;
+    std::vector<Device *> devices;
     for (uint32_t i = 0; i < deviceCount; i++)
     {
         const PaDeviceInfo *paDevice = Pa_GetDeviceInfo(i);
@@ -188,7 +190,7 @@ vector<Device *> OSXAudio::getDevices(DeviceType type)
         // This needs to be freed elsewhere
         if (type & checkType)
         {
-            Device *hlDevice = new Device(new uint32_t(i), string(paDevice->name), type);
+            Device *hlDevice = new Device(new uint32_t(i), std::string(paDevice->name), checkType);
             devices.push_back(hlDevice);
         }
     }
@@ -228,7 +230,7 @@ void OSXAudio::setActiveOutputDevice(Device *device)
  */
 bool OSXAudio::checkRates(Device *device)
 {
-    PaStreamParameters inputParameters;
+    PaStreamParameters inputParameters = {0};
     inputParameters.channelCount = NUM_CHANNELS;
     inputParameters.device = *device->getID();
     inputParameters.sampleFormat = paFloat32;

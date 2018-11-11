@@ -2,6 +2,7 @@ function (create_test _test_file _src_files _timeout _do_memcheck)
 
     get_filename_component (_test_name ${_test_file} NAME_WE)
     add_executable (${_test_name} ${_test_file} ${_src_files})
+    add_dependencies (${_test_name} hulaloop hulaloop-cli hulaloop-launcher) # Make sure the real application builds first
     target_link_libraries (${_test_name} ${HL_LIBRARIES} gtest gtest_main ${CMAKE_THREAD_LIBS_INIT})
 
     add_test (
@@ -18,7 +19,7 @@ function (create_test _test_file _src_files _timeout _do_memcheck)
         else ()
             add_test (
                 NAME memcheck_${_test_name}
-                COMMAND ${VALGRIND_EXECUTABLE} --leak-check=full --show-reachable=yes --error-exitcode=1 --track-origins=yes ./test/${_test_name}
+                COMMAND ${VALGRIND_EXECUTABLE} --leak-check=full --error-exitcode=1 --track-origins=yes ./test/${_test_name}
                 WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
             )
         endif ()
@@ -34,7 +35,7 @@ function (create_test _test_file _src_files _timeout _do_memcheck)
         add_custom_command (
             TARGET ${_test_name}
             POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -DSOURCE_DIR="${PROJECT_SOURCE_DIR}" -DBINARY_DIR="${CMAKE_BINARY_DIR}" -P ${PROJECT_SOURCE_DIR}/cmake/MovePortAudioDLL.cmake
+            COMMAND ${CMAKE_COMMAND} -DSOURCE_DIR="${PROJECT_SOURCE_DIR}" -DBINARY_DIR="${CMAKE_BINARY_DIR}" -P ${PROJECT_SOURCE_DIR}/cmake/MoveDLLsToTest.cmake
         )
     endif ()
 

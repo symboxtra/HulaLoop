@@ -1,19 +1,22 @@
-#ifndef RECORD_H
-#define RECORD_H
+#ifndef HL_RECORD_H
+#define HL_RECORD_H
 
 #include <hlaudio/hlaudio.h>
 
-class Record {
+namespace hula
+{
+    class Record {
 
-    private:
-        Controller* controller;
+        private:
+            Controller* controller;
 
-    public:
-        Record(Controller* control);
-        ~Record();
+        public:
+            Record(Controller* control);
+            ~Record();
 
-        void start();
-        void stop();
-};
+            void start();
+            void stop();
+    };
+}
 
-#endif
+#endif // END HL_RECORD_H

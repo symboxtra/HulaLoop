@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <hlaudio/hlaudio.h>
 
+using namespace hula;
+
 #define TEST_BUFFER_SIZE 0.2f
 #define MOCK_CAPTURE_TIME 25
 #define CHECK_IF_DEAD_TIME 10
@@ -45,9 +47,9 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
             return true;
         }
 
-        vector<Device *> getDevices(DeviceType type)
+        std::vector<Device *> getDevices(DeviceType type)
         {
-            vector<Device *> devices;
+            std::vector<Device *> devices;
             return devices;
         }
 

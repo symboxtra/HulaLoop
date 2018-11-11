@@ -12,6 +12,8 @@
     #include "OSXAudio.h"
 #endif
 
+using namespace hula;
+
 /**
  * Construct an instance of Controller class.
  * Acts as a bridge between the higher levels and OS level functions
@@ -29,7 +31,7 @@ Controller::Controller()
 
     if (audio == NULL)
     {
-        cerr << "OS Audio error !" << endl;
+        std::cerr << "OS Audio error !" << std::endl;
     } // TODO: Handle error
 
 }
@@ -122,9 +124,9 @@ void Controller::removeBuffer(HulaRingBuffer *rb)
  *
  * @param type DeviceType that is combination from the DeviceType enum
  *
- * @return vector<Device*> A list of Device instances that carry the necessary device information
+ * @return std::vector<Device*> A list of Device instances that carry the necessary device information
  */
-vector<Device*> Controller::getDevices(DeviceType type) const
+std::vector<Device*> Controller::getDevices(DeviceType type) const
 {
     return audio->getDevices(type);
 }

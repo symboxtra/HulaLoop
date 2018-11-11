@@ -4,6 +4,8 @@
 #include "hlcontrol/internal/HulaControlError.h"
 #include "hlcontrol/internal/Transport.h"
 
+using namespace hula;
+
 /**
  * Construct a new instance of the Transport class.
  */
@@ -37,7 +39,7 @@ Transport::Transport(bool dryRun)
  *
  * @return Successful start of recording
  */
-bool Transport::record(int delay, int duration)
+bool Transport::record(double delay, double duration)
 {
     std::cout << "Record triggered!" << std::endl;
     std::cout << "Delay set to: " << delay << std::endl;
@@ -132,6 +134,22 @@ bool Transport::pause()
 }
 
 /**
+ * Discard any recorded audio and reset the state.
+ *
+ * @return bool Success of command
+ */
+/*
+bool Transport::Discard()
+{
+    state = INITIAL;
+    recordState = true;
+    playbackState = false;
+
+    return true;
+}
+*/
+
+/**
  * Return the current state of the Transport object.
  *
  * @return state Current transport state.
@@ -177,7 +195,7 @@ Controller *Transport::getController() const
     return controller;
 }
 
-void Transport::exportFile(string targetDirectory)
+void Transport::exportFile(std::string targetDirectory)
 {
     Export exp(targetDirectory);
     // TODO: Make it an actual directory

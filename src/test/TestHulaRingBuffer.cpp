@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <hlaudio/hlaudio.h>
 
+using namespace hula;
+
 #define TEST_BUFFER_SIZE 0.2f
 #define TEST_NUM_SAMPLES 200 // Don't pick a power of 2
 SAMPLE sampleData = (SAMPLE)7.7;
@@ -15,7 +17,8 @@ bool verifySamples(SAMPLE *samples, int numSamples)
 {
     for (int i = 0; i < numSamples; i++)
     {
-        if (memcmp(samples + i, &sampleData, sizeof(SAMPLE)))
+        SAMPLE val = sampleData * i;
+        if (memcmp(samples + i, &val, sizeof(SAMPLE)))
         {
             return false;
         }
@@ -33,7 +36,7 @@ bool verifySamples(SAMPLE *samples, int numSamples)
  *
  * @return Array of TEST_NUM_SAMPLES samples.
  */
-SAMPLE *createTestSamples()
+SAMPLE * createTestSamples()
 {
     // This needs to change when we un-define SAMPLE
     // Assume 32-bit float is biggest sample
@@ -42,8 +45,8 @@ SAMPLE *createTestSamples()
 
     for (int i = 0; i < TEST_NUM_SAMPLES; i++)
     {
-        // Copy the same data to each sample
-        memcpy(samples + i, &sampleData, sizeof(SAMPLE));
+        SAMPLE val = sampleData * i;
+        memcpy(samples + i, &val, sizeof(SAMPLE));
     }
 
     if (!verifySamples(samples, TEST_NUM_SAMPLES))
