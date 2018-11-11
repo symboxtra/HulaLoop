@@ -8,7 +8,6 @@
 
 #include "hlaudio/internal/Device.h"
 #include "hlaudio/internal/OSAudio.h"
-#include "OSXDaemon/OSXDaemon.h"
 
 namespace hula
 {
@@ -20,11 +19,14 @@ namespace hula
         Q_DECLARE_TR_FUNCTIONS(Audio)
 
         private:
-            OSXDaemon *osxDaemon;
+            int daemonPID = -1;
 
         public:
             OSXAudio();
             virtual ~OSXAudio();
+
+            int isDaemonRunning();
+            void startDaemon();
 
             void capture();
             bool checkRates(Device *device);

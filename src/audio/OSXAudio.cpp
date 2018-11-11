@@ -3,7 +3,10 @@
 #include <cstdint>
 #include <thread>
 
+#include <QCoreApplication>
 #include <QDebug>
+#include <QProcess>
+#include <QString>
 
 #include "OSXAudio.h"
 #include "hlaudio/internal/HulaAudioError.h"
@@ -20,9 +23,16 @@ using namespace hula;
 OSXAudio::OSXAudio()
 {
     // Create the loopback daemon
-    osxDaemon = new OSXDaemon("HulaLoop #1", 0); // TODO: Make sure this can handle multiple instances of HulaLoop running
-    osxDaemon->activate();
-    osxDaemon->monitor();
+    this->daemonPID = isDaemonRunning();
+    if (this->daemonPID > 0)
+    {
+        qDebug("OSXDaemon already running (PID: %d)", this->daemonPID);
+    }
+    else
+    {
+        qDebug("OSXDaemon was not running. Starting now...");
+        startDaemon();
+    }
 
     // TODO: qOut()
     qInfo("\n\n");
@@ -38,6 +48,49 @@ OSXAudio::OSXAudio()
 
     // TODO: qOut()
     qInfo("\n\n");
+}
+
+/**
+ * Check if the @ref OSXDaemon is already running using pgrep.
+ *
+ * @return int PID of running daemon. -1 if not running
+ */
+int OSXAudio::isDaemonRunning()
+{
+    QProcess pgrep;
+    pgrep.start("pgrep", QStringList() << "hulaloop-osx-daemon");
+    pgrep.waitForFinished();
+
+    QString output = pgrep.readAllStandardOutput();
+    int pid = -1;
+    if (output.size() > 0)
+    {
+        bool ok;
+        pid = output.toInt();
+
+        if (!ok)
+        {
+            qWarning("Failed to convert PID '%s' to int.", qPrintable(output));
+        }
+    }
+    return pid;
+}
+
+/**
+ * Start the @ref OSXDaemon to transfer audio from the CoreAudio driver
+ * to the JACK client. This expects hulaloop-osx-daemon to be in the same
+ * directory as hulaloop.
+ */
+void OSXAudio::startDaemon()
+{
+    QProcess proc;
+    QString procName = QCoreApplication::applicationDirPath() + "/hulaloop-osx-daemon";
+
+    proc.setProgram(procName);
+    if (!proc.startDetached())
+    {
+        qFatal("Failed to start OSX Daemon at %s. Executable may have been moved.", qPrintable(procName));
+    }
 }
 
 /**
@@ -266,11 +319,5 @@ OSXAudio::~OSXAudio()
     {
         qCritical("Could not terminate Port Audio session.");
         qCritical("PortAudio: %s", Pa_GetErrorText(err));
-    }
-
-    // Stop the daemon
-    if (osxDaemon)
-    {
-        delete osxDaemon;
     }
 }

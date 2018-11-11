@@ -5,10 +5,8 @@ file (GLOB WIN_AUDIO_SRC_FILES Windows*.cpp)
 file (GLOB LINUX_AUDIO_SRC_FILES Linux*.cpp)
 file (GLOB OSX_AUDIO_SRC_FILES OSX*.cpp)
 
-# Collect source files for the daemon (remove standalone main.cpp)
-file (GLOB OSX_DAEMON_SRC_FILES OSXDaemon/*.cpp)
-get_filename_component(DAEMON_MAIN OSXDaemon/main.cpp REALPATH)
-list (REMOVE_ITEM OSX_DAEMON_SRC_FILES ${DAEMON_MAIN})
+# Build the daemon for Mac
+add_subdirectory(OSXDaemon)
 
 # Find Port Audio and add the common folder so that we can include the ring buffer headers
 # Build the ring buffer code into our executable since it isn't exposed on the normal Port Audio library
@@ -22,7 +20,6 @@ if (WIN32)
     list (APPEND AUDIO_LIBS winmm Ole32)
 elseif (OSX)
     list (REMOVE_ITEM AUDIO_SRC_FILES ${LINUX_AUDIO_SRC_FILES} ${WIN_AUDIO_SRC_FILES})
-    list (APPEND AUDIO_SRC_FILES ${OSX_DAEMON_SRC_FILES})
 
     find_package (JACK REQUIRED)
 

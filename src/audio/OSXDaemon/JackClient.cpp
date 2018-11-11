@@ -76,6 +76,12 @@ void JackClient::_timebase_callback(jack_transport_state_t state, jack_nframes_t
 **********************************************************************/
 JackClient::JackClient(const char *name, uint32_t flags)
 {
+    // Install Qt message handler
+    // This is done at each module level so that no matter
+    // what subsection of the library/application is in use
+    // the message handler is enabled
+    qInstallMessageHandler(qtMessageHandler);
+
     jack_status_t jst;
 
     // TODO: Setting Jack optiosn here might be useful
