@@ -201,13 +201,17 @@ bool QMLBridge::wannaClose()
         msgBox.addButton(QMessageBox::Discard);
         if (msgBox.exec() == QMessageBox::AcceptRole)
         {
+            // the user did not want to exit just go back
             return false;
         }
         else
         {
+            // the user wanted to exit, exit and delete files
+            transport->deleteTempFiles();
             return true;
         }
     }
+    // user has no unsaved audio, just exit
     else
     {
         return true;
