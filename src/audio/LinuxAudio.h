@@ -5,9 +5,10 @@
 
 #include <stdlib.h>
 #include <cstdint>
-#include <iostream>
 #include <thread>
 #include <vector>
+
+#include <QCoreApplication>
 
 #include "hlaudio/internal/Device.h"
 #include "hlaudio/internal/OSAudio.h"
@@ -21,6 +22,9 @@ using byte = uint8_t;
 namespace hula
 {
     class LinuxAudio : public OSAudio {
+
+        Q_DECLARE_TR_FUNCTIONS(Audio)
+
         private:
             int bitrate;
             std::vector<Device *> iDevices;

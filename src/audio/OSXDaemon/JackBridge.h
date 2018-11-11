@@ -38,6 +38,8 @@
 #include <sstream>
 #include <string>
 
+#include <QDebug>
+
 #include "hlaudio/internal/HulaAudioError.h"
 
 /******************************************************************************
@@ -80,9 +82,9 @@ typedef float sample_t;
 #define JACK_SHMPATH        "/HulaLoop"
 
 #ifdef _ERROR_SYSLOG_
-    #define ERROR(pri, str, code) syslog(pri, str, code);
+    #define ERROR(pri, str, code) syslog(pri, str"\n", code);
 #else
-    #define ERROR(pri, str, code) fprintf(stderr, str, code);
+    #define ERROR(pri, str, code) qDebug(str, code);
 #endif
 
 namespace hula
@@ -114,13 +116,13 @@ namespace hula
                 shm_fd = shm_open(JACK_SHMPATH, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
                 if (shm_fd < 0)
                 {
-                    ERROR(LOG_ERR, "shm cannot be opened with %s.\n", strerror(errno));
+                    ERROR(LOG_ERR, "shm cannot be opened with %s.", strerror(errno));
                     return -1;
                 }
 
                 if (fstat(shm_fd, &stat) < 0)
                 {
-                    ERROR(LOG_ERR, "Couldn't get shm stat with %s.\n", strerror(errno));
+                    ERROR(LOG_ERR, "Couldn't get shm stat with %s.", strerror(errno));
                     close(shm_fd);
                     return -1;
                 }
@@ -129,17 +131,17 @@ namespace hula
                 {
                     if (ftruncate(shm_fd, JACK_SHMSIZE) == -1)
                     {
-                        ERROR(LOG_INFO, "shm cannot be truncated with %s. Try to recreate shm.\n", strerror(errno));
+                        ERROR(LOG_INFO, "shm cannot be truncated with %s. Try to recreate shm.", strerror(errno));
                         close(shm_fd);
                         shm_unlink(JACK_SHMPATH);
                         shm_fd = shm_open(JACK_SHMPATH, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
                         if (shm_fd < 0)
                         {
-                            ERROR(LOG_ERR, "shm cannot be recreated with %s.\n", strerror(errno));
+                            ERROR(LOG_ERR, "shm cannot be recreated with %s.", strerror(errno));
                             return -1;
                         }
                     }
-                    ERROR(LOG_INFO, "Recreated shm because shm size is not matched as expected. (%d)\n", 0);
+                    ERROR(LOG_INFO, "Recreated shm because shm size is not matched as expected. (%d)", 0);
                 }
                 close(shm_fd);
                 return 0;
@@ -152,20 +154,20 @@ namespace hula
                 shm_fd = shm_open(JACK_SHMPATH, O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
                 if (shm_fd < 0)
                 {
-                    ERROR(LOG_ERR, "shm_open() failed with %s.\n", strerror(errno));
+                    ERROR(LOG_ERR, "shm_open() failed with %s.", strerror(errno));
                     return -1;
                 }
 
                 if (fstat(shm_fd, &stat) < 0)
                 {
-                    ERROR(LOG_ERR, "fstat() failed with %s.\n", strerror(errno));
+                    ERROR(LOG_ERR, "fstat() failed with %s.", strerror(errno));
                     return -1;
                 }
                 else
                 {
                     if (stat.st_size != JACK_SHMSIZE)
                     {
-                        ERROR(LOG_ERR, "does not match shmsize(%lld). May be driver version mismatch\n", stat.st_size);
+                        ERROR(LOG_ERR, "does not match shmsize(%lld). May be driver version mismatch", stat.st_size);
                     }
                 }
 
@@ -173,7 +175,7 @@ namespace hula
                 // char* shm_base = (char*)mmap(NULL, JACK_SHMSIZE, PROT_READ|PROT_WRITE, MAP_SHARED, shm_fd, 0);
                 if (shm_base == MAP_FAILED)
                 {
-                    ERROR(LOG_ERR, "mmap() failed with %s\n", strerror(errno));
+                    ERROR(LOG_ERR, "mmap() failed with %s", strerror(errno));
                     return -1;
                 }
 
@@ -203,7 +205,7 @@ namespace hula
 
             ~JackBridgeDriverIF()
             {
-                printf("%sJackBridgeDriverIF destructor called\n", HL_PRINT_PREFIX);
+                qDebug("JackBridgeDriverIF destructor called");
             }
     };
 }

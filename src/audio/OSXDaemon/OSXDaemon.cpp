@@ -31,6 +31,8 @@ SOFTWARE.
 #include <sstream>
 #include <string>
 
+#include <QDebug>
+
 #include "hlaudio/internal/HulaAudioError.h"
 #include "JackClient.hpp"
 #include "JackBridge.h"
@@ -49,7 +51,7 @@ OSXDaemon::OSXDaemon(const char *name, int id) : JackClient(name, JACK_PROCESS_C
 {
     if (attach_shm() < 0)
     {
-        fprintf(stderr, "%sAttaching shared memory failed (id=%d)\n", HL_ERROR_PREFIX, id);
+        qFatal("Attaching shared memory failed (id=%d)\n", id);
         exit(1);
     }
 
@@ -72,7 +74,7 @@ OSXDaemon::OSXDaemon(const char *name, int id) : JackClient(name, JACK_PROCESS_C
     HostTicksPerFrame = theHostClockFrequency / SampleRate;
     if (isVerbose)
     {
-        printf("HulaLoop #%d: Started with samplerate: %d Hz, buffersize: %d bytes\n", instance, SampleRate, BufSize);
+        qDebug("HulaLoop #%d: Started with samplerate: %d Hz, buffersize: %d bytes\n", instance, SampleRate, BufSize);
     }
 }
 
@@ -111,7 +113,7 @@ int OSXDaemon::process_callback(jack_nframes_t nframes)
         }
 
         isActive = true;
-        printf("HulaLoop #%d: Activated with SyncMode = %s, ZeroHostTime = %llx\n",
+        qDebug("HulaLoop #%d: Activated with SyncMode = %s, ZeroHostTime = %llx\n",
                instance, isSyncMode ? "Yes" : "No", *shmZeroHostTime);
     }
 
@@ -127,7 +129,7 @@ int OSXDaemon::process_callback(jack_nframes_t nframes)
 
         if ((!isSyncMode) && isVerbose && ((ncalls++) % 100) == 0)
         {
-            printf("HulaLoop #%d: ZeroHostTime: %llx, %lld, diff:%d\n",
+            qDebug("HulaLoop #%d: ZeroHostTime: %llx, %lld, diff:%d\n",
                    instance,  *shmZeroHostTime, *shmNumberTimeStamps,
                    ((int)(mach_absolute_time() + 1000000 - (*shmZeroHostTime))) - 1000000);
         }
@@ -208,7 +210,7 @@ void OSXDaemon::check_progress()
     #if 0
     if (isVerbose && ((ncalls++) % 500) == 0)
     {
-        printf("HulaLoop #%d: FRAME %llu : Write0: %llu Read0: %llu Write1: %llu Read0: %llu\n",
+        qDebug("HulaLoop #%d: FRAME %llu : Write0: %llu Read0: %llu Write1: %llu Read0: %llu\n",
                instance, FrameNumber,
                *shmWriteFrameNumber[0], *shmReadFrameNumber[0],
                *shmWriteFrameNumber[1], *shmReadFrameNumber[1]);
@@ -223,9 +225,8 @@ void OSXDaemon::check_progress()
         {
             if (isVerbose)
             {
-                printf("WARNING: miss synchronization detected at FRAME %llu (diff=%d, interval=%d)\n",
+                qDebug("WARNING: miss synchronization detected at FRAME %llu (diff=%d, interval=%d)\n",
                        FrameNumber, diff, interval);
-                fflush(stdout);
             }
             showmsg = false;
         }
@@ -245,5 +246,5 @@ void OSXDaemon::check_progress()
  */
 OSXDaemon::~OSXDaemon()
 {
-    printf("%sOSXDaemon destructor called\n", HL_PRINT_PREFIX);
+    qDebug("OSXDaemon destructor called");
 }

@@ -1,8 +1,9 @@
 #include <portaudio.h>
 
 #include <cstdint>
-#include <iostream>
 #include <thread>
+
+#include <QDebug>
 
 #include "OSXAudio.h"
 #include "hlaudio/internal/HulaAudioError.h"
@@ -23,18 +24,20 @@ OSXAudio::OSXAudio()
     osxDaemon->activate();
     osxDaemon->monitor();
 
-    printf("\n\n");
+    // TODO: qOut()
+    qInfo("\n\n");
 
     // Initialize PortAudio
     int err = Pa_Initialize();
     if (err != paNoError)
     {
-        fprintf(stderr, "%sPortAudio failed to initialize.\n", HL_ERROR_PREFIX);
-        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+        qCritical("PortAudio failed to initialize.");
+        qCritical("PortAudio: %s", Pa_GetErrorText(err));
         exit(1); // TODO: Handle error
     }
 
-    printf("\n\n");
+    // TODO: qOut()
+    qInfo("\n\n");
 }
 
 /**
@@ -74,10 +77,9 @@ void OSXAudio::capture()
     PaError             err = paNoError;
 
     inputParameters.device = *(this->activeInputDevice->getID());
-    printf("Device id: %d\n", inputParameters.device);
     if (inputParameters.device == paNoDevice)
     {
-        fprintf(stderr, "%sNo device found.\n", HL_ERROR_PREFIX);
+        qWarning() << "Device %s not found." << QString::fromStdString(this->activeInputDevice->getName());
         exit(1); // TODO: Handle error
     }
 
@@ -100,8 +102,8 @@ void OSXAudio::capture()
 
     if (err != paNoError)
     {
-        fprintf(stderr, "%sCould not open Port Audio device stream.\n", HL_ERROR_PREFIX);
-        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+        qCritical("Could not open Port Audio device stream.");
+        qCritical("PortAudio: %s", Pa_GetErrorText(err));
         exit(1); // TODO: Handle error
     }
 
@@ -109,8 +111,8 @@ void OSXAudio::capture()
     err = Pa_StartStream(stream);
     if (err != paNoError)
     {
-        fprintf(stderr, "%sCould not start Port Audio device stream.\n", HL_ERROR_PREFIX);
-        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+        qCritical("Could not start Port Audio device stream.");
+        qCritical("PortAudio: %s", Pa_GetErrorText(err));
         exit(1); // TODO: Handle error
     }
 
@@ -120,27 +122,27 @@ void OSXAudio::capture()
         // The second half of this function could be moved to a separate
         // function like endCapture() so that we don't have to keep this thread alive.
 
-        printf("%sCapture keep-alive\n", HL_PRINT_PREFIX);
+        qDebug("Capture keep-alive");
 
         // This value can be adjusted
         // 100 msec is decent precision for now
         Pa_Sleep(1000);
     }
 
-    printf("%sCapture thread ended keep-alive.\n\n", HL_PRINT_PREFIX);
+    qDebug("Capture thread ended keep-alive.\n");
 
     if (err != paNoError)
     {
-        fprintf(stderr, "%sError during read from device stream.\n", HL_ERROR_PREFIX);
-        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+        qCritical("Error during read from device stream.");
+        qCritical("PortAudio: %s", Pa_GetErrorText(err));
         exit(1); // TODO: Handle error
     }
 
     err = Pa_CloseStream(stream);
     if (err != paNoError)
     {
-        fprintf(stderr, "%sCould not close Port Audio device stream.\n", HL_ERROR_PREFIX);
-        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+        qCritical("Could not close Port Audio device stream.");
+        qCritical("PortAudio: %s", Pa_GetErrorText(err));
         exit(1); // TODO: Handle error
     }
 }
@@ -162,7 +164,7 @@ std::vector<Device *> OSXAudio::getDevices(DeviceType type)
     int deviceCount = Pa_GetDeviceCount();
     if (deviceCount < 0)
     {
-        fprintf(stderr, "%sNo PortAudio devices were found.\n", HL_ERROR_PREFIX);
+        qWarning("Failed to fetch PortAudio devices.");
         exit(1); // TODO: Handle error
     }
 
@@ -239,11 +241,13 @@ bool OSXAudio::checkRates(Device *device)
 
     if (err == paFormatIsSupported)
     {
-        printf("Sample rate and format valid.\n");
+        // TODO: qOut()
+        qInfo() << tr(HL_SAMPLE_RATE_VALID);
     }
     else
     {
-        printf("Sample rate or format invalid.\n");
+        // TODO: qOut()
+        qInfo() << tr(HL_SAMPLE_RATE_INVALID);
     }
 
     return err == paFormatIsSupported;
@@ -254,14 +258,14 @@ bool OSXAudio::checkRates(Device *device)
  */
 OSXAudio::~OSXAudio()
 {
-    printf("%sOSXAudio destructor called\n", HL_PRINT_PREFIX);
+    qDebug("OSXAudio destructor called");
 
     // Close the Port Audio session
     PaError err = Pa_Terminate();
     if (err != paNoError)
     {
-        fprintf(stderr, "%sCould not terminate Port Audio session.\n", HL_ERROR_PREFIX);
-        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+        qCritical("Could not terminate Port Audio session.");
+        qCritical("PortAudio: %s", Pa_GetErrorText(err));
     }
 
     // Stop the daemon

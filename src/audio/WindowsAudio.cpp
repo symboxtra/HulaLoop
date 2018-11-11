@@ -1,3 +1,5 @@
+#include <QDebug>
+
 #include "WindowsAudio.h"
 #include "hlaudio/internal/HulaAudioError.h"
 
@@ -18,7 +20,6 @@ WindowsAudio::WindowsAudio()
  */
 std::vector<Device*> WindowsAudio::getDevices(DeviceType type)
 {
-
     // Check if the following enums are set in the params
     bool isLoopSet = (type & DeviceType::LOOPBACK) == DeviceType::LOOPBACK;
     bool isRecSet = (type & DeviceType::RECORD) == DeviceType::RECORD;
@@ -124,11 +125,12 @@ std::vector<Device*> WindowsAudio::getDevices(DeviceType type)
 
                 // Print some debug device info for now
             // TODO: Remove
-            std::cout << "Device #" << i + 1 << ": " << deviceInfo->name << std::endl;
-            std::cout << "Input Channels: " << deviceInfo->maxInputChannels << std::endl;
-            std::cout << "Output Channels: " << deviceInfo->maxOutputChannels << std::endl;
-            std::cout << "Default Sample Rate: " << deviceInfo->defaultSampleRate << std::endl;
-            std::cout << std::endl;
+            qDebug() << "Device #" << i + 1 << ": " << deviceInfo->name;
+            qDebug() << "Input Channels: " << deviceInfo->maxInputChannels;
+            qDebug() << "Output Channels: " << deviceInfo->maxOutputChannels;
+            qDebug() << "Default Sample Rate: " << deviceInfo->defaultSampleRate;
+            qDebug();
+
             }
         }
 
@@ -145,12 +147,12 @@ Exit:
     {
         _com_error err(status);
         LPCTSTR errMsg = err.ErrorMessage();
-        std::cerr << "WASAPI_Error: " << errMsg << std::endl;
+        qCritical() << "WASAPI_Error: " << errMsg;
         return {};
     }
     else if (pa_status != paNoError)
     {
-        std::cerr << "PORTAUDIO_Error: " << Pa_GetErrorText(pa_status) << std::endl;
+        qCritical() << "PORTAUDIO_Error: " << Pa_GetErrorText(pa_status);
         return {};
     }
     else
@@ -174,7 +176,7 @@ void WindowsAudio::setActiveOutputDevice(Device *device)
  */
 void WindowsAudio::capture()
 {
-    std::cout << "In Capture Mode" << std::endl; // TODO: Remove this later
+    qDebug() << "In Capture Mode"; // TODO: Remove this later
 
     // Instantiate clients and services for audio capture
     IAudioCaptureClient *captureClient = NULL;
@@ -200,7 +202,7 @@ void WindowsAudio::capture()
     status = pEnumerator->GetDevice(reinterpret_cast<LPCWSTR>(activeInputDevice->getID()), &audioDevice);
     // status = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &audioDevice);
     HANDLE_ERROR(status);
-    std::cout << "Selected Device: " << activeInputDevice->getName() << std::endl; // TODO: Remove this later
+    qDebug() << "Selected Device: " << QString::fromStdString(activeInputDevice->getName()); // TODO: Remove this later
 
     // Activate the IMMDevice
     status = audioDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void **)&audioClient);
@@ -273,7 +275,7 @@ Exit:
     {
         _com_error err(status);
         LPCTSTR errMsg = err.ErrorMessage();
-        std::cerr << "\nError: " << errMsg << std::endl;
+        qCritical() << "\nError: " << errMsg;
         exit(1);
         // TODO: Handle error accordingly
     }
@@ -292,5 +294,5 @@ bool WindowsAudio::checkRates(Device *device)
  */
 WindowsAudio::~WindowsAudio()
 {
-    printf("%sWindowsAudio destructor called\n", HL_PRINT_PREFIX);
+    printf("WindowsAudio destructor called");
 }

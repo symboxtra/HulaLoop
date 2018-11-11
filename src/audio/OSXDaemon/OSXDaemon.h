@@ -1,12 +1,17 @@
 #ifndef HL_OSX_DAEMON_H
 #define HL_OSX_DAEMON_H
 
+#include <QCoreApplication>
+
 #include "JackClient.hpp"
 #include "JackBridge.h"
 
 namespace hula
 {
     class OSXDaemon : public JackClient, public JackBridgeDriverIF {
+
+        Q_DECLARE_TR_FUNCTIONS(OSXDaemon)
+
         public:
 
             OSXDaemon(const char *name, int id);

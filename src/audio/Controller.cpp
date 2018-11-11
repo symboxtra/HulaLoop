@@ -1,5 +1,8 @@
 #include <algorithm>
 #include <fstream>
+#include <iostream>
+
+#include <QDebug>
 
 #include "hlaudio/internal/Controller.h"
 #include "include/hlaudio/internal/HulaAudioError.h"
@@ -20,6 +23,13 @@ using namespace hula;
  */
 Controller::Controller()
 {
+    // Install Qt message handler
+    // This is done at each module level so that no matter
+    // what subsection of the library/application is in use
+    // the message handler is enabled
+    qInstallMessageHandler(qtMessageHandler);
+
+
     // Initialize OSAudio based on host OS
     #if defined(__unix__)
     audio = new LinuxAudio();
@@ -31,7 +41,10 @@ Controller::Controller()
 
     if (audio == NULL)
     {
-        std::cerr << "OS Audio error !" << std::endl;
+        //: Error message when audio module fails to initialze.
+        //: OS stands for operating system.
+        qCritical() << tr("Error initializing OS audio module!");
+        exit(1);
     } // TODO: Handle error
 
 }
@@ -168,7 +181,7 @@ void Controller::setActiveOutputDevice(Device *device) const
  */
 Controller::~Controller()
 {
-    printf("%sController destructor called\n", HL_PRINT_PREFIX);
+    qDebug() << "Controller destructor called";
 
     // Don't do this until mem management is fixed
     if (audio)

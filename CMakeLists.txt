@@ -144,6 +144,12 @@ find_package (Qt5 REQUIRED
     Widgets
 )
 
+# Minimum set of libs required
+# for translation
+set (QT_TRANSLATION_LIBS
+    Qt5::Core
+)
+
 set (HL_LIBRARIES
     ${HL_LIBRARIES}
     Qt5::Core

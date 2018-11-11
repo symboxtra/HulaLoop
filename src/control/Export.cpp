@@ -1,6 +1,7 @@
 #include "hlcontrol/internal/Export.h"
 
 #include <fstream>
+#include <iostream>
 #include <string>
 
 using namespace hula;

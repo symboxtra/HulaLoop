@@ -27,6 +27,8 @@ SOFTWARE.
 #include <cstdio>
 #include <cstring>
 
+#include <QDebug>
+
 #include "hlaudio/internal/HulaAudioError.h"
 #include "JackClient.hpp"
 
@@ -84,14 +86,15 @@ JackClient::JackClient(const char *name, uint32_t flags)
     client = jack_client_open(name, JackNoStartServer, &jst);
     if (!client)
     {
-        fprintf(stderr, "\n%sCould not connect to default JACK server. Error code: %x\n", HL_ERROR_PREFIX, jst);
-        fprintf(stderr, "%sTrying again using name '%s'...\n\n", HL_ERROR_PREFIX, HL_JACK_SERVER_NAME);
+        qWarning("");
+        qWarning("Could not connect to default JACK server. Error code: %x", jst);
+        qWarning("Trying again using name '%s'...\n", HL_JACK_SERVER_NAME);
 
         // Try to open our own named server
         client = jack_client_open(name, JackServerName, &jst, HL_JACK_SERVER_NAME);
         if (!client)
         {
-            fprintf(stderr, "%sFailed to connect/start JACK server '%s'. Error code: %x\n", HL_ERROR_PREFIX, HL_JACK_SERVER_NAME, jst);
+            qFatal("Failed to connect to/start JACK server '%s'. Error code: %x", HL_JACK_SERVER_NAME, jst);
             return;
         }
     }
@@ -143,7 +146,7 @@ void JackClient::activate()
     {
         if (jack_set_sync_callback(client, _sync_callback, this) != 0)
         {
-            fprintf(stderr, "%sjack_set_sync_callback() failed\n", HL_ERROR_PREFIX);
+            qCritical("jack_set_sync_callback() failed");
         }
     }
 
@@ -151,7 +154,7 @@ void JackClient::activate()
     {
         if (jack_set_timebase_callback(client, 1, _timebase_callback, this) != 0)
         {
-            fprintf(stderr, "%sUnable to take over JACK timebase.\n", HL_ERROR_PREFIX);
+            qCritical("Unable to take over JACK timebase.");
         }
     }
 
@@ -163,7 +166,7 @@ void JackClient::activate()
         int ret = jack_connect(client, jack_port_name(audioOut[i]), jack_port_name(audioIn[i]));
         if (ret != 0 && ret != EEXIST)
         {
-            fprintf(stderr, "%sUnable to connect %s to %s. Error code: %d\n", HL_ERROR_PREFIX, jack_port_name(audioOut[i]), jack_port_name(audioIn[i]), ret);
+            qCritical("Unable to connect %s to %s. Error code: %d", jack_port_name(audioOut[i]), jack_port_name(audioIn[i]), ret);
         }
     }
 }
@@ -175,7 +178,7 @@ void JackClient::monitor()
         int ret = jack_connect(client, jack_port_name(audioOut[i]), (i % 2 == 0) ? "system:playback_1" : "system:playback_2");
         if (ret != 0 && ret != EEXIST)
         {
-            fprintf(stderr, "%sUnable to connect %s to %s. Error code: %d\n", HL_ERROR_PREFIX, jack_port_name(audioOut[i]), (i % 2 == 0) ? "system:playback_1" : "system:playback_2", ret);
+            qCritical("Unable to connect %s to %s. Error code: %d", jack_port_name(audioOut[i]), (i % 2 == 0) ? "system:playback_1" : "system:playback_2", ret);
         }
     }
 }
@@ -204,7 +207,7 @@ int JackClient::transport_reposition(const jack_position_t *pos)
 
 JackClient::~JackClient()
 {
-    printf("%sJackClient destructor called\n", HL_PRINT_PREFIX);
+    qDebug("JackClient destructor called");
 
     if (!client)
     {
@@ -217,12 +220,12 @@ JackClient::~JackClient()
     int err = jack_deactivate(client);
     if (err != 0)
     {
-        fprintf(stderr, "%sCould not deactivate JACK client %s.\n", HL_ERROR_PREFIX, clientName);
+        qCritical("Could not deactivate JACK client %s.", clientName);
     }
 
     err = jack_client_close(client);
     if (err != 0)
     {
-        fprintf(stderr, "%sCould not close JACK client %s.\n", HL_ERROR_PREFIX, clientName);
+        qCritical("Could not close JACK client %s.", clientName);
     }
 }
