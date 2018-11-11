@@ -23,7 +23,7 @@ ApplicationWindow {
         id: updater
         updateHostUrl: "https://api.github.com/repos/jmcker/HulaLoop/releases/latest"
 
-        onBytesDownloaded: progressBar.value += (updater.getNumBytesDownloaded() / updater.getDownloadSize())
+        onBytesDownloaded: progressBar.value += (numBytesDownloaded / downloadSize)
     }
 
     Item {
@@ -68,15 +68,13 @@ ApplicationWindow {
             font.pointSize: Math.round(0.025 * window.width)
 
             Component.onCompleted: {
-                updater.checkForUpdate()
 
-                if(updater.foundUpdate())
+                if(updater.checkForUpdate())
                 {
                     progressBar.indeterminate = false
                     status.text = qsTr("Downloading updates...")
 
-                    updater.downloadUpdate()
-                    if(updater.finishedDownload())
+                    if(updater.downloadUpdate())
                         updater.startHulaLoopInstaller()
                 }
                 else

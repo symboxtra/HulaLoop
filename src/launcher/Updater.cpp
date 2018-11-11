@@ -10,8 +10,7 @@
 #include <QJsonObject>
 #include <QNetworkRequest>
 #include <QProcess>
-
-#include <QtDebug>
+#include <QRegularExpression>
 
 using namespace hula;
 
@@ -27,13 +26,11 @@ Updater::Updater(QObject *parent) : QObject(parent)
     file = nullptr;
 
     updateHostUrl = "";
-    updateAvailable = false;
-
     downloadHostUrl = "";
     downloadFileName = "";
+
     numBytesDownloaded = 0;
     downloadSize = 0;
-    downloaded = false;
 }
 
 /**
@@ -47,31 +44,13 @@ void Updater::setUpdateHost(QString updateHostUrl)
 }
 
 /**
- * Method to check if an update was found.
+ * Method to check the downloaded file name.
  *
- * @return bool - If an update was found
+ * @return QString - The name of the downloaded file
  */
-bool Updater::foundUpdate()
+QString Updater::getDownloadFileName()
 {
-    return updateAvailable;
-}
-
-/**
- * Sets a bool.
- */
-void Updater::setUpdateAvailable(bool val)
-{
-    updateAvailable = val;
-}
-
-/**
- * Method to check the size of the download.
- *
- * @return qint64 - The size of the download file
- */
-qint64 Updater::getDownloadSize()
-{
-    return downloadSize;
+    return downloadFileName;
 }
 
 /**
@@ -85,38 +64,150 @@ qint64 Updater::getNumBytesDownloaded()
 }
 
 /**
- * Method to check if the download has finished.
+ * Method to check the size of the download.
  *
- * @return bool - If the download has finished
+ * @return qint64 - The size of the download file
  */
-bool Updater::finishedDownload()
+qint64 Updater::getDownloadSize()
 {
-    return downloaded;
+    return downloadSize;
+}
+
+/**
+ * A method to parse the tag name returned from the GitHub Releases API.
+ *
+ * @param tagName - QString containing the GitHub Releases tag name
+ * @return QList<int> - A QList holding the version segments (major, minor, revision, build)
+ */
+QList<int> Updater::parseTagName(const QString &tagName)
+{
+
+    QList<int> versionParts({-1, -1, -1, -1});
+    QStringList tagSegments = tagName.split('.', QString::SkipEmptyParts);
+
+    if(tagSegments.size() < 3)
+        return versionParts;
+
+    for(int i = 0; i < tagSegments.size(); i++)
+    {
+
+        QString segment = tagSegments.at(i);
+        segment.replace(QRegularExpression("[^0-9]"), "");
+
+        bool ok = false;
+        int ver = segment.toInt(&ok);
+
+        (ok) ? versionParts[i] = ver : versionParts[i] = -1;
+
+    }
+    return versionParts;
 }
 
 /**
  * Creates the network request using the updateHostUrl.
  * This method blocks until the finished signal is caught.
+ *
+ * @return bool - True if an update was found, false otherwise
  */
-void Updater::checkForUpdate()
+bool Updater::checkForUpdate()
 {
 
-    connect(manager, SIGNAL(finished(QNetworkReply *)), this, SLOT(updateQueryFinished(QNetworkReply *)));
+    bool updateAvailable = false;
     reply = manager->get(QNetworkRequest(QUrl(updateHostUrl)));
+
+    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [=](QNetworkReply::NetworkError code) {
+        // throw exception
+        reply->deleteLater();
+        return false;
+    });
+
+    connect(reply, &QNetworkReply::sslErrors, [=] {
+        // throw exception
+        reply->deleteLater();
+        return false;
+    });
+
+    connect(reply, &QNetworkReply::finished, [&] {
+
+        QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+        if(doc.isNull())
+            return false;
+
+        QJsonObject rootObj = doc.object();
+        if(rootObj.isEmpty())
+            return false;
+
+        QList<int> versionParts = parseTagName(rootObj["tag_name"].toString());
+        if(versionParts.size() == 4)
+        {
+
+            if(versionParts.at(0) > HL_VERSION_MAJOR)
+                updateAvailable = true;
+            else if(versionParts.at(1) > HL_VERSION_MINOR)
+                updateAvailable = true;
+            else if(versionParts.at(2) > HL_VERSION_REV)
+                updateAvailable = true;
+            else if(versionParts.at(3) > HL_VERSION_BUILD)
+                updateAvailable = true;
+
+        }
+        else
+            return false;
+
+        // Found an update, check the assets of the release
+        if(updateAvailable)
+        {
+
+            QJsonArray assets = rootObj["assets"].toArray();
+            for(int i = 0; i < assets.size(); i++)
+            {
+
+                QJsonObject obj = assets[i].toObject();
+                QString assetName = obj["name"].toString();
+                bool ok = false;
+
+                if(assetName.contains(".tar") || assetName.contains(HL_PACKAGE_TYPE))
+                {
+
+                    downloadHostUrl = obj["browser_download_url"].toString();
+                    downloadFileName = obj["name"].toString();
+                    downloadSize = obj["size"].toVariant().toULongLong(&ok);
+
+                    if(!ok)
+                    {
+                        // TODO: Handle exception
+                        downloadHostUrl = "";
+                        downloadFileName = "";
+                        downloadSize = 0L;
+                        return false;
+                    }
+                    break;
+                }
+
+            }
+
+        }
+
+    });
 
     QEventLoop eventLoop;
     connect(reply, SIGNAL(finished()), &eventLoop, SLOT(quit()));
     eventLoop.exec();
 
+    return updateAvailable;
 }
 
 /**
  * Creates the network request using the downloadHostUrl.
- * This method writes incrementally to a file in the system's
- * temporary directory.
+ * This method writes incrementally to a file in the system's temporary
+ * directory and blocks until the finished signal is caught.
+ *
+ * @return bool - True if the download finished successfully, false otherwise
  */
-void Updater::downloadUpdate()
+bool Updater::downloadUpdate()
 {
+
+    bool finishedDownload = false;
 
     QNetworkRequest req(downloadHostUrl);
     req.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
@@ -126,114 +217,47 @@ void Updater::downloadUpdate()
     file = new QFile(QDir::tempPath() + "/" + fileName);
     file->open(QIODevice::WriteOnly);
 
-    connect(reply, SIGNAL(readyRead()), this, SLOT(downloadReadyRead()));
-    connect(reply, SIGNAL(finished()), this, SLOT(downloadFinished()));
+    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [=](QNetworkReply::NetworkError code) {
+        // throw exception
+        file->close();
+        delete file;
+        reply->deleteLater();
+        return false;
+    });
+
+    connect(reply, &QNetworkReply::sslErrors, [=] {
+        // throw exception
+        file->close();
+        delete file;
+        reply->deleteLater();
+        return false;
+    });
+
+    connect(reply, &QNetworkReply::readyRead, [&] {
+
+        numBytesDownloaded = reply->bytesAvailable();
+        emit bytesDownloaded();
+        file->write(reply->readAll());
+
+    });
+
+    connect(reply, &QNetworkReply::finished, [&] {
+
+        file->flush();
+        file->close();
+
+        delete file;
+        reply->deleteLater();
+
+        finishedDownload = true;
+
+    });
 
     QEventLoop eventLoop;
     connect(reply, SIGNAL(finished()), &eventLoop, SLOT(quit()));
     eventLoop.exec();
 
-}
-
-/**
- * Parses the network reply based off the GitHub Releases API to check
- * if an update is available.
- *
- * @param reply - NetworkReply that is received by the update check
- */
-void Updater::updateQueryFinished(QNetworkReply *reply)
-{
-
-    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
-    if(doc.isNull())
-        return;
-
-    QJsonObject rootObj = doc.object();
-    if(rootObj.isEmpty())
-        return;
-
-    QString tagName = rootObj["tag_name"].toString();
-    // tagName.remove(0, 1); // Remove the 'v' before the version string
-
-    QStringList versionParts = tagName.split('.', QString::SkipEmptyParts);
-
-    if(versionParts.size() >= 3)
-    {
-
-        if(versionParts[0] > HL_VERSION_MAJOR)
-            updateAvailable = true;
-        if(versionParts[1] > HL_VERSION_MINOR)
-            updateAvailable = true;
-        if(versionParts[2] > HL_VERSION_REV)
-            updateAvailable = true;
-
-    }
-    else
-        return;
-
-    // updateAvailable = false;
-
-    if(updateAvailable)
-    {
-
-        QJsonArray assets = rootObj["assets"].toArray();
-        for(int i = 0; i < assets.size(); i++)
-        {
-
-            QJsonObject obj = assets[i].toObject();
-            QString assetName = obj["name"].toString();
-            bool ok = false;
-
-            if(assetName.contains(".tar") || assetName.contains(HL_PACKAGE_TYPE))
-            {
-
-                downloadHostUrl = obj["browser_download_url"].toString();
-                downloadFileName = obj["name"].toString();
-                downloadSize = obj["size"].toVariant().toULongLong(&ok);
-
-                if(!ok)
-                {
-                    downloadHostUrl = "";
-                    downloadFileName = "";
-                    downloadSize = 0L;
-                    return;
-                }
-                break;
-            }
-
-        }
-
-    }
-    reply = nullptr;
-}
-
-/**
- * This method catches the readyRead signal and writes the number of read
- * bytes to the file.
- */
-void Updater::downloadReadyRead()
-{
-
-    numBytesDownloaded = reply->bytesAvailable();
-    emit bytesDownloaded();
-
-    file->write(reply->readAll());
-
-}
-
-/**
- * This method catches the finished signal and runs cleanup code to handle
- * the open file and NetworkReply.
- */
-void Updater::downloadFinished()
-{
-
-    file->flush();
-    file->close();
-    reply->deleteLater();
-
-    downloaded = true;
-
+    return finishedDownload;
 }
 
 /**

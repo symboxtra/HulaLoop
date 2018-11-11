@@ -156,7 +156,7 @@ TEST_F(TestGUI, init)
     ASSERT_TRUE(app != nullptr);
     ASSERT_TRUE(engine != nullptr);
 
-    QTimer::singleShot(300, app, &QGuiApplication::quit);
+    QTimer::singleShot(300, app, &QApplication::quit);
     ASSERT_EQ(app->exec(), 0);
 
 }
@@ -166,12 +166,12 @@ TEST_F(TestGUI, timers)
     startTimers();
 
     //Set initial timer to 3000 ms to account for startup time
-    QTimer::singleShot(3000, [ = ]
+    QTimer::singleShot(3000, [=]
     {
         ASSERT_TRUE(getTransportState() == "Recording");
     });
 
-    QTimer::singleShot(4000, [ = ]
+    QTimer::singleShot(4000, [=]
     {
         ASSERT_TRUE(getTransportState() == "Stopped");
     });

@@ -1,3 +1,5 @@
+add_include_dir(.)
+
 add_executable (hulaloop-launcher main.cpp qml.qrc Updater.cpp)
 
 if (WIN32)

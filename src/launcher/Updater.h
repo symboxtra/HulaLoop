@@ -14,6 +14,7 @@ namespace hula
     {
         Q_OBJECT
         Q_PROPERTY(QString updateHostUrl WRITE setUpdateHost)
+        Q_PROPERTY(qint64 downloadSize READ getDownloadSize)
         Q_PROPERTY(qint64 numBytesDownloaded READ getNumBytesDownloaded)
 
         private:
@@ -22,35 +23,29 @@ namespace hula
             QFile *file;
 
             QString updateHostUrl;
-            bool updateAvailable;
-
             QString downloadHostUrl;
             QString downloadFileName;
+
             qint64 numBytesDownloaded;
             qint64 downloadSize;
-            bool downloaded;
 
         public:
             explicit Updater(QObject *parent = nullptr);
             ~Updater();
 
-            Q_INVOKABLE void setUpdateHost(QString);
-            Q_INVOKABLE bool foundUpdate();
-            void setUpdateAvailable(bool);
-            Q_INVOKABLE qint64 getDownloadSize();
-            Q_INVOKABLE qint64 getNumBytesDownloaded();
-            Q_INVOKABLE bool finishedDownload();
+            void setUpdateHost(QString);
 
-            Q_INVOKABLE void checkForUpdate();
-            Q_INVOKABLE void downloadUpdate();
+            QString getDownloadFileName();
+            qint64 getNumBytesDownloaded();
+            qint64 getDownloadSize();
+
+            QList<int> parseTagName(const QString &);
+
+            Q_INVOKABLE bool checkForUpdate();
+            Q_INVOKABLE bool downloadUpdate();
 
             Q_INVOKABLE void startHulaLoopInstaller();
             Q_INVOKABLE void startHulaLoopApp();
-
-        public slots:
-            void updateQueryFinished(QNetworkReply *);
-            void downloadReadyRead();
-            void downloadFinished();
 
         signals:
             void bytesDownloaded();
