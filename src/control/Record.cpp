@@ -19,7 +19,7 @@ void Record::start()
     }
 
     this->endRecord.store(false);
-    recordThread = thread(&Record::recorder, this);
+    recordThread = std::thread(&Record::recorder, this);
 }
 
 void Record::recorder()
@@ -80,9 +80,9 @@ void Record::stop()
     }
 }
 
-vector<std::string> Record::getExportPaths()
+std::vector<std::string> Record::getExportPaths()
 {
-    vector<std::string> path_copy = exportPaths;
+    std::vector<std::string> path_copy = exportPaths;
     return path_copy;
 }
 

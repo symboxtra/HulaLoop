@@ -53,7 +53,7 @@ bool Transport::record(double delay, double duration)
 
     if (recordState)
     {
-        cout << "STARTED RECORDING" << endl;
+        std::cout << "STARTED RECORDING" << std::endl;
         recorder->start();
 
         recordState = false;

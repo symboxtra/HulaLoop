@@ -2,7 +2,7 @@
 
 function runAstyle {
     astyle --lineend=linux --suffix=none --style=break --attach-classes --convert-tabs \
-    --indent-preproc-block --indent-preproc-cond --indent-classes --indent-cases \
+    --indent-preproc-block --indent-namespaces --indent-preproc-cond --indent-classes --indent-cases \
     --indent-switches --indent-col1-comments --pad-oper --pad-comma --pad-header \
     --align-pointer=name --align-reference=name --add-braces --attach-return-type $1
 }

@@ -10,58 +10,58 @@
 
 namespace hula
 {
-/**
- * Available states for the recording/playback logic of the application.
- */
-enum TransportState
-{
-    RECORDING,
-    STOPPED,
-    PLAYING,
-    PAUSED
-};
+    /**
+     * Available states for the recording/playback logic of the application.
+     */
+    enum TransportState
+    {
+        RECORDING,
+        STOPPED,
+        PLAYING,
+        PAUSED
+    };
 
-/**
- * @ingroup public_api
- *
- * Extra class for managing the state of the application and all audio related processes.
- */
-class Transport {
-    private:
-        TransportState state;
-        bool recordState = true;
-        bool playbackState = false;
+    /**
+     * @ingroup public_api
+     *
+     * Extra class for managing the state of the application and all audio related processes.
+     */
+    class Transport {
+        private:
+            TransportState state;
+            bool recordState = true;
+            bool playbackState = false;
 
-    protected:
-        Record *recorder;
+        protected:
+            Record *recorder;
 
-    public:
-        Controller *controller;
+        public:
+            Controller *controller;
 
-    public:
+        public:
 
-        #ifndef NDEBUG
-        Transport(bool dryRun);
-        #endif // END NDEBUG
+            #ifndef NDEBUG
+            Transport(bool dryRun);
+            #endif // END NDEBUG
 
-        Transport();
-        virtual ~Transport();
+            Transport();
+            virtual ~Transport();
 
-        bool record(double delay, double duration);
-        bool record();
-        bool stop();
-        bool play();
-        bool pause();
+            bool record(double delay, double duration);
+            bool record();
+            bool stop();
+            bool play();
+            bool pause();
 
-        Controller *getController() const;
+            Controller *getController() const;
 
-        void exportFile(std::string targetDirectory);
-        void deleteTempFiles();
-        bool hasExportPaths();
+            void exportFile(std::string targetDirectory);
+            void deleteTempFiles();
+            bool hasExportPaths();
 
-        TransportState getState() const;
-        std::string stateToStr(const TransportState state) const;
-};
+            TransportState getState() const;
+            std::string stateToStr(const TransportState state) const;
+    };
 }
 
 #endif // HL_TRANSPORT_H

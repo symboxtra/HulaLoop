@@ -167,7 +167,7 @@ QString QMLBridge::getOutputDevices()
  */
 void QMLBridge::saveFile(QString dir)
 {
-    string directory = dir.toStdString();
+    std::string directory = dir.toStdString();
     int substrLen = 7;
     if (dir[9] == ':')
     {
@@ -212,7 +212,6 @@ bool QMLBridge::wannaClose()
     {
         return true;
     }
-
 }
 
 /**
@@ -220,7 +219,6 @@ bool QMLBridge::wannaClose()
  */
 void QMLBridge::launchUpdateProcess()
 {
-
     QProcess *proc = new QProcess(this);
 
     QString procName = QCoreApplication::applicationDirPath() + "/hulaloop-launcher";
@@ -232,7 +230,6 @@ void QMLBridge::launchUpdateProcess()
 
     proc->start(procName, args);
     proc->waitForFinished();
-
 }
 
 /**

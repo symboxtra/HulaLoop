@@ -7,30 +7,33 @@
 
 namespace hula
 {
-class Record {
+    /**
+     * Class for Recording audio and abstracting OS specific stuff
+     */
+    class Record {
 
-    private:
-        Controller *controller;
-        HulaRingBuffer *rb;
+        private:
+            Controller *controller;
+            HulaRingBuffer *rb;
 
-        thread recordThread;
+            std::thread recordThread;
 
-        atomic<bool> endRecord;
+            std::atomic<bool> endRecord;
 
-        vector<std::string> exportPaths;
+            std::vector<std::string> exportPaths;
 
-    public:
-        Record(Controller *control);
-        ~Record();
+        public:
+            Record(Controller *control);
+            ~Record();
 
-        void recorder();
+            void recorder();
 
-        vector<std::string> getExportPaths();
-        void clearExportPaths();
+            std::vector<std::string> getExportPaths();
+            void clearExportPaths();
 
-        void start();
-        void stop();
-};
+            void start();
+            void stop();
+    };
 }
 
 #endif // END HL_RECORD_H
