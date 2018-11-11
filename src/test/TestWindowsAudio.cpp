@@ -151,7 +151,7 @@ TEST_F(TestWindowsAudio, short_capture)
     system(command.c_str());
 
     // Read some samples
-    int32_t samplesRead = rb->read(readData, maxSamples);
+    ring_buffer_size_t samplesRead = rb->read(readData, maxSamples);
     EXPECT_EQ(samplesRead, maxSamples);
 
     // Remove the buffer

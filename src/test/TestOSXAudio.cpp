@@ -145,7 +145,7 @@ TEST_F(TestOSXAudio, short_capture)
 
     // Read some samples
     // Succeed if we get something
-    int32_t samplesRead = 0;
+    ring_buffer_size_t samplesRead = 0;
     for (int i = 0; i < 50; i++)
     {
         samplesRead = rb->read(readData, maxSamples);

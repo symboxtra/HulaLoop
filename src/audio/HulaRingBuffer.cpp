@@ -79,7 +79,7 @@ HulaRingBuffer::HulaRingBuffer(float maxDuration)
  * @param maxSamples Desired number of samples.
  * @return Number of samples read.
  */
-int32_t HulaRingBuffer::read(SAMPLE *data, int32_t maxSamples)
+ring_buffer_size_t HulaRingBuffer::read(SAMPLE *data, ring_buffer_size_t maxSamples)
 {
     ring_buffer_size_t samplesRead = PaUtil_ReadRingBuffer(&this->rb, (void *)data, (ring_buffer_size_t)maxSamples);
     if (samplesRead > 0)
@@ -104,7 +104,7 @@ int32_t HulaRingBuffer::read(SAMPLE *data, int32_t maxSamples)
  * @param size2 Number of elements available from dataPtr2.
  * @return Number of samples read.
  */
-int32_t HulaRingBuffer::directRead(int32_t maxSamples, void **dataPtr1, int32_t *size1, void **dataPtr2, int32_t *size2)
+ring_buffer_size_t HulaRingBuffer::directRead(ring_buffer_size_t maxSamples, void **dataPtr1, ring_buffer_size_t *size1, void **dataPtr2, ring_buffer_size_t *size2)
 {
     ring_buffer_size_t samplesInBuffer = PaUtil_GetRingBufferReadAvailable(&this->rb);
     ring_buffer_size_t samplesToWrite = std::min(samplesInBuffer, (ring_buffer_size_t)maxSamples);
@@ -135,7 +135,7 @@ int32_t HulaRingBuffer::directRead(int32_t maxSamples, void **dataPtr1, int32_t 
  * @param maxSamples Number of samples contained in the array.
  * @return Number of samples written.
  */
-int32_t HulaRingBuffer::write(const SAMPLE *data, int32_t maxSamples)
+ring_buffer_size_t HulaRingBuffer::write(const SAMPLE *data, ring_buffer_size_t maxSamples)
 {
     ring_buffer_size_t elementsWriteable = PaUtil_GetRingBufferWriteAvailable(&this->rb);
     ring_buffer_size_t elementsToWrite = std::min(elementsWriteable, (ring_buffer_size_t)(maxSamples));
