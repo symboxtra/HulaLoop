@@ -8,17 +8,17 @@ include (cmake/Qt5.cmake)
 include (cmake/Utility.cmake)
 
 # Version
-set (VERSION_MAJOR 0)
-set (VERSION_MINOR 0)
-set (VERSION_REV 0)
-set (VERSION_BUILD 0)
-set (VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_REV}.${VERSION_BUILD}")
+set (HL_VERSION_MAJOR 0)
+set (HL_VERSION_MINOR 0)
+set (HL_VERSION_REV 0)
+set (HL_VERSION_BUILD 0)
+set (HL_VERSION_STR "${HL_VERSION_MAJOR}.${HL_VERSION_MINOR}.${HL_VERSION_REV}.${HL_VERSION_BUILD}")
 
 # Declare project
-project (HulaLoop VERSION ${VERSION} LANGUAGES CXX C)
+project (HulaLoop VERSION ${HL_VERSION_STR} LANGUAGES CXX C)
 
 message (STATUS "")
-message (STATUS "Building ${PROJECT_NAME} v${VERSION}")
+message (STATUS "Building ${PROJECT_NAME} v${HL_VERSION_STR}")
 message (STATUS "")
 
 # Set build type if not provided
@@ -35,6 +35,19 @@ endif ()
 set (64BIT FALSE)
 if (WIN32 AND CMAKE_GENERATOR_PLATFORM MATCHES "x64")
     set (64BIT TRUE)
+endif ()
+
+set (HL_PACKAGE_TYPE ".tar.gz")
+if (WIN32 AND 64BIT)
+    set (HL_PACKAGE_TYPE "win64.exe")
+elseif (WIN32 AND NOT 64BIT)
+    set (HL_PACKAGE_TYPE "win32.exe")
+elseif (OSX)
+    set (HL_PACKAGE_TYPE ".dmg")
+elseif (EXISTS "/etc/debian_version")
+    set (HL_PACKAGE_TYPE ".deb")
+elseif (EXISTS "/etc/redhat-release")
+    set (HL_PACKAGE_TYPE ".rpm")
 endif ()
 
 # Global build options
@@ -77,6 +90,16 @@ set (HL_LIBRARIES)
 if (WIN32)
     set (HL_LIBRARIES ${HL_LIBRARIES} winmm.lib ) # TODO: Add required windows libraries
 endif ()
+
+
+
+
+######## Generated Headers ########
+configure_file (
+    "${PROJECT_SOURCE_DIR}/cmake/HulaVersion.h.in"
+    "${CMAKE_BINARY_DIR}/HulaVersion.h"
+)
+include_directories (${CMAKE_BINARY_DIR})
 
 
 
@@ -169,6 +192,7 @@ if (NOT HL_BUILD_ONLY_AUDIO)
 
     if (HL_BUILD_GUI)
         add_subdirectory (src/ui/gui)
+        add_subdirectory (src/launcher)
         include_directories (${INCLUDE_DIRS})
     endif ()
 endif ()
@@ -178,6 +202,7 @@ endif ()
 
 ######## Testing ########
 # GUI tests are in Testing.cmake
+# Updater tests are in Testing.cmake
 
 # Build settings for DEBUG builds only
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
@@ -185,19 +210,20 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     include (cmake/Testing.cmake)
 
     # Test that only rely on the audio library
-    create_test ("src/test/TestOSAudio.cpp" "" 3 FALSE)
-    create_test ("src/test/TestHulaRingBuffer.cpp" "" 0.5 TRUE)
-    create_test ("src/test/TestController.cpp" "" -1 TRUE)
-    #create_test ("src/test/TestAudioOutput.cpp" "" -1 TRUE)
+    create_test ("src/test/TestOSAudio.cpp" "" 3 FALSE FALSE)
+    create_test ("src/test/TestHulaRingBuffer.cpp" "" 0.5 TRUE FALSE)
+    create_test ("src/test/TestController.cpp" "" -1 TRUE FALSE)
+    create_test ("src/test/TestCLIArgs.cpp" "" -1 FALSE FALSE) # TODO: memcheck can be turned on once Device::id is fixed
+    create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/InteractiveCLI.cpp" -1 FALSE FALSE)
 
     if (OSX)
-        create_test ("src/test/TestOSXAudio.cpp" "" -1 FALSE)
+        create_test ("src/test/TestOSXAudio.cpp" "" -1 FALSE FALSE)
     elseif (WIN32)
-        create_test ("src/test/TestWindowsAudio.cpp" "" -1 FALSE)
+        create_test ("src/test/TestWindowsAudio.cpp" "" -1 FALSE FALSE)
     endif ()
 
     if (NOT HL_BUILD_ONLY_AUDIO)
-        create_test ("src/test/TestTransport.cpp" "" -1 TRUE)
+        create_test ("src/test/TestTransport.cpp" "" -1 TRUE FALSE)
     endif ()
 
 endif ()

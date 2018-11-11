@@ -1,6 +1,8 @@
 #include "hlcontrol/internal/Record.h"
 
-Record::Record(Controller* control)
+using namespace hula;
+
+Record::Record(Controller *control)
 {
     this->controller = control;
 }

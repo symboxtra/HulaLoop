@@ -11,6 +11,8 @@
 #include "QMLBridge.h"
 #include "SystemTrayIcon.h"
 
+using namespace hula;
+
 class TestGUI : public ::testing::Test {
 
     protected:
@@ -98,7 +100,7 @@ class TestGUI : public ::testing::Test {
 
         bool isButtonPlay()
         {
-            QObject* obj = engine->rootObjects()[0]->findChild<QObject *>("play_icon");
+            QObject *obj = engine->rootObjects()[0]->findChild<QObject *>("play_icon");
 
             if (obj)
             {
@@ -154,7 +156,7 @@ TEST_F(TestGUI, init)
     ASSERT_TRUE(app != nullptr);
     ASSERT_TRUE(engine != nullptr);
 
-    QTimer::singleShot(300, app, &QGuiApplication::quit);
+    QTimer::singleShot(300, app, &QApplication::quit);
     ASSERT_EQ(app->exec(), 0);
 
 }

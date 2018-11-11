@@ -1,5 +1,7 @@
 #include "hlaudio/internal/Device.h"
 
+using namespace hula;
+
 /**
  * Constructs an instance of the Device object
  *
@@ -7,7 +9,7 @@
  * @param name Name of the audio device
  * @param t DeviceType of the audio device
  */
-Device::Device(uint32_t *id, string name, DeviceType t)
+Device::Device(uint32_t *id, std::string name, DeviceType t)
 {
     this->deviceID = id;
     this->deviceName = name;
@@ -29,7 +31,7 @@ uint32_t *Device::getID()
  *
  * @return name String representing the name of the device
  */
-string Device::getName()
+std::string Device::getName()
 {
     return deviceName;
 }
@@ -45,20 +47,29 @@ DeviceType Device::getType()
 }
 
 /**
+ * \ingroup memory_management
+ *
  * Delete all the device pointers inside the vector
  */
-void Device::deleteDevices(vector<Device *> devices)
+void Device::deleteDevices(std::vector<Device *> devices)
 {
     for (auto const &device : devices)
     {
-        // cout << device->getName() << endl;
+        // cout << device->getName() << std::endl;
         delete device;
     }
     devices.clear();
 }
 
 /**
- * Deconstructs the device instance
+ * \ingroup memory_management
+ *
+ * Free any resources associated with the Device.
+ *
+ * This does not typically need to be called directly.
+ * A call to Device::deleteDevices() using the vector
+ * received from Controller::getDevices() is usually
+ * more appropriate.
  */
 Device::~Device()
 {

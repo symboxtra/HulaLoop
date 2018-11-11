@@ -4,6 +4,8 @@
 #include "hlcontrol/internal/HulaControlError.h"
 #include "hlcontrol/internal/Transport.h"
 
+using namespace hula;
+
 /**
  * Construct a new instance of the Transport class.
  */
@@ -31,13 +33,20 @@ Transport::Transport(bool dryRun)
 
 /**
  * Start and handle the process of recording.
+ *
+ * @param delay Time, in seconds, to wait before starting record
+ * @param duration Time, in seconds, to record for.
+ *
+ * @return Successful start of recording
  */
-bool Transport::record()
+bool Transport::record(double delay, double duration)
 {
-    std::cout << "Record button clicked!" << std::endl;
+    std::cout << "Record triggered!" << std::endl;
+    std::cout << "Delay set to: " << delay << std::endl;
+    std::cout << "Duration set to: " << duration << std::endl;
     state = RECORDING;
 
-    if(recordState)
+    if (recordState)
     {
         recorder->start();
 
@@ -49,6 +58,17 @@ bool Transport::record()
 }
 
 /**
+ * Overload of record with no delay and infinite
+ * record time.
+ *
+ * @return Successful start of recording
+ */
+bool Transport::record()
+{
+    return record(0, HL_INFINITE_RECORD);
+}
+
+/**
  * Enter the stopped state for playback or recording.
  */
 bool Transport::stop()
@@ -56,7 +76,7 @@ bool Transport::stop()
     std::cout << "Stop button clicked!" << std::endl;
     state = STOPPED;
 
-    if(!recordState)
+    if (!recordState)
     {
         recorder->stop();
 
@@ -76,7 +96,7 @@ bool Transport::play()
     std::cout << "Play button clicked!" << std::endl;
     state = PLAYING;
 
-    if(playbackState)
+    if (playbackState)
     {
         // TODO: Add playback call
         playbackState = false;
@@ -94,7 +114,7 @@ bool Transport::pause()
     std::cout << "Pause button clicked!" << std::endl;
     state = PAUSED;
 
-    if(!recordState) // Pause record
+    if (!recordState) // Pause record
     {
         recorder->stop();
 
@@ -103,7 +123,7 @@ bool Transport::pause()
 
         return true;
     }
-    else if(!playbackState) // Pause playback
+    else if (!playbackState) // Pause playback
     {
         // TODO: Add playback pause call
         playbackState = true;
@@ -112,6 +132,22 @@ bool Transport::pause()
     }
     return false;
 }
+
+/**
+ * Discard any recorded audio and reset the state.
+ *
+ * @return bool Success of command
+ */
+/*
+bool Transport::Discard()
+{
+    state = INITIAL;
+    recordState = true;
+    playbackState = false;
+
+    return true;
+}
+*/
 
 /**
  * Return the current state of the Transport object.
@@ -159,7 +195,7 @@ Controller *Transport::getController() const
     return controller;
 }
 
-void Transport::exportFile(string targetDirectory)
+void Transport::exportFile(std::string targetDirectory)
 {
     Export exp(targetDirectory);
     // TODO: Make it an actual directory

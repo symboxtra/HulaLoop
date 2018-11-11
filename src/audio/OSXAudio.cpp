@@ -6,6 +6,9 @@
 
 #include "OSXAudio.h"
 #include "hlaudio/internal/HulaAudioError.h"
+#include "hlaudio/internal/HulaAudioSettings.h"
+
+using namespace hula;
 
 /**
  * Constructs an instance of OSXAudio class.
@@ -66,15 +69,15 @@ static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
  */
 void OSXAudio::capture()
 {
-    PaStreamParameters  inputParameters;
+    PaStreamParameters  inputParameters = {0};
     PaStream           *stream;
     PaError             err = paNoError;
 
-    // TODO: Grab HulaLoop driver specifically/make this grabbable for RECORD devices
-    inputParameters.device = Pa_GetDefaultInputDevice();
+    inputParameters.device = *(this->activeInputDevice->getID());
+    printf("Device id: %d\n", inputParameters.device);
     if (inputParameters.device == paNoDevice)
     {
-        fprintf(stderr, "%sNo default input device found.\n", HL_ERROR_PREFIX);
+        fprintf(stderr, "%sNo device found.\n", HL_ERROR_PREFIX);
         exit(1); // TODO: Handle error
     }
 
@@ -143,10 +146,18 @@ void OSXAudio::capture()
 }
 
 /**
- * Utility function for fetching the PortAudio devices of a given DeviceType.
+ * Fetch devices of the specified type.
+ * These devices must be deleted by the caller using the
+ * Device::deleteDevices() method.
  *
+ * The list is designed for one-time use. Get the list,
+ * use the device, delete the list immediately.
+ *
+ * DO NOT STORE THIS as it may become out-of-date.
+ *
+ * @return List of Device objects
  */
-vector<Device *> OSXAudio::getDevices(DeviceType type)
+std::vector<Device *> OSXAudio::getDevices(DeviceType type)
 {
     int deviceCount = Pa_GetDeviceCount();
     if (deviceCount < 0)
@@ -155,7 +166,7 @@ vector<Device *> OSXAudio::getDevices(DeviceType type)
         exit(1); // TODO: Handle error
     }
 
-    vector<Device *> devices;
+    std::vector<Device *> devices;
     for (uint32_t i = 0; i < deviceCount; i++)
     {
         const PaDeviceInfo *paDevice = Pa_GetDeviceInfo(i);
@@ -179,16 +190,8 @@ vector<Device *> OSXAudio::getDevices(DeviceType type)
         // This needs to be freed elsewhere
         if (type & checkType)
         {
-            Device *hlDevice = new Device(NULL, string(paDevice->name), type);
+            Device *hlDevice = new Device(new uint32_t(i), std::string(paDevice->name), checkType);
             devices.push_back(hlDevice);
-
-            // Print some debug device info for now
-            // TODO: Remove
-            cout << "Device #" << i + 1 << ": " << paDevice->name << endl;
-            cout << "Input Channels: " << paDevice->maxInputChannels << endl;
-            cout << "Output Channels: " << paDevice->maxOutputChannels << endl;
-            cout << "Default Sample Rate: " << paDevice->defaultSampleRate << endl;
-            cout << endl;
         }
     }
 
@@ -227,7 +230,23 @@ void OSXAudio::setActiveOutputDevice(Device *device)
  */
 bool OSXAudio::checkRates(Device *device)
 {
-    return true;
+    PaStreamParameters inputParameters = {0};
+    inputParameters.channelCount = NUM_CHANNELS;
+    inputParameters.device = *device->getID();
+    inputParameters.sampleFormat = paFloat32;
+
+    PaError err = Pa_IsFormatSupported(&inputParameters, NULL, HulaAudioSettings::getInstance()->getSampleRate());
+
+    if (err == paFormatIsSupported)
+    {
+        printf("Sample rate and format valid.\n");
+    }
+    else
+    {
+        printf("Sample rate or format invalid.\n");
+    }
+
+    return err == paFormatIsSupported;
 }
 
 /**

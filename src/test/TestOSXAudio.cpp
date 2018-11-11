@@ -3,6 +3,8 @@
 
 #include "../audio/OSXAudio.h"
 
+using namespace hula;
+
 // Don't extend OSXAudio.
 // Use a shared instance of it since setup is so expensive.
 // This is black-box testing of OSXAudio since we can't extend
@@ -40,7 +42,7 @@ OSXAudio *TestOSXAudio::audio = NULL;
  */
 TEST_F(TestOSXAudio, get_input_devices)
 {
-    vector<Device *> devs = audio->getDevices((DeviceType)(RECORD | LOOPBACK));
+    std::vector<Device *> devs = audio->getDevices((DeviceType)(RECORD | LOOPBACK));
     EXPECT_GT(devs.size(), 0);
 
     for (int i = 0; i < devs.size(); i++)
@@ -60,7 +62,7 @@ TEST_F(TestOSXAudio, get_input_devices)
  */
 TEST_F(TestOSXAudio, get_record_devices)
 {
-    vector<Device *> devs = audio->getDevices(DeviceType::RECORD);
+    std::vector<Device *> devs = audio->getDevices(DeviceType::RECORD);
     EXPECT_GT(devs.size(), 0);
 
     for (int i = 0; i < devs.size(); i++)
@@ -80,7 +82,7 @@ TEST_F(TestOSXAudio, get_record_devices)
  */
 TEST_F(TestOSXAudio, get_loopback_devices)
 {
-    vector<Device *> devs = audio->getDevices(DeviceType::LOOPBACK);
+    std::vector<Device *> devs = audio->getDevices(DeviceType::LOOPBACK);
     EXPECT_GT(devs.size(), 0);
 
     for (int i = 0; i < devs.size(); i++)
@@ -100,7 +102,7 @@ TEST_F(TestOSXAudio, get_loopback_devices)
  */
 TEST_F(TestOSXAudio, get_output_devices)
 {
-    vector<Device *> devs = audio->getDevices(DeviceType::PLAYBACK);
+    std::vector<Device *> devs = audio->getDevices(DeviceType::PLAYBACK);
     EXPECT_GT(devs.size(), 0);
 
     for (int i = 0; i < devs.size(); i++)
@@ -119,7 +121,7 @@ TEST_F(TestOSXAudio, get_output_devices)
  */
 TEST_F(TestOSXAudio, get_invalid_type_devices)
 {
-    vector<Device *> devs = audio->getDevices((DeviceType)(0));
+    std::vector<Device *> devs = audio->getDevices((DeviceType)(0));
     EXPECT_EQ(devs.size(), 0);
     Device::deleteDevices(devs);
 }
@@ -141,13 +143,22 @@ TEST_F(TestOSXAudio, short_capture)
     HulaRingBuffer *rb = new HulaRingBuffer(0.5);
     audio->addBuffer(rb);
 
-    // Sleep for a few seconds to allow thread to start
-    // and data to flow in
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
-
     // Read some samples
-    int32_t samplesRead = rb->read(readData, maxSamples);
-    EXPECT_EQ(samplesRead, maxSamples);
+    // Succeed if we get something
+    ring_buffer_size_t samplesRead = 0;
+    for (int i = 0; i < 50; i++)
+    {
+        samplesRead = rb->read(readData, maxSamples);
+        if (samplesRead > 0)
+        {
+            break;
+        }
+
+        // Sleep for a bit to let some data flow in
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    }
+
+    EXPECT_GT(samplesRead, 0);
 
     // Remove the buffer
     audio->removeBuffer(rb);
