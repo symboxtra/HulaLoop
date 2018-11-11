@@ -1,15 +1,23 @@
-function (create_test _test_file _src_files _timeout _do_memcheck)
+function (create_test _test_file _src_files _timeout _do_memcheck _only_master)
 
     get_filename_component (_test_name ${_test_file} NAME_WE)
     add_executable (${_test_name} ${_test_file} ${_src_files})
     add_dependencies (${_test_name} hulaloop hulaloop-cli hulaloop-launcher) # Make sure the real application builds first
     target_link_libraries (${_test_name} ${HL_LIBRARIES} gtest gtest_main ${CMAKE_THREAD_LIBS_INIT})
 
-    add_test (
-        NAME ${_test_name}
-        COMMAND ${_test_name} "--gtest_color=yes"
-        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-    )
+    if (_only_master)
+        add_test (
+            NAME only_master_${_test_name}
+            COMMAND ${_test_name} "--gtest_color=yes"
+            WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+        )
+    else ()
+        add_test (
+            NAME ${_test_name}
+            COMMAND ${_test_name} "--gtest_color=yes"
+            WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+        )
+    endif ()
 
     # Add memory test
     # We don't currently have a solution for Windows
@@ -90,10 +98,8 @@ set (T_TEST_DIR "${PROJECT_SOURCE_DIR}/src/test")
 # Add the GUI tests to the bin directory instead of bin/test
 # GUI tests need the Qt DLLs in bin
 if (HL_BUILD_GUI AND HL_INCLUDE_GUI_TESTS AND NOT HL_BUILD_ONLY_AUDIO)
-    create_test ("src/test/TestGUI.cpp" "src/ui/gui/QMLBridge.cpp;src/ui/gui/SystemTrayIcon.cpp;src/ui/gui/qml.qrc" -1 FALSE)
-    target_link_libraries (TestGUI ${HL_LIBRARIES})
-    create_test ("src/test/TestUpdater.cpp" "src/launcher/Updater.cpp;src/ui/gui/QMLBridge.cpp;src/ui/gui/SystemTrayIcon.cpp;src/ui/gui/qml.qrc" -1 FALSE)
-    target_link_libraries (TestUpdater ${HL_LIBRARIES})
+    create_test ("src/test/TestGUI.cpp" "src/ui/gui/QMLBridge.cpp;src/ui/gui/SystemTrayIcon.cpp;src/ui/gui/qml.qrc" -1 FALSE FALSE)
+    create_test ("src/test/TestUpdater.cpp" "src/launcher/Updater.cpp;src/ui/gui/qml.qrc" -1 FALSE FALSE)
 else (NOT HL_INCLUDE_GUI_TESTS)
     message (STATUS "Ignoring GUI tests. Set HL_INCLUDE_GUI_TESTS=true to include.")
 endif ()

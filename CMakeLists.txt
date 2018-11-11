@@ -210,20 +210,20 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     include (cmake/Testing.cmake)
 
     # Test that only rely on the audio library
-    create_test ("src/test/TestOSAudio.cpp" "" 3 FALSE)
-    create_test ("src/test/TestHulaRingBuffer.cpp" "" 0.5 TRUE)
-    create_test ("src/test/TestController.cpp" "" -1 TRUE)
-    create_test ("src/test/TestCLIArgs.cpp" "" -1 FALSE) # TODO: memcheck can be turned on once Device::id is fixed
-    create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/InteractiveCLI.cpp" -1 FALSE)
+    create_test ("src/test/TestOSAudio.cpp" "" 3 FALSE FALSE)
+    create_test ("src/test/TestHulaRingBuffer.cpp" "" 0.5 TRUE FALSE)
+    create_test ("src/test/TestController.cpp" "" -1 TRUE FALSE)
+    create_test ("src/test/TestCLIArgs.cpp" "" -1 FALSE FALSE) # TODO: memcheck can be turned on once Device::id is fixed
+    create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/InteractiveCLI.cpp" -1 FALSE FALSE)
 
     if (OSX)
-        create_test ("src/test/TestOSXAudio.cpp" "" -1 FALSE)
+        create_test ("src/test/TestOSXAudio.cpp" "" -1 FALSE FALSE)
     elseif (WIN32)
-        create_test ("src/test/TestWindowsAudio.cpp" "" -1 FALSE)
+        create_test ("src/test/TestWindowsAudio.cpp" "" -1 FALSE FALSE)
     endif ()
 
     if (NOT HL_BUILD_ONLY_AUDIO)
-        create_test ("src/test/TestTransport.cpp" "" -1 TRUE)
+        create_test ("src/test/TestTransport.cpp" "" -1 TRUE FALSE)
     endif ()
 
 endif ()
