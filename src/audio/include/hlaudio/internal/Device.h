@@ -23,6 +23,7 @@ namespace hula
      */
     union DeviceID
     {
+        // ! THESE ARE GETTING DETECTED BY DOXYGEN FIX!!!
         std::string linuxID;
         uint32_t *windowsID;
         int osxID;
