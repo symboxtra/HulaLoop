@@ -100,14 +100,12 @@ bool Updater::finishedDownload()
  */
 void Updater::checkForUpdate()
 {
-
     connect(manager, SIGNAL(finished(QNetworkReply *)), this, SLOT(updateQueryFinished(QNetworkReply *)));
     reply = manager->get(QNetworkRequest(QUrl(updateHostUrl)));
 
     QEventLoop eventLoop;
     connect(reply, SIGNAL(finished()), &eventLoop, SLOT(quit()));
     eventLoop.exec();
-
 }
 
 /**
@@ -117,7 +115,6 @@ void Updater::checkForUpdate()
  */
 void Updater::downloadUpdate()
 {
-
     QNetworkRequest req(downloadHostUrl);
     req.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
     reply = manager->get(req);
@@ -132,7 +129,6 @@ void Updater::downloadUpdate()
     QEventLoop eventLoop;
     connect(reply, SIGNAL(finished()), &eventLoop, SLOT(quit()));
     eventLoop.exec();
-
 }
 
 /**
@@ -143,7 +139,6 @@ void Updater::downloadUpdate()
  */
 void Updater::updateQueryFinished(QNetworkReply *reply)
 {
-
     QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
     if (doc.isNull())
     {
@@ -163,7 +158,6 @@ void Updater::updateQueryFinished(QNetworkReply *reply)
 
     if (versionParts.size() >= 3)
     {
-
         if (versionParts[0] > HL_VERSION_MAJOR)
         {
             updateAvailable = true;
@@ -176,7 +170,6 @@ void Updater::updateQueryFinished(QNetworkReply *reply)
         {
             updateAvailable = true;
         }
-
     }
     else
     {
@@ -187,18 +180,15 @@ void Updater::updateQueryFinished(QNetworkReply *reply)
 
     if (updateAvailable)
     {
-
         QJsonArray assets = rootObj["assets"].toArray();
         for (int i = 0; i < assets.size(); i++)
         {
-
             QJsonObject obj = assets[i].toObject();
             QString assetName = obj["name"].toString();
             bool ok = false;
 
             if (assetName.contains(".tar") || assetName.contains(HL_PACKAGE_TYPE))
             {
-
                 downloadHostUrl = obj["browser_download_url"].toString();
                 downloadFileName = obj["name"].toString();
                 downloadSize = obj["size"].toVariant().toULongLong(&ok);
@@ -212,9 +202,7 @@ void Updater::updateQueryFinished(QNetworkReply *reply)
                 }
                 break;
             }
-
         }
-
     }
     reply = nullptr;
 }
@@ -225,12 +213,10 @@ void Updater::updateQueryFinished(QNetworkReply *reply)
  */
 void Updater::downloadReadyRead()
 {
-
     numBytesDownloaded = reply->bytesAvailable();
     emit bytesDownloaded();
 
     file->write(reply->readAll());
-
 }
 
 /**
@@ -239,13 +225,11 @@ void Updater::downloadReadyRead()
  */
 void Updater::downloadFinished()
 {
-
     file->flush();
     file->close();
     reply->deleteLater();
 
     downloaded = true;
-
 }
 
 /**
@@ -254,7 +238,6 @@ void Updater::downloadFinished()
  */
 void Updater::startHulaLoopInstaller()
 {
-
     QProcess proc;
     QString procName = QDir::tempPath() + "/" + downloadFileName;
 
@@ -263,7 +246,6 @@ void Updater::startHulaLoopInstaller()
     {
         exit(0);
     }
-
 }
 
 /**
@@ -272,7 +254,6 @@ void Updater::startHulaLoopInstaller()
  */
 void Updater::startHulaLoopApp()
 {
-
     QProcess proc;
     QString procName = QCoreApplication::applicationDirPath() + "/hulaloop";
 
@@ -281,7 +262,6 @@ void Updater::startHulaLoopApp()
     {
         exit(0);
     }
-
 }
 
 /**

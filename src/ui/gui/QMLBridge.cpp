@@ -185,25 +185,34 @@ void QMLBridge::saveFile(QString dir)
  */
 bool QMLBridge::wannaClose()
 {
-    // TODO implement actually
-    QMessageBox msgBox;
-    msgBox.setWindowTitle("Exit???");
-    QPixmap pix(":/res/hulaloop-logo-small.png");
-    msgBox.setIconPixmap(pix.scaled(100, 100, Qt::KeepAspectRatio));
-    msgBox.setText("You have unsaved audio.");
-    msgBox.setInformativeText("Would you like to save your audio?");
-    QAbstractButton *goBackAndSave = msgBox.addButton(tr("Go back and save"), QMessageBox::AcceptRole);
-    QIcon ico = QApplication::style()->standardIcon(QStyle::SP_DialogYesButton);
-    goBackAndSave->setIcon(ico);
-    msgBox.addButton(QMessageBox::Discard);
-    if (msgBox.exec() == QMessageBox::AcceptRole)
+    // Check if user has unsaved audio
+    if (transport->hasExportPaths())
     {
-        return false;
+        // user has unsaved audio prompt them
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Exit???");
+        QPixmap pix(":/res/hulaloop-logo-small.png");
+        msgBox.setIconPixmap(pix.scaled(100, 100, Qt::KeepAspectRatio));
+        msgBox.setText("You have unsaved audio.");
+        msgBox.setInformativeText("Would you like to save your audio?");
+        QAbstractButton *goBackAndSave = msgBox.addButton(tr("Go back and save"), QMessageBox::RejectRole);
+        QIcon ico = QApplication::style()->standardIcon(QStyle::SP_DialogYesButton);
+        goBackAndSave->setIcon(ico);
+        msgBox.addButton(QMessageBox::Discard);
+        if (msgBox.exec() == QMessageBox::AcceptRole)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
     else
     {
         return true;
     }
+
 }
 
 /**

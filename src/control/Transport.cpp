@@ -211,6 +211,7 @@ void Transport::exportFile(std::string targetDirectory)
     exp.copyData(temp);
     #else
     exp.copyData(recorder->getExportPaths());
+    recorder->clearExportPaths();
     #endif
 }
 
@@ -222,6 +223,28 @@ void Transport::deleteTempFiles()
     recordState = true;
     playbackState = false;
     Export::deleteTempFiles(recorder->getExportPaths());
+    recorder->clearExportPaths();
+}
+
+/**
+ * Checks if there are files in the export paths which means
+ * recording has happened and there are no files left to export
+ *
+ * @return true is the user has recorded files
+ */
+bool Transport::hasExportPaths()
+{
+    bool exportPaths = recorder->getExportPaths().empty();
+    if (exportPaths)
+    {
+        // there are no paths left
+        return false;
+    }
+    else
+    {
+        // there are paths left
+        return true;
+    }
 }
 
 /**

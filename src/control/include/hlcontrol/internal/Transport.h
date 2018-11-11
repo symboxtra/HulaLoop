@@ -57,6 +57,7 @@ class Transport {
 
         void exportFile(std::string targetDirectory);
         void deleteTempFiles();
+        bool hasExportPaths();
 
         TransportState getState() const;
         std::string stateToStr(const TransportState state) const;

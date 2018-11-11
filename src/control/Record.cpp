@@ -83,9 +83,12 @@ void Record::stop()
 vector<std::string> Record::getExportPaths()
 {
     vector<std::string> path_copy = exportPaths;
-    exportPaths.clear();
-
     return path_copy;
+}
+
+void Record::clearExportPaths()
+{
+    this->exportPaths.clear();
 }
 
 Record::~Record()

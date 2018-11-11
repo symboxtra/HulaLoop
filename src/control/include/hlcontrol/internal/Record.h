@@ -5,8 +5,6 @@
 
 #include <hlaudio/hlaudio.h>
 
-using namespace std;
-
 namespace hula
 {
 class Record {
@@ -28,6 +26,7 @@ class Record {
         void recorder();
 
         vector<std::string> getExportPaths();
+        void clearExportPaths();
 
         void start();
         void stop();
