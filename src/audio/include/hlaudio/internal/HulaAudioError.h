@@ -27,7 +27,15 @@
  * Collection of global information for HulaLoop
  *
 ******************************************************************************/
+
+/**
+ * Prefix printed before every console message to stdout.
+ */
 #define HL_PRINT_PREFIX "[HulaLoop] "
+
+/**
+ * Prefix printed before every console message to stderr.
+ */
 #define HL_ERROR_PREFIX "[HulaLoop] "
 
 /**

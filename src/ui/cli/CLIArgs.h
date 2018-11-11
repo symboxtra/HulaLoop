@@ -35,6 +35,9 @@ using namespace hula;
 #define HL_LIST_DEVICES_SO    "l"
 #define HL_LIST_DEVICES_LO    "list"
 
+/**
+ * Args parsed from CLI flags.
+ */
 typedef struct HulaImmediateArgs
 {
     bool startRecord = false;

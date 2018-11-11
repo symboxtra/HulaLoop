@@ -6,6 +6,9 @@
 
 namespace hula
 {
+    /**
+     * A class used to copy data from temp files and export files.
+     */
     class Export {
         private:
             std::string targetFile;

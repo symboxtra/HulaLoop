@@ -21,6 +21,9 @@ using byte = uint8_t;
 
 namespace hula
 {
+    /**
+     * An audio class that captures system wide audio on Linux.
+     */
     class LinuxAudio : public OSAudio {
 
         Q_DECLARE_TR_FUNCTIONS(Audio)
