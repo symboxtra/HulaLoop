@@ -103,7 +103,7 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
  *
  * @param device Device to check against
  */
-bool LinuxAudio::checkRates(Device *device)
+bool LinuxAudio::checkDeviceParams(Device *device)
 {
     int err;                     // return for commands that might return an error
     snd_pcm_t *pcmHandle = NULL; // default pcm handle
@@ -157,7 +157,7 @@ void LinuxAudio::setActiveOutputDevice(Device *device)
 {
     // Set the active output device
     this->activeOutputDevice = device;
-    std::cout << checkRates(device) << std::endl;
+    std::cout << checkDeviceParams(device) << std::endl;
     // Interrupt all threads and make sure they stop
     // for (auto &t : execThreads)
     // {

@@ -140,7 +140,10 @@ void OSAudio::setActiveInputDevice(Device *device)
         return;
     }
 
-    this->checkRates(device);
+    if(!this->checkDeviceParams(device))
+    {
+        return;
+    }
 
     if (this->activeInputDevice)
     {
@@ -182,7 +185,7 @@ void OSAudio::joinAndKillThreads(std::vector<std::thread> &threads)
  */
 void OSAudio::setActiveOutputDevice(Device *device)
 {
-    this->checkRates(device);
+    this->checkDeviceParams(device);
 
 
     this->activeOutputDevice = device;
