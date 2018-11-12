@@ -3,8 +3,6 @@
 
 #include <vector>
 
-#include <QCoreApplication>
-
 #include "Device.h"
 #include "OSAudio.h"
 #include "HulaRingBuffer.h"
@@ -18,8 +16,6 @@ namespace hula
      * A class that structures the receival of audio from the OS framework.
      */
     class Controller {
-
-        Q_DECLARE_TR_FUNCTIONS(Controller)
 
         private:
             OSAudio *audio;

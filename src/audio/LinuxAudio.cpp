@@ -1,7 +1,5 @@
-#include <QDebug>
-
 #include "LinuxAudio.h"
-#include "include/hlaudio/internal/HulaAudioError.h"
+#include "hlaudio/internal/HulaAudioError.h"
 #include "hlaudio/internal/HulaAudioSettings.h"
 
 using namespace hula;
@@ -118,12 +116,12 @@ bool LinuxAudio::checkRates(Device *device)
 
     // device id
     char *id = (char *)reinterpret_cast<std::string *>(device->getID())->c_str();
-    qDebug() << id;
+    hlDebug() << id << std::endl;
     // open pcm device
     err = snd_pcm_open(&pcmHandle, id, SND_PCM_STREAM_CAPTURE, 0);
     if (err < 0)
     {
-        qWarning() << "Unable to test device: " << id;
+        hlDebug() << "Unable to test device: " << id << std::endl;
         return false;
     }
 
@@ -147,12 +145,12 @@ bool LinuxAudio::checkRates(Device *device)
     if (samplingRateValid && formatValid)
     {
         // TODO: qOut()
-        qInfo() << tr(HL_SAMPLE_RATE_VALID);
+        hlDebug() << HL_SAMPLE_RATE_VALID << std::endl;
         return true;
     }
 
     // TODO: qOut()
-    qInfo() << tr(HL_SAMPLE_RATE_INVALID);
+    hlDebug() << HL_SAMPLE_RATE_INVALID << std::endl;
     return false;
 }
 
@@ -163,7 +161,7 @@ void LinuxAudio::setActiveOutputDevice(Device *device)
 {
     // Set the active output device
     this->activeOutputDevice = device;
-    qDebug() << checkRates(device);
+    hlDebug() << checkRates(device) << std::endl;
     // Interrupt all threads and make sure they stop
     // for (auto &t : execThreads)
     // {
@@ -226,7 +224,7 @@ void LinuxAudio::capture()
     err = snd_pcm_open(&pcmHandle, defaultDevice.c_str(), SND_PCM_STREAM_CAPTURE, 0);
     if (err < 0)
     {
-        qCritical() << "Unable to open " << QString::fromStdString(defaultDevice) << " exiting...";
+        hlDebug() << "Unable to open " << defaultDevice << " exiting..." << std::endl;
         exit(1);
     }
 
@@ -252,7 +250,7 @@ void LinuxAudio::capture()
     err = snd_pcm_hw_params(pcmHandle, param);
     if (err < 0)
     {
-        qCritical() << "Unable to set parameters: " << QString::fromStdString(defaultDevice) << " exiting...";
+        hlDebug() << "Unable to set parameters: " << defaultDevice << " exiting..." << std::endl;
         exit(1);
     }
 
@@ -271,17 +269,17 @@ void LinuxAudio::capture()
         framesRead = snd_pcm_readi(pcmHandle, audioBuffer, frame);
         if (framesRead == -EPIPE)
         {
-            qWarning() << "Buffer overrun";
+            hlDebug() << "Buffer overrun" << std::endl;
             snd_pcm_prepare(pcmHandle);
         }
         else if (framesRead < 0)
         {
             // TODO: This really needs to not be properly switchable and not defaultDevice
-            qCritical() << "ALSA read on device " << QString::fromStdString(defaultDevice) << " failed.";
+            hlDebug() << "ALSA read on device " << defaultDevice << " failed." << std::endl;
         }
         else if (framesRead != (int)frame)
         {
-            qWarning() << "Underrun: Exepected " << frame << " frames but got " << framesRead;
+            hlDebug() << "Underrun: Exepected " << frame << " frames but got " << framesRead << std::endl;
         }
         copyToBuffers(audioBuffer, framesRead * NUM_CHANNELS * sizeof(SAMPLE));
     }

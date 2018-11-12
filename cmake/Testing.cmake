@@ -2,8 +2,12 @@ function (create_test _test_file _src_files _timeout _do_memcheck _only_master)
 
     get_filename_component (_test_name ${_test_file} NAME_WE)
     add_executable (${_test_name} ${_test_file} ${_src_files})
-    add_dependencies (${_test_name} hulaloop hulaloop-cli hulaloop-launcher) # Make sure the real application builds first
     target_link_libraries (${_test_name} ${HL_LIBRARIES} gtest gtest_main ${CMAKE_THREAD_LIBS_INIT})
+
+    # Make sure the real application builds first
+    if (NOT HL_BUILD_ONLY_AUDIO)
+        add_dependencies (${_test_name} hulaloop hulaloop-cli hulaloop-launcher)
+    endif ()
 
     if (_only_master)
         add_test (

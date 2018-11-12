@@ -35,19 +35,19 @@ OSXAudio::OSXAudio()
     }
 
     // TODO: qOut()
-    qInfo("\n\n");
+    hlDebugf("\n\n");
 
     // Initialize PortAudio
     int err = Pa_Initialize();
     if (err != paNoError)
     {
-        qCritical("PortAudio failed to initialize.");
-        qCritical("PortAudio: %s", Pa_GetErrorText(err));
+        hlDebugf("PortAudio failed to initialize.\n");
+        hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
         exit(1); // TODO: Handle error
     }
 
     // TODO: qOut()
-    qInfo("\n\n");
+    hlDebugf("\n\n");
 }
 
 /**
@@ -132,7 +132,7 @@ void OSXAudio::capture()
     inputParameters.device = *(this->activeInputDevice->getID());
     if (inputParameters.device == paNoDevice)
     {
-        qWarning() << "Device %s not found." << QString::fromStdString(this->activeInputDevice->getName());
+        hlDebug() << "Device %s not found." << this->activeInputDevice->getName() << std::endl;
         exit(1); // TODO: Handle error
     }
 
@@ -155,8 +155,8 @@ void OSXAudio::capture()
 
     if (err != paNoError)
     {
-        qCritical("Could not open Port Audio device stream.");
-        qCritical("PortAudio: %s", Pa_GetErrorText(err));
+        hlDebugf("Could not open Port Audio device stream.\n");
+        hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
         exit(1); // TODO: Handle error
     }
 
@@ -164,8 +164,8 @@ void OSXAudio::capture()
     err = Pa_StartStream(stream);
     if (err != paNoError)
     {
-        qCritical("Could not start Port Audio device stream.");
-        qCritical("PortAudio: %s", Pa_GetErrorText(err));
+        hlDebugf("Could not start Port Audio device stream.\n");
+        hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
         exit(1); // TODO: Handle error
     }
 
@@ -175,27 +175,27 @@ void OSXAudio::capture()
         // The second half of this function could be moved to a separate
         // function like endCapture() so that we don't have to keep this thread alive.
 
-        qDebug("Capture keep-alive");
+        hlDebugf("Capture keep-alive\n");
 
         // This value can be adjusted
         // 100 msec is decent precision for now
         Pa_Sleep(1000);
     }
 
-    qDebug("Capture thread ended keep-alive.\n");
+    hlDebugf("Capture thread ended keep-alive.\n");
 
     if (err != paNoError)
     {
-        qCritical("Error during read from device stream.");
-        qCritical("PortAudio: %s", Pa_GetErrorText(err));
+        hlDebugf("Error during read from device stream.\n");
+        hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
         exit(1); // TODO: Handle error
     }
 
     err = Pa_CloseStream(stream);
     if (err != paNoError)
     {
-        qCritical("Could not close Port Audio device stream.");
-        qCritical("PortAudio: %s", Pa_GetErrorText(err));
+        hlDebugf("Could not close Port Audio device stream.\n");
+        hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
         exit(1); // TODO: Handle error
     }
 }
@@ -217,7 +217,7 @@ std::vector<Device *> OSXAudio::getDevices(DeviceType type)
     int deviceCount = Pa_GetDeviceCount();
     if (deviceCount < 0)
     {
-        qWarning("Failed to fetch PortAudio devices.");
+        hlDebugf("Failed to fetch PortAudio devices.\n");
         exit(1); // TODO: Handle error
     }
 
@@ -295,12 +295,12 @@ bool OSXAudio::checkRates(Device *device)
     if (err == paFormatIsSupported)
     {
         // TODO: qOut()
-        qInfo() << tr(HL_SAMPLE_RATE_VALID);
+        hlDebug() << HL_SAMPLE_RATE_VALID << std::endl;
     }
     else
     {
         // TODO: qOut()
-        qInfo() << tr(HL_SAMPLE_RATE_INVALID);
+        hlDebug() << HL_SAMPLE_RATE_INVALID << std::endl;
     }
 
     return err == paFormatIsSupported;
@@ -311,13 +311,13 @@ bool OSXAudio::checkRates(Device *device)
  */
 OSXAudio::~OSXAudio()
 {
-    qDebug("OSXAudio destructor called");
+    hlDebugf("OSXAudio destructor called\n");
 
     // Close the Port Audio session
     PaError err = Pa_Terminate();
     if (err != paNoError)
     {
-        qCritical("Could not terminate Port Audio session.");
-        qCritical("PortAudio: %s", Pa_GetErrorText(err));
+        hlDebugf("Could not terminate Port Audio session.\n");
+        hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
     }
 }

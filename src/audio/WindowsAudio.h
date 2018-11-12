@@ -20,8 +20,6 @@
 #include <thread>
 #include <vector>
 
-#include <QCoreApplication>
-
 #include "hlaudio/internal/Device.h"
 #include "hlaudio/internal/OSAudio.h"
 
@@ -43,8 +41,6 @@ namespace hula
      * A audio class that captures system wide audio on Windows
      */
     class WindowsAudio : public OSAudio {
-
-        Q_DECLARE_TR_FUNCTIONS(Audio)
 
         private:
             const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);

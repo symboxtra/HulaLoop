@@ -39,7 +39,7 @@ add_library_target (${HL_LIBRARY_NAME} "${AUDIO_SRC_FILES};${EXTRA_INCLUDES}")
 add_dependencies (${HL_LIBRARY_NAME} portaudio portaudio_static)
 
 # Link external libraries to new generated library
-target_link_libraries (${HL_LIBRARY_NAME} ${AUDIO_LIBS} ${QT_TRANSLATION_LIBS})
+target_link_libraries (${HL_LIBRARY_NAME} ${AUDIO_LIBS})
 
 # Make these include directories available to the rest of the project
 add_include_dir (include)

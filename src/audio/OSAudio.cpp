@@ -1,8 +1,6 @@
 #include <algorithm>
 #include <iostream>
 
-#include <QDebug>
-
 #include "hlaudio/internal/HulaAudioError.h"
 #include "hlaudio/internal/OSAudio.h"
 
@@ -187,7 +185,7 @@ void OSAudio::setActiveOutputDevice(Device *device)
  */
 OSAudio::~OSAudio()
 {
-    qDebug("OSAudio destructor called");
+    hlDebugf("OSAudio destructor called\n");
 
     // Signal thread death
     this->endCapture.store(true);

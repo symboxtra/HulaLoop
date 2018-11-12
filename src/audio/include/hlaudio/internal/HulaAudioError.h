@@ -1,10 +1,10 @@
 #ifndef HL_AUDIO_ERROR_H
 #define HL_AUDIO_ERROR_H
 
+#include <cstdio>
 #include <iostream>
 
-#include <QtGlobal>
-#include <QString>
+#include "HulaVersion.h"
 
 /**
  * @file HulaAudioError.h <hlaudio/internal/HulaAudioError.h>
@@ -38,53 +38,13 @@
  */
 #define HL_ERROR_PREFIX "[HulaLoop] "
 
-/**
- * Open a QTextStream to stdout since all qDebug* functions use stderrr
- *
- * @return QTextStream& Stream to stdout
+#define hlDebug() \
+    if (HL_NO_DEBUG_OUTPUT) {} \
+    else std::cerr << HL_PRINT_PREFIX
 
-inline QTextStream& qOut()
-{
-    static QTextStream ts(stdout);
-    return ts;
-}
-*/
-
-/**
- * Message handler for all debug and output messages.
- *
- * Based on code from http://doc.qt.io/qt-5/qtglobal.html#qInstallMessageHandler
- */
-inline void qtMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
-{
-    switch (type)
-    {
-        case QtDebugMsg:
-            std::cerr << "  Debug: " << msg.toUtf8().constData() << std::endl;
-            break;
-        case QtInfoMsg:
-            std::cout << msg.toUtf8().constData() << std::endl;
-            break;
-        case QtWarningMsg:
-            if (msg.size() > 0)
-                std::cerr << HL_ERROR_PREFIX << msg.toUtf8().constData() << std::endl;
-            else
-                std::cerr << std::endl;
-            break;
-        case QtCriticalMsg:
-            if (msg.size() > 0)
-                std::cerr << HL_ERROR_PREFIX << msg.toUtf8().constData() << std::endl;
-            else
-                std::cerr << std::endl;
-            break;
-        case QtFatalMsg:
-            std::cerr << HL_ERROR_PREFIX << "FATAL: " << msg.toUtf8().constData() << std::endl;
-            std::cerr << "From: " << context.function << std::endl;
-            std::cerr << "In: " << context.file << " at line " << context.line << std::endl;
-            exit(1);
-            break;
-    }
-}
+#define hlDebugf(...) \
+    if (HL_NO_DEBUG_OUTPUT) {} \
+    else fprintf(stderr, HL_PRINT_PREFIX __VA_ARGS__);
 
 /******************************************************************************
  *

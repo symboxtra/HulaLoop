@@ -8,8 +8,6 @@
 #include <thread>
 #include <vector>
 
-#include <QCoreApplication>
-
 #include "hlaudio/internal/Device.h"
 #include "hlaudio/internal/OSAudio.h"
 
@@ -25,8 +23,6 @@ namespace hula
      * An audio class that captures system wide audio on Linux.
      */
     class LinuxAudio : public OSAudio {
-
-        Q_DECLARE_TR_FUNCTIONS(Audio)
 
         private:
             int bitrate;

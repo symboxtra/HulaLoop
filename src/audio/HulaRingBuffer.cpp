@@ -38,8 +38,6 @@
 
 #include <algorithm>
 
-#include <QDebug>
-
 #include "hlaudio/internal/HulaAudioError.h"
 #include "hlaudio/internal/HulaRingBuffer.h"
 
@@ -61,14 +59,14 @@ HulaRingBuffer::HulaRingBuffer(float maxDuration)
     // Make sure ring buffer was allocated
     if (this->rbMemory == NULL)
     {
-        qCritical("Could not allocate ring buffer of size %zu.", numSamples * sizeof(SAMPLE));
+        hlDebugf("Could not allocate ring buffer of size %zu.\n", numSamples * sizeof(SAMPLE));
         exit(1);
         // TODO: Handle error
     }
 
     if (PaUtil_InitializeRingBuffer(&this->rb, sizeof(SAMPLE), numSamples, this->rbMemory) < 0)
     {
-        qCritical("Failed to initialize ring buffer. Perhaps the size is not power of 2?\nSize: %d", numSamples);
+        hlDebugf("Failed to initialize ring buffer. Perhaps the size is not power of 2?\nSize: %d\n", numSamples);
         exit(1);
         // TODO: Handle error
     }
@@ -86,7 +84,7 @@ ring_buffer_size_t HulaRingBuffer::read(SAMPLE *data, ring_buffer_size_t maxSamp
     ring_buffer_size_t samplesRead = PaUtil_ReadRingBuffer(&this->rb, (void *)data, (ring_buffer_size_t)maxSamples);
     if (samplesRead > 0)
     {
-        // qDebug() << "Read of " << samplesRead << " elements.";
+        // hlDebug() << "Read of " << samplesRead << " elements." << std::endl;
 
         // Do not call Advance here... It's called by PaUtil_ReadRingBuffer.
     }
@@ -121,7 +119,7 @@ ring_buffer_size_t HulaRingBuffer::directRead(ring_buffer_size_t maxSamples, voi
     ring_buffer_size_t samplesRead = PaUtil_GetRingBufferReadRegions(&this->rb, samplesToWrite, dataPtr1, (ring_buffer_size_t *)size1, dataPtr2, (ring_buffer_size_t *)size2);
     if (samplesRead > 0)
     {
-        // qDebug() << "Direct read of " << samplesRead << " elements.";
+        // hlDebug() << "Direct read of " << samplesRead << " elements." << std::endl;
 
         // Advance the index after successful read
         PaUtil_AdvanceRingBufferReadIndex(&this->rb, samplesRead);
@@ -146,7 +144,7 @@ ring_buffer_size_t HulaRingBuffer::write(const SAMPLE *data, ring_buffer_size_t 
 
     if (elementsWritten < maxSamples)
     {
-        qWarning() << "Overrun: " << elementsWritten << " of " << maxSamples << " written.";
+        hlDebug() << "Overrun: " << elementsWritten << " of " << maxSamples << " written." << std::endl;
     }
 
     return elementsWritten;
