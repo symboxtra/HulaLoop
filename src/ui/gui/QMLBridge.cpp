@@ -31,37 +31,41 @@ QString QMLBridge::getTransportState() const
 /**
  * Trigger record in the Transport and update the UI state via signal.
  */
-void QMLBridge::record()
+bool QMLBridge::record()
 {
-    transport->record();
+    bool success = transport->record();
     emit stateChanged();
+    return success;
 }
 
 /**
  * Trigger stop in the Transport and update the UI state via signal.
  */
-void QMLBridge::stop()
+bool QMLBridge::stop()
 {
-    transport->stop();
+    bool success = transport->stop();
     emit stateChanged();
+    return success;
 }
 
 /**
  * Trigger playback in the Transport and update the UI state via signal.
  */
-void QMLBridge::play()
+bool QMLBridge::play()
 {
-    transport->play();
+    bool success = transport->play();
     emit stateChanged();
+    return success;
 }
 
 /**
  * Trigger pause in the Transport and update the UI state via signal.
  */
-void QMLBridge::pause()
+bool QMLBridge::pause()
 {
-    transport->pause();
+    bool success = transport->pause();
     emit stateChanged();
+    return success;
 }
 
 /**
