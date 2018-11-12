@@ -146,7 +146,7 @@ TEST_F(TestOSXAudio, short_capture)
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
     // Read some samples
-    int32_t samplesRead = rb->read(readData, maxSamples);
+    ring_buffer_size_t samplesRead = rb->read(readData, maxSamples);
     EXPECT_EQ(samplesRead, maxSamples);
 
     // Remove the buffer

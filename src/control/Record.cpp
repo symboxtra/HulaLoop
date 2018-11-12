@@ -22,8 +22,8 @@ void Record::start()
 
 void Record::recorder()
 {
-    uint32_t samplesRead;
-    float buffer[512];
+    ring_buffer_size_t samplesRead;
+    float buffer[44100];
 
     // Initialize libsndfile info.
     SF_INFO sfinfo;
@@ -38,6 +38,11 @@ void Record::recorder()
     std::string file_path = Export::getTempPath() + "/hulaloop_" + std::string(timestamp) + ".wav";
     SNDFILE *file = sf_open(file_path.c_str(), SFM_WRITE, &sfinfo);
 
+    // TODO: Remove once debugged
+    //std::string temp = Export::getTempPath() + "/hulaloop_log1.txt";
+    //std::ofstream tempfile(temp.c_str(), ios::binary);
+
+
     // Add file_path to vector of files
     exportPaths.push_back(file_path);
 
@@ -47,24 +52,34 @@ void Record::recorder()
     // Keep recording until recording is stopped
     while (!this->endRecord.load())
     {
-        samplesRead = this->rb->read(buffer, 512);
+        void* ptr[2] = {0};
+        ring_buffer_size_t sizes[2] = {0};
+        samplesRead = this->rb->directRead(512, ptr + 0, sizes + 0, ptr + 1, sizes + 1);
 
         if (samplesRead > 0)
         {
+            //for(int i = 0;i < samplesRead;i++)
+            //{
+            //    tempfile << buffer[i] << endl;
+            //}
             printf("Samples read: %d\n", samplesRead);
 
-            sf_count_t error = sf_writef_float(file, buffer, samplesRead / NUM_CHANNELS);
-            if (error != samplesRead / NUM_CHANNELS)
+            for(int i = 0;i < 2 && ptr[i] != NULL;i++)
             {
-                char errstr[256];
-                sf_error_str (0, errstr, sizeof (errstr) - 1);
-                fprintf (stderr, "cannot write sndfile (%s)\n", errstr);
-                fprintf(stderr, "%sWe done goofed...", HL_ERROR_PREFIX);
-                exit(1);
+                sf_count_t samplesWritten = sf_write_float(file, (float*)ptr[i], sizes[i]);
+                if (samplesWritten != sizes[i])
+                {
+                    char errstr[256];
+                    sf_error_str (0, errstr, sizeof (errstr) - 1);
+                    fprintf (stderr, "cannot write sndfile (%s)\n", errstr);
+                    fprintf(stderr, "%sWe done goofed...", HL_ERROR_PREFIX);
+                    exit(1);
+                }
             }
         }
     }
     sf_close(file);
+    //tempfile.close();
     this->controller->removeBuffer(this->rb);
 }
 

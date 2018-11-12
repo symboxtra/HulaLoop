@@ -85,7 +85,7 @@ TEST(TestHulaRingBuffer, write_buffer)
 
     SAMPLE *writeData = createTestSamples();
 
-    int32_t samplesWritten = rb->write(writeData, TEST_NUM_SAMPLES);
+    ring_buffer_size_t samplesWritten = rb->write(writeData, TEST_NUM_SAMPLES);
     EXPECT_EQ(samplesWritten, TEST_NUM_SAMPLES);
 
     delete [] writeData;
@@ -109,26 +109,26 @@ TEST(TestHulaRingBuffer, read_buffer)
 
     SAMPLE *writeData = createTestSamples();
 
-    int32_t samplesWritten = rb->write(writeData, TEST_NUM_SAMPLES);
+    ring_buffer_size_t samplesWritten = rb->write(writeData, TEST_NUM_SAMPLES);
     EXPECT_EQ(samplesWritten, TEST_NUM_SAMPLES);
 
-    int32_t samplesWritten2 = rb->write(writeData, TEST_NUM_SAMPLES);
+    ring_buffer_size_t samplesWritten2 = rb->write(writeData, TEST_NUM_SAMPLES);
     EXPECT_EQ(samplesWritten2, TEST_NUM_SAMPLES);
 
-    int32_t samplesWritten3 = rb->write(writeData, TEST_NUM_SAMPLES);
+    ring_buffer_size_t samplesWritten3 = rb->write(writeData, TEST_NUM_SAMPLES);
     EXPECT_EQ(samplesWritten3, TEST_NUM_SAMPLES);
 
-    int32_t samplesWritten4 = rb->write(writeData, TEST_NUM_SAMPLES);
+    ring_buffer_size_t samplesWritten4 = rb->write(writeData, TEST_NUM_SAMPLES);
     EXPECT_EQ(samplesWritten4, TEST_NUM_SAMPLES);
 
     SAMPLE *readData = new SAMPLE[TEST_NUM_SAMPLES];
-    int32_t samplesRead = rb->read(readData, TEST_NUM_SAMPLES);
+    ring_buffer_size_t samplesRead = rb->read(readData, TEST_NUM_SAMPLES);
     EXPECT_EQ(samplesRead, TEST_NUM_SAMPLES);
 
     // Make sure the two are identical
     EXPECT_TRUE(verifySamples(readData, TEST_NUM_SAMPLES));
 
-    int32_t samplesRead2 = rb->read(readData, TEST_NUM_SAMPLES);
+    ring_buffer_size_t samplesRead2 = rb->read(readData, TEST_NUM_SAMPLES);
     EXPECT_EQ(samplesRead2, TEST_NUM_SAMPLES);
 
     // Make sure the two are identical
@@ -156,15 +156,15 @@ TEST(TestHulaRingBuffer, direct_read_buffer)
 
     SAMPLE *writeData = createTestSamples();
 
-    int32_t samplesWritten = rb->write(writeData, TEST_NUM_SAMPLES);
+    ring_buffer_size_t samplesWritten = rb->write(writeData, TEST_NUM_SAMPLES);
     EXPECT_EQ(samplesWritten, TEST_NUM_SAMPLES);
 
     void *ptr1 = &rb;  // Random address
-    int32_t count1 = 7;
+    ring_buffer_size_t count1 = 7;
     void *ptr2 = &rb;  // Random address
-    int32_t count2 = 7;
+    ring_buffer_size_t count2 = 7;
 
-    int32_t samplesRead = rb->directRead(TEST_NUM_SAMPLES, &ptr1, &count1, &ptr2, &count2);
+    ring_buffer_size_t samplesRead = rb->directRead(TEST_NUM_SAMPLES, &ptr1, &count1, &ptr2, &count2);
     EXPECT_EQ(samplesRead, TEST_NUM_SAMPLES);
 
     // Should be data in the first pair
@@ -198,17 +198,17 @@ TEST(TestHulaRingBuffer, direct_read_wrap_buffer)
     SAMPLE *writeData = createTestSamples();
 
     void *ptr1 = NULL;  // Random address
-    int32_t count1 = 0;
+    ring_buffer_size_t count1 = 0;
     void *ptr2 = NULL;  // Random address
-    int32_t count2 = 0;
+    ring_buffer_size_t count2 = 0;
 
     // Read/write until we reach the wrap around
     while (count2 == 0)
     {
-        int32_t samplesWritten = rb->write(writeData, TEST_NUM_SAMPLES);
+        ring_buffer_size_t samplesWritten = rb->write(writeData, TEST_NUM_SAMPLES);
         EXPECT_EQ(samplesWritten, TEST_NUM_SAMPLES);
 
-        int32_t samplesRead = rb->directRead(TEST_NUM_SAMPLES, &ptr1, &count1, &ptr2, &count2);
+        ring_buffer_size_t samplesRead = rb->directRead(TEST_NUM_SAMPLES, &ptr1, &count1, &ptr2, &count2);
         EXPECT_EQ(samplesRead, TEST_NUM_SAMPLES);
     }
 
