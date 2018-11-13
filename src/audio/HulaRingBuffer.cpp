@@ -158,9 +158,9 @@ ring_buffer_size_t HulaRingBuffer::write(const SAMPLE *data, ring_buffer_size_t 
     ring_buffer_size_t sizes[2] = {0};
 
     /* By using PaUtil_GetRingBufferWriteRegions, we can write directly into the ring buffer */
-    PaUtil_GetRingBufferWriteRegions(&pData->ringBuffer, elementsInBuffer, ptr + 0, sizes + 0, ptr + 1, sizes + 1);
+    PaUtil_GetRingBufferWriteRegions(&this->rb, elementsInBuffer, ptr + 0, sizes + 0, ptr + 1, sizes + 1);
 
-    ring_buffer_size_t elementsWritten;
+    ring_buffer_size_t elementsWritten = 0;
 
         ring_buffer_size_t itemsReadFromFile = 0;
         int i;

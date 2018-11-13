@@ -13,6 +13,8 @@ class Export {
         Export(std::string targetDirectory);
         void copyData(vector<std::string> dirs);
 
+        std::string getFileExtension(std::string file_path);
+
         static std::string getTempPath();
         static void deleteTempFiles(vector<std::string> dirs);
 

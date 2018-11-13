@@ -302,11 +302,10 @@ Rectangle {
             id: saveDialog
             objectName: "saveDialog"
             fileMode: FileDialog.SaveFile
-            nameFilters: saveDialog.nameFilters
+            nameFilters: ["WAVE Sound (*.wav)", "FLAC (*.flac)", "Core Audio Format (*.caf)", "Audio Interchange File Format (*.aiff)", "All files (*)"]
             folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
             onAccepted: {
                 qmlbridge.saveFile(saveDialog.currentFile);
-//                console.log(saveDialog.fileUrl.toString());
             }
         }
 
