@@ -382,6 +382,11 @@ Rectangle {
                 }
 
                 onPressedChanged: {
+
+                    let selectedInd = 0;
+                    if(currentIndex != -1)
+                        selectedInd = currentIndex;
+
                     model.clear();
                     var idevices = qmlbridge.getInputDevices().split(',')
                         var i
@@ -390,6 +395,9 @@ Rectangle {
                                        "text": idevices[i]
                                    })
                         }
+
+                    // Keep the previously selected device active
+                    currentIndex = selectedInd
                 }
                 currentIndex: 0
             }
@@ -421,6 +429,11 @@ Rectangle {
                 }
 
                 onPressedChanged: {
+
+                    let selectedInd = 0;
+                    if(currentIndex != -1)
+                        selectedInd = currentIndex;
+
                     model.clear();
                     var odevices = qmlbridge.getOutputDevices().split(',')
                         var i
@@ -429,6 +442,9 @@ Rectangle {
                                        "text": odevices[i]
                                    })
                         }
+
+                    // Keep the previously selected device active
+                    currentIndex = selectedInd
                 }
                 currentIndex: 0
             }
