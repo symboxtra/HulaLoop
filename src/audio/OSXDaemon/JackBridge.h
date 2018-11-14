@@ -38,8 +38,6 @@
 #include <sstream>
 #include <string>
 
-#include "hlaudio/internal/HulaAudioError.h"
-
 /******************************************************************************
  Audio functions (Generic/CoreAudio)
 ******************************************************************************/
@@ -82,7 +80,7 @@ typedef float sample_t;
 #ifdef _ERROR_SYSLOG_
     #define ERROR(pri, str, code) syslog(pri, str"\n", code);
 #else
-    #define ERROR(pri, str, code) hlDebugf(str, code);
+    #define ERROR(pri, str, code) fprintf(stderr, str, code);
 #endif
 
 namespace hula
@@ -203,7 +201,7 @@ namespace hula
 
             ~JackBridgeDriverIF()
             {
-                hlDebugf("JackBridgeDriverIF destructor called\n");
+                fprintf(stderr, "JackBridgeDriverIF destructor called\n");
             }
     };
 }

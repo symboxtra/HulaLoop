@@ -1,6 +1,8 @@
 #ifndef HL_OSX_AUDIO_H
 #define HL_OSX_AUDIO_H
 
+#include <sys/types.h>
+
 #include <thread>
 #include <vector>
 
@@ -21,8 +23,9 @@ namespace hula
             OSXAudio();
             virtual ~OSXAudio();
 
-            int isDaemonRunning();
-            void startDaemon();
+            pid_t isDaemonRunning();
+            pid_t startDaemon();
+            pid_t restartDaemon();
 
             void capture();
             bool checkRates(Device *device);

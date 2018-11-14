@@ -1,12 +1,14 @@
 #include <portaudio.h>
 
-#include <cstdint>
-#include <thread>
+#include <fcntl.h>
+#include <libgen.h>
+#include <libproc.h>
+#include <unistd.h>
+#include <signal.h>
 
-#include <QCoreApplication>
-#include <QDebug>
-#include <QProcess>
-#include <QString>
+#include <cstdint>
+#include <cstdlib>
+#include <thread>
 
 #include "OSXAudio.h"
 #include "hlaudio/internal/HulaAudioError.h"
@@ -23,19 +25,26 @@ using namespace hula;
 OSXAudio::OSXAudio()
 {
     // Create the loopback daemon
-    this->daemonPID = isDaemonRunning();
-    if (this->daemonPID > 0)
+    int pid = isDaemonRunning();
+    if (pid > 0)
     {
-        qDebug("OSXDaemon already running (PID: %d)", this->daemonPID);
+        hlDebugf("OSXDaemon already running (PID: %d)\n", pid);
     }
     else
     {
-        qDebug("OSXDaemon was not running. Starting now...");
+        hlDebugf("OSXDaemon was not running. Starting now...\n");
         startDaemon();
     }
 
-    // TODO: qOut()
-    hlDebugf("\n\n");
+    // Initializing PortAudio produces a crap ton of output
+    // Shut it up unless this is a debug build
+    // TODO: This should really be determined at runtime not compile-time
+    #if HL_NO_DEBUG_OUTPUT
+        int out = dup(1);
+        int temp_null = open("/dev/null", O_WRONLY);
+        dup2(temp_null, 1);
+        close(temp_null);
+    #endif
 
     // Initialize PortAudio
     int err = Pa_Initialize();
@@ -46,8 +55,10 @@ OSXAudio::OSXAudio()
         exit(1); // TODO: Handle error
     }
 
-    // TODO: qOut()
-    hlDebugf("\n\n");
+    #if HL_NO_DEBUG_OUTPUT
+        dup2(out, 1);
+        close(out);
+    #endif
 }
 
 /**
@@ -57,23 +68,72 @@ OSXAudio::OSXAudio()
  */
 int OSXAudio::isDaemonRunning()
 {
-    QProcess pgrep;
-    pgrep.start("pgrep", QStringList() << "hulaloop-osx-daemon");
-    pgrep.waitForFinished();
+    int ret;
+    int procPipe[2];
 
-    QString output = pgrep.readAllStandardOutput();
-    int pid = -1;
-    if (output.size() > 0)
+    pipe(procPipe);
+    ret = fork();
+
+    // Child process
+    if (ret == 0)
     {
-        bool ok;
-        pid = output.toInt();
+        // Close the input since we don't need to write to the process
+        close(procPipe[0]);
 
-        if (!ok)
-        {
-            qWarning("Failed to convert PID '%s' to int.", qPrintable(output));
-        }
+        // Redirect the process's output
+        dup2(procPipe[1], 1);
+        close(procPipe[1]);
+
+        std::string pgrep = "/usr/bin/pgrep";
+        ret = execlp(pgrep.c_str(), pgrep.c_str(), "hulaloop-osx-daemon", NULL);
+
+        hlDebugf("Failed to start pgrep process.\n");
+        hlDebugf("Execution of %s failed with return code: %d\n", pgrep.c_str(), ret);
+        perror("ERRNO");
+        exit(EXIT_FAILURE);
     }
-    return pid;
+    // Failure
+    else if (ret < 0)
+    {
+        hlDebugf("Failed to start pgrep process.\nFork failed.\n");
+        exit(EXIT_FAILURE);
+    }
+    // Parent process
+    else
+    {
+        // Close the output since we don't need to write to the process
+        close(procPipe[1]);
+
+        // Read from the pipe
+        char c;
+        std::string buffer = "";
+        while (read(procPipe[0], &c, 1) > 0)
+        {
+            // Only grab the first PID
+            if (c == '\n')
+                break;
+
+            buffer += c;
+        }
+
+        close(procPipe[0]);
+
+        pid_t pid = -1;
+        if (buffer.size() > 0)
+        {
+            hlDebugf("Parsed PID: %s\n", buffer.c_str());
+            try
+            {
+                pid = std::stoi(buffer);
+            } catch (std::invalid_argument &e)
+            {
+                (void)e;
+                hlDebugf("Failed to convert parsed PID.\n");
+            }
+        }
+
+        return pid;
+    }
 }
 
 /**
@@ -81,16 +141,88 @@ int OSXAudio::isDaemonRunning()
  * to the JACK client. This expects hulaloop-osx-daemon to be in the same
  * directory as hulaloop.
  */
-void OSXAudio::startDaemon()
+pid_t OSXAudio::startDaemon()
 {
-    QProcess proc;
-    QString procName = QCoreApplication::applicationDirPath() + "/hulaloop-osx-daemon";
+    pid_t ret;
+    pid_t pid;
+    char path[PROC_PIDPATHINFO_MAXSIZE];
 
-    proc.setProgram(procName);
-    if (!proc.startDetached())
+    // Get the path to the running hulaloop instance
+    pid = getpid();
+    ret = proc_pidpath(pid, path, PROC_PIDPATHINFO_MAXSIZE);
+    if (ret <= 0)
     {
-        qFatal("Failed to start OSX Daemon at %s. Executable may have been moved.", qPrintable(procName));
+        hlDebugf("proc_pidpath failed with return of %d.\n", ret);
+        hlDebugf("Could not get path to current executable.\n");
+        exit(1);
     }
+
+    // Get the directory
+    char *installDir = dirname(path);
+    if (installDir == NULL)
+    {
+        hlDebugf("Could not trim executable name from install path. Error: %d\n", errno);
+        exit(EXIT_FAILURE);
+    }
+
+    std::string executable = std::string(installDir);
+    executable += "/hulaloop-osx-daemon";
+
+    ret = fork();
+
+    // Child process
+    if (ret == 0)
+    {
+        ret = execlp(executable.c_str(), executable.c_str(), NULL);
+
+        hlDebugf("Failed to start hulaloop-osx-daemon process.\n");
+        hlDebugf("Execution of %s failed with return code: %d\n", executable.c_str(), ret);
+        perror("ERRNO");
+        exit(EXIT_FAILURE);
+    }
+    // Failure
+    else if (ret < 0)
+    {
+        hlDebugf("Failed to start hulaloop-osx-daemon process.\nFork failed.\n");
+        exit(EXIT_FAILURE);
+    }
+    // Parent process
+    else
+    {
+        // Wait for the spawn process to exit
+        // This will indicate that the daemon has taken over
+        int proc_ret;
+        waitpid(ret, &proc_ret, 0);
+
+        // Get the real PID of the daemon
+        pid_t success = isDaemonRunning();
+        if (success > 0)
+        {
+            hlDebugf("hulaloop-osx-daemon started (PID: %d)\n", success);
+        }
+        else
+        {
+            hlDebugf("hulaloop-osx-daemon crashed.\n");
+            exit(EXIT_FAILURE);
+        }
+
+        return success;
+    }
+}
+
+/**
+ * Restart the @ref OSXDaemon.
+ */
+pid_t OSXAudio::restartDaemon()
+{
+    // Kill all instances
+    pid_t pid;
+    while ((pid = isDaemonRunning()) > 0)
+    {
+        kill(pid, SIGTERM);
+    }
+
+    return startDaemon();
 }
 
 /**
