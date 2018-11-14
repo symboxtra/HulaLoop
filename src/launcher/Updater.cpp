@@ -92,13 +92,11 @@ qint64 Updater::getDownloadSize()
 QList<int> Updater::parseTagName(const QString &tagName)
 {
 
-    // QList<int> versionParts({-1, -1, -1});
     QList<int> versionParts;
     QStringList tagSegments = tagName.split('.', QString::SkipEmptyParts);
 
     if (tagSegments.size() < 3)
     {
-        // return versionParts;
         return QList<int>({-1, -1, -1});
     }
 
