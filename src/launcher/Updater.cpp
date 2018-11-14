@@ -92,7 +92,7 @@ qint64 Updater::getDownloadSize()
 QList<int> Updater::parseTagName(const QString &tagName)
 {
 
-    QList<int> versionParts({-1, -1, -1, -1});
+    QList<int> versionParts({-1, -1, -1});
     QStringList tagSegments = tagName.split('.', QString::SkipEmptyParts);
 
     if (tagSegments.size() < 3)
@@ -131,14 +131,14 @@ bool Updater::checkForUpdate()
     {
         // throw exception
         reply->deleteLater();
-        return false;
+        updateAvailable = false;
     });
 
     connect(reply, &QNetworkReply::sslErrors, [ = ]
     {
         // throw exception
         reply->deleteLater();
-        return false;
+        updateAvailable = false;
     });
 
     connect(reply, &QNetworkReply::finished, [&]
@@ -146,37 +146,24 @@ bool Updater::checkForUpdate()
 
         QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
         if (doc.isNull())
-            return false;
+            updateAvailable = false;
 
         QJsonObject rootObj = doc.object();
         if (rootObj.isEmpty())
-            return false;
+            updateAvailable = false;
 
         QList<int> versionParts = parseTagName(rootObj["tag_name"].toString());
-        if (versionParts.size() == 4)
+        if (versionParts.at(0) > HL_VERSION_MAJOR)
         {
-
-            if (versionParts.at(0) > HL_VERSION_MAJOR)
-            {
-                updateAvailable = true;
-            }
-            else if (versionParts.at(1) > HL_VERSION_MINOR)
-            {
-                updateAvailable = true;
-            }
-            else if (versionParts.at(2) > HL_VERSION_REV)
-            {
-                updateAvailable = true;
-            }
-            else if (versionParts.at(3) > HL_VERSION_BUILD)
-            {
-                updateAvailable = true;
-            }
-
+            updateAvailable = true;
         }
-        else
+        else if (versionParts.at(1) > HL_VERSION_MINOR)
         {
-            return false;
+            updateAvailable = true;
+        }
+        else if (versionParts.at(2) > HL_VERSION_REV)
+        {
+            updateAvailable = true;
         }
 
         // Found an update, check the assets of the release
@@ -204,7 +191,7 @@ bool Updater::checkForUpdate()
                         downloadHostUrl = "";
                         downloadFileName = "";
                         downloadSize = 0L;
-                        return false;
+                        updateAvailable = false;
                     }
                     break;
                 }
@@ -248,7 +235,7 @@ bool Updater::downloadUpdate()
         file->close();
         delete file;
         reply->deleteLater();
-        return false;
+        finishedDownload = false;
     });
 
     connect(reply, &QNetworkReply::sslErrors, [ = ]
@@ -257,7 +244,7 @@ bool Updater::downloadUpdate()
         file->close();
         delete file;
         reply->deleteLater();
-        return false;
+        finishedDownload = false;
     });
 
     connect(reply, &QNetworkReply::readyRead, [&]
