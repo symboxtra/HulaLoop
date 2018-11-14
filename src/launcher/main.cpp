@@ -35,14 +35,15 @@ int main(int argc, char *argv[])
             updater.setUpdateHost("https://api.github.com/repos/jmcker/HulaLoop/releases/latest");
 
             QMessageBox msgBox;
-            msgBox.setWindowTitle("HulaLoop Updater");
+            msgBox.setWindowTitle(Updater::tr("HulaLoop Updater"));
             msgBox.setIconPixmap(QPixmap(":/res/hulaloop-logo.png"));
 
             if(updater.checkForUpdate())
             {
 
-                msgBox.setText("A newer version has been detected!\n\nClick Ok to update!");
+                msgBox.setText(Updater::tr("A newer version has been detected!") + "\n\n" + Updater::tr("Click Ok to update!"));
                 msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
+                msgBox.setDefaultButton(QMessageBox::Ok);
 
                 if(msgBox.exec() == QMessageBox::Ok)
                 {
@@ -63,7 +64,7 @@ int main(int argc, char *argv[])
             else
             {
 
-                msgBox.setText("All systems are up-to-date!");
+                msgBox.setText(Updater::tr("All systems are up-to-date!"));
                 msgBox.setStandardButtons(QMessageBox::Ok);
 
                 msgBox.exec();
