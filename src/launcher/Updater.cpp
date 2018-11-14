@@ -92,12 +92,14 @@ qint64 Updater::getDownloadSize()
 QList<int> Updater::parseTagName(const QString &tagName)
 {
 
-    QList<int> versionParts({-1, -1, -1});
+    // QList<int> versionParts({-1, -1, -1});
+    QList<int> versionParts;
     QStringList tagSegments = tagName.split('.', QString::SkipEmptyParts);
 
     if (tagSegments.size() < 3)
     {
-        return versionParts;
+        // return versionParts;
+        return QList<int>({-1, -1, -1});
     }
 
     for (int i = 0; i < tagSegments.size(); i++)
@@ -109,7 +111,7 @@ QList<int> Updater::parseTagName(const QString &tagName)
         bool ok = false;
         int ver = segment.toInt(&ok);
 
-        (ok) ? versionParts[i] = ver : versionParts[i] = -1;
+        (ok) ? versionParts.append(ver) : versionParts.append(-1);
 
     }
     return versionParts;
@@ -127,14 +129,14 @@ bool Updater::checkForUpdate()
     bool updateAvailable = false;
     reply = manager->get(QNetworkRequest(QUrl(updateHostUrl)));
 
-    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [ = ](QNetworkReply::NetworkError code)
+    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [&](QNetworkReply::NetworkError code)
     {
         // throw exception
         reply->deleteLater();
         updateAvailable = false;
     });
 
-    connect(reply, &QNetworkReply::sslErrors, [ = ]
+    connect(reply, &QNetworkReply::sslErrors, [&]
     {
         // throw exception
         reply->deleteLater();
@@ -229,7 +231,7 @@ bool Updater::downloadUpdate()
     file = new QFile(QDir::tempPath() + "/" + fileName);
     file->open(QIODevice::WriteOnly);
 
-    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [ = ](QNetworkReply::NetworkError code)
+    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [&](QNetworkReply::NetworkError code)
     {
         // throw exception
         file->close();
@@ -238,7 +240,7 @@ bool Updater::downloadUpdate()
         finishedDownload = false;
     });
 
-    connect(reply, &QNetworkReply::sslErrors, [ = ]
+    connect(reply, &QNetworkReply::sslErrors, [&]
     {
         // throw exception
         file->close();
