@@ -28,13 +28,13 @@ void Export::copyData(std::string inputFileDirectory)
     if (iFile.fail())
     {
         // TODO: Handle error
-        std::cerr << "Error opening file: " << inputFileDirectory << std::endl;
+        hlDebug() << "Error opening file: " << inputFileDirectory << std::endl;
     }
     std::ofstream oFile(this->targetFile, std::ios::binary);
     if (oFile.fail())
     {
         // TODO: Handle error
-        std::cerr << "Error opening file: " << this->targetFile << std::endl;
+        hlDebug() << "Error opening file: " << this->targetFile << std::endl;
     }
 
     // copies the file
@@ -50,5 +50,5 @@ void Export::copyData(std::string inputFileDirectory)
  */
 Export::~Export()
 {
-
+    hlDebugf("Export destructor called\n");
 }

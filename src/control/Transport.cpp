@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "hlcontrol/internal/Export.h"
 #include "hlcontrol/internal/HulaControlError.h"
 #include "hlcontrol/internal/Transport.h"
@@ -41,9 +39,9 @@ Transport::Transport(bool dryRun)
  */
 bool Transport::record(double delay, double duration)
 {
-    std::cout << "Record triggered!" << std::endl;
-    std::cout << "Delay set to: " << delay << std::endl;
-    std::cout << "Duration set to: " << duration << std::endl;
+    hlDebug() << "Record triggered!" << std::endl;
+    hlDebug() << "Delay set to: " << delay << std::endl;
+    hlDebug() << "Duration set to: " << duration << std::endl;
     state = RECORDING;
 
     if(recordState)
@@ -73,7 +71,7 @@ bool Transport::record()
  */
 bool Transport::stop()
 {
-    std::cout << "Stop button clicked!" << std::endl;
+    hlDebug() << "Stop button clicked!" << std::endl;
     state = STOPPED;
 
     if(!recordState)
@@ -93,7 +91,7 @@ bool Transport::stop()
  */
 bool Transport::play()
 {
-    std::cout << "Play button clicked!" << std::endl;
+    hlDebug() << "Play button clicked!" << std::endl;
     state = PLAYING;
 
     if(playbackState)
@@ -111,7 +109,7 @@ bool Transport::play()
  */
 bool Transport::pause()
 {
-    std::cout << "Pause button clicked!" << std::endl;
+    hlDebug() << "Pause button clicked!" << std::endl;
     state = PAUSED;
 
     if(!recordState) // Pause record
@@ -171,15 +169,15 @@ std::string Transport::stateToStr(const TransportState state) const
     {
 
         case RECORDING:
-            return "Recording";
+            return qPrintable(tr("Recording"));
         case STOPPED:
-            return "Stopped";
+            return qPrintable(tr("Stopped"));
         case PLAYING:
-            return "Playing";
+            return qPrintable(tr("Playing"));
         case PAUSED:
-            return "Paused";
+            return qPrintable(tr("Paused"));
         default:
-            return "Unknown";
+            return qPrintable(tr("Unknown"));
 
     }
 
@@ -207,7 +205,7 @@ void Transport::exportFile(std::string targetDirectory)
  */
 Transport::~Transport()
 {
-    printf("%sTransport destructor called\n", HL_PRINT_PREFIX);
+    hlDebugf("Transport destructor called\n");
 
     if (controller)
     {
