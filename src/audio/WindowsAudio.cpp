@@ -164,16 +164,6 @@ Exit:
 }
 
 /**
- * Set the selected output device and restart capture threads with
- * new device
- *
- * @param device Instance of Device that corresponds to the desired system device
- */
-void WindowsAudio::setActiveOutputDevice(Device *device)
-{
-}
-
-/**
  * Execution loop for loopback capture
  */
 void WindowsAudio::capture()

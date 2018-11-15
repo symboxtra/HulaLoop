@@ -140,7 +140,10 @@ void OSAudio::setActiveInputDevice(Device *device)
         return;
     }
 
-    this->checkRates(device);
+    if (!this->checkRates(device))
+    {
+        return;
+    }
 
     if (this->activeInputDevice)
     {
@@ -182,9 +185,27 @@ void OSAudio::joinAndKillThreads(std::vector<std::thread> &threads)
  */
 void OSAudio::setActiveOutputDevice(Device *device)
 {
-    this->checkRates(device);
+    // TODO: Handle error
+    if (device == NULL)
+    {
+        return;
+    }
 
+    // If this isn't a loopback or record device
+    if (!(device->getType() & PLAYBACK))
+    {
+        return;
+    }
 
+    if (!this->checkRates(device))
+    {
+        return;
+    }
+
+    if (this->activeOutputDevice)
+    {
+        delete this->activeOutputDevice;
+    }
     this->activeOutputDevice = new Device(*device);
 }
 

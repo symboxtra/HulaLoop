@@ -215,17 +215,6 @@ void OSXAudio::test_capture(OSAudio *_this)
 }
 
 /**
- * Set the selected output device and restart capture threads with
- * new device
- *
- * @param device Instance of Device that corresponds to the desired system device
- */
-void OSXAudio::setActiveOutputDevice(Device *device)
-{
-
-}
-
-/**
  * Checks the sampling rate and bit depth of the device
  *
  * @param device Instance of Device that corresponds to the desired system device

@@ -151,16 +151,6 @@ bool LinuxAudio::checkRates(Device *device)
 }
 
 /**
- * DEPRECATED: To be replaced by OSAudio::setActiveOutputDevice.
- */
-void LinuxAudio::setActiveOutputDevice(Device *device)
-{
-    // Set the active output device
-    this->activeOutputDevice = new Device(*device);
-    std::cout << checkRates(device) << std::endl;
-}
-
-/**
  * Open the program Pulse Audio Volume Control to the Record tab.
  * This will allow the user to select the "Monitor of" source
  * that they wish to capture loopback from.

@@ -70,8 +70,6 @@ namespace hula
             std::vector<Device *> getDevices(DeviceType type);
 
             void capture();
-
-            void setActiveOutputDevice(Device *device);
     };
 }
 
