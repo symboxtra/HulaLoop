@@ -12,45 +12,15 @@ Rectangle {
     color: "white"
     anchors.bottom: parent.bottom
 
-    RowLayout {
-        id: timeLabelLayout
+    Text {
+        id: textCountdown
+        objectName: "textCountdown"
 
-        Label {
-            id: timerLabel
-
-            color: "black"
-            font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-            text: "Timer:"
-        }
-
-        Text {
-            id: textCountdown
-            objectName: "textCountdown"
-
-            color: "black"
-            font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-            text: "0"
-
-            property int time: getTime()
-            property int time2: getTime2()
-            function getTime() {
-                var d = delayInput.text
-                var h = parseInt(d.substring(0, 2))
-                var m = parseInt(d.substring(3, 5))
-                var s = parseInt(d.substring(6, 8))
-                var timeRem = h * 60 * 60 + m * 60 + s
-                return timeRem
-            }
-            function getTime2() {
-                var d = recordTimeInput.text
-                var h = parseInt(d.substring(0, 2))
-                var m = parseInt(d.substring(3, 5))
-                var s = parseInt(d.substring(6, 8))
-                var timeRem = h * 60 * 60 + m * 60 + s
-                return timeRem
-            }
-        }
+        color: "black"
+        font.pixelSize: Math.ceil(btnPanel.width * 0.02)
+        text: window.textDisplayed
     }
+
 
     Text {
         id: transportState

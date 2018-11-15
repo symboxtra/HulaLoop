@@ -19,6 +19,7 @@ ApplicationWindow {
 
     Material.theme: Material.Grey
     Material.accent: Material.Orange
+    property string textDisplayed: "Elapsed time: 0"
 
     // SystemTrayIcon {
     //     id: systray

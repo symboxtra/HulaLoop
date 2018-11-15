@@ -475,5 +475,9 @@ Rectangle {
                 }
             }
         }
+
+        onClosed: {
+            console.log("popup clsoed");
+        }
     }
 }
