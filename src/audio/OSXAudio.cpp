@@ -201,20 +201,6 @@ std::vector<Device *> OSXAudio::getDevices(DeviceType type)
 }
 
 /**
- * Static function in the current instance of the class
- * to allow thread execution
- *
- * @param _this Instance of the current object
- */
-void OSXAudio::test_capture(OSAudio *_this)
-{
-    // Sleep for a few seconds just to keep the logs clean
-    Pa_Sleep(2000);
-
-    _this->capture();
-}
-
-/**
  * Checks the sampling rate and bit depth of the device
  *
  * @param device Instance of Device that corresponds to the desired system device
