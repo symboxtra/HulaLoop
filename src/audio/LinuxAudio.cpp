@@ -31,8 +31,7 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
     snd_ctl_t *handle;
     int subDevice;
     int cardNumber = -1;
-    char cardName[64];
-    char deviceID[64];
+    std::string cardName;
 
     // check what devices we need to get
     bool loopSet = (type & DeviceType::LOOPBACK) == DeviceType::LOOPBACK;
@@ -42,17 +41,18 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
     // add pavucontrol to loopback for now
     if (loopSet)
     {
-        std::string *pvc = new std::string("default");
-        std::string temp = std::string("Pulse Audio Volume Control");
-        devices.push_back(new Device(reinterpret_cast<uint32_t *>(pvc), temp, DeviceType::LOOPBACK));
+        DeviceID id;
+        id.linuxID = std::string("default");
+        std::string temp("Pulse Audio Volume Control");
+        devices.push_back(new Device(id, temp, DeviceType::LOOPBACK));
     }
 
     // outer while gets all the sound cards
     while (snd_card_next(&cardNumber) >= 0 && cardNumber >= 0)
     {
         // open and init the sound card
-        sprintf(cardName, "hw:%i", cardNumber);
-        snd_ctl_open(&handle, cardName, 0);
+        cardName = "hw:" + std::to_string(cardNumber);
+        snd_ctl_open(&handle, cardName.c_str(), 0);
         snd_ctl_card_info_alloca(&cardInfo);
         snd_ctl_card_info(handle, cardInfo);
         // inner while gets all the sound card subdevices
@@ -69,12 +69,12 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
                 snd_pcm_info_set_stream(subInfo, SND_PCM_STREAM_CAPTURE);
                 if (snd_ctl_pcm_info(handle, subInfo) >= 0)
                 {
-                    sprintf(deviceID, "hw:%d,%d", cardNumber, subDevice);
+                    DeviceID id;
+                    id.linuxID = "hw:" + std::to_string(cardNumber) + "," + std::to_string(subDevice);
                     std::string deviceName = snd_ctl_card_info_get_name(cardInfo);
                     std::string subDeviceName = snd_pcm_info_get_name(subInfo);
                     std::string fullDeviceName = deviceName + ": " + subDeviceName;
-                    std::string *sDeviceID = new std::string(deviceID);
-                    devices.push_back(new Device(reinterpret_cast<uint32_t *>(sDeviceID), fullDeviceName, DeviceType::RECORD));
+                    devices.push_back(new Device(id, fullDeviceName, DeviceType::RECORD));
                 }
             }
             if (playSet)
@@ -82,12 +82,12 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
                 snd_pcm_info_set_stream(subInfo, SND_PCM_STREAM_PLAYBACK);
                 if (snd_ctl_pcm_info(handle, subInfo) >= 0)
                 {
-                    sprintf(deviceID, "hw:%d,%d", cardNumber, subDevice);
+                    DeviceID id;
+                    id.linuxID = "hw:" + std::to_string(cardNumber) + "," + std::to_string(subDevice);
                     std::string deviceName = snd_ctl_card_info_get_name(cardInfo);
                     std::string subDeviceName = snd_pcm_info_get_name(subInfo);
                     std::string fullDeviceName = deviceName + ": " + subDeviceName;
-                    std::string *sDeviceID = new std::string(deviceID);
-                    devices.push_back(new Device(reinterpret_cast<uint32_t *>(sDeviceID), fullDeviceName, DeviceType::PLAYBACK));
+                    devices.push_back(new Device(id, fullDeviceName, DeviceType::PLAYBACK));
                 }
             }
         }
@@ -114,7 +114,7 @@ bool LinuxAudio::checkRates(Device *device)
     bool formatValid;            // bool that gets set if the format is valid
 
     // device id
-    char *id = (char *)reinterpret_cast<std::string *>(device->getID())->c_str();
+    const char *id = device->getID().linuxID.c_str();
     std::cout << id << std::endl;
     // open pcm device
     err = snd_pcm_open(&pcmHandle, id, SND_PCM_STREAM_CAPTURE, 0);
@@ -156,31 +156,8 @@ bool LinuxAudio::checkRates(Device *device)
 void LinuxAudio::setActiveOutputDevice(Device *device)
 {
     // Set the active output device
-    this->activeOutputDevice = device;
+    this->activeOutputDevice = new Device(*device);
     std::cout << checkRates(device) << std::endl;
-    // Interrupt all threads and make sure they stop
-    // for (auto &t : execThreads)
-    // {
-    //     // TODO: Find better way of safely terminating thread
-    //     t.detach();
-    //     t.~thread();
-    // }
-
-    // // Clean the threads after stopping all threads
-    // execThreads.clear();
-
-    // // Start up new threads with new selected device info
-
-    // // Start capture thread and add to thread vector
-    // execThreads.emplace_back(std::thread(&LinuxAudio::test_capture, this));
-
-    // // TODO: Add playback thread later
-
-    // // Detach new threads to run independently
-    // for (auto &t : execThreads)
-    // {
-    //     t.detach();
-    // }
 }
 
 /**
@@ -206,7 +183,7 @@ void LinuxAudio::capture()
     std::thread(&LinuxAudio::startPAVUControl).detach();
     int err;                        // return for commands that might return an error
     snd_pcm_t *pcmHandle = NULL;    // default pcm handle
-    std::string defaultDevice;           // default hw id for the device
+    std::string defaultDevice;      // default hw id for the device
     snd_pcm_hw_params_t *param;     // object to store our paramets (they are just the default ones for now)
     int audioBufferSize;            // size of the buffer for the audio
     byte *audioBuffer = NULL;       // buffer for the audio

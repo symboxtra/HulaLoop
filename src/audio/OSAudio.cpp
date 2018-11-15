@@ -185,7 +185,7 @@ void OSAudio::setActiveOutputDevice(Device *device)
     this->checkRates(device);
 
 
-    this->activeOutputDevice = device;
+    this->activeOutputDevice = new Device(*device);
 }
 
 /**
@@ -199,4 +199,14 @@ OSAudio::~OSAudio()
     this->endCapture.store(true);
     joinAndKillThreads(inThreads);
     joinAndKillThreads(outThreads);
+
+    if (activeInputDevice)
+    {
+        delete activeInputDevice;
+    }
+
+    if (activeOutputDevice)
+    {
+        delete activeOutputDevice;
+    }
 }
