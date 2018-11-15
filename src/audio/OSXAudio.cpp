@@ -73,7 +73,7 @@ void OSXAudio::capture()
     PaStream           *stream;
     PaError             err = paNoError;
 
-    inputParameters.device = *(this->activeInputDevice->getID());
+    inputParameters.device = this->activeInputDevice->getID().portAudioID;
     printf("Device id: %d\n", inputParameters.device);
     if (inputParameters.device == paNoDevice)
     {
@@ -234,7 +234,7 @@ bool OSXAudio::checkRates(Device *device)
 {
     PaStreamParameters inputParameters = {0};
     inputParameters.channelCount = NUM_CHANNELS;
-    inputParameters.device = *device->getID();
+    inputParameters.device = device->getID().portAudioID;
     inputParameters.sampleFormat = paFloat32;
 
     PaError err = Pa_IsFormatSupported(&inputParameters, NULL, HulaAudioSettings::getInstance()->getSampleRate());
