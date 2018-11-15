@@ -13,22 +13,6 @@ Transport::Transport()
     recorder = new Record(controller);
 }
 
-#ifndef NDEBUG
-/**
- * ---------------- FOR TESTING/DEBUG BUILDS ONLY -----------------
- *
- * A "dry run" is a run in which full application functionality is not
- * required. This is usually used by unit tests targeting upper-level
- * modules that don't require the initialization of lower-level modules.
- *
- * This constructor is designed for testing purposes and exists only in debug builds.
- */
-Transport::Transport(bool dryRun)
-{
-    controller = new Controller(dryRun);
-}
-#endif
-
 /**
  * Start and handle the process of recording.
  *

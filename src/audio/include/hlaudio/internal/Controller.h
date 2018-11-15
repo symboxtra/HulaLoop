@@ -21,10 +21,6 @@ namespace hula
             OSAudio *audio;
 
         public:
-            #ifndef NDEBUG
-            Controller(bool dryRun);
-            #endif // END NDEBUG
-
             Controller();
             virtual ~Controller();
 

@@ -6,7 +6,7 @@ using namespace hula;
 class TestController : public Controller, public ::testing::Test {
     public:
 
-        TestController() : Controller(true)
+        TestController() : Controller()
         {}
 
         virtual void SetUp()

@@ -258,27 +258,27 @@
 <context>
     <name>Transport</name>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="172"/>
+        <location filename="../../src/control/Transport.cpp" line="156"/>
         <source>Recording</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="174"/>
+        <location filename="../../src/control/Transport.cpp" line="158"/>
         <source>Stopped</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="176"/>
+        <location filename="../../src/control/Transport.cpp" line="160"/>
         <source>Playing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="178"/>
+        <location filename="../../src/control/Transport.cpp" line="162"/>
         <source>Paused</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="180"/>
+        <location filename="../../src/control/Transport.cpp" line="164"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>

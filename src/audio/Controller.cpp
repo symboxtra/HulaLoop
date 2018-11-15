@@ -38,22 +38,6 @@ Controller::Controller()
 
 }
 
-#ifndef NDEBUG
-/**
- * ---------------- FOR TESTING/DEBUG BUILDS ONLY -----------------
- *
- * A "dry run" is a run in which full application functionality is not
- * required. This is usually used by unit tests targeting upper-level
- * modules that don't require the initialization of lower-level modules.
- *
- * This constructor is designed for testing purposes and exists only in debug builds.
- */
-Controller::Controller(bool dryRun)
-{
-    audio = NULL;
-}
-#endif
-
 /**
  * Add an initialized buffer to the list of buffers that receive audio data.
  * As soon as the buffer is added, it should begin receiving data.
@@ -70,7 +54,7 @@ void Controller::addBuffer(HulaRingBuffer *rb)
 }
 
 /**
- * \ingroup memory_management
+ * @ingroup memory_management
  *
  * Allocate and initialize a HulaRingBuffer that can be added to
  * the OSAudio ring buffer list via Controller::addBuffer.
@@ -83,7 +67,7 @@ HulaRingBuffer *Controller::createBuffer(float duration)
 }
 
 /**
- * \ingroup memory_management
+ * @ingroup memory_management
  *
  * Allocate and initialize a HulaRingBuffer and automatically
  * add it to the OSAudio ring buffer list.
@@ -96,7 +80,7 @@ HulaRingBuffer *Controller::createAndAddBuffer(float duration)
 }
 
 /**
- * \ingroup memory_management
+ * @ingroup memory_management
  *
  * Remove a buffer from the list of buffers that receive audio data.
  * The removed buffer is not deleted and must be deleted by the user.
@@ -114,7 +98,7 @@ void Controller::removeBuffer(HulaRingBuffer *rb)
 }
 
 /**
- * \ingroup memory_management
+ * @ingroup memory_management
  *
  * Fetch a list of devices for the given DeviceType.
  *
@@ -134,7 +118,7 @@ std::vector<Device*> Controller::getDevices(DeviceType type) const
 }
 
 /**
- * \ingroup memory_management
+ * @ingroup memory_management
  *
  * Set the device from which audio should be captured.
  *
@@ -150,7 +134,7 @@ void Controller::setActiveInputDevice(Device *device) const
 }
 
 /**
- * \ingroup memory_management
+ * @ingroup memory_management
  *
  * Set the device to which audio should be played back.
  *

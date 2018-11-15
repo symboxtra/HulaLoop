@@ -44,11 +44,6 @@ namespace hula
             Controller* controller;
 
         public:
-
-            #ifndef NDEBUG
-            Transport(bool dryRun);
-            #endif // END NDEBUG
-
             Transport();
             virtual ~Transport();
 
