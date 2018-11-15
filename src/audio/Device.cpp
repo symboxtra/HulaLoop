@@ -73,7 +73,4 @@ void Device::deleteDevices(std::vector<Device *> devices)
  */
 Device::~Device()
 {
-    #ifdef _WIN32
-    delete deviceID.windowsID;
-    #endif
 }

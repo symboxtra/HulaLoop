@@ -83,7 +83,9 @@ std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
             std::string str(fun.begin(), fun.end());
 
             // Create instance of Device using acquired data
-            Device *audio = new Device(reinterpret_cast<uint32_t *>(id), str, (DeviceType)(DeviceType::LOOPBACK | DeviceType::PLAYBACK));
+            DeviceID deviceId;
+            deviceId.windowsID = id;
+            Device *audio = new Device(deviceId, str, (DeviceType)(DeviceType::LOOPBACK | DeviceType::PLAYBACK));
 
             // Add to devicelist
             deviceList.push_back(audio);
@@ -117,7 +119,9 @@ std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
             if (deviceInfo->maxInputChannels != 0 && deviceInfo->hostApi == (Pa_GetDefaultHostApi() + 1))
             {
                 // Create instance of Device using acquired data
-                Device *audio = new Device(NULL, std::string(deviceInfo->name), DeviceType::RECORD);
+                DeviceID id;
+                id.portAudioID = i;
+                Device *audio = new Device(id, std::string(deviceInfo->name), DeviceType::RECORD);
 
                 // Add to devicelist
                 deviceList.push_back(audio);
@@ -185,7 +189,7 @@ void WindowsAudio::capture()
     DWORD flags;
     char *buffer = (char *)malloc(500);
     uint32_t packetLength = 0;
-    REFERENCE_TIME duration;
+    DWORD duration;
     REFERENCE_TIME req = REFTIMES_PER_SEC;
 
     // Setup capture environment
@@ -197,7 +201,7 @@ void WindowsAudio::capture()
     HANDLE_ERROR(status);
 
     // Select the current active record/loopback device
-    status = pEnumerator->GetDevice(reinterpret_cast<LPCWSTR>(activeInputDevice->getID()), &audioDevice);
+    status = pEnumerator->GetDevice(activeInputDevice->getID().windowsID, &audioDevice);
     // status = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &audioDevice);
     HANDLE_ERROR(status);
     std::cout << "Selected Device: " << activeInputDevice->getName() << std::endl; // TODO: Remove this later
@@ -227,7 +231,7 @@ void WindowsAudio::capture()
     HANDLE_ERROR(status);
 
     // Sleep duration
-    duration = (double)REFTIMES_PER_SEC * captureBufferSize / pwfx->nSamplesPerSec;
+    duration = (DWORD)REFTIMES_PER_SEC * captureBufferSize / pwfx->nSamplesPerSec;
 
     // Continue loop under process ends
     while (!this->endCapture)
