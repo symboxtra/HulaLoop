@@ -1,9 +1,12 @@
 import QtQuick 2.10
-import QtQuick.Layouts 1.3
-import QtQuick.Dialogs 1.0
-import QtQuick.Controls 2.3
 import QtQuick.Window 2.0
+
+import QtQuick.Controls 2.3
+import QtQuick.Dialogs 1.0
+import QtQuick.Layouts 1.3
+
 import Qt.labs.platform 1.0
+
 import "../fonts/Icon.js" as MDFont
 
 Rectangle {
@@ -297,6 +300,7 @@ Rectangle {
             }
 
         }
+
         FileDialog {
             id: saveDialog
             objectName: "saveDialog"
@@ -317,7 +321,7 @@ Rectangle {
 
                 color: "black"
                 font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                text: "Timer:"
+                text: qsTr("Timer:")
             }
 
             Text {
@@ -357,12 +361,11 @@ Rectangle {
                 id: inputDeviceLabel
 
                 color: "black"
-                text: "Input Device:"
+                text: qsTr("Input Device:")
             }
             ComboBox {
                 id: iDeviceInfoLabel
-                Layout.preferredWidth: Math.max(Math.round(window.width * 0.2),
-                                                320)
+                Layout.preferredWidth: Math.max(Math.round(window.width * 0.2), 320)
                 model: ListModel {
                     id: iDeviceItems
                     Component.onCompleted: {
@@ -396,12 +399,11 @@ Rectangle {
                 id: outputDeviceLabel
 
                 color: "black"
-                text: "Output Device:"
+                text: qsTr("Output Device:")
             }
             ComboBox {
                 id: oDeviceInfoLabel
-                Layout.preferredWidth: Math.max(Math.round(window.width * 0.2),
-                                                320)
+                Layout.preferredWidth: Math.max(Math.round(window.width * 0.2), 320)
                 model: ListModel {
                     id: oDeviceItems
                     Component.onCompleted: {
@@ -461,7 +463,7 @@ Rectangle {
                 Label {
                     font.family: "Roboto"
                     font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                    text: "Delay Recording (hh:mm:ss)"
+                    text: qsTr("Delay Recording (hh:mm:ss)")
                     color: "white"
 
                     horizontalAlignment: Text.AlignHCenter
@@ -480,7 +482,7 @@ Rectangle {
                 Label {
                     font.family: "Roboto"
                     font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                    text: "Recording Time (hh:mm:ss)"
+                    text: qsTr("Recording Time (hh:mm:ss)")
                     color: "white"
 
                     horizontalAlignment: Text.AlignHCenter
@@ -512,7 +514,7 @@ Rectangle {
                     contentItem: Text {
                         font.family: "Roboto"
                         font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                        text: "CANCEL"
+                        text: qsTr("CANCEL")
                         color: "white"
 
                         horizontalAlignment: Text.AlignHCenter
@@ -532,7 +534,7 @@ Rectangle {
                     contentItem: Text {
                         font.family: "Roboto"
                         font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                        text: "OK"
+                        text: qsTr("OK")
                         color: "white"
 
                         horizontalAlignment: Text.AlignHCenter
