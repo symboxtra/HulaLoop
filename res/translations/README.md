@@ -8,6 +8,13 @@ Additional translations are welcomed and existing translations can always use im
 Any exception messages found in the standalone ```hlaudio``` library are in English. In an effort to keep the Qt dependency out of the library, we pushed all translation to the ```hlcontrol``` module and above. Exceptions thrown by ```hlaudio``` can be caught and translated via a call to ```getTranslatedErrorMessage(int)``` in the ```hlcontrol``` library.
 
 ## Adding a Language ##
-Create an empty file named ```hulaloop_XX.ts``` in the ```res/translation``` directory. The *XX* should be replaced with the [ISO language code](https://www.andiamo.co.uk/resources/iso-language-codes) for the targeted language.
+Assuming the Qt ```bin``` folder is on your path, run:
+```bash
+lupdate src -recursive -ts res/translations/hulaloop_XX.ts
+```
 
-After the file has been added, a normal build will fill the ```.ts``` file with the English strings for translation. After the strings have been translated, the modified ```.ts``` file should be committed.
+The *XX* should be replaced with the [ISO language code](https://www.andiamo.co.uk/resources/iso-language-codes) for the targeted language.
+
+The file should now contain an entry for each of the English strings in the application. After the strings have been translated, the modified ```.ts``` file should be committed.
+
+Normal CMake builds will keep the ```.ts``` file up-to-date with the application's English strings from this point on.
