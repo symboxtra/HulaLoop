@@ -23,8 +23,19 @@ namespace hula
      */
     union DeviceID
     {
+        /**
+         * Device ID used by @ref LinuxAudio.
+         */
         std::string linuxID;
+
+        /**
+         * Device ID used by @ref WindowsAudio.
+         */
         uint32_t *windowsID;
+
+        /**
+         * Device ID used by @ref OSXAudio.
+         */
         int osxID;
     };
 

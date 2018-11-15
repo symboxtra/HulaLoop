@@ -4,6 +4,7 @@
 #include <QProcess>
 #include <QUrl>
 
+#include <iostream>
 #include <string>
 
 using namespace hula;

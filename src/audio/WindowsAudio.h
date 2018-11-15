@@ -15,9 +15,7 @@
 #include <portaudio.h>
 
 // System
-#include <cstdio>
 #include <cstdlib>
-#include <iostream>
 #include <string>
 #include <thread>
 #include <vector>
@@ -43,6 +41,7 @@ namespace hula
      * A audio class that captures system wide audio on Windows
      */
     class WindowsAudio : public OSAudio {
+
         private:
             const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
             const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);

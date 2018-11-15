@@ -36,5 +36,8 @@ HulaSettings *HulaSettings::getInstance()
  */
 HulaSettings::~HulaSettings()
 {
-
+    if (hlcontrol_instance)
+    {
+        delete hlcontrol_instance;
+    }
 }

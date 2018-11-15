@@ -1,8 +1,9 @@
 #include <algorithm>
 #include <fstream>
+#include <iostream>
 
 #include "hlaudio/internal/Controller.h"
-#include "include/hlaudio/internal/HulaAudioError.h"
+#include "hlaudio/internal/HulaAudioError.h"
 
 #if _WIN32
     #include "WindowsAudio.h"
@@ -31,7 +32,8 @@ Controller::Controller()
 
     if (audio == NULL)
     {
-        std::cerr << "OS Audio error !" << std::endl;
+        hlDebug() << "Error initializing OS audio module!" << std::endl;
+        exit(1);
     } // TODO: Handle error
 
 }
@@ -168,7 +170,7 @@ void Controller::setActiveOutputDevice(Device *device) const
  */
 Controller::~Controller()
 {
-    printf("%sController destructor called\n", HL_PRINT_PREFIX);
+    hlDebug() << "Controller destructor called" << std::endl;
 
     // Don't do this until mem management is fixed
     if (audio)

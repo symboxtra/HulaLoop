@@ -1,7 +1,13 @@
 #include <portaudio.h>
 
+#include <fcntl.h>
+#include <libgen.h>
+#include <libproc.h>
+#include <unistd.h>
+#include <signal.h>
+
 #include <cstdint>
-#include <iostream>
+#include <cstdlib>
 #include <thread>
 
 #include "OSXAudio.h"
@@ -19,22 +25,204 @@ using namespace hula;
 OSXAudio::OSXAudio()
 {
     // Create the loopback daemon
-    osxDaemon = new OSXDaemon("HulaLoop #1", 0); // TODO: Make sure this can handle multiple instances of HulaLoop running
-    osxDaemon->activate();
-    osxDaemon->monitor();
+    int pid = isDaemonRunning();
+    if (pid > 0)
+    {
+        hlDebugf("OSXDaemon already running (PID: %d)\n", pid);
+    }
+    else
+    {
+        hlDebugf("OSXDaemon was not running. Starting now...\n");
+        startDaemon();
+    }
 
-    printf("\n\n");
+    // Initializing PortAudio produces a crap ton of output
+    // Shut it up unless this is a debug build
+    // TODO: This should really be determined at runtime not compile-time
+    #if HL_NO_DEBUG_OUTPUT
+        int out = dup(1);
+        int temp_null = open("/dev/null", O_WRONLY);
+        dup2(temp_null, 1);
+        close(temp_null);
+    #endif
 
     // Initialize PortAudio
     int err = Pa_Initialize();
     if (err != paNoError)
     {
-        fprintf(stderr, "%sPortAudio failed to initialize.\n", HL_ERROR_PREFIX);
-        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+        hlDebugf("PortAudio failed to initialize.\n");
+        hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
         exit(1); // TODO: Handle error
     }
 
-    printf("\n\n");
+    #if HL_NO_DEBUG_OUTPUT
+        dup2(out, 1);
+        close(out);
+    #endif
+}
+
+/**
+ * Check if the @ref OSXDaemon is already running using pgrep.
+ *
+ * @return int PID of running daemon. -1 if not running
+ */
+int OSXAudio::isDaemonRunning()
+{
+    int ret;
+    int procPipe[2];
+
+    pipe(procPipe);
+    ret = fork();
+
+    // Child process
+    if (ret == 0)
+    {
+        // Close the input since we don't need to write to the process
+        close(procPipe[0]);
+
+        // Redirect the process's output
+        dup2(procPipe[1], 1);
+        close(procPipe[1]);
+
+        std::string pgrep = "/usr/bin/pgrep";
+        ret = execlp(pgrep.c_str(), pgrep.c_str(), "hulaloop-osx-daemon", NULL);
+
+        hlDebugf("Failed to start pgrep process.\n");
+        hlDebugf("Execution of %s failed with return code: %d\n", pgrep.c_str(), ret);
+        perror("ERRNO");
+        exit(EXIT_FAILURE);
+    }
+    // Failure
+    else if (ret < 0)
+    {
+        hlDebugf("Failed to start pgrep process.\nFork failed.\n");
+        exit(EXIT_FAILURE);
+    }
+    // Parent process
+    else
+    {
+        // Close the output since we don't need to write to the process
+        close(procPipe[1]);
+
+        // Read from the pipe
+        char c;
+        std::string buffer = "";
+        while (read(procPipe[0], &c, 1) > 0)
+        {
+            // Only grab the first PID
+            if (c == '\n')
+                break;
+
+            buffer += c;
+        }
+
+        close(procPipe[0]);
+
+        pid_t pid = -1;
+        if (buffer.size() > 0)
+        {
+            hlDebugf("Parsed PID: %s\n", buffer.c_str());
+            try
+            {
+                pid = std::stoi(buffer);
+            } catch (std::invalid_argument &e)
+            {
+                (void)e;
+                hlDebugf("Failed to convert parsed PID.\n");
+            }
+        }
+
+        return pid;
+    }
+}
+
+/**
+ * Start the @ref OSXDaemon to transfer audio from the CoreAudio driver
+ * to the JACK client. This expects hulaloop-osx-daemon to be in the same
+ * directory as hulaloop.
+ */
+pid_t OSXAudio::startDaemon()
+{
+    pid_t ret;
+    pid_t pid;
+    char path[PROC_PIDPATHINFO_MAXSIZE];
+
+    // Get the path to the running hulaloop instance
+    pid = getpid();
+    ret = proc_pidpath(pid, path, PROC_PIDPATHINFO_MAXSIZE);
+    if (ret <= 0)
+    {
+        hlDebugf("proc_pidpath failed with return of %d.\n", ret);
+        hlDebugf("Could not get path to current executable.\n");
+        exit(1);
+    }
+
+    // Get the directory
+    char *installDir = dirname(path);
+    if (installDir == NULL)
+    {
+        hlDebugf("Could not trim executable name from install path. Error: %d\n", errno);
+        exit(EXIT_FAILURE);
+    }
+
+    std::string executable = std::string(installDir);
+    executable += "/hulaloop-osx-daemon";
+
+    ret = fork();
+
+    // Child process
+    if (ret == 0)
+    {
+        ret = execlp(executable.c_str(), executable.c_str(), NULL);
+
+        hlDebugf("Failed to start hulaloop-osx-daemon process.\n");
+        hlDebugf("Execution of %s failed with return code: %d\n", executable.c_str(), ret);
+        perror("ERRNO");
+        exit(EXIT_FAILURE);
+    }
+    // Failure
+    else if (ret < 0)
+    {
+        hlDebugf("Failed to start hulaloop-osx-daemon process.\nFork failed.\n");
+        exit(EXIT_FAILURE);
+    }
+    // Parent process
+    else
+    {
+        // Wait for the spawn process to exit
+        // This will indicate that the daemon has taken over
+        int proc_ret;
+        waitpid(ret, &proc_ret, 0);
+
+        // Get the real PID of the daemon
+        pid_t success = isDaemonRunning();
+        if (success > 0)
+        {
+            hlDebugf("hulaloop-osx-daemon started (PID: %d)\n", success);
+        }
+        else
+        {
+            hlDebugf("hulaloop-osx-daemon crashed.\n");
+            exit(EXIT_FAILURE);
+        }
+
+        return success;
+    }
+}
+
+/**
+ * Restart the @ref OSXDaemon.
+ */
+pid_t OSXAudio::restartDaemon()
+{
+    // Kill all instances
+    pid_t pid;
+    while ((pid = isDaemonRunning()) > 0)
+    {
+        kill(pid, SIGTERM);
+    }
+
+    return startDaemon();
 }
 
 /**
@@ -74,10 +262,9 @@ void OSXAudio::capture()
     PaError             err = paNoError;
 
     inputParameters.device = *(this->activeInputDevice->getID());
-    printf("Device id: %d\n", inputParameters.device);
     if (inputParameters.device == paNoDevice)
     {
-        fprintf(stderr, "%sNo device found.\n", HL_ERROR_PREFIX);
+        hlDebug() << "Device %s not found." << this->activeInputDevice->getName() << std::endl;
         exit(1); // TODO: Handle error
     }
 
@@ -100,8 +287,8 @@ void OSXAudio::capture()
 
     if (err != paNoError)
     {
-        fprintf(stderr, "%sCould not open Port Audio device stream.\n", HL_ERROR_PREFIX);
-        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+        hlDebugf("Could not open Port Audio device stream.\n");
+        hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
         exit(1); // TODO: Handle error
     }
 
@@ -109,8 +296,8 @@ void OSXAudio::capture()
     err = Pa_StartStream(stream);
     if (err != paNoError)
     {
-        fprintf(stderr, "%sCould not start Port Audio device stream.\n", HL_ERROR_PREFIX);
-        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+        hlDebugf("Could not start Port Audio device stream.\n");
+        hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
         exit(1); // TODO: Handle error
     }
 
@@ -120,27 +307,27 @@ void OSXAudio::capture()
         // The second half of this function could be moved to a separate
         // function like endCapture() so that we don't have to keep this thread alive.
 
-        printf("%sCapture keep-alive\n", HL_PRINT_PREFIX);
+        hlDebugf("Capture keep-alive\n");
 
         // This value can be adjusted
         // 100 msec is decent precision for now
         Pa_Sleep(1000);
     }
 
-    printf("%sCapture thread ended keep-alive.\n\n", HL_PRINT_PREFIX);
+    hlDebugf("Capture thread ended keep-alive.\n");
 
     if (err != paNoError)
     {
-        fprintf(stderr, "%sError during read from device stream.\n", HL_ERROR_PREFIX);
-        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+        hlDebugf("Error during read from device stream.\n");
+        hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
         exit(1); // TODO: Handle error
     }
 
     err = Pa_CloseStream(stream);
     if (err != paNoError)
     {
-        fprintf(stderr, "%sCould not close Port Audio device stream.\n", HL_ERROR_PREFIX);
-        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+        hlDebugf("Could not close Port Audio device stream.\n");
+        hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
         exit(1); // TODO: Handle error
     }
 }
@@ -162,7 +349,7 @@ std::vector<Device *> OSXAudio::getDevices(DeviceType type)
     int deviceCount = Pa_GetDeviceCount();
     if (deviceCount < 0)
     {
-        fprintf(stderr, "%sNo PortAudio devices were found.\n", HL_ERROR_PREFIX);
+        hlDebugf("Failed to fetch PortAudio devices.\n");
         exit(1); // TODO: Handle error
     }
 
@@ -239,11 +426,13 @@ bool OSXAudio::checkRates(Device *device)
 
     if (err == paFormatIsSupported)
     {
-        printf("Sample rate and format valid.\n");
+        // TODO: qOut()
+        hlDebug() << HL_SAMPLE_RATE_VALID << std::endl;
     }
     else
     {
-        printf("Sample rate or format invalid.\n");
+        // TODO: qOut()
+        hlDebug() << HL_SAMPLE_RATE_INVALID << std::endl;
     }
 
     return err == paFormatIsSupported;
@@ -254,19 +443,13 @@ bool OSXAudio::checkRates(Device *device)
  */
 OSXAudio::~OSXAudio()
 {
-    printf("%sOSXAudio destructor called\n", HL_PRINT_PREFIX);
+    hlDebugf("OSXAudio destructor called\n");
 
     // Close the Port Audio session
     PaError err = Pa_Terminate();
     if (err != paNoError)
     {
-        fprintf(stderr, "%sCould not terminate Port Audio session.\n", HL_ERROR_PREFIX);
-        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
-    }
-
-    // Stop the daemon
-    if (osxDaemon)
-    {
-        delete osxDaemon;
+        hlDebugf("Could not terminate Port Audio session.\n");
+        hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
     }
 }

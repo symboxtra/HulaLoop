@@ -238,6 +238,7 @@ pipeline {
                                     cd ./build-osx
 
                                     ctest -V -E ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER}
+                                    pkill hulaloop-osx-daemon || true
                                     cd ..
 
                                     lcov -c -d build-osx -o build-osx/coverage.actual
@@ -275,6 +276,7 @@ pipeline {
                                 sh '''
                                     cd ./build-osx
                                     ctest -V -R ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER}
+                                    pkill hulaloop-osx-daemon || true
                                 '''
                             }
                         }

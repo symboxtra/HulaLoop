@@ -17,5 +17,5 @@ void Record::stop()
 
 Record::~Record()
 {
-
+    hlDebugf("Record destructor called\n");
 }

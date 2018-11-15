@@ -18,7 +18,6 @@ WindowsAudio::WindowsAudio()
  */
 std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
 {
-
     // Check if the following enums are set in the params
     bool isLoopSet = (type & DeviceType::LOOPBACK) == DeviceType::LOOPBACK;
     bool isRecSet = (type & DeviceType::RECORD) == DeviceType::RECORD;
@@ -121,14 +120,6 @@ std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
 
                 // Add to devicelist
                 deviceList.push_back(audio);
-
-                // Print some debug device info for now
-                // TODO: Remove
-                std::cout << "Device #" << i + 1 << ": " << deviceInfo->name << std::endl;
-                std::cout << "Input Channels: " << deviceInfo->maxInputChannels << std::endl;
-                std::cout << "Output Channels: " << deviceInfo->maxOutputChannels << std::endl;
-                std::cout << "Default Sample Rate: " << deviceInfo->defaultSampleRate << std::endl;
-                std::cout << std::endl;
             }
         }
 
@@ -145,12 +136,12 @@ Exit:
     {
         _com_error err(status);
         LPCTSTR errMsg = err.ErrorMessage();
-        std::cerr << "WASAPI_Error: " << errMsg << std::endl;
+        hlDebug() << "WASAPI_Error: " << errMsg << std::endl;
         return {};
     }
     else if (pa_status != paNoError)
     {
-        std::cerr << "PORTAUDIO_Error: " << Pa_GetErrorText(pa_status) << std::endl;
+        hlDebug() << "PORTAUDIO_Error: " << Pa_GetErrorText(pa_status) << std::endl;
         return {};
     }
     else
@@ -174,7 +165,7 @@ void WindowsAudio::setActiveOutputDevice(Device *device)
  */
 void WindowsAudio::capture()
 {
-    std::cout << "In Capture Mode" << std::endl; // TODO: Remove this later
+    hlDebug() << "In Capture Mode" << std::endl; // TODO: Remove this later
 
     // Instantiate clients and services for audio capture
     IAudioCaptureClient *captureClient = NULL;
@@ -200,7 +191,7 @@ void WindowsAudio::capture()
     status = pEnumerator->GetDevice(reinterpret_cast<LPCWSTR>(activeInputDevice->getID()), &audioDevice);
     // status = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &audioDevice);
     HANDLE_ERROR(status);
-    std::cout << "Selected Device: " << activeInputDevice->getName() << std::endl; // TODO: Remove this later
+    hlDebug() << "Selected Device: " << activeInputDevice->getName() << std::endl; // TODO: Remove this later
 
     // Activate the IMMDevice
     status = audioDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void **)&audioClient);
@@ -273,7 +264,7 @@ Exit:
     {
         _com_error err(status);
         LPCTSTR errMsg = err.ErrorMessage();
-        std::cerr << "\nError: " << errMsg << std::endl;
+        hlDebug() << "\nError: " << errMsg << std::endl;
         exit(1);
         // TODO: Handle error accordingly
     }
@@ -292,5 +283,5 @@ bool WindowsAudio::checkRates(Device *device)
  */
 WindowsAudio::~WindowsAudio()
 {
-    printf("%sWindowsAudio destructor called\n", HL_PRINT_PREFIX);
+    hlDebugf("WindowsAudio destructor called\n");
 }

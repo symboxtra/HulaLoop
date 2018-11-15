@@ -22,9 +22,8 @@ message (STATUS "Building ${PROJECT_NAME} v${HL_VERSION_STR}")
 message (STATUS "")
 
 # Set build type if not provided
-# Default to DEBUG
 if (NOT CMAKE_BUILD_TYPE)
-    set (CMAKE_BUILD_TYPE Debug)
+    set (CMAKE_BUILD_TYPE Debug CACHE STRING "Configuration of build." FORCE)
 endif ()
 
 set (OSX FALSE)
@@ -54,11 +53,17 @@ endif ()
 option (HL_BUILD_ONLY_AUDIO "Build only the audio library." OFF)
 option (HL_BUILD_CLI "Build the command line application." ON)
 option (HL_BUILD_GUI "Build the graphical application." ON)
-option (HL_ADD_COVERAGE_FLAGS "Add coverage options to compiler flags" OFF)
 
-# Disable coverage flags by default
+# Turn on coverage flags if needed
+set (HL_ADD_COVERAGE_FLAGS OFF)
 if (CMAKE_BUILD_TYPE MATCHES "Debug" AND (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
     set (HL_ADD_COVERAGE_FLAGS ON)
+endif ()
+
+# Control debug output
+set (HL_NO_DEBUG_OUTPUT 1)
+if (CMAKE_BUILD_TYPE MATCHES "Debug")
+    set (HL_NO_DEBUG_OUTPUT 0)
 endif ()
 
 # Set output for binaries
@@ -144,6 +149,21 @@ find_package (Qt5 REQUIRED
     Widgets
 )
 
+# Linguist tools for translation
+# This is not required
+find_package (Qt5LinguistTools)
+set (FOUND_QT_LINGUIST FALSE)
+if (Qt5_LUPDATE_EXECUTABLE AND Qt5_LRELEASE_EXECUTABLE)
+    message (STATUS "Qt5LinguistTools: Found")
+    set (FOUND_QT_LINGUIST TRUE)
+endif ()
+
+# Minimum set of libs required
+# for translation
+set (QT_TRANSLATION_LIBS
+    Qt5::Core
+)
+
 set (HL_LIBRARIES
     ${HL_LIBRARIES}
     Qt5::Core
@@ -195,6 +215,45 @@ if (NOT HL_BUILD_ONLY_AUDIO)
         add_subdirectory (src/launcher)
         include_directories (${INCLUDE_DIRS})
     endif ()
+
+    # Generate translations
+    # Based on code from https://gist.github.com/02JanDal/70a39f2cc3d2002b3588
+    if (FOUND_QT_LINGUIST)
+
+        # Glob all the translation files
+        # To add a language, create an empty ts file named hulaloop_XX.ts in the res/translations folder
+        # See the ISO language codes for the XX (https://www.andiamo.co.uk/resources/iso-language-codes)
+        # This glob will pick it up and fill it with the English entries for translation
+        file (GLOB TRANSLATIONS_FILES ${PROJECT_SOURCE_DIR}/res/translations/*.ts)
+
+        # Update the .ts files with strings from the application source
+        qt5_create_translation (QM_FILES
+            ${PROJECT_SOURCE_DIR}/src/control ${PROJECT_SOURCE_DIR}/src/launcher ${PROJECT_SOURCE_DIR}/src/ui
+            ${TRANSLATIONS_FILES}
+            OPTIONS -recursive
+        )
+
+        # Convert the XML-based .ts files to binary .qm files
+        qt5_add_translation (TRANSLATION_QM ${TRANSLATIONS_FILES})
+
+        # Add the generated commands as targets
+        add_custom_target (TranslationUpdate ALL DEPENDS ${QM_FILES})
+        add_custom_target (Translation ALL DEPENDS ${TRANSLATION_QM})
+        add_dependencies (Translation TranslationUpdate)
+
+        # Add the targets as dependencies to the main application
+        add_dependencies (hulaloop TranslationUpdate)
+        add_dependencies (hulaloop-cli TranslationUpdate)
+        add_dependencies (hulaloop-launcher TranslationUpdate)
+
+        # Install information for the translation files
+        if (OSX)
+            # This should eventually be the OSX bundle
+            install (FILES ${TRANSLATION_QM} DESTINATION translations)
+        else ()
+            install (FILES ${TRANSLATION_QM} DESTINATION translations)
+        endif ()
+    endif ()
 endif ()
 
 
@@ -213,8 +272,6 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     create_test ("src/test/TestOSAudio.cpp" "" 3 FALSE FALSE)
     create_test ("src/test/TestHulaRingBuffer.cpp" "" 0.5 TRUE FALSE)
     create_test ("src/test/TestController.cpp" "" -1 TRUE FALSE)
-    create_test ("src/test/TestCLIArgs.cpp" "" -1 FALSE FALSE) # TODO: memcheck can be turned on once Device::id is fixed
-    create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/InteractiveCLI.cpp" -1 FALSE FALSE)
 
     if (OSX)
         create_test ("src/test/TestOSXAudio.cpp" "" -1 FALSE FALSE)
@@ -224,6 +281,8 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
     if (NOT HL_BUILD_ONLY_AUDIO)
         create_test ("src/test/TestTransport.cpp" "" -1 TRUE FALSE)
+        create_test ("src/test/TestCLIArgs.cpp" "" -1 FALSE FALSE) # TODO: memcheck can be turned on once Device::id is fixed
+        create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/InteractiveCLI.cpp" -1 FALSE FALSE)
     endif ()
 
 endif ()

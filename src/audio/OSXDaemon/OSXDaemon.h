@@ -7,6 +7,7 @@
 namespace hula
 {
     class OSXDaemon : public JackClient, public JackBridgeDriverIF {
+
         public:
 
             OSXDaemon(const char *name, int id);

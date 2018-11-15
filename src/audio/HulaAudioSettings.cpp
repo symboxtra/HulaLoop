@@ -287,5 +287,8 @@ void HulaAudioSettings::setRecordDuration(double val)
  */
 HulaAudioSettings::~HulaAudioSettings()
 {
-
+    if (hlaudio_instance)
+    {
+        delete hlaudio_instance;
+    }
 }

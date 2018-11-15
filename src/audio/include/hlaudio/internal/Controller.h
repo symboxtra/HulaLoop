@@ -1,7 +1,6 @@
 #ifndef HL_CONTROLLER_H
 #define HL_CONTROLLER_H
 
-#include <iostream>
 #include <vector>
 
 #include "Device.h"
@@ -17,6 +16,7 @@ namespace hula
      * A class that structures the receival of audio from the OS framework.
      */
     class Controller {
+
         private:
             OSAudio *audio;
 

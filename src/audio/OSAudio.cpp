@@ -193,7 +193,7 @@ void OSAudio::setActiveOutputDevice(Device *device)
  */
 OSAudio::~OSAudio()
 {
-    printf("%sOSAudio destructor called\n", HL_PRINT_PREFIX);
+    hlDebugf("OSAudio destructor called\n");
 
     // Signal thread death
     this->endCapture.store(true);
