@@ -169,15 +169,15 @@ std::string Transport::stateToStr(const TransportState state) const
     {
 
         case RECORDING:
-            return qPrintable(tr("Recording"));
+            return std::string(qPrintable(tr("Recording")));
         case STOPPED:
-            return qPrintable(tr("Stopped"));
+            return std::string(qPrintable(tr("Stopped")));
         case PLAYING:
-            return qPrintable(tr("Playing"));
+            return std::string(qPrintable(tr("Playing")));
         case PAUSED:
-            return qPrintable(tr("Paused"));
+            return std::string(qPrintable(tr("Paused")));
         default:
-            return qPrintable(tr("Unknown"));
+            return std::string(qPrintable(tr("Unknown")));
 
     }
 

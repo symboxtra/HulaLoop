@@ -61,9 +61,8 @@ typedef struct HulaImmediateArgs
  */
 void invalidArg(QString name, QString arg, QString message = "")
 {
-    const char *toPrint = qPrintable(CLI::tr("Invalid argument '%1' provided to option '%2'.").arg(arg, name));
-    fprintf(stderr, "%s\n", toPrint);
-    if (message.size() > 0)
+    fprintf(stderr, "%s\n", qPrintable(CLI::tr("Invalid argument '%1' provided to option '%2'.").arg(arg, name)));
+    if (!message.isEmpty())
     {
         fprintf(stderr, "%s\n", qPrintable(message));
     }
