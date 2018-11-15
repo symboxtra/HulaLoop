@@ -10,9 +10,9 @@ Rectangle {
 
     id: visualize
     width: window.width
-    height: parent.height * 0.6
+    height: parent.height - btnPanel.height - bottomRectangle.height
     color: "lightsteelblue"
-    y: 98
+    anchors.top: btnPanel.bottom
 
     Row {
         y: parent.height-50

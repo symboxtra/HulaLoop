@@ -53,12 +53,8 @@ ApplicationWindow {
         id: visualize
     }
 
-    Label {
-        id: transportState
-        objectName: "transportState"
-
-        anchors.top: btnPanel.bottom
-        text: qmlbridge.getTransportState()
+    BottomRectangle {
+        id: bottomRectangle
     }
 
 }

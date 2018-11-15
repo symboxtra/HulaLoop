@@ -7,5 +7,6 @@
         <file>fonts/materialdesignicons-webfont.ttf</file>
         <file>res/hulaloop-logo.svg</file>
         <file>res/hulaloop-logo.png</file>
+        <file>qml/BottomRectangle.qml</file>
     </qresource>
 </RCC>
