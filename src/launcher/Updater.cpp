@@ -1,4 +1,5 @@
 #include "Updater.h"
+#include "HulaLauncherError.h"
 
 #include <QCoreApplication>
 #include <QDataStream>
@@ -23,7 +24,6 @@ Updater::Updater(QObject *parent) : QObject(parent)
 {
     manager = new QNetworkAccessManager(this);
     reply = nullptr;
-    file = nullptr;
 
     updateHostUrl = "";
     downloadHostUrl = "";
@@ -226,14 +226,13 @@ bool Updater::downloadUpdate()
     reply = manager->get(req);
 
     QString fileName = QFileInfo(reply->url().path()).fileName();
-    file = new QFile(QDir::tempPath() + "/" + fileName);
-    file->open(QIODevice::WriteOnly);
+    QFile file(QDir::tempPath() + "/" + fileName);
+    file.open(QIODevice::WriteOnly);
 
     connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [&](QNetworkReply::NetworkError code)
     {
         // throw exception
-        file->close();
-        delete file;
+        file.close();
         reply->deleteLater();
         finishedDownload = false;
     });
@@ -241,8 +240,7 @@ bool Updater::downloadUpdate()
     connect(reply, &QNetworkReply::sslErrors, [&]
     {
         // throw exception
-        file->close();
-        delete file;
+        file.close();
         reply->deleteLater();
         finishedDownload = false;
     });
@@ -252,17 +250,15 @@ bool Updater::downloadUpdate()
 
         numBytesDownloaded = reply->bytesAvailable();
         emit bytesDownloaded();
-        file->write(reply->readAll());
+        file.write(reply->readAll());
 
     });
 
     connect(reply, &QNetworkReply::finished, [&]
     {
 
-        file->flush();
-        file->close();
-
-        delete file;
+        file.flush();
+        file.close();
         reply->deleteLater();
 
         finishedDownload = true;

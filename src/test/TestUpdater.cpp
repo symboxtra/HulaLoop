@@ -38,9 +38,9 @@ TEST_F(TestUpdater, checkAndDownloadUpdate)
     ASSERT_TRUE(updater->checkForUpdate());
     ASSERT_TRUE(updater->downloadUpdate());
 
-    QFile *file = new QFile(QDir::tempPath() + "/" + updater->getDownloadFileName());
-    ASSERT_TRUE(file->exists());
-    ASSERT_TRUE(file->size() == updater->getDownloadSize());
+    QFile file(QDir::tempPath() + "/" + updater->getDownloadFileName());
+    ASSERT_TRUE(file.exists());
+    ASSERT_TRUE(file.size() == updater->getDownloadSize());
 }
 
 TEST_F(TestUpdater, checkForUpdateError)

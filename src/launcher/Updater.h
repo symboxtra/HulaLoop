@@ -19,7 +19,6 @@ namespace hula
         private:
             QNetworkAccessManager *manager;
             QNetworkReply *reply;
-            QFile *file;
 
             QString updateHostUrl;
             QString downloadHostUrl;
