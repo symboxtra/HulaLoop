@@ -17,4 +17,4 @@ The *XX* should be replaced with the [ISO language code](https://www.andiamo.co.
 
 The file should now contain an entry for each of the English strings in the application. After the strings have been translated, the modified ```.ts``` file should be committed.
 
-Normal CMake builds will keep the ```.ts``` file up-to-date with the application's English strings from this point on.
+Normal CMake builds will keep the ```.ts``` file up-to-date with the application's English strings from this point on. Rerunning the generation stage (use ```cmake ..``` from the build directory) usually forces the translations to update if they appear stagnant.

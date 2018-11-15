@@ -23,6 +23,17 @@ using namespace hula;
     "                                         |_|\n" \
     "----------------------------------------------------\n\n" \
 
+
+/**
+ * Wrapper around translation functions for Qt.
+ */
+namespace hula
+{
+    class CLI {
+        Q_DECLARE_TR_FUNCTIONS(CLI)
+    };
+}
+
 /**
  * Utility CLI function to print the device list to the console.
  *
@@ -45,10 +56,10 @@ inline void printDeviceList(Transport *t)
     printf("\n");
     for (size_t i = 0; i < devices.size(); i++)
     {
-        printf("Device #%lu: %s\n", i, devices[i]->getName().c_str());
-        printf("Record:   %s\n", (devices[i]->getType() & DeviceType::RECORD) ? "true" : "false");
-        printf("Loopback: %s\n", (devices[i]->getType() & DeviceType::LOOPBACK) ? "true" : "false");
-        printf("Output:   %s\n", (devices[i]->getType() & DeviceType::PLAYBACK) ? "true" : "false");
+        printf("%s: %s\n", qPrintable(CLI::tr("Device #%1").arg(i)), devices[i]->getName().c_str());
+        printf("%s:   %s\n", qPrintable(CLI::tr("Record", "device capability")), (devices[i]->getType() & DeviceType::RECORD) ? "true" : "false");
+        printf("%s: %s\n", qPrintable(CLI::tr("Loopback", "device capability")), (devices[i]->getType() & DeviceType::LOOPBACK) ? "true" : "false");
+        printf("%s:   %s\n", qPrintable(CLI::tr("Output", "device capability")), (devices[i]->getType() & DeviceType::PLAYBACK) ? "true" : "false");
         printf("\n");
     }
 
@@ -107,7 +118,8 @@ inline Device * findDevice(Transport *t, const std::string &name, DeviceType typ
 
     if (device == NULL)
     {
-        fprintf(stderr, "\nCould not find input device matching: %s\n", name.c_str());
+        //: The argument in this text is the name or id of the device that the user searched for
+        fprintf(stderr, "\n%s\n", qPrintable(CLI::tr("Could not find input device matching: %1").arg(name.c_str())));
     }
 
     return device;
@@ -121,13 +133,14 @@ inline void printSettings()
     HulaSettings *settings = HulaSettings::getInstance();
 
     printf("\n");
-    printf("Output file:          '%s'\n", settings->getOutputFilePath().c_str());
-    printf("Delay:                %.2f s\n", settings->getDelayTimer());
-    printf("Length:               %.2f s\n", settings->getRecordDuration());
-    printf("Sample rate:          %d Hz\n", settings->getSampleRate());
-    printf("Encoding:             %s\n", "WAV");
-    printf("Input device:         '%s'\n", settings->getDefaultInputDeviceName().c_str());
-    printf("Output device:        '%s'\n", settings->getDefaultOutputDeviceName().c_str());
+    // TODO: Figure out language spacing on this
+    printf("%s:\t\t\t'%s'\n", qPrintable(CLI::tr("Output file", "setting")), settings->getOutputFilePath().c_str());
+    printf("%s:\t\t\t\t%.2f s\n", qPrintable(CLI::tr("Delay", "seconds")), settings->getDelayTimer());
+    printf("%s:\t\t\t%.2f s\n", qPrintable(CLI::tr("Duration", "seconds")), settings->getRecordDuration());
+    printf("%s:\t\t\t%d %s\n", qPrintable(CLI::tr("Sample rate")), settings->getSampleRate(), qPrintable(CLI::tr("Hz", "unit")));
+    printf("%s:\t\t\t%s\n", qPrintable(CLI::tr("Encoding")), "WAV");
+    printf("%s:\t\t\t%s\n", qPrintable("Input device"), settings->getDefaultInputDeviceName().c_str());
+    printf("%s:\t\t\t%s\n", qPrintable("Output device"), settings->getDefaultOutputDeviceName().c_str());
     printf("\n");
 }
 

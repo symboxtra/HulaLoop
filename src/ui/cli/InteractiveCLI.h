@@ -3,6 +3,8 @@
 
 #include <hlcontrol/hlcontrol.h>
 
+#include <QCoreApplication>
+
 namespace hula
 {
     /**
@@ -20,6 +22,9 @@ namespace hula
      * Class containing the interactive CLI.
      */
     class HulaInteractiveCli {
+
+        Q_DECLARE_TR_FUNCTIONS(CLI)
+
         private:
             Transport *t;
             HulaSettings *settings;

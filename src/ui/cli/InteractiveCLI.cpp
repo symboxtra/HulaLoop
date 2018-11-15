@@ -33,7 +33,7 @@ void HulaInteractiveCli::unusedArgs(const std::vector<std::string> &args, int nu
 {
     for (size_t i = numUsed - 1; i < args.size(); i++)
     {
-        fprintf(stderr, "%sWarning: Unused argument '%s'.\n", HL_ERROR_PREFIX, args[i].c_str());
+        fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, qPrintable(tr("Warning: Unused argument '%1'.").arg(args[i].c_str())));
     }
 }
 
@@ -44,7 +44,7 @@ void HulaInteractiveCli::unusedArgs(const std::vector<std::string> &args, int nu
  */
 void HulaInteractiveCli::missingArg(const std::string &argName) const
 {
-    fprintf(stderr, "%sMissing argument '%s'\n", HL_ERROR_PREFIX, argName.c_str());
+    fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, qPrintable(tr("Missing argument '%1'").arg(argName.c_str())));
 }
 
 /**
@@ -56,8 +56,8 @@ void HulaInteractiveCli::missingArg(const std::string &argName) const
  */
 void HulaInteractiveCli::malformedArg(const std::string &argName, const std::string &val, const std::string &type) const
 {
-    fprintf(stderr, "%sMalformed argument '%s'\n", HL_ERROR_PREFIX, argName.c_str());
-    fprintf(stderr, "%s'%s' is not a valid %s.\n", HL_ERROR_PREFIX, val.c_str(), type.c_str());
+    fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, qPrintable(tr("Malformed argument '%1'").arg(argName.c_str())));
+    fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, qPrintable(tr("'%1' is not a valid %2.").arg(val.c_str(), type.c_str())));
 }
 
 /**
@@ -94,7 +94,6 @@ void HulaInteractiveCli::start()
         }
         else
         {
-            fprintf(stderr, "%sEnd of stream.\n", HL_ERROR_PREFIX);
             break;
         }
 
@@ -284,7 +283,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
         if (device != NULL)
         {
             t->getController()->setActiveInputDevice(device);
-            printf("\nInput device set to: %s\n", device->getName().c_str());
+            printf("\n%s\n", qPrintable(tr("Input device set to: %1").arg(device->getName().c_str())));
 
             // TODO: Settings shouldn't really store this
             settings->setDefaultInputDeviceName(device->getName());
@@ -316,7 +315,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
         if (device != NULL)
         {
             t->getController()->setActiveOutputDevice(device);
-            printf("\nOutput device set to: %s\n", device->getName().c_str());
+            printf("\n%s\n", qPrintable(tr("Output device set to: %1").arg(device->getName().c_str())));
 
             // TODO: Settings shouldn't really store this
             settings->setDefaultOutputDeviceName(device->getName());
@@ -354,12 +353,12 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
             if (sysCommand.size() > 0)
             {
                 int ret = system(sysCommand.c_str());
-                printf("\n%sSystem command returned: %d\n", HL_PRINT_PREFIX, ret);
+                printf("\n%s%s", HL_PRINT_PREFIX, qPrintable(tr("System command returned: %1").arg(ret)));
             }
         }
         else
         {
-            fprintf(stderr, "%sNo system command processor is available is available.\n", HL_ERROR_PREFIX);
+            fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, qPrintable(tr("No system command processor is available.")));
             return HulaCliStatus::HULA_CLI_FAILURE;
         }
     }
@@ -369,14 +368,14 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
     }
     else
     {
-        fprintf(stderr, "%sUnrecognized command '%s'\n", HL_ERROR_PREFIX, command.c_str());
+        fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, qPrintable(tr("Unrecognized command '%1'").arg(command.c_str())));
         return HulaCliStatus::HULA_CLI_FAILURE;
     }
 
     // Make sure transport commands succeeded
     if (!success)
     {
-        fprintf(stderr, "Command failed with value of 'false'.\n");
+        fprintf(stderr, "%s\n", qPrintable(tr("Command failed with value of 'false'.")));
         return HulaCliStatus::HULA_CLI_FAILURE;
     }
 
@@ -384,7 +383,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
 }
 
 /**
- * Destroy the Hula Interactive Cli:: Hula Interactive Cli object
+ * Fetch the state of the internal Transport.
  *
  * @return State of the transport
  */
@@ -398,7 +397,7 @@ TransportState HulaInteractiveCli::getState()
  */
 HulaInteractiveCli::~HulaInteractiveCli()
 {
-    fprintf(stderr, "%sHulaInteractiveCli destructor called.\n", HL_ERROR_PREFIX);
+    hlDebugf("%sHulaInteractiveCli destructor called.\n", HL_ERROR_PREFIX);
 
     delete this->t;
 }
