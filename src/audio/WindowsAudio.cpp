@@ -282,7 +282,7 @@ Exit:
 bool WindowsAudio::checkDeviceParams(Device *activeDevice)
 {
     return true; // TODO: Remove this and add PortAudio checks and change deviceID code
-    
+
     HRESULT status;
     IMMDevice* device = NULL;
     PROPVARIANT prop;
@@ -295,7 +295,7 @@ bool WindowsAudio::checkDeviceParams(Device *activeDevice)
     status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
     HANDLE_ERROR(status);
      // Select the current active record/loopback device
-    status = pEnumerator->GetDevice(reinterpret_cast<LPCWSTR>(activeDevice->getID()), &device);
+    status = pEnumerator->GetDevice(activeDevice->getID().windowsID, &device);
     HANDLE_ERROR(status);
      status = device->OpenPropertyStore(STGM_READ, &store);
     HANDLE_ERROR(status);
