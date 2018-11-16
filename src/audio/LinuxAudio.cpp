@@ -103,7 +103,7 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
  *
  * @param device Device to check against
  */
-bool LinuxAudio::checkRates(Device *device)
+bool LinuxAudio::checkDeviceParams(Device *device)
 {
     int err;                     // return for commands that might return an error
     snd_pcm_t *pcmHandle = NULL; // default pcm handle

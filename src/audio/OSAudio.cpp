@@ -140,7 +140,7 @@ void OSAudio::setActiveInputDevice(Device *device)
         return;
     }
 
-    if (!this->checkRates(device))
+    if(!this->checkDeviceParams(device))
     {
         return;
     }
@@ -197,7 +197,7 @@ void OSAudio::setActiveOutputDevice(Device *device)
         return;
     }
 
-    if (!this->checkRates(device))
+    if (!this->checkDeviceParams(device))
     {
         return;
     }

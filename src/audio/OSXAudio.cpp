@@ -205,7 +205,7 @@ std::vector<Device *> OSXAudio::getDevices(DeviceType type)
  *
  * @param device Instance of Device that corresponds to the desired system device
  */
-bool OSXAudio::checkRates(Device *device)
+bool OSXAudio::checkDeviceParams(Device *device)
 {
     PaStreamParameters inputParameters = {0};
     inputParameters.channelCount = NUM_CHANNELS;

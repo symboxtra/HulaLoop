@@ -77,7 +77,7 @@ bool Transport::stop()
     std::cout << "Stop button clicked!" << std::endl;
     state = STOPPED;
 
-    if (!recordState)
+    if (!recordState || playbackState)
     {
         recorder->stop();
 

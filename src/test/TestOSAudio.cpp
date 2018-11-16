@@ -53,7 +53,7 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
             return devices;
         }
 
-        bool checkRates(Device *device)
+        bool checkDeviceParams(Device *device)
         {
             return true;
         }
