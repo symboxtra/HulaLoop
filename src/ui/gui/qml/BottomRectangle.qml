@@ -8,26 +8,28 @@ Rectangle {
 
     id: bottomRect
     width: parent.width
-    height: parent.height * 0.05
+    height: 20
     color: "white"
     anchors.bottom: parent.bottom
 
-    Label {
-        id: textCountdown
-        objectName: "textCountdown"
-
-        color: "black"
-        font.pixelSize: Math.ceil(btnPanel.width * 0.02)
-        text: window.textDisplayed
-    }
-
-
-    Label {
-        id: transportState
-        objectName: "transportState"
-        font.pixelSize: Math.ceil(parent.width * 0.02)
-        color: "black"
-        text: window.currentState
+    RowLayout{
         anchors.right: parent.right
+        anchors.rightMargin: 15
+        Label {
+            id: transportState
+            objectName: "transportState"
+
+            color: "black"
+            text: window.currentState
+        }
+
+        Label {
+            id: textCountdown
+            objectName: "textCountdown"
+
+            color: "black"
+            text:  ("  |  " + window.textDisplayed)
+        }
     }
+
 }

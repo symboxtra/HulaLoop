@@ -44,7 +44,7 @@ Rectangle {
         onTriggered: {
             // Since the timer starts at 0, go to endTime - 1
             if (timeFuncs.time >= timeFuncs.time2 - 1) {
-                window.textDisplayed = "Elapsed: " + timeFuncs.time + 1
+                window.textDisplayed = "Elapsed: " + (timeFuncs.time + 1)
                 qmlbridge.stop()
                 recordingTimer.stop()
             } else {
@@ -400,12 +400,14 @@ Rectangle {
         x: Math.round((window.width - width) / 2)
         y: Math.round((window.height - height) / 2)
 
+        width: 350
+        height: 170
         modal: true
         focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
         ColumnLayout {
-            spacing: Math.round(buttonPanel.height * 0.15)
+            spacing: 10
 
             GridLayout {
                 id: gridLayout
@@ -415,7 +417,7 @@ Rectangle {
 
                 Label {
                     font.family: "Roboto"
-                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+//                    font.pixelSize: 20
                     text: "Delay Recording (hh:mm:ss)"
                     color: "white"
 
@@ -423,10 +425,10 @@ Rectangle {
                     verticalAlignment: Text.AlignVCenter
                 }
 
-                TextInput {
+                TextField {
                     id: delayInput
+                    width: 100
                     objectName: "delayInput"
-
                     text: "00:00:00"
                     inputMask: "00:00:00"
                     color: "white"
@@ -434,7 +436,7 @@ Rectangle {
 
                 Label {
                     font.family: "Roboto"
-                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+//                    font.pixelSize: 20
                     text: "Recording Time (hh:mm:ss)"
                     color: "white"
 
@@ -442,10 +444,10 @@ Rectangle {
                     verticalAlignment: Text.AlignVCenter
                 }
 
-                TextInput {
+                TextField {
                     id: recordTimeInput
+                    width: 100
                     objectName: "recordTimeInput"
-
                     text: "00:00:00"
                     inputMask: "00:00:00"
                     color: "white"
@@ -454,19 +456,19 @@ Rectangle {
 
             RowLayout {
                 Layout.alignment: Qt.AlignCenter
-                spacing: Math.round(buttonPanel.width * 0.05)
-                width: gridLayout.width / 2
-
+                spacing: 60
+                width: gridLayout.width
+                anchors.leftMargin: 300
                 Button {
                     Layout.alignment: Qt.AlignLeft
                     id: cancelBtn
                     onClicked: {
                         timerPopup.close()
                     }
-                    Layout.preferredWidth: Math.round(buttonPanel.width * 0.15)
+                    Layout.preferredWidth: 75
                     contentItem: Text {
                         font.family: "Roboto"
-                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+//                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                         text: "CANCEL"
                         color: "white"
 
@@ -483,10 +485,10 @@ Rectangle {
                         timerPopup.close()
                     }
 
-                    Layout.preferredWidth: Math.round(buttonPanel.width * 0.15)
+                    Layout.preferredWidth: 75
                     contentItem: Text {
                         font.family: "Roboto"
-                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+//                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                         text: "OK"
                         color: "white"
 
