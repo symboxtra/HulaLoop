@@ -14,6 +14,11 @@ int main(int argc, char **argv)
     QCoreApplication::setOrganizationName("Symboxtra Software");
     QCoreApplication::setApplicationVersion(HL_VERSION_STR);
 
+    HulaSettings *settings = HulaSettings::getInstance();
+    QTranslator *trans = settings->getTranslator();
+
+    app.installTranslator(trans);
+
     HulaImmediateArgs extraArgs;
     bool success = parseArgsQt(app, extraArgs);
 

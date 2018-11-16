@@ -1,3 +1,5 @@
+#include <QLocale>
+#include <QTranslator>
 
 #include "hlcontrol/internal/HulaSettings.h"
 
@@ -12,7 +14,8 @@ HulaSettings *HulaSettings::hlcontrol_instance = nullptr;
  */
 HulaSettings::HulaSettings()
 {
-
+    trans = new QTranslator();
+    trans->load(QLocale(), "hulaloop", "_");
 }
 
 /**
@@ -29,6 +32,18 @@ HulaSettings * HulaSettings::getInstance()
     }
 
     return hlcontrol_instance;
+}
+
+/**
+ * Fetch a pointer to the translation object setup for Qt.
+ * This translator can be loaded with different languages
+ * at runtime to suit the needs of the user.
+ *
+ * @return QTranslator * Translator object with locale loaded.
+ */
+QTranslator * HulaSettings::getTranslator()
+{
+    return trans;
 }
 
 /**

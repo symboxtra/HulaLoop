@@ -1,6 +1,8 @@
 #ifndef HL_SETTINGS_H
 #define HL_SETTINGS_H
 
+#include <QTranslator>
+
 #include <hlaudio/internal/HulaAudioSettings.h>
 
 namespace hula
@@ -18,10 +20,13 @@ namespace hula
             static HulaSettings *hlcontrol_instance;
 
         protected:
+            QTranslator * trans;
             HulaSettings();
 
         public:
             static HulaSettings * getInstance();
+
+            QTranslator * getTranslator();
 
             ~HulaSettings();
 
