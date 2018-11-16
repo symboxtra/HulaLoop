@@ -25,9 +25,6 @@ namespace hula
             bool checkDeviceParams(Device *device);
 
             std::vector<Device *> getDevices(DeviceType type);
-
-            static void test_capture(OSAudio *_this);
-            void setActiveOutputDevice(Device *device);
     };
 }
 

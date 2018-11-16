@@ -28,6 +28,7 @@ Transport::Transport()
 Transport::Transport(bool dryRun)
 {
     controller = new Controller(dryRun);
+    recorder = nullptr;
 }
 #endif
 
@@ -212,5 +213,10 @@ Transport::~Transport()
     if (controller)
     {
         delete controller;
+    }
+
+    if (recorder)
+    {
+        delete recorder;
     }
 }

@@ -97,7 +97,7 @@ inline Device *findDevice(Transport *t, const std::string &name, DeviceType type
         }
     }
 
-    // Make a copy so that we can delete
+    // Make a copy so that we can delete all
     if (device != NULL)
     {
         device = new Device(*device);

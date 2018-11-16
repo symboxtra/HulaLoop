@@ -73,7 +73,7 @@ void OSXAudio::capture()
     PaStream           *stream;
     PaError             err = paNoError;
 
-    inputParameters.device = *(this->activeInputDevice->getID());
+    inputParameters.device = this->activeInputDevice->getID().portAudioID;
     printf("Device id: %d\n", inputParameters.device);
     if (inputParameters.device == paNoDevice)
     {
@@ -190,37 +190,14 @@ std::vector<Device *> OSXAudio::getDevices(DeviceType type)
         // This needs to be freed elsewhere
         if (type & checkType)
         {
-            Device *hlDevice = new Device(new uint32_t(i), std::string(paDevice->name), checkType);
+            DeviceID id;
+            id.portAudioID = i;
+            Device *hlDevice = new Device(id, std::string(paDevice->name), checkType);
             devices.push_back(hlDevice);
         }
     }
 
     return devices;
-}
-
-/**
- * Static function in the current instance of the class
- * to allow thread execution
- *
- * @param _this Instance of the current object
- */
-void OSXAudio::test_capture(OSAudio *_this)
-{
-    // Sleep for a few seconds just to keep the logs clean
-    Pa_Sleep(2000);
-
-    _this->capture();
-}
-
-/**
- * Set the selected output device and restart capture threads with
- * new device
- *
- * @param device Instance of Device that corresponds to the desired system device
- */
-void OSXAudio::setActiveOutputDevice(Device *device)
-{
-
 }
 
 /**
@@ -232,7 +209,7 @@ bool OSXAudio::checkDeviceParams(Device *device)
 {
     PaStreamParameters inputParameters = {0};
     inputParameters.channelCount = NUM_CHANNELS;
-    inputParameters.device = *device->getID();
+    inputParameters.device = device->getID().portAudioID;
     inputParameters.sampleFormat = paFloat32;
 
     PaError err = Pa_IsFormatSupported(&inputParameters, NULL, HulaAudioSettings::getInstance()->getSampleRate());

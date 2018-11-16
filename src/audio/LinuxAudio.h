@@ -36,8 +36,6 @@ namespace hula
             std::vector<Device *> getDevices(DeviceType type);
 
             bool checkDeviceParams(Device *device);
-
-            void setActiveOutputDevice(Device *device);
     };
 }
 

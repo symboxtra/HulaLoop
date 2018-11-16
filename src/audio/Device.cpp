@@ -9,7 +9,7 @@ using namespace hula;
  * @param name Name of the audio device
  * @param t DeviceType of the audio device
  */
-Device::Device(uint32_t *id, std::string name, DeviceType t)
+Device::Device(DeviceID id, std::string name, DeviceType t)
 {
     this->deviceID = id;
     this->deviceName = name;
@@ -21,9 +21,9 @@ Device::Device(uint32_t *id, std::string name, DeviceType t)
  *
  * @return id Pointer to a integer
  */
-uint32_t *Device::getID()
+DeviceID Device::getID()
 {
-    return this->deviceID;
+    return deviceID;
 }
 
 /**
@@ -47,7 +47,7 @@ DeviceType Device::getType()
 }
 
 /**
- * \ingroup memory_management
+ * @ingroup memory_management
  *
  * Delete all the device pointers inside the vector
  */
@@ -62,7 +62,7 @@ void Device::deleteDevices(std::vector<Device *> devices)
 }
 
 /**
- * \ingroup memory_management
+ * @ingroup memory_management
  *
  * Free any resources associated with the Device.
  *
@@ -73,10 +73,4 @@ void Device::deleteDevices(std::vector<Device *> devices)
  */
 Device::~Device()
 {
-    /*if (deviceID)
-    {
-        delete deviceID;
-    }*/
-
-    deviceName.clear();
 }

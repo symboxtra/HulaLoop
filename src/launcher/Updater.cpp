@@ -23,7 +23,6 @@ Updater::Updater(QObject *parent) : QObject(parent)
 {
     manager = new QNetworkAccessManager(this);
     reply = nullptr;
-    file = nullptr;
 
     updateHostUrl = "";
     downloadHostUrl = "";
@@ -239,23 +238,21 @@ bool Updater::downloadUpdate()
     reply = manager->get(req);
 
     QString fileName = QFileInfo(reply->url().path()).fileName();
-    file = new QFile(QDir::tempPath() + "/" + fileName);
-    file->open(QIODevice::WriteOnly);
+    QFile file(QDir::tempPath() + "/" + fileName);
+    file.open(QIODevice::WriteOnly);
 
-    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [ = ](QNetworkReply::NetworkError code)
+    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [&](QNetworkReply::NetworkError code)
     {
         // throw exception
-        file->close();
-        delete file;
+        file.close();
         reply->deleteLater();
         return false;
     });
 
-    connect(reply, &QNetworkReply::sslErrors, [ = ]
+    connect(reply, &QNetworkReply::sslErrors, [&]
     {
         // throw exception
-        file->close();
-        delete file;
+        file.close();
         reply->deleteLater();
         return false;
     });
@@ -265,17 +262,16 @@ bool Updater::downloadUpdate()
 
         numBytesDownloaded = reply->bytesAvailable();
         emit bytesDownloaded();
-        file->write(reply->readAll());
+        file.write(reply->readAll());
 
     });
 
     connect(reply, &QNetworkReply::finished, [&]
     {
 
-        file->flush();
-        file->close();
+        file.flush();
+        file.close();
 
-        delete file;
         reply->deleteLater();
 
         finishedDownload = true;

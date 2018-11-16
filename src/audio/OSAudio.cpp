@@ -185,10 +185,28 @@ void OSAudio::joinAndKillThreads(std::vector<std::thread> &threads)
  */
 void OSAudio::setActiveOutputDevice(Device *device)
 {
-    this->checkDeviceParams(device);
+    // TODO: Handle error
+    if (device == NULL)
+    {
+        return;
+    }
 
+    // If this isn't a loopback or record device
+    if (!(device->getType() & PLAYBACK))
+    {
+        return;
+    }
 
-    this->activeOutputDevice = device;
+    if (!this->checkDeviceParams(device))
+    {
+        return;
+    }
+
+    if (this->activeOutputDevice)
+    {
+        delete this->activeOutputDevice;
+    }
+    this->activeOutputDevice = new Device(*device);
 }
 
 /**
@@ -202,4 +220,14 @@ OSAudio::~OSAudio()
     this->endCapture.store(true);
     joinAndKillThreads(inThreads);
     joinAndKillThreads(outThreads);
+
+    if (activeInputDevice)
+    {
+        delete activeInputDevice;
+    }
+
+    if (activeOutputDevice)
+    {
+        delete activeOutputDevice;
+    }
 }
