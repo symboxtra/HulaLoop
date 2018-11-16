@@ -4,27 +4,55 @@
 <context>
     <name>ButtonPanel</name>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="324"/>
+        <source>Recording</source>
+        <translation type="obsolete">Grabando</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="100"/>
+        <source>Recording</source>
+        <comment>state</comment>
+        <translation type="unfinished">Grabando</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="145"/>
+        <source>Stopped</source>
+        <comment>state</comment>
+        <translation type="unfinished">Parado</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="194"/>
+        <source>Paused</source>
+        <comment>state</comment>
+        <translation type="unfinished">Pausada</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="210"/>
+        <source>Playing</source>
+        <comment>state</comment>
+        <translation type="unfinished">Sonando</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="325"/>
         <source>Timer:</source>
         <translation>Temporizador:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="364"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="365"/>
         <source>Input Device:</source>
         <translation>Dispositivo de Entrada:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="402"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="411"/>
         <source>Output Device:</source>
         <translation>Dispositivo de Salida</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="466"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="483"/>
         <source>Delay Recording (hh:mm:ss)</source>
         <translation>Retraso antes de grabar (hh:mm:ss)</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="485"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="502"/>
         <source>Record Duration (hh:mm:ss)</source>
         <translatorcomment>Format for hours, minutes, seconds remains unchanged because of the way the response is parsed.</translatorcomment>
         <translation>Duración de la grabación (hh:mm:ss)</translation>
@@ -35,12 +63,12 @@
         <translation type="vanished">Duración de la grabación (hh:mm:ss)</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="517"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="534"/>
         <source>CANCEL</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="537"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="554"/>
         <source>OK</source>
         <translation>Aceptar</translation>
     </message>
@@ -149,13 +177,13 @@
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="102"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="353"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="355"/>
         <source>Translation file successfully loaded.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="106"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="357"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="359"/>
         <source>Could not find translation file for %1.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -258,27 +286,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="319"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="320"/>
         <source>Output device set to: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="377"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="379"/>
         <source>System command returned: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="382"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="384"/>
         <source>No system command processor is available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="392"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="394"/>
         <source>Unrecognized command &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="399"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="401"/>
         <source>Command failed with value of &apos;false&apos;.</source>
         <translation type="unfinished"></translation>
     </message>

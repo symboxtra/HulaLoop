@@ -97,7 +97,7 @@ Rectangle {
 
                     let success = qmlbridge.record()
 
-                    if(success && (qmlbridge.getTransportState() === "Recording"))
+                    if(success && (qmlbridge.getTransportState() === qsTr("Recording", "state")))
                     {
                         // Update stop button
                         stopBtn.enabled = true;
@@ -142,7 +142,7 @@ Rectangle {
                     let success = qmlbridge.stop()
                     console.log("Test: " + success)
 
-                    if(success && (qmlbridge.getTransportState() === "Stopped"))
+                    if(success && (qmlbridge.getTransportState() === qsTr("Stopped", "state")))
                     {
                         enabled = false;
 
@@ -191,7 +191,7 @@ Rectangle {
                     {
                         success = qmlbridge.pause();
 
-                        if(success && (qmlbridge.getTransportState() === "Paused"))
+                        if(success && (qmlbridge.getTransportState() === qsTr("Paused", "state")))
                         {
                             contentItem.text = MDFont.Icon.play;
                             contentItem.color = "green";
@@ -207,7 +207,7 @@ Rectangle {
                     {
                         success = qmlbridge.play();
 
-                        if(success && (qmlbridge.getTransportState() === "Playing"))
+                        if(success && (qmlbridge.getTransportState() === qsTr("Playing", "state")))
                         {
                             contentItem.text = MDFont.Icon.pause;
                             contentItem.color = "white";
