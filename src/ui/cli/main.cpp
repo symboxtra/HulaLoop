@@ -23,13 +23,13 @@ int main(int argc, char **argv)
     // Error message will already have been printed
     if (!success)
     {
-        exit(1);
+        return 1;
     }
 
     // Our work is already done
     if (extraArgs.exit)
     {
-        exit(0);
+        return 0;
     }
 
     fprintf(stdout, "%s", HL_CLI_ASCII_HEADER);

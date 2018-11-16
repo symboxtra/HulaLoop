@@ -418,7 +418,7 @@ TransportState HulaInteractiveCli::getState()
  */
 HulaInteractiveCli::~HulaInteractiveCli()
 {
-    hlDebugf("%sHulaInteractiveCLI destructor called.\n", HL_ERROR_PREFIX);
+    hlDebugf("HulaInteractiveCLI destructor called.\n");
 
     delete this->t;
 }

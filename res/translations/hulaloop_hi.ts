@@ -25,7 +25,7 @@
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="485"/>
-        <source>Recording Time (hh:mm:ss)</source>
+        <source>Record Duration (hh:mm:ss)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -42,102 +42,124 @@
 <context>
     <name>CLI</name>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="54"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="56"/>
         <source>Invalid argument &apos;%1&apos; provided to option &apos;%2&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="71"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="73"/>
         <source>Simple cross-platform audio loopback and recording.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="77"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
         <source>Path to audio output file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="77"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
         <source>output filepath</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="78"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="80"/>
         <source>Duration, in seconds, of the countdown timer before record.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="78"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="80"/>
         <source>delay</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="81"/>
         <source>Duration, in seconds, of the record.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="81"/>
         <source>record duration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="80"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="82"/>
         <source>Start the countdown/record immediately.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="81"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="83"/>
         <source>Desired sample rate of the output file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="81"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="83"/>
         <source>sample rate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="82"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="84"/>
         <source>Encoding format for the output file. Valid options are WAV and MP3. This will default to WAV.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="82"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="84"/>
         <source>encoding</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="83"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="85"/>
         <source>System name of the input device. This will default if not provided.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="83"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="85"/>
         <source>input device name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="84"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="86"/>
         <source>System name of the output device. This will default if not provided.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="84"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="86"/>
         <source>output device name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="85"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="87"/>
         <source>List available input and output devices.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="149"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="88"/>
+        <source>Set the language of the application</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="88"/>
+        <source>target language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="102"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="353"/>
+        <source>Translation file successfully loaded.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="106"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="357"/>
+        <source>Could not find translation file for %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="165"/>
         <source>Only WAV format is supported at this time.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="172"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="188"/>
         <source>Device List</source>
         <translation type="unfinished"></translation>
     </message>
@@ -205,142 +227,147 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="36"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="37"/>
         <source>Warning: Unused argument &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="47"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="48"/>
         <source>Missing argument &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="59"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="60"/>
         <source>Malformed argument &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="60"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="61"/>
         <source>&apos;%1&apos; is not a valid %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="286"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="287"/>
         <source>Input device set to: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="318"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="319"/>
         <source>Output device set to: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="356"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="377"/>
         <source>System command returned: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="361"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="382"/>
         <source>No system command processor is available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="371"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="392"/>
         <source>Unrecognized command &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="378"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="399"/>
         <source>Command failed with value of &apos;false&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="80"/>
+        <location filename="../../src/ui/cli/CLICommands.h" line="84"/>
         <source>Display this help.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="81"/>
+        <location filename="../../src/ui/cli/CLICommands.h" line="85"/>
         <source>Display version information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="82"/>
+        <location filename="../../src/ui/cli/CLICommands.h" line="86"/>
         <source>List all devices.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="83"/>
+        <location filename="../../src/ui/cli/CLICommands.h" line="87"/>
         <source>Print the current configuration.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="84"/>
-        <source>Quit the application.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="88"/>
-        <source>Start recording.</source>
+        <source>Switch the application language.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="89"/>
-        <source>Stop playback or recording.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="90"/>
-        <source>Playback captured audio.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="91"/>
-        <source>Pause playback or recording.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="92"/>
-        <source>Export captured audio to the specified file.</source>
+        <source>Quit the application.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="93"/>
-        <source>Discard the current recording.</source>
+        <source>Start recording.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="94"/>
+        <source>Stop playback or recording.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="95"/>
+        <source>Playback captured audio.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="96"/>
+        <source>Pause playback or recording.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="97"/>
+        <source>Export captured audio to the specified file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="98"/>
+        <source>Discard the current recording.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="102"/>
         <source>Set the input device.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="99"/>
+        <location filename="../../src/ui/cli/CLICommands.h" line="104"/>
         <source>Set the output device.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="103"/>
+        <location filename="../../src/ui/cli/CLICommands.h" line="108"/>
         <source>Set the delay, in seconds, of the countdown timer before record.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="104"/>
+        <location filename="../../src/ui/cli/CLICommands.h" line="109"/>
         <source>The timer will be overridden by an argument to the record command.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="107"/>
+        <location filename="../../src/ui/cli/CLICommands.h" line="112"/>
         <source>Set the duration, in seconds, of the record.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="108"/>
+        <location filename="../../src/ui/cli/CLICommands.h" line="113"/>
         <source>The timer will be orverriden by an argument to the record command.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="111"/>
+        <location filename="../../src/ui/cli/CLICommands.h" line="116"/>
         <source>Run a system command from within HulaLoop.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -350,26 +377,31 @@
     <message>
         <location filename="../../src/control/Transport.cpp" line="156"/>
         <source>Recording</source>
+        <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/control/Transport.cpp" line="158"/>
         <source>Stopped</source>
+        <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/control/Transport.cpp" line="160"/>
         <source>Playing</source>
+        <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/control/Transport.cpp" line="162"/>
         <source>Paused</source>
+        <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/control/Transport.cpp" line="164"/>
         <source>Unknown</source>
+        <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -402,7 +434,7 @@
     </message>
     <message>
         <location filename="../../src/ui/gui/SystemTrayIcon.cpp" line="34"/>
-        <source>Quit HulaLoop</source>
+        <source>Quit</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

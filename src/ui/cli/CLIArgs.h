@@ -76,16 +76,16 @@ bool parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
     parser.addVersionOption();
 
     parser.addOptions({
-        {{CLI::tr(HL_OUT_FILE_SO), CLI::tr(HL_OUT_FILE_LO)}, CLI::tr("Path to audio output file."), CLI::tr("output filepath")},
-        {{CLI::tr(HL_DELAY_TIME_SO), CLI::tr(HL_DELAY_TIME_LO)}, CLI::tr("Duration, in seconds, of the countdown timer before record."), CLI::tr("delay")},
-        {{CLI::tr(HL_RECORD_TIME_SO), CLI::tr(HL_RECORD_TIME_LO)}, CLI::tr("Duration, in seconds, of the record."), CLI::tr("record duration")},
-        {{CLI::tr(HL_TRIGGER_RECORD_SO), CLI::tr(HL_TRIGGER_RECORD_LO)}, CLI::tr("Start the countdown/record immediately.")},
-        {{CLI::tr(HL_SAMPLE_RATE_SO), CLI::tr(HL_SAMPLE_RATE_LO)}, CLI::tr("Desired sample rate of the output file."), CLI::tr("sample rate")},
-        {{CLI::tr(HL_ENCODING_SO), CLI::tr(HL_ENCODING_LO)}, CLI::tr("Encoding format for the output file. Valid options are WAV and MP3. This will default to WAV."), CLI::tr("encoding")},
-        {{CLI::tr(HL_INPUT_DEVICE_SO), CLI::tr(HL_INPUT_DEVICE_LO)}, CLI::tr("System name of the input device. This will default if not provided."), CLI::tr("input device name")},
-        {{CLI::tr(HL_OUTPUT_DEVICE_SO), CLI::tr(HL_OUTPUT_DEVICE_LO)}, CLI::tr("System name of the output device. This will default if not provided."), CLI::tr("output device name")},
-        {{CLI::tr(HL_LIST_DEVICES_SO), CLI::tr(HL_LIST_DEVICES_LO)}, CLI::tr("List available input and output devices.")},
-        {{CLI::tr(HL_LANG_SO), CLI::tr(HL_LANG_LO)}, CLI::tr("Set the language of the application"), CLI::tr("target language")}
+        {{HL_OUT_FILE_SO, HL_OUT_FILE_LO}, CLI::tr("Path to audio output file."), CLI::tr("output filepath")},
+        {{HL_DELAY_TIME_SO, HL_DELAY_TIME_LO}, CLI::tr("Duration, in seconds, of the countdown timer before record."), CLI::tr("delay")},
+        {{HL_RECORD_TIME_SO, HL_RECORD_TIME_LO}, CLI::tr("Duration, in seconds, of the record."), CLI::tr("record duration")},
+        {{HL_TRIGGER_RECORD_SO, HL_TRIGGER_RECORD_LO}, CLI::tr("Start the countdown/record immediately.")},
+        {{HL_SAMPLE_RATE_SO, HL_SAMPLE_RATE_LO}, CLI::tr("Desired sample rate of the output file."), CLI::tr("sample rate")},
+        {{HL_ENCODING_SO, HL_ENCODING_LO}, CLI::tr("Encoding format for the output file. Valid options are WAV and MP3. This will default to WAV."), CLI::tr("encoding")},
+        {{HL_INPUT_DEVICE_SO, HL_INPUT_DEVICE_LO}, CLI::tr("System name of the input device. This will default if not provided."), CLI::tr("input device name")},
+        {{HL_OUTPUT_DEVICE_SO, HL_OUTPUT_DEVICE_LO}, CLI::tr("System name of the output device. This will default if not provided."), CLI::tr("output device name")},
+        {{HL_LIST_DEVICES_SO, HL_LIST_DEVICES_LO}, CLI::tr("List available input and output devices.")},
+        {{HL_LANG_SO, HL_LANG_LO}, CLI::tr("Set the language of the application"), CLI::tr("target language")}
     });
 
     // This will exit if any of the args are incorrect
