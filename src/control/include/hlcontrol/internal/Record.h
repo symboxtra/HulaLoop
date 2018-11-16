@@ -8,10 +8,10 @@ namespace hula
     class Record {
 
         private:
-            Controller* controller;
+            Controller *controller;
 
         public:
-            Record(Controller* control);
+            Record(Controller *control);
             ~Record();
 
             void start();

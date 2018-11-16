@@ -23,7 +23,7 @@ class TestCLIArgs {
         QCoreApplication *app;
         HulaImmediateArgs extraArgs;
         int argc = 0;
-        char ** argv = NULL;
+        char **argv = NULL;
 
         TestCLIArgs(const std::vector<std::string> &args)
         {
@@ -50,7 +50,7 @@ class TestCLIArgs {
 
             // Create new char array
             argc = args.size() + DEFAULT_ARGS;
-            argv = new char*[argc + 1];
+            argv = new char *[argc + 1];
             argv[argc] = NULL; // NULL terminator
 
             // Insert any default arguments
@@ -73,7 +73,9 @@ class TestCLIArgs {
                 free(argv[i]);
             }
             if (argv != NULL)
+            {
                 delete [] argv;
+            }
 
             argc = 0;
             argv = NULL;

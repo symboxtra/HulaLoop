@@ -25,7 +25,7 @@ namespace hula
             HulaSettings();
 
         public:
-            static HulaSettings * getInstance();
+            static HulaSettings *getInstance();
 
             QTranslator * getTranslator();
             bool loadLanguage(QCoreApplication *app, const std::string &id);

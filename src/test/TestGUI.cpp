@@ -100,7 +100,7 @@ class TestGUI : public ::testing::Test {
 
         bool isButtonPlay()
         {
-            QObject* obj = engine->rootObjects()[0]->findChild<QObject *>("play_icon");
+            QObject *obj = engine->rootObjects()[0]->findChild<QObject *>("play_icon");
 
             if (obj)
             {
@@ -166,12 +166,12 @@ TEST_F(TestGUI, timers)
     startTimers();
 
     //Set initial timer to 3000 ms to account for startup time
-    QTimer::singleShot(3000, [=]
+    QTimer::singleShot(3000, [ = ]
     {
         ASSERT_TRUE(getTransportState() == "Recording");
     });
 
-    QTimer::singleShot(4000, [=]
+    QTimer::singleShot(4000, [ = ]
     {
         ASSERT_TRUE(getTransportState() == "Stopped");
     });

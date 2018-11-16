@@ -36,7 +36,7 @@ bool verifySamples(SAMPLE *samples, int numSamples)
  *
  * @return Array of TEST_NUM_SAMPLES samples.
  */
-SAMPLE * createTestSamples()
+SAMPLE *createTestSamples()
 {
     // This needs to change when we un-define SAMPLE
     // Assume 32-bit float is biggest sample

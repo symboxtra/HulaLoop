@@ -10,7 +10,8 @@ namespace hula
      *
      * Temporarily defined here until the Encoder class is built.
      */
-    enum Encoding {
+    enum Encoding
+    {
         WAV, MP3
     };
 
@@ -43,7 +44,7 @@ namespace hula
             HulaAudioSettings();
 
         public:
-            static HulaAudioSettings * getInstance();
+            static HulaAudioSettings *getInstance();
 
             /**
              * Getters

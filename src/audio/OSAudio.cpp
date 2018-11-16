@@ -94,17 +94,23 @@ void OSAudio::copyToBuffers(const void *data, uint32_t bytes)
 */
 void OSAudio::backgroundCapture(OSAudio *_this)
 {
-    if(_this->rbs.size() == 0)
+    if (_this->rbs.size() == 0)
+    {
         return;
+    }
 
     if (_this->activeInputDevice == NULL)
     {
-        std::vector<Device*> devices = _this->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
-        if(devices.empty())
+        std::vector<Device *> devices = _this->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
+        if (devices.empty())
+        {
             return;
+        }
 
-        if(_this->activeInputDevice)
+        if (_this->activeInputDevice)
+        {
             delete _this->activeInputDevice;
+        }
         _this->activeInputDevice = new Device(*devices[0]);
         Device::deleteDevices(devices);
     }
@@ -134,10 +140,15 @@ void OSAudio::setActiveInputDevice(Device *device)
         return;
     }
 
-    this->checkRates(device);
+    if(!this->checkDeviceParams(device))
+    {
+        return;
+    }
 
-    if(this->activeInputDevice)
+    if (this->activeInputDevice)
+    {
         delete this->activeInputDevice;
+    }
     this->activeInputDevice = new Device(*device);
 
     // Signal death and wait for all threads to catch the signal
@@ -174,10 +185,28 @@ void OSAudio::joinAndKillThreads(std::vector<std::thread> &threads)
  */
 void OSAudio::setActiveOutputDevice(Device *device)
 {
-    this->checkRates(device);
+    // TODO: Handle error
+    if (device == NULL)
+    {
+        return;
+    }
 
+    // If this isn't a loopback or record device
+    if (!(device->getType() & PLAYBACK))
+    {
+        return;
+    }
 
-    this->activeOutputDevice = device;
+    if (!this->checkDeviceParams(device))
+    {
+        return;
+    }
+
+    if (this->activeOutputDevice)
+    {
+        delete this->activeOutputDevice;
+    }
+    this->activeOutputDevice = new Device(*device);
 }
 
 /**
@@ -191,4 +220,14 @@ OSAudio::~OSAudio()
     this->endCapture.store(true);
     joinAndKillThreads(inThreads);
     joinAndKillThreads(outThreads);
+
+    if (activeInputDevice)
+    {
+        delete activeInputDevice;
+    }
+
+    if (activeOutputDevice)
+    {
+        delete activeOutputDevice;
+    }
 }

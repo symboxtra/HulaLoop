@@ -288,6 +288,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
 
             // TODO: Settings shouldn't really store this
             settings->setDefaultInputDeviceName(device->getName());
+            delete device;
         }
         else
         {
@@ -320,6 +321,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
 
             // TODO: Settings shouldn't really store this
             settings->setDefaultOutputDeviceName(device->getName());
+            delete device;
         }
         else
         {

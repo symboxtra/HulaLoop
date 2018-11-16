@@ -97,7 +97,7 @@ Rectangle {
 
                     let success = qmlbridge.record()
 
-                    if(qmlbridge.getTransportState() === "Recording") // TODO: Check record call success
+                    if(success && (qmlbridge.getTransportState() === "Recording"))
                     {
                         // Update stop button
                         stopBtn.enabled = true;
@@ -140,8 +140,9 @@ Rectangle {
 
                 onClicked: {
                     let success = qmlbridge.stop()
+                    console.log("Test: " + success)
 
-                    if(qmlbridge.getTransportState() === "Stopped")
+                    if(success && (qmlbridge.getTransportState() === "Stopped"))
                     {
                         enabled = false;
 
@@ -190,7 +191,7 @@ Rectangle {
                     {
                         success = qmlbridge.pause();
 
-                        if(qmlbridge.getTransportState() === "Paused")
+                        if(success && (qmlbridge.getTransportState() === "Paused"))
                         {
                             contentItem.text = MDFont.Icon.play;
                             contentItem.color = "green";
@@ -206,12 +207,12 @@ Rectangle {
                     {
                         success = qmlbridge.play();
 
-                        if(qmlbridge.getTransportState() === "Playing")
+                        if(success && (qmlbridge.getTransportState() === "Playing"))
                         {
                             contentItem.text = MDFont.Icon.pause;
                             contentItem.color = "white";
 
-                            stopBtn.enabled = false; // TODO: Determine final state of playback button
+                            stopBtn.enabled = false;
                             recordBtn.enabled = false;
                         }
                     }
@@ -384,6 +385,11 @@ Rectangle {
                 }
 
                 onPressedChanged: {
+
+                    let selectedInd = 0;
+                    if(currentIndex != -1)
+                        selectedInd = currentIndex;
+
                     model.clear();
                     var idevices = qmlbridge.getInputDevices().split(',')
                         var i
@@ -392,6 +398,9 @@ Rectangle {
                                        "text": idevices[i]
                                    })
                         }
+
+                    // Keep the previously selected device active
+                    currentIndex = selectedInd
                 }
                 currentIndex: 0
             }
@@ -422,6 +431,11 @@ Rectangle {
                 }
 
                 onPressedChanged: {
+
+                    let selectedInd = 0;
+                    if(currentIndex != -1)
+                        selectedInd = currentIndex;
+
                     model.clear();
                     var odevices = qmlbridge.getOutputDevices().split(',')
                         var i
@@ -430,6 +444,9 @@ Rectangle {
                                        "text": odevices[i]
                                    })
                         }
+
+                    // Keep the previously selected device active
+                    currentIndex = selectedInd
                 }
                 currentIndex: 0
             }

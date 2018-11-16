@@ -29,10 +29,10 @@ namespace hula
             Q_INVOKABLE QString getOutputDevices();
 
             Q_INVOKABLE QString getTransportState() const;
-            Q_INVOKABLE void record();
-            Q_INVOKABLE void stop();
-            Q_INVOKABLE void play();
-            Q_INVOKABLE void pause();
+            Q_INVOKABLE bool record();
+            Q_INVOKABLE bool stop();
+            Q_INVOKABLE bool play();
+            Q_INVOKABLE bool pause();
 
             Q_INVOKABLE void saveFile(QString dir);
 
