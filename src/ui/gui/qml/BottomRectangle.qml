@@ -12,7 +12,7 @@ Rectangle {
     color: "white"
     anchors.bottom: parent.bottom
 
-    Text {
+    Label {
         id: textCountdown
         objectName: "textCountdown"
 
@@ -22,11 +22,12 @@ Rectangle {
     }
 
 
-    Text {
+    Label {
         id: transportState
         objectName: "transportState"
-        text: "State: " + qmlbridge.getTransportState()
-        anchors.right: parent.right
         font.pixelSize: Math.ceil(parent.width * 0.02)
+        color: "black"
+        text: window.currentState
+        anchors.right: parent.right
     }
 }

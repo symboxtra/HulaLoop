@@ -22,14 +22,14 @@ Rectangle {
         running: false
         repeat: true
         onTriggered: {
-            if (textCountdown.time == 0) {
-                textCountdown.text = 0
+            if (timeFuncs.time === 0) {
+                window.textDisplayed = "Elapsed: 0"
                 countDownTimer.stop()
                 qmlbridge.record()
                 recordingTimer.start()
             } else {
-                textCountdown.text = textCountdown.time
-                textCountdown.time--
+                window.textDisplayed = "Countdown: " + timeFuncs.time
+                timeFuncs.time--
             }
         }
     }
@@ -43,14 +43,35 @@ Rectangle {
         repeat: true
         onTriggered: {
             // Since the timer starts at 0, go to endTime - 1
-            if (textCountdown.time >= textCountdown.time2 - 1) {
-                textCountdown.text = textCountdown.time + 1
+            if (timeFuncs.time >= timeFuncs.time2 - 1) {
+                window.textDisplayed = "Elapsed: " + timeFuncs.time + 1
                 qmlbridge.stop()
                 recordingTimer.stop()
             } else {
-                textCountdown.text = textCountdown.time + 1
-                textCountdown.time++
+                window.textDisplayed = "Elapsed: " + (++timeFuncs.time)
             }
+        }
+    }
+
+    Item {
+        id: timeFuncs
+        property int time: getTime()
+        property int time2: getTime2()
+        function getTime() {
+            var d = delayInput.text
+            var h = parseInt(d.substring(0, 2))
+            var m = parseInt(d.substring(3, 5))
+            var s = parseInt(d.substring(6, 8))
+            var timeRem = h * 60 * 60 + m * 60 + s
+            return timeRem
+        }
+        function getTime2() {
+            var d = recordTimeInput.text
+            var h = parseInt(d.substring(0, 2))
+            var m = parseInt(d.substring(3, 5))
+            var s = parseInt(d.substring(6, 8))
+            var timeRem = h * 60 * 60 + m * 60 + s
+            return timeRem
         }
     }
 

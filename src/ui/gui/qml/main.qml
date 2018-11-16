@@ -19,7 +19,8 @@ ApplicationWindow {
 
     Material.theme: Material.Grey
     Material.accent: Material.Orange
-    property string textDisplayed: "Elapsed time: 0"
+    property string textDisplayed: "Elapsed: 0"
+    property string currentState: "Unknown"
 
     // SystemTrayIcon {
     //     id: systray
@@ -42,7 +43,7 @@ ApplicationWindow {
             // if(qmlbridge.getTransportState() === "Recording")
             //     systray.showMessage("HulaLoop Information", "HulaLoop has started recording audio!")
             // systray.tooltip = qsTr("HulaLoop - " + qmlbridge.getTransportState())
-            transportState.text = qmlbridge.getTransportState()
+            currentState = qmlbridge.getTransportState()
         }
     }
 
