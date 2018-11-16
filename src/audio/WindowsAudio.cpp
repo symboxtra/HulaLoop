@@ -287,6 +287,8 @@ Exit:
  */
 bool WindowsAudio::checkDeviceParams(Device *activeDevice)
 {
+    return true; // TODO: Remove this and add PortAudio checks and change deviceID code
+    
     HRESULT status;
     IMMDevice* device = NULL;
     PROPVARIANT prop;
