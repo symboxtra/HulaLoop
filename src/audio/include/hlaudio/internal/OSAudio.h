@@ -101,7 +101,7 @@ namespace hula
             /**
              * Verify the bit rate of set rate with the hardware device compatibility
              */
-            virtual bool checkRates(Device *device) = 0;
+            virtual bool checkDeviceParams(Device *device) = 0;
 
             void setActiveInputDevice(Device *device);
             void setActiveOutputDevice(Device *device);

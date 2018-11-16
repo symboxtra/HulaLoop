@@ -22,7 +22,7 @@ namespace hula
             virtual ~OSXAudio();
 
             void capture();
-            bool checkRates(Device *device);
+            bool checkDeviceParams(Device *device);
 
             std::vector<Device *> getDevices(DeviceType type);
 

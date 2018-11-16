@@ -5,6 +5,7 @@
 #include <Audioclient.h>
 #include <comdef.h>
 #include <endpointvolume.h>
+#include <initguid.h>
 #include <mmdeviceapi.h>
 #include <windows.h>
 
@@ -66,7 +67,7 @@ namespace hula
             WindowsAudio();
             ~WindowsAudio();
 
-            bool checkRates(Device *device);
+            bool checkDeviceParams(Device *device);
             std::vector<Device *> getDevices(DeviceType type);
 
             void capture();
