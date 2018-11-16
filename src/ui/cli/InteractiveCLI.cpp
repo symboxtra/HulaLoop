@@ -16,8 +16,9 @@ using namespace hula;
  *
  * This will not start the command loop.
  */
-HulaInteractiveCli::HulaInteractiveCli()
+HulaInteractiveCli::HulaInteractiveCli(QCoreApplication *app)
 {
+    this->app = app;
     this->t = new Transport();
     this->settings = HulaSettings::getInstance();
 }
@@ -337,6 +338,26 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
     {
         printInteractiveHelp();
     }
+    else if (command == HL_LANG_SHORT || command == HL_LANG_LONG)
+    {
+        if (args.size() < 1)
+        {
+            missingArg(HL_LANG_ARG1);
+            return HulaCliStatus::HULA_CLI_FAILURE;
+        }
+
+        success = settings->loadLanguage(this->app, args[0]);
+
+        if (success)
+        {
+            printf("%s\n", qPrintable(tr("Translation file successfully loaded.")));
+        }
+        else
+        {
+            fprintf(stderr, "%s\n", qPrintable(tr("Could not find translation file for %1.").arg(args[0].c_str())));
+            return HulaCliStatus::HULA_CLI_FAILURE;
+        }
+    }
     else if (command == HL_SYSTEM_SHORT || command == HL_SYSTEM_LONG)
     {
         // Make sure there is a command processor available
@@ -397,7 +418,7 @@ TransportState HulaInteractiveCli::getState()
  */
 HulaInteractiveCli::~HulaInteractiveCli()
 {
-    hlDebugf("%sHulaInteractiveCli destructor called.\n", HL_ERROR_PREFIX);
+    hlDebugf("%sHulaInteractiveCLI destructor called.\n", HL_ERROR_PREFIX);
 
     delete this->t;
 }

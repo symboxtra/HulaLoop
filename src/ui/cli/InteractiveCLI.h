@@ -26,11 +26,12 @@ namespace hula
         Q_DECLARE_TR_FUNCTIONS(CLI)
 
         private:
+            QCoreApplication *app;
             Transport *t;
             HulaSettings *settings;
 
         public:
-            HulaInteractiveCli();
+            HulaInteractiveCli(QCoreApplication *app);
 
             void unusedArgs(const std::vector<std::string> &args, int numUsed) const;
             void missingArg(const std::string &argName) const;

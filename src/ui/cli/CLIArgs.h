@@ -34,6 +34,8 @@ using namespace hula;
 #define HL_OUTPUT_DEVICE_LO   "output-device"
 #define HL_LIST_DEVICES_SO    "l"
 #define HL_LIST_DEVICES_LO    "list"
+#define HL_LANG_SO            "g"
+#define HL_LANG_LO            "lang"
 
 /**
  * Args parsed from CLI flags.
@@ -82,7 +84,8 @@ bool parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
         {{CLI::tr(HL_ENCODING_SO), CLI::tr(HL_ENCODING_LO)}, CLI::tr("Encoding format for the output file. Valid options are WAV and MP3. This will default to WAV."), CLI::tr("encoding")},
         {{CLI::tr(HL_INPUT_DEVICE_SO), CLI::tr(HL_INPUT_DEVICE_LO)}, CLI::tr("System name of the input device. This will default if not provided."), CLI::tr("input device name")},
         {{CLI::tr(HL_OUTPUT_DEVICE_SO), CLI::tr(HL_OUTPUT_DEVICE_LO)}, CLI::tr("System name of the output device. This will default if not provided."), CLI::tr("output device name")},
-        {{CLI::tr(HL_LIST_DEVICES_SO), CLI::tr(HL_LIST_DEVICES_LO)}, CLI::tr("List available input and output devices.")}
+        {{CLI::tr(HL_LIST_DEVICES_SO), CLI::tr(HL_LIST_DEVICES_LO)}, CLI::tr("List available input and output devices.")},
+        {{CLI::tr(HL_LANG_SO), CLI::tr(HL_LANG_LO)}, CLI::tr("Set the language of the application"), CLI::tr("target language")}
     });
 
     // This will exit if any of the args are incorrect
@@ -90,6 +93,19 @@ bool parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
 
     // Setup the settings module
     HulaSettings *settings = HulaSettings::getInstance();
+
+    if (parser.isSet(HL_LANG_LO))
+    {
+        bool success = settings->loadLanguage(&app, parser.value(HL_LANG_LO).toStdString());
+        if (success)
+        {
+            printf("%s\n", qPrintable(CLI::tr("Translation file successfully loaded.")));
+        }
+        else
+        {
+            fprintf(stderr, "%s\n", qPrintable(CLI::tr("Could not find translation file for %1.").arg(parser.value(HL_LANG_LO))));
+        }
+    }
 
     if (parser.isSet(HL_OUT_FILE_LO))
     {

@@ -482,7 +482,7 @@ Rectangle {
                 Label {
                     font.family: "Roboto"
                     font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                    text: qsTr("Recording Time (hh:mm:ss)")
+                    text: qsTr("Record Duration (hh:mm:ss)")
                     color: "white"
 
                     horizontalAlignment: Text.AlignHCenter

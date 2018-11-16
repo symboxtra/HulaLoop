@@ -61,6 +61,10 @@
 #define HL_HELP_SHORT    "h"
 #define HL_HELP_LONG     "help"
 
+#define HL_LANG_SHORT     "lang"
+#define HL_LANG_LONG      "language"
+#define HL_LANG_ARG1      "target language"
+
 #define HL_SYSTEM_SHORT   "sys"
 #define HL_SYSTEM_LONG    "system"
 
@@ -81,7 +85,8 @@ inline void printInteractiveHelp()
     cout << C1 << HL_VERSION_SHORT  ", " << C2 << HL_VERSION_LONG << qPrintable(CLI::tr("Display version information.")) << endl;
     cout << C1 << HL_LIST_SHORT     ", " << C2 << HL_LIST_LONG    << qPrintable(CLI::tr("List all devices.")) << endl;
     cout << C1 << HL_PRINT_SHORT    ", " << C2 << HL_PRINT_LONG   << qPrintable(CLI::tr("Print the current configuration.")) << endl;
-    cout << C1 << HL_EXIT_LONG << C2 << " " << qPrintable(CLI::tr("Quit the application.")) << endl;
+    cout << C1 << HL_LANG_SHORT << C2 << "<" HL_LANG_ARG1 "> "    << qPrintable(CLI::tr("Switch the application language.")) << endl;
+    cout << C1 << HL_EXIT_LONG  << C2 << " " << qPrintable(CLI::tr("Quit the application.")) << endl;
     cout << endl;
 
     cout << C1 << HL_RECORD_SHORT  ", " << C2 << HL_RECORD_LONG " [" HL_RECORD_ARG1 "] [" HL_RECORD_ARG2 "]";

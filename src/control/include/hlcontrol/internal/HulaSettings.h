@@ -1,6 +1,7 @@
 #ifndef HL_SETTINGS_H
 #define HL_SETTINGS_H
 
+#include <QCoreApplication>
 #include <QTranslator>
 
 #include <hlaudio/internal/HulaAudioSettings.h>
@@ -27,6 +28,7 @@ namespace hula
             static HulaSettings * getInstance();
 
             QTranslator * getTranslator();
+            bool loadLanguage(QCoreApplication *app, const std::string &id);
 
             ~HulaSettings();
 

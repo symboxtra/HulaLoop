@@ -9,7 +9,9 @@
 using namespace hula;
 
 // Single instance since Transport has to be created
-HulaInteractiveCli cli;
+int num = 0;
+QCoreApplication app(num, NULL);
+HulaInteractiveCli cli(&app);
 
 #define OPT_TEST(name, ...)                            \
     std::vector<std::string> args{__VA_ARGS__};        \

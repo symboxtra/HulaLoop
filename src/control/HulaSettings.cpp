@@ -1,6 +1,7 @@
 #include <QLocale>
 #include <QTranslator>
 
+#include "hlcontrol/internal/HulaControlError.h"
 #include "hlcontrol/internal/HulaSettings.h"
 
 using namespace hula;
@@ -44,6 +45,40 @@ HulaSettings * HulaSettings::getInstance()
 QTranslator * HulaSettings::getTranslator()
 {
     return trans;
+}
+
+/**
+ * Remove and delete the current translator, replacing it with
+ * a new translator of the specified language.
+ *
+ * @ref id should be formated as @code lang_country @endcode
+ *
+ * @param app Reference to the targeted application.
+ * @param id Language code and country code of targeted file.
+ */
+bool HulaSettings::loadLanguage(QCoreApplication *app, const std::string &id)
+{
+    QTranslator *trans = new QTranslator();
+    bool success = trans->load(("hulaloop_" + id).c_str());
+
+    if (success)
+    {
+        if (this->trans)
+        {
+            app->removeTranslator(this->trans);
+            delete this->trans;
+        }
+
+        this->trans = trans;
+        app->installTranslator(trans);
+    }
+    else
+    {
+        delete trans;
+        hlDebug() << "Could not find translation file hulaloop_" << id << "." << std::endl;
+    }
+
+    return success;
 }
 
 /**

@@ -17,8 +17,6 @@ int main(int argc, char **argv)
     HulaSettings *settings = HulaSettings::getInstance();
     QTranslator *trans = settings->getTranslator();
 
-    app.installTranslator(trans);
-
     HulaImmediateArgs extraArgs;
     bool success = parseArgsQt(app, extraArgs);
 
@@ -41,7 +39,7 @@ int main(int argc, char **argv)
 
     if (!extraArgs.startRecord)
     {
-        HulaInteractiveCli cli;
+        HulaInteractiveCli cli(&app);
         cli.start();
     }
     else
