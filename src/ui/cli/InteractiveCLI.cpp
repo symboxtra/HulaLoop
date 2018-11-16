@@ -335,7 +335,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
     }
     else if (command == HL_HELP_SHORT || command == HL_HELP_LONG)
     {
-        printf(HL_HELP_TEXT);
+        printInteractiveHelp();
     }
     else if (command == HL_SYSTEM_SHORT || command == HL_SYSTEM_LONG)
     {

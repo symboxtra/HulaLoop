@@ -142,65 +142,65 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="59"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="61"/>
         <source>Device #%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="60"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="62"/>
         <source>Record</source>
         <comment>device capability</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="61"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="63"/>
         <source>Loopback</source>
         <comment>device capability</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="62"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="64"/>
         <source>Output</source>
         <comment>device capability</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="122"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="124"/>
         <source>Could not find input device matching: %1</source>
         <extracomment>The argument in this text is the name or id of the device that the user searched for</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="137"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="139"/>
         <source>Output file</source>
         <comment>setting</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="138"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="140"/>
         <source>Delay</source>
         <comment>seconds</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="139"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="141"/>
         <source>Duration</source>
         <comment>seconds</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="140"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="142"/>
         <source>Sample rate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="140"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="142"/>
         <source>Hz</source>
         <comment>unit</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="141"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="143"/>
         <source>Encoding</source>
         <translation type="unfinished"></translation>
     </message>
@@ -252,6 +252,96 @@
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="378"/>
         <source>Command failed with value of &apos;false&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="80"/>
+        <source>Display this help.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="81"/>
+        <source>Display version information.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="82"/>
+        <source>List all devices.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="83"/>
+        <source>Print the current configuration.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="84"/>
+        <source>Quit the application.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="88"/>
+        <source>Start recording.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="89"/>
+        <source>Stop playback or recording.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="90"/>
+        <source>Playback captured audio.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="91"/>
+        <source>Pause playback or recording.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="92"/>
+        <source>Export captured audio to the specified file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="93"/>
+        <source>Discard the current recording.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="97"/>
+        <source>Set the input device.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="99"/>
+        <source>Set the output device.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="103"/>
+        <source>Set the delay, in seconds, of the countdown timer before record.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="104"/>
+        <source>The timer will be overridden by an argument to the record command.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="107"/>
+        <source>Set the duration, in seconds, of the record.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="108"/>
+        <source>The timer will be orverriden by an argument to the record command.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="111"/>
+        <source>Run a system command from within HulaLoop.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

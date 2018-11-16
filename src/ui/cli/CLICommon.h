@@ -7,6 +7,8 @@
 #include <hlaudio/hlaudio.h>
 #include <hlcontrol/hlcontrol.h>
 
+#include <QCoreApplication>
+
 #include <HulaVersion.h>
 
 using namespace hula;
