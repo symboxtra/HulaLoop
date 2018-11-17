@@ -24,3 +24,7 @@ find_path (LIBSNDFILE_INCLUDE
         HINTS ${LIBSND_INCLUDE_PATH})
 
 MESSAGE (STATUS ${LIBSNDFILE_LIB})
+
+# Fail CMake based on passed find_package arguments (if SndFile is not found)
+find_package (PackageHandleStandardArgs)
+find_package_handle_standard_args (SndFile DEFAULT_MSG LIBSNDFILE_LIB LIBSNDFILE_INCLUDE)
