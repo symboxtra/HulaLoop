@@ -11,7 +11,7 @@ Rectangle {
     id: visualize
     width: window.width
     height: parent.height - btnPanel.height - bottomRectangle.height
-    color: "black"
+    color: "#080808"
     anchors.top: btnPanel.bottom
 
     Row {

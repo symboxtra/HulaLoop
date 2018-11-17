@@ -4,6 +4,7 @@ import QtQuick.Dialogs 1.0
 import QtQuick.Controls 2.3
 import QtQuick.Window 2.0
 import Qt.labs.platform 1.0
+import QtGraphicalEffects 1.0
 import "../fonts/Icon.js" as MDFont
 
 Rectangle {
@@ -12,7 +13,7 @@ Rectangle {
 
     width: parent.width
     height: 115
-    color: "#E65100"
+    color: window.barColor
 
     Timer {
         id: countDownTimer
@@ -96,7 +97,7 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
                 background: Rectangle {
-                    opacity: enabled ? 1 : 0.4
+//                    opacity: enabled ? 1 : 0.4
                     color: recordBtn.pressed ? "grey" : "darkgrey"
 //                    color: {
 //                        if(recordBtn.enabled){
@@ -299,6 +300,56 @@ Rectangle {
                 }
 
                 onClicked:saveDialog.open()
+            }
+
+            DropShadow {
+                visible: recordBtn.enabled ? true : false
+                color: "#606060"
+                anchors.fill: recordBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: recordBtn
+            }
+
+            DropShadow {
+                visible: stopBtn.enabled ? true : false
+                color: "#606060"
+                anchors.fill: stopBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: stopBtn
+            }
+
+            DropShadow {
+                visible: playpauseBtn.enabled ? true : false
+                color: "#606060"
+                anchors.fill: playpauseBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: playpauseBtn
+            }
+
+            DropShadow {
+                visible: timerBtn.enabled ? true : false
+                color: "#606060"
+                anchors.fill: timerBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: timerBtn
+            }
+
+            DropShadow {
+                visible: exportBtn.enabled ? true : false
+                color: "#606060"
+                anchors.fill: exportBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: exportBtn
             }
 
         }

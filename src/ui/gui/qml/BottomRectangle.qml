@@ -9,7 +9,7 @@ Rectangle {
     id: bottomRect
     width: parent.width
     height: 20
-    color: "white"
+    color: window.barColor
     anchors.bottom: parent.bottom
 
     RowLayout{

@@ -21,6 +21,7 @@ ApplicationWindow {
     Material.accent: Material.Orange
     property string textDisplayed: "Elapsed: 0"
     property string currentState: "Unknown"
+    property string barColor: "#888888"
 
     // SystemTrayIcon {
     //     id: systray
