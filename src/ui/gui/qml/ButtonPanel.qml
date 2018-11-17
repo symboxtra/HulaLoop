@@ -12,7 +12,7 @@ Rectangle {
 
     width: parent.width
     height: 115
-    color: "#D44500"
+    color: "#E65100"
 
     Timer {
         id: countDownTimer
@@ -96,8 +96,18 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
                 background: Rectangle {
-                    opacity: enabled ? 1 : 0.15
+                    opacity: enabled ? 1 : 0.4
                     color: recordBtn.pressed ? "grey" : "darkgrey"
+//                    color: {
+//                        if(recordBtn.enabled){
+//                            console.log("ENABLED");
+//                            return "darkgrey"
+//                        }
+//                        else{
+//                            console.log("DISABLED");
+//                            return "black"
+//                        }
+//                    }
                     radius: recordBtn.width / 2
                 }
 

@@ -11,7 +11,7 @@ Rectangle {
     id: visualize
     width: window.width
     height: parent.height - btnPanel.height - bottomRectangle.height
-    color: "lightsteelblue"
+    color: "black"
     anchors.top: btnPanel.bottom
 
     Row {
@@ -40,7 +40,7 @@ Rectangle {
         Repeater{
             id:rectgen
             model: Math.round(visualize.width / 10)
-            Rectangle { id: testrec; color: "grey"; width: 10; border.width: 1; border.color: "black"; transform: Rotation { origin.x: 25; origin.y: 25; angle: 180} }
+            Rectangle { id: testrec; color: "#005B9A"; width: 10; border.width: 1; border.color: "#003366"; transform: Rotation { origin.x: 25; origin.y: 25; angle: 180} }
         }
 
     }
