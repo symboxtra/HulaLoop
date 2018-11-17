@@ -3,11 +3,8 @@
 #include <QCoreApplication>
 #include <QProcess>
 #include <QUrl>
-<<<<<<< HEAD
 #include <QDir>
-=======
 
->>>>>>> master
 #include <string>
 
 using namespace hula;
@@ -166,7 +163,7 @@ QString QMLBridge::getOutputDevices()
  */
 void QMLBridge::saveFile(QString dir)
 {
-    string directory = dir.toStdString();
+    std::string directory = dir.toStdString();
     int substrLen = 7;
     if (dir[9] == ':')
     {

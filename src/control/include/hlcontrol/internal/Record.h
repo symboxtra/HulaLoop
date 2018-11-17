@@ -13,11 +13,11 @@ namespace hula
             Controller *controller;
             HulaRingBuffer *rb;
 
-            thread recordThread;
+            std::thread recordThread;
 
-            atomic<bool> endRecord;
+            std::atomic<bool> endRecord;
 
-            vector<std::string> exportPaths;
+            std::vector<std::string> exportPaths;
 
         public:
             Record(Controller *control);
@@ -25,7 +25,7 @@ namespace hula
 
             void recorder();
 
-            vector<std::string> getExportPaths();
+            std::vector<std::string> getExportPaths();
 
             void start();
             void stop();

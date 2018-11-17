@@ -107,7 +107,7 @@ bool LinuxAudio::checkDeviceParams(Device *device)
 {
     if(device->getName() == "Pulse Audio Volume Control")
     {
-        thread(&LinuxAudio::startPAVUControl).detach();
+        std::thread(&LinuxAudio::startPAVUControl).detach();
         return true;
     }
     int err;                     // return for commands that might return an error
@@ -259,7 +259,7 @@ void LinuxAudio::capture()
     err = snd_pcm_close(pcmHandle);
     if (err < 0)
     {
-        cerr << "Unable to close" << endl;
+        std::cerr << "Unable to close" << std::endl;
         exit(1);
     }
     free(audioBuffer);

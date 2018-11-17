@@ -34,11 +34,11 @@ std::string Export::getTempPath()
  *
  * @param The input file directory to copy from
  */
-void Export::copyData(vector<std::string> dirs)
+void Export::copyData(std::vector<std::string> dirs)
 {
 
     // Get file extension of the target export file
-    std::string extension = getFileExtension(this->targetDirectory.c_str()); // TODO: Return encoding enum value from HulaAudioSettings
+    std::string extension = getFileExtension(this->targetFile.c_str()); // TODO: Return encoding enum value from HulaAudioSettings
 
     std::cout << extension << std::endl;
 
@@ -66,7 +66,7 @@ void Export::copyData(vector<std::string> dirs)
     else if(!extension.compare("aiff"))
         sfinfo_out.format |= SF_FORMAT_AIFF;
 
-    SNDFILE *out_file = sf_open(this->targetDirectory.c_str(), SFM_WRITE, &sfinfo_out);
+    SNDFILE *out_file = sf_open(this->targetFile.c_str(), SFM_WRITE, &sfinfo_out);
 
     for(int i = 0;i < dirs.size();i++)
     {
@@ -112,7 +112,7 @@ std::string Export::getFileExtension(std::string file_path)
 /**
  * Deletes all the files in the vector
  */
-void Export::deleteTempFiles(vector<std::string> dirs)
+void Export::deleteTempFiles(std::vector<std::string> dirs)
 {
     // loop throught all the files
     for(std::string file : dirs)

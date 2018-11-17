@@ -53,7 +53,7 @@ bool Transport::record(double delay, double duration)
 
     if (recordState)
     {
-        cout << "STARTED RECORDING" << endl;
+        std::cout << "STARTED RECORDING" << std::endl;
         recorder->start();
 
         recordState = false;
@@ -206,7 +206,7 @@ void Transport::exportFile(std::string targetDirectory)
     Export exp(targetDirectory);
     // TODO: Remove harcoded path (Only for demo)
     #if WIN32
-        vector<std::string> temp;
+        std::vector<std::string> temp;
         temp.push_back("C:\\Users\\patel\\AppData\\Local\\Temp\\hulaloop_temp.wav");
         exp.copyData(temp);
     #else

@@ -14,12 +14,12 @@ namespace hula
 
         public:
             Export(std::string targetFile);
-            void copyData(vector<std::string> dirs);
+            void copyData(std::vector<std::string> dirs);
 
             std::string getFileExtension(std::string file_path);
 
             static std::string getTempPath();
-            static void deleteTempFiles(vector<std::string> dirs);
+            static void deleteTempFiles(std::vector<std::string> dirs);
 
             ~Export();
     };

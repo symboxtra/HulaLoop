@@ -1,6 +1,7 @@
 #include "hlcontrol/internal/Record.h"
 
 #include "hlcontrol/internal/Export.h"
+
 #include <iostream>
 #include <fstream>
 #include <sndfile.h>
@@ -29,7 +30,7 @@ void Record::start()
         this->rb = this->controller->createBuffer(0.5);
 
     this->endRecord.store(false);
-    recordThread = thread(&Record::recorder, this);
+    recordThread = std::thread(&Record::recorder, this);
 }
 
 void Record::recorder()
@@ -107,9 +108,9 @@ void Record::stop()
         recordThread.join();
 }
 
-vector<std::string> Record::getExportPaths()
+std::vector<std::string> Record::getExportPaths()
 {
-    vector<std::string> path_copy = exportPaths;
+    std::vector<std::string> path_copy = exportPaths;
     exportPaths.clear();
 
     return path_copy;
