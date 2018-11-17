@@ -253,7 +253,7 @@ TEST_F(TestGUI, ui_state_machine_2)
     clickButton("stopBtn");
     ASSERT_EQ(getTransportState(), "Stopped");
 
-    EXPECT_FALSE(isEnabled("recordBtn"));
+    EXPECT_TRUE(isEnabled("recordBtn"));
     EXPECT_FALSE(isEnabled("stopBtn"));
     EXPECT_TRUE(isEnabled("playpauseBtn"));
     EXPECT_TRUE(isEnabled("exportBtn"));
@@ -318,7 +318,7 @@ TEST_F(TestGUI, ui_state_machine_3)
     clickButton("stopBtn");
     ASSERT_EQ(getTransportState(), "Stopped");
 
-    EXPECT_FALSE(isEnabled("recordBtn"));
+    EXPECT_TRUE(isEnabled("recordBtn"));
     EXPECT_FALSE(isEnabled("stopBtn"));
     EXPECT_TRUE(isEnabled("playpauseBtn"));
     EXPECT_TRUE(isEnabled("exportBtn"));

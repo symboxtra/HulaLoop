@@ -102,7 +102,7 @@ pipeline {
                                         # These will run on PRs and master and should also be run locally if you think you are leaking.
                                         cd ./build-linux
 
-                                        ctest -V -E ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER}
+                                        # ctest -V -E ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER}
                                         cd ..
 
                                         # lcov -c -d build-linux -o build-linux/coverage.actual
@@ -237,7 +237,7 @@ pipeline {
                                     # These will run on PRs and master and should also be run locally if you think you are leaking
                                     cd ./build-osx
 
-                                    ctest -V -E ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER}
+                                    # ctest -V -E ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER}
                                     cd ..
 
                                     # lcov -c -d build-osx -o build-osx/coverage.actual
@@ -367,7 +367,7 @@ pipeline {
 
                                     # cd ..
 
-                                    ./win-coverage.ps1 build-win -E ${ENV:HL_ONLY_MASTER}
+                                    # ./win-coverage.ps1 build-win -E ${ENV:HL_ONLY_MASTER}
                                 '''
 
                             }
