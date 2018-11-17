@@ -7,14 +7,16 @@
 #include <QDir>
 #include <sndfile.h>
 
+using namespace hula;
+
 /**
  * Construct a new instance of the Export class.
  *
  * @param The target directory of the file
  */
-Export::Export(std::string targetDirectory)
+Export::Export(std::string targetFile)
 {
-    this->targetDirectory = targetDirectory;
+    this->targetFile = targetFile;
 }
 
 /**

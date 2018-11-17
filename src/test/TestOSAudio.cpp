@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <hlaudio/hlaudio.h>
 
+using namespace hula;
+
 #define TEST_BUFFER_SIZE 0.2f
 #define MOCK_CAPTURE_TIME 25
 #define CHECK_IF_DEAD_TIME 10
@@ -26,7 +28,7 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
 
         virtual void SetUp()
         {
-            this->testDevice = new Device(NULL, "Device", RECORD);
+            this->testDevice = new Device(DeviceID(), "Device", RECORD);
         }
 
         void capture()
@@ -45,13 +47,13 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
             return true;
         }
 
-        vector<Device *> getDevices(DeviceType type)
+        std::vector<Device *> getDevices(DeviceType type)
         {
-            vector<Device *> devices;
+            std::vector<Device *> devices;
             return devices;
         }
 
-        bool checkRates(Device *device)
+        bool checkDeviceParams(Device *device)
         {
             return true;
         }
@@ -95,7 +97,7 @@ TEST_F(TestOSAudio, wrong_type_does_not_switch)
 {
     setActiveInputDevice(this->testDevice);
 
-    Device *d = new Device(NULL, "Device", PLAYBACK);
+    Device *d = new Device(DeviceID(), "Device", PLAYBACK);
     setActiveInputDevice(d);
 
     EXPECT_EQ(this->activeInputDevice->getName(), this->testDevice->getName());

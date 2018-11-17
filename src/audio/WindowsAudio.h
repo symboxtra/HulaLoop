@@ -1,10 +1,11 @@
-#ifndef WIN_AUDIO
-#define WIN_AUDIO
+#ifndef HL_WIN_AUDIO_H
+#define HL_WIN_AUDIO_H
 
 // Windows Audio
 #include <Audioclient.h>
 #include <comdef.h>
 #include <endpointvolume.h>
+#include <initguid.h>
 #include <mmdeviceapi.h>
 #include <windows.h>
 
@@ -25,8 +26,6 @@
 #include "hlaudio/internal/Device.h"
 #include "hlaudio/internal/OSAudio.h"
 
-using namespace std;
-
 #define REFTIMES_PER_SEC  10000000
 #define REFTIMES_PER_MILLISEC  10000
 
@@ -39,39 +38,40 @@ using namespace std;
             if ((punk) != NULL) \
                 { (punk)->Release(); (punk) = NULL; }
 
-/**
- * A audio class that captures system wide audio on Windows
- */
-class WindowsAudio : public OSAudio {
-    private:
-        const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
-        const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
-        const IID IID_IAudioClient = __uuidof(IAudioClient);
-        const IID IID_IAudioCaptureClient = __uuidof(IAudioCaptureClient);
+namespace hula
+{
+    /**
+     * A audio class that captures system wide audio on Windows
+     */
+    class WindowsAudio : public OSAudio {
+        private:
+            const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
+            const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
+            const IID IID_IAudioClient = __uuidof(IAudioClient);
+            const IID IID_IAudioCaptureClient = __uuidof(IAudioCaptureClient);
 
-        // System necessary variables
-        HRESULT status;
-        PaError pa_status;
+            // System necessary variables
+            HRESULT status;
+            PaError pa_status;
 
-        REFERENCE_TIME requestDuration = REFTIMES_PER_SEC;
-        REFERENCE_TIME bufferDuration;
+            REFERENCE_TIME requestDuration = REFTIMES_PER_SEC;
+            REFERENCE_TIME bufferDuration;
 
-        IMMDeviceEnumerator *pEnumerator = NULL;
-        IMMDeviceCollection *deviceCollection = NULL;
+            IMMDeviceEnumerator *pEnumerator = NULL;
+            IMMDeviceCollection *deviceCollection = NULL;
 
-        // Audio data
-        uint8_t *pData;
+            // Audio data
+            uint8_t *pData;
 
-    public:
-        WindowsAudio();
-        ~WindowsAudio();
+        public:
+            WindowsAudio();
+            ~WindowsAudio();
 
-        bool checkRates(Device *device);
-        vector<Device *> getDevices(DeviceType type);
+            bool checkDeviceParams(Device *device);
+            std::vector<Device *> getDevices(DeviceType type);
 
-        void capture();
+            void capture();
+    };
+}
 
-        void setActiveOutputDevice(Device *device);
-};
-
-#endif
+#endif // END HL_WIN_AUDIO_H

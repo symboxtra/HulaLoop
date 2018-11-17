@@ -36,9 +36,7 @@ SOFTWARE.
 #include "JackBridge.h"
 #include "OSXDaemon.h"
 
-/*
- * OSXDaemon.cpp
- */
+using namespace hula;
 
 /**
  * Construct an OSXDaemon.

@@ -58,6 +58,8 @@ Write-Host "--------------------------------------" -Foreground yellow
 echo ""
 
 $files = @(Get-Item "${prefix}/bin/test/*.exe")
+$succeeded = $files.count
+$failed = @()
 foreach ($file in $files)
 {
     $filename = Split-Path "$file" -leaf
@@ -70,9 +72,14 @@ foreach ($file in $files)
 
     # Run the current test executable plus the input of the previous
     # This is basically recursively collecting the coverage
-    OpenCppCoverage --modules $PWD --input_coverage="$previous" --export_type="binary:${prefix}/${filename}.cov" "$file"
-    if ($LastExitCode -ne 0) {$host.SetShouldExit($LastExitCode)}
-    $previous = "${prefix}/${filename}.cov"
+    OpenCppCoverage --modules $PWD --input_coverage="$previous" --export_type="binary:$current" "$file"
+    if ($LastExitCode -ne 0)
+    {
+        $succeeded--
+        $failed += $filename
+        $host.SetShouldExit($LastExitCode)
+    }
+    $previous = "$current"
 
     echo ""
     Write-Host "End of ${filename}" -Foreground yellow
@@ -86,3 +93,19 @@ Write-Host "--------------------------------------" -Foreground yellow
 # Merge the coverage files to a final report
 OpenCppCoverage --modules $PWD --input_coverage="$previous" --export_type=cobertura:"${prefix}/cobertura.xml"
 echo ""
+
+Write-Host "--------------------------------------" -Foreground yellow
+Write-Host "Finished: $succeeded of $($files.count) PASSED." -Foreground green
+echo ""
+
+# Print failed tests
+if ($failed.count -gt 0)
+{
+    Write-Host "--------------------------------------" -Foreground red
+    Write-Host "The following $($failed.count) test(s) FAILED:"
+    foreach($fail in $failed)
+    {
+        Write-Host "$fail"
+    }
+    echo ""
+}

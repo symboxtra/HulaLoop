@@ -1,8 +1,16 @@
 #include "QMLBridge.h"
 
+#include <QCoreApplication>
+#include <QProcess>
 #include <QUrl>
+<<<<<<< HEAD
 #include <QDir>
+=======
+
+>>>>>>> master
 #include <string>
+
+using namespace hula;
 
 /**
  * Construct a new instance of the QMLBridge class.
@@ -27,37 +35,41 @@ QString QMLBridge::getTransportState() const
 /**
  * Trigger record in the Transport and update the UI state via signal.
  */
-void QMLBridge::record()
+bool QMLBridge::record()
 {
-    transport->record();
+    bool success = transport->record();
     emit stateChanged();
+    return success;
 }
 
 /**
  * Trigger stop in the Transport and update the UI state via signal.
  */
-void QMLBridge::stop()
+bool QMLBridge::stop()
 {
-    transport->stop();
+    bool success = transport->stop();
     emit stateChanged();
+    return success;
 }
 
 /**
  * Trigger playback in the Transport and update the UI state via signal.
  */
-void QMLBridge::play()
+bool QMLBridge::play()
 {
-    transport->play();
+    bool success = transport->play();
     emit stateChanged();
+    return success;
 }
 
 /**
  * Trigger pause in the Transport and update the UI state via signal.
  */
-void QMLBridge::pause()
+bool QMLBridge::pause()
 {
-    transport->pause();
+    bool success = transport->pause();
     emit stateChanged();
+    return success;
 }
 
 /**
@@ -66,9 +78,9 @@ void QMLBridge::pause()
  */
 void QMLBridge::setActiveInputDevice(QString QDeviceName)
 {
-    cout << "SETACTIVEiDEVICECALLED" << endl;
-    string deviceName = QDeviceName.toStdString();
-    vector<Device *> iDevices = transport->getController()->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
+    std::cout << "setActiveDevice() called" << std::endl;
+    std::string deviceName = QDeviceName.toStdString();
+    std::vector<Device *> iDevices = transport->getController()->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
     for (auto const &device : iDevices)
     {
         if (device->getName() == deviceName)
@@ -79,7 +91,7 @@ void QMLBridge::setActiveInputDevice(QString QDeviceName)
         }
     }
     //Should not get here should have found the device
-    cerr << "Input device not found: " << deviceName << endl;
+    std::cerr << "Input device not found: " << deviceName << std::endl;
 }
 
 /**
@@ -88,8 +100,8 @@ void QMLBridge::setActiveInputDevice(QString QDeviceName)
  */
 void QMLBridge::setActiveOutputDevice(QString QDeviceName)
 {
-    string deviceName = QDeviceName.toStdString();
-    vector<Device *> oDevices = transport->getController()->getDevices(DeviceType::PLAYBACK);
+    std::string deviceName = QDeviceName.toStdString();
+    std::vector<Device *> oDevices = transport->getController()->getDevices(DeviceType::PLAYBACK);
     for (auto const &device : oDevices)
     {
         if (device->getName() == deviceName)
@@ -100,7 +112,7 @@ void QMLBridge::setActiveOutputDevice(QString QDeviceName)
         }
     }
     //Should not get here should have found the device
-    cerr << "Output device not found: " << deviceName << endl;
+    std::cerr << "Output device not found: " << deviceName << std::endl;
 }
 
 /**
@@ -110,8 +122,8 @@ void QMLBridge::setActiveOutputDevice(QString QDeviceName)
  */
 QString QMLBridge::getInputDevices()
 {
-    string devices;
-    vector<Device *> vd = transport->getController()->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
+    std::string devices;
+    std::vector<Device *> vd = transport->getController()->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
     for (int i = 0; i < vd.size(); i++)
     {
         devices += vd[i]->getName();
@@ -131,8 +143,8 @@ QString QMLBridge::getInputDevices()
  */
 QString QMLBridge::getOutputDevices()
 {
-    string devices;
-    vector<Device *> vd = transport->getController()->getDevices(DeviceType::PLAYBACK);
+    std::string devices;
+    std::vector<Device *> vd = transport->getController()->getDevices(DeviceType::PLAYBACK);
     for (int i = 0; i < vd.size(); i++)
     {
         devices += vd[i]->getName();
@@ -171,4 +183,24 @@ void QMLBridge::saveFile(QString dir)
 void QMLBridge::cleanTempFiles()
 {
     transport->deleteTempFiles();
+}
+
+/**
+ * Launch the updater process.
+ */
+void QMLBridge::launchUpdateProcess()
+{
+
+    QProcess *proc = new QProcess(this);
+
+    QString procName = QCoreApplication::applicationDirPath() + "/hulaloop-launcher";
+    QStringList args;
+    args << "silent";
+
+    proc->setProgram(procName);
+    proc->setArguments(args);
+
+    proc->start(procName, args);
+    proc->waitForFinished();
+
 }

@@ -5,20 +5,24 @@
 #include <string>
 #include <vector>
 
-class Export {
-    private:
-        std::string targetDirectory;
+namespace hula
+{
+    class Export
+    {
+        private:
+            std::string targetFile;
 
-    public:
-        Export(std::string targetDirectory);
-        void copyData(vector<std::string> dirs);
+        public:
+            Export(std::string targetFile);
+            void copyData(vector<std::string> dirs);
 
-        std::string getFileExtension(std::string file_path);
+            std::string getFileExtension(std::string file_path);
 
-        static std::string getTempPath();
-        static void deleteTempFiles(vector<std::string> dirs);
+            static std::string getTempPath();
+            static void deleteTempFiles(vector<std::string> dirs);
 
-        ~Export();
-};
+            ~Export();
+    };
+} // namespace hula
 
 #endif // HL_EXPORT_H

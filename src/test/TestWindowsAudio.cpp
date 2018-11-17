@@ -3,6 +3,8 @@
 
 #include "../audio/WindowsAudio.h"
 
+using namespace hula;
+
 // Don't extend WindowsAudio.
 // Use a shared instance of it since setup is so expensive.
 // This is black-box testing of WindowsAudio since we can't extend
@@ -41,7 +43,7 @@ std::string path = "";
  */
 TEST_F(TestWindowsAudio, get_input_devices)
 {
-    vector<Device *> devs = audio->getDevices((DeviceType)(RECORD | LOOPBACK));
+    std::vector<Device *> devs = audio->getDevices((DeviceType)(RECORD | LOOPBACK));
     EXPECT_GT(devs.size(), 0);
 
     for (int i = 0; i < devs.size(); i++)
@@ -61,7 +63,7 @@ TEST_F(TestWindowsAudio, get_input_devices)
  */
 TEST_F(TestWindowsAudio, get_record_devices)
 {
-    vector<Device *> devs = audio->getDevices(DeviceType::RECORD);
+    std::vector<Device *> devs = audio->getDevices(DeviceType::RECORD);
     EXPECT_GE(devs.size(), 0);
 
     for (int i = 0; i < devs.size(); i++)
@@ -81,7 +83,7 @@ TEST_F(TestWindowsAudio, get_record_devices)
  */
 TEST_F(TestWindowsAudio, get_loopback_devices)
 {
-    vector<Device *> devs = audio->getDevices(DeviceType::LOOPBACK);
+    std::vector<Device *> devs = audio->getDevices(DeviceType::LOOPBACK);
     EXPECT_GT(devs.size(), 0);
 
     for (int i = 0; i < devs.size(); i++)
@@ -101,7 +103,7 @@ TEST_F(TestWindowsAudio, get_loopback_devices)
  */
 TEST_F(TestWindowsAudio, get_output_devices)
 {
-    vector<Device *> devs = audio->getDevices(DeviceType::PLAYBACK);
+    std::vector<Device *> devs = audio->getDevices(DeviceType::PLAYBACK);
     EXPECT_GT(devs.size(), 0);
 
     for (int i = 0; i < devs.size(); i++)
@@ -120,7 +122,7 @@ TEST_F(TestWindowsAudio, get_output_devices)
  */
 TEST_F(TestWindowsAudio, get_invalid_type_devices)
 {
-    vector<Device *> devs = audio->getDevices((DeviceType)(0));
+    std::vector<Device *> devs = audio->getDevices((DeviceType)(0));
     EXPECT_EQ(devs.size(), 0);
     Device::deleteDevices(devs);
 }
@@ -145,7 +147,7 @@ TEST_F(TestWindowsAudio, short_capture)
     // Sleep for a few seconds to allow thread to start
     // and data to flow in
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    std::string command = "PowerShell -Command \"(New-Object Media.SoundPlayer (Resolve-Path " + path + "test.wav)).PlaySync()\"";
+    std::string command = "PowerShell -Command \"(New-Object Media.SoundPlayer (Resolve-Path \'" + path + "test.wav\')).PlaySync()\"";
     system(command.c_str());
 
     // Read some samples

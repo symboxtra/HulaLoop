@@ -1,34 +1,35 @@
-#ifndef HL_RECORD
-#define HL_RECORD
+#ifndef HL_RECORD_H
+#define HL_RECORD_H
 
 #include <thread>
 
 #include <hlaudio/hlaudio.h>
 
-using namespace std;
+namespace hula
+{
+    class Record {
 
-class Record {
+        private:
+            Controller *controller;
+            HulaRingBuffer *rb;
 
-    private:
-        Controller *controller;
-        HulaRingBuffer *rb;
+            thread recordThread;
 
-        thread recordThread;
+            atomic<bool> endRecord;
 
-        atomic<bool> endRecord;
+            vector<std::string> exportPaths;
 
-        vector<std::string> exportPaths;
+        public:
+            Record(Controller *control);
+            ~Record();
 
-    public:
-        Record(Controller *control);
-        ~Record();
+            void recorder();
 
-        void recorder();
+            vector<std::string> getExportPaths();
 
-        vector<std::string> getExportPaths();
+            void start();
+            void stop();
+    };
+}
 
-        void start();
-        void stop();
-};
-
-#endif
+#endif // END HL_RECORD_H

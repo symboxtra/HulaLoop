@@ -1,5 +1,8 @@
 #include "WindowsAudio.h"
 #include "hlaudio/internal/HulaAudioError.h"
+#include "hlaudio/internal/HulaAudioSettings.h"
+
+using namespace hula;
 
 #include <sndfile.h>
 #include <fstream>
@@ -15,9 +18,9 @@ WindowsAudio::WindowsAudio()
  * connected to the OS and return them as Device instances
  *
  * @param type DeviceType that is combination from the DeviceType enum
- * @return vector<Device*> A list of Device instances that carry the necessary device information
+ * @return std::vector<Device*> A list of Device instances that carry the necessary device information
  */
-vector<Device *> WindowsAudio::getDevices(DeviceType type)
+std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
 {
 
     // Check if the following enums are set in the params
@@ -26,7 +29,7 @@ vector<Device *> WindowsAudio::getDevices(DeviceType type)
     bool isPlaySet = (type & DeviceType::PLAYBACK) == DeviceType::PLAYBACK;
 
     // Vector to store acquired list of output devices
-    vector<Device *> deviceList;
+    std::vector<Device *> deviceList;
 
     // Get devices from WASAPI if loopback and/or playback devices
     // are requested
@@ -80,11 +83,13 @@ vector<Device *> WindowsAudio::getDevices(DeviceType type)
             HANDLE_ERROR(status);
 
             // Convert wide-char string to std::string
-            wstring fun(varName.pwszVal);
-            string str(fun.begin(), fun.end());
+            std::wstring fun(varName.pwszVal);
+            std::string str(fun.begin(), fun.end());
 
             // Create instance of Device using acquired data
-            Device *audio = new Device(reinterpret_cast<uint32_t *>(id), str, (DeviceType)(DeviceType::LOOPBACK | DeviceType::PLAYBACK));
+            DeviceID deviceId;
+            deviceId.windowsID = id;
+            Device *audio = new Device(deviceId, str, (DeviceType)(DeviceType::LOOPBACK | DeviceType::PLAYBACK));
 
             // Add to devicelist
             deviceList.push_back(audio);
@@ -118,18 +123,20 @@ vector<Device *> WindowsAudio::getDevices(DeviceType type)
             if (deviceInfo->maxInputChannels != 0 && deviceInfo->hostApi == (Pa_GetDefaultHostApi() + 1))
             {
                 // Create instance of Device using acquired data
-                Device *audio = new Device(NULL, string(deviceInfo->name), DeviceType::RECORD);
+                DeviceID id;
+                id.portAudioID = i;
+                Device *audio = new Device(id, std::string(deviceInfo->name), DeviceType::RECORD);
 
                 // Add to devicelist
                 deviceList.push_back(audio);
 
                 // Print some debug device info for now
                 // TODO: Remove
-                cout << "Device #" << i + 1 << ": " << deviceInfo->name << endl;
-                cout << "Input Channels: " << deviceInfo->maxInputChannels << endl;
-                cout << "Output Channels: " << deviceInfo->maxOutputChannels << endl;
-                cout << "Default Sample Rate: " << deviceInfo->defaultSampleRate << endl;
-                cout << endl;
+                std::cout << "Device #" << i + 1 << ": " << deviceInfo->name << std::endl;
+                std::cout << "Input Channels: " << deviceInfo->maxInputChannels << std::endl;
+                std::cout << "Output Channels: " << deviceInfo->maxOutputChannels << std::endl;
+                std::cout << "Default Sample Rate: " << deviceInfo->defaultSampleRate << std::endl;
+                std::cout << std::endl;
             }
         }
 
@@ -146,12 +153,12 @@ Exit:
     {
         _com_error err(status);
         LPCTSTR errMsg = err.ErrorMessage();
-        cerr << "WASAPI_Error: " << errMsg << endl;
+        std::cerr << "WASAPI_Error: " << errMsg << std::endl;
         return {};
     }
     else if (pa_status != paNoError)
     {
-        cerr << "PORTAUDIO_Error: " << Pa_GetErrorText(pa_status) << endl;
+        std::cerr << "PORTAUDIO_Error: " << Pa_GetErrorText(pa_status) << std::endl;
         return {};
     }
     else
@@ -161,21 +168,11 @@ Exit:
 }
 
 /**
- * Set the selected output device and restart capture threads with
- * new device
- *
- * @param device Instance of Device that corresponds to the desired system device
- */
-void WindowsAudio::setActiveOutputDevice(Device *device)
-{
-}
-
-/**
  * Execution loop for loopback capture
  */
 void WindowsAudio::capture()
 {
-    cout << "In Capture Mode" << endl; // TODO: Remove this later
+    std::cout << "In Capture Mode" << std::endl; // TODO: Remove this later
 
     // TODO: Keep this here until the ringbuffer is debugged
     SF_INFO sfinfo;
@@ -195,7 +192,7 @@ void WindowsAudio::capture()
     DWORD flags;
     char *buffer = (char *)malloc(500);
     uint32_t packetLength = 0;
-    REFERENCE_TIME duration;
+    DWORD duration;
     REFERENCE_TIME req = REFTIMES_PER_SEC;
 
     // Setup capture environment
@@ -207,10 +204,10 @@ void WindowsAudio::capture()
     HANDLE_ERROR(status);
 
     // Select the current active record/loopback device
-    status = pEnumerator->GetDevice(reinterpret_cast<LPCWSTR>(activeInputDevice->getID()), &audioDevice);
+    status = pEnumerator->GetDevice(activeInputDevice->getID().windowsID, &audioDevice);
     // status = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &audioDevice);
     HANDLE_ERROR(status);
-    cout << "Selected Device: " << activeInputDevice->getName() << endl; // TODO: Remove this later
+    std::cout << "Selected Device: " << activeInputDevice->getName() << std::endl; // TODO: Remove this later
 
     // Activate the IMMDevice
     status = audioDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void **)&audioClient);
@@ -236,8 +233,8 @@ void WindowsAudio::capture()
     status = audioClient->Start();
     HANDLE_ERROR(status);
 
-    // Calculate the duration of the actual buffer
-    duration = (double)REFTIMES_PER_SEC * captureBufferSize / pwfx->nSamplesPerSec;
+    // Sleep duration
+    duration = (DWORD)REFTIMES_PER_SEC * captureBufferSize / pwfx->nSamplesPerSec;
 
     // Continue loop under process ends
     // Each loop fills half of the shared buffer
@@ -312,18 +309,58 @@ Exit:
     {
         _com_error err(status);
         LPCTSTR errMsg = err.ErrorMessage();
-        cerr << "\nError: " << errMsg << endl;
+        std::cerr << "\nError: " << errMsg << std::endl;
         exit(1);
         // TODO: Handle error accordingly
     }
 }
 
 /**
- * TODO: Fill in with something
+ * Checks the sampling rate and bit depth of the device
+ *
+ * @param device Instance of Device that corresponds to the desired system device
  */
-bool WindowsAudio::checkRates(Device *device)
+bool WindowsAudio::checkDeviceParams(Device *activeDevice)
 {
+    return true; // TODO: Remove this and add PortAudio checks and change deviceID code
+
+    HRESULT status;
+    IMMDevice* device = NULL;
+    PROPVARIANT prop;
+    IPropertyStore* store = nullptr;
+    PWAVEFORMATEX deviceProperties;
+     // Setup capture environment
+    status = CoInitialize(NULL);
+    HANDLE_ERROR(status);
+     // Creates a system instance of the device enumerator
+    status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
+    HANDLE_ERROR(status);
+     // Select the current active record/loopback device
+    status = pEnumerator->GetDevice(activeDevice->getID().windowsID, &device);
+    HANDLE_ERROR(status);
+     status = device->OpenPropertyStore(STGM_READ, &store);
+    HANDLE_ERROR(status);
+     status = store->GetValue(PKEY_AudioEngine_DeviceFormat, &prop);
+    HANDLE_ERROR(status);
+     deviceProperties = (PWAVEFORMATEX)prop.blob.pBlobData;
+     // Check number of channels
+    if(deviceProperties->nChannels != HulaAudioSettings::getInstance()->getNumberOfChannels())
+    {
+        std::cerr << "Invalid number of channels" << std::endl;
+        return false;
+    }
+     // Check sample rate
+    if(deviceProperties->nSamplesPerSec != HulaAudioSettings::getInstance()->getSampleRate())
+    {
+        std::cerr << "Invalid sample rate" << std::endl;
+        return false;
+    }
+
     return true;
+
+Exit:
+    std::cerr << "WASAPI Init Error" << std::endl;
+    return false;
 }
 
 /**

@@ -12,6 +12,8 @@
     #include "OSXAudio.h"
 #endif
 
+using namespace hula;
+
 /**
  * Construct an instance of Controller class.
  * Acts as a bridge between the higher levels and OS level functions
@@ -29,7 +31,7 @@ Controller::Controller()
 
     if (audio == NULL)
     {
-        cerr << "OS Audio error !" << endl;
+        std::cerr << "OS Audio error !" << std::endl;
     } // TODO: Handle error
 
 }
@@ -58,7 +60,7 @@ Controller::Controller(bool dryRun)
  *
  * This is a publicly exposed wrapper for the OSAudio method.
  *
- * @param rb HulaLoop ring buffer to add to the list.
+ * @param rb HulaLoop ring buffer to add to the list
 */
 void Controller::addBuffer(HulaRingBuffer *rb)
 {
@@ -66,6 +68,34 @@ void Controller::addBuffer(HulaRingBuffer *rb)
 }
 
 /**
+ * \ingroup memory_management
+ *
+ * Allocate and initialize a HulaRingBuffer that can be added to
+ * the OSAudio ring buffer list via Controller::addBuffer.
+ *
+ * @return Newly allocated ring buffer
+ */
+HulaRingBuffer *Controller::createBuffer(float duration)
+{
+    return new HulaRingBuffer(duration);
+}
+
+/**
+ * \ingroup memory_management
+ *
+ * Allocate and initialize a HulaRingBuffer and automatically
+ * add it to the OSAudio ring buffer list.
+ */
+HulaRingBuffer *Controller::createAndAddBuffer(float duration)
+{
+    HulaRingBuffer *rb = new HulaRingBuffer(duration);
+    addBuffer(rb);
+    return rb;
+}
+
+/**
+ * \ingroup memory_management
+ *
  * Remove a buffer from the list of buffers that receive audio data.
  * The removed buffer is not deleted and must be deleted by the user.
  *
@@ -82,42 +112,35 @@ void Controller::removeBuffer(HulaRingBuffer *rb)
 }
 
 /**
- * Allocate and initialize a HulaRingBuffer that can be added to
- * the OSAudio ring buffer list via Controller::addBuffer.
+ * \ingroup memory_management
  *
- * @return Newly allocated ring buffer.
- */
-HulaRingBuffer *Controller::createBuffer(float duration)
-{
-    return new HulaRingBuffer(duration);
-}
-
-/**
- * Allocate and initialize a HulaRingBuffer and automatically
- * add it to the OSAudio ring buffer list.
- */
-HulaRingBuffer *Controller::createAndAddBuffer(float duration)
-{
-    HulaRingBuffer *rb = new HulaRingBuffer(duration);
-    addBuffer(rb);
-    return rb;
-}
-
-/**
- * Utility function to receive the list of devices corresponding to the provided
- * combination of DeviceType
+ * Fetch a list of devices for the given DeviceType.
+ *
+ * For requests of more than one type, bitwise OR the types together
+ * and cast back to a DeviceType.
+ * \code
+ * getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK))
+ * \endcode
  *
  * @param type DeviceType that is combination from the DeviceType enum
  *
- * @return vector<Device*> A list of Device instances that carry the necessary device information
+ * @return std::vector<Device*> A list of Device instances that carry the necessary device information
  */
-vector<Device *> Controller::getDevices(DeviceType type) const
+std::vector<Device *> Controller::getDevices(DeviceType type) const
 {
     return audio->getDevices(type);
 }
 
 /**
- * Middle function to transfer the device from the front end
+ * \ingroup memory_management
+ *
+ * Set the device from which audio should be captured.
+ *
+ * This method will make a copy of the passed Device
+ * so that subsequent (and necessary) calls to Device::deleteDevices()
+ * can be used without issue.
+ *
+ * @param device Desired input device
  */
 void Controller::setActiveInputDevice(Device *device) const
 {
@@ -125,8 +148,13 @@ void Controller::setActiveInputDevice(Device *device) const
 }
 
 /**
- * Utility function to transfer setOutputDevice command from front-end
- * to the OS backend
+ * \ingroup memory_management
+ *
+ * Set the device to which audio should be played back.
+ *
+ * This method will make a copy of the passed Device
+ * so that subsequent (and necessary) calls to Device::deleteDevices()
+ * can be used without issue.
  *
  * @param device - Device instance that is to be set as the active output device
  */

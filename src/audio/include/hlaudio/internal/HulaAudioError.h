@@ -1,19 +1,25 @@
-#ifndef HULA_AUDIO_ERROR_H
-#define HULA_AUDIO_ERROR_H
+#ifndef HL_AUDIO_ERROR_H
+#define HL_AUDIO_ERROR_H
 
 /**
+ * @file HulaAudioError.h <hlaudio/internal/HulaAudioError.h>
+ * @ingroup public_api
+ *
+ * This file is automatically included via @ref hlaudio.h
  *
  * This is the base file for all error handling in the application.
  * Since any module higher than this must include this file, you'll find
- * all of the global error information here.
+ * any global error information here.
  *
- * TODO: See if this is a good strategy or if we need an additional file
+ * The exceptions defined in this file are those related to the audio
+ * module. Higher level modules have their own error file which defines
+ * additional exceptions.
  *
  */
 
 /******************************************************************************
  *
- * Collection of error codes and information for global HulaLoop
+ * Collection of global information for HulaLoop
  *
 ******************************************************************************/
 #define HL_PRINT_PREFIX "[HulaLoop] "
@@ -21,9 +27,12 @@
 
 /******************************************************************************
  *
- * Collection of error codes and information for hlaudio
+ * Collection of exceptions for hlaudio
  *
 ******************************************************************************/
+namespace hula
+{
 
+}
 
-#endif // END HULA_AUDIO_ERROR_H
+#endif // END HL_AUDIO_ERROR_H

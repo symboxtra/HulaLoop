@@ -30,6 +30,8 @@ SOFTWARE.
 #include "hlaudio/internal/HulaAudioError.h"
 #include "JackClient.hpp"
 
+using namespace hula;
+
 /**********************************************************************
  private functions
 **********************************************************************/

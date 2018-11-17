@@ -5,12 +5,24 @@
 #include <fstream>
 #include <sndfile.h>
 
+using namespace hula;
+
+/**
+ * @brief Construct a new Record to capture audio data and store in temp file
+ *
+ * @param control Controller instance that will be used to interact with the ringbuffer
+ */
 Record::Record(Controller *control)
 {
     this->controller = control;
     this->rb = NULL;
 }
 
+/**
+ * @brief Starts the capture of audio data by adding ringbuffer to Controller
+ * and reading from ringbuffer
+ *
+ */
 void Record::start()
 {
     if (this->rb == NULL)
@@ -83,6 +95,10 @@ void Record::recorder()
     this->controller->removeBuffer(this->rb);
 }
 
+/**
+ * @brief Stops the capture of audio data by removing ringbuffer from Controller
+ *
+ */
 void Record::stop()
 {
     this->endRecord.store(true);
@@ -99,6 +115,10 @@ vector<std::string> Record::getExportPaths()
     return path_copy;
 }
 
+/**
+ * @brief Delete instance of the ringbuffer used
+ *
+ */
 Record::~Record()
 {
     delete rb;

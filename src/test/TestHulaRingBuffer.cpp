@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <hlaudio/hlaudio.h>
 
+using namespace hula;
+
 #define TEST_BUFFER_SIZE 0.2f
 #define TEST_NUM_SAMPLES 200 // Don't pick a power of 2
 SAMPLE sampleData = (SAMPLE)7.7;
@@ -15,8 +17,8 @@ bool verifySamples(SAMPLE *samples, int numSamples)
 {
     for (int i = 0; i < numSamples; i++)
     {
-        SAMPLE temp = sampleData * i;
-        if (memcmp(samples + i, &temp, sizeof(SAMPLE)))
+        SAMPLE val = sampleData * i;
+        if (memcmp(samples + i, &val, sizeof(SAMPLE)))
         {
             return false;
         }
@@ -43,9 +45,8 @@ SAMPLE *createTestSamples()
 
     for (int i = 0; i < TEST_NUM_SAMPLES; i++)
     {
-        // Copy the same data to each sample
-        SAMPLE temp = sampleData * i;
-        memcpy(samples + i, &temp, sizeof(SAMPLE));
+        SAMPLE val = sampleData * i;
+        memcpy(samples + i, &val, sizeof(SAMPLE));
     }
 
     if (!verifySamples(samples, TEST_NUM_SAMPLES))
@@ -108,31 +109,76 @@ TEST(TestHulaRingBuffer, read_buffer)
     HulaRingBuffer *rb = new HulaRingBuffer(TEST_BUFFER_SIZE);
 
     SAMPLE *writeData = createTestSamples();
+    SAMPLE *readData = new SAMPLE[TEST_NUM_SAMPLES];
 
     ring_buffer_size_t samplesWritten = rb->write(writeData, TEST_NUM_SAMPLES);
     EXPECT_EQ(samplesWritten, TEST_NUM_SAMPLES);
 
-    ring_buffer_size_t samplesWritten2 = rb->write(writeData, TEST_NUM_SAMPLES);
-    EXPECT_EQ(samplesWritten2, TEST_NUM_SAMPLES);
-
-    ring_buffer_size_t samplesWritten3 = rb->write(writeData, TEST_NUM_SAMPLES);
-    EXPECT_EQ(samplesWritten3, TEST_NUM_SAMPLES);
-
-    ring_buffer_size_t samplesWritten4 = rb->write(writeData, TEST_NUM_SAMPLES);
-    EXPECT_EQ(samplesWritten4, TEST_NUM_SAMPLES);
-
-    SAMPLE *readData = new SAMPLE[TEST_NUM_SAMPLES];
     ring_buffer_size_t samplesRead = rb->read(readData, TEST_NUM_SAMPLES);
     EXPECT_EQ(samplesRead, TEST_NUM_SAMPLES);
 
     // Make sure the two are identical
     EXPECT_TRUE(verifySamples(readData, TEST_NUM_SAMPLES));
 
-    ring_buffer_size_t samplesRead2 = rb->read(readData, TEST_NUM_SAMPLES);
-    EXPECT_EQ(samplesRead2, TEST_NUM_SAMPLES);
+    delete [] readData;
+    delete [] writeData;
+    delete rb;
+}
+
+/**
+ * Write to a ring buffer.
+ * Read less samples than we wrote.
+ *
+ * EXPECTED:
+ *      Write does not fail.
+ *      Read does not fail.
+ *      Write writes all samples.
+ *      Read reads the number of samples that we requested.
+ *      Data is intact.
+ */
+TEST(TestHulaRingBuffer, read_less_than_we_wrote)
+{
+    HulaRingBuffer *rb = new HulaRingBuffer(TEST_BUFFER_SIZE);
+
+    SAMPLE *writeData = createTestSamples();
+    SAMPLE *readData = new SAMPLE[TEST_NUM_SAMPLES / 2];
+
+    ring_buffer_size_t samplesWritten = rb->write(writeData, TEST_NUM_SAMPLES);
+    EXPECT_EQ(samplesWritten, TEST_NUM_SAMPLES);
+
+    ring_buffer_size_t samplesRead = rb->read(readData, TEST_NUM_SAMPLES / 2);
+    EXPECT_EQ(samplesRead, TEST_NUM_SAMPLES / 2);
 
     // Make sure the two are identical
-    EXPECT_TRUE(verifySamples(readData, TEST_NUM_SAMPLES));
+    EXPECT_TRUE(verifySamples(readData, TEST_NUM_SAMPLES / 2));
+
+    delete [] readData;
+    delete [] writeData;
+    delete rb;
+}
+
+/**
+ * Write to a ring buffer.
+ * Try to read more samples than we wrote.
+ *
+ * EXPECTED:
+ *      Write does not fail.
+ *      Read does not fail.
+ *      Write writes all samples.
+ *      Read reads the number of samples that we wrote.
+ */
+TEST(TestHulaRingBuffer, read_more_than_we_wrote)
+{
+    HulaRingBuffer *rb = new HulaRingBuffer(TEST_BUFFER_SIZE);
+
+    SAMPLE *writeData = createTestSamples();
+    SAMPLE *readData = new SAMPLE[TEST_NUM_SAMPLES];
+
+    ring_buffer_size_t samplesWritten = rb->write(writeData, TEST_NUM_SAMPLES);
+    EXPECT_EQ(samplesWritten, TEST_NUM_SAMPLES);
+
+    ring_buffer_size_t samplesRead = rb->read(readData, TEST_NUM_SAMPLES * 2);
+    EXPECT_EQ(samplesRead, TEST_NUM_SAMPLES);
 
     delete [] readData;
     delete [] writeData;
@@ -193,7 +239,7 @@ TEST(TestHulaRingBuffer, direct_read_buffer)
 TEST(TestHulaRingBuffer, direct_read_wrap_buffer)
 {
     // Small buffer
-    HulaRingBuffer *rb = new HulaRingBuffer(0.01f);
+    HulaRingBuffer *rb = new HulaRingBuffer(TEST_BUFFER_SIZE);
 
     SAMPLE *writeData = createTestSamples();
 
