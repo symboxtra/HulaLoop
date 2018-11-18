@@ -29,10 +29,7 @@ set (CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
 
 find_library (LIBSNDFILE_DLL
         NAMES libsndfile-1
-        HINTS ${LISSND_BIN_PATH})
-
-
-MESSAGE (STATUS "LibSndFile Location: ${LIBSNDFILE_DLL}")
+        HINTS ${LIBSND_BIN_PATH})
 
 # Fail CMake based on passed find_package arguments (if SndFile is not found)
 find_package (PackageHandleStandardArgs)

@@ -163,7 +163,10 @@ add_include_dir (${LIBSNDFILE_INCLUDE})
 list (APPEND HL_LIBRARIES ${LIBSNDFILE_LIB})
 
 # Copy DLL to application bin folder
-file (COPY ${LIBSNDFILE_DLL} DESTINATION ${CMAKE_BINARY_DIR}/bin)
+if (WIN32)
+    MESSAGE (STATUS "Found SndFile DLL: ${LIBSNDFILE_DLL}")
+    file (COPY ${LIBSNDFILE_DLL} DESTINATION ${CMAKE_BINARY_DIR}/bin)
+endif ()
 
 ######## Libraries ########
 
