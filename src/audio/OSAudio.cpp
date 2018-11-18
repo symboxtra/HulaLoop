@@ -86,7 +86,7 @@ void OSAudio::copyToBuffers(const void *data, uint32_t bytes)
 * This will block, so it should be called in a new thread.
 *
 * Calling this directly outside of this class is dangerous.
-* Any thread not in the inThreads vector cannot be guarenteed a valid endCapture
+* Any thread not in the inThreads vector cannot be guaranteed a valid endCapture
 * signal since it won't be joined after a device switch or 0 buffer state.
 * Sync flags might be reset before the independent thread sees them.
 *
@@ -118,6 +118,41 @@ void OSAudio::backgroundCapture(OSAudio *_this)
     // Reset the thread interrupt flag
     _this->endCapture.store(false);
     _this->capture();
+}
+
+/**
+* Static function to allow starting a thread with an instance's playback method.
+* This will block, so it should be called in a new thread.
+*
+* Calling this directly outside of this class is dangerous.
+* Any thread not in the inThreads vector cannot be guaranteed a valid endCapture
+* signal since it won't be joined after a device switch or 0 buffer state.
+* Sync flags might be reset before the independent thread sees them.
+*
+* @param _this Instance of OSAudio subclass which capture should be called on.
+*/
+void OSAudio::backgroundPlayback(OSAudio *_this)
+{
+
+    if (_this->activeOutputDevice == NULL)
+    {
+        std::vector<Device *> devices = _this->getDevices((DeviceType)(DeviceType::PLAYBACK));
+        if (devices.empty())
+        {
+            return;
+        }
+
+        if (_this->activeOutputDevice)
+        {
+            delete _this->activeOutputDevice;
+        }
+        _this->activeOutputDevice = new Device(*devices[0]);
+        Device::deleteDevices(devices);
+    }
+
+    // Reset the thread interrupt flag
+    _this->endPlayback.store(false);
+    _this->playback();
 }
 
 /**
@@ -207,6 +242,12 @@ void OSAudio::setActiveOutputDevice(Device *device)
         delete this->activeOutputDevice;
     }
     this->activeOutputDevice = new Device(*device);
+
+    this->endPlayback.store(true);
+    joinAndKillThreads(outThreads);
+
+    // Startup a new thread
+    inThreads.emplace_back(std::thread(&backgroundPlayback, this));
 }
 
 /**
