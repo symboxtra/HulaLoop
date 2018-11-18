@@ -88,7 +88,7 @@ set (HL_LIBRARIES)
 
 # Link Windows specific libraries
 if (WIN32)
-    set (HL_LIBRARIES ${HL_LIBRARIES} winmm.lib ) # TODO: Add required windows libraries
+    list (APPEND HL_LIBRARIES winmm.lib ) # TODO: Add required windows libraries
 endif ()
 
 # Make sure we can find our Find<package>.cmake files
@@ -147,8 +147,7 @@ find_package (Qt5 REQUIRED
     Widgets
 )
 
-set (HL_LIBRARIES
-    ${HL_LIBRARIES}
+list (APPEND HL_LIBRARIES
     Qt5::Core
     Qt5::Gui
     Qt5::Qml
@@ -162,6 +161,9 @@ find_package (SndFile REQUIRED)
 
 add_include_dir (${LIBSNDFILE_INCLUDE})
 list (APPEND HL_LIBRARIES ${LIBSNDFILE_LIB})
+
+# Copy DLL to application bin folder
+file (COPY ${LIBSNDFILE_DLL} DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
 ######## Libraries ########
 

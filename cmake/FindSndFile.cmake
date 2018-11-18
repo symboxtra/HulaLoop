@@ -14,6 +14,7 @@ message (STATUS "LIBSND_ROOT: " ${LIBSND_ROOT} "\n")
 # Required Sndfile libraries and includes
 set (LIBSND_LIB_PATH ${LIBSND_ROOT}/lib)
 set (LIBSND_INCLUDE_PATH ${LIBSND_ROOT}/include)
+set (LIBSND_BIN_PATH ${LIBSND_ROOT}/bin)
 
 find_library (LIBSNDFILE_LIB
         NAMES sndfile libsndfile-1
@@ -23,7 +24,15 @@ find_path (LIBSNDFILE_INCLUDE
         NAMES sndfile.h
         HINTS ${LIBSND_INCLUDE_PATH})
 
-MESSAGE (STATUS ${LIBSNDFILE_LIB})
+set (CMAKE_FIND_LIBRARY_PREFIXES "")
+set (CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
+
+find_library (LIBSNDFILE_DLL
+        NAMES libsndfile-1
+        HINTS ${LISSND_BIN_PATH})
+
+
+MESSAGE (STATUS "LibSndFile Location: ${LIBSNDFILE_DLL}")
 
 # Fail CMake based on passed find_package arguments (if SndFile is not found)
 find_package (PackageHandleStandardArgs)
