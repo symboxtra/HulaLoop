@@ -54,15 +54,16 @@ void OSAudio::removeBuffer(HulaRingBuffer *rb)
     std::vector<HulaRingBuffer *>::iterator it = find(rbs.begin(), rbs.end(), rb);
     if (it != rbs.end())
     {
-        this->rbs.erase(it);
-    }
+        // Stop the capture thread if there will be no buffers left
+        if (rbs.size() == 1)
+        {
+            // Signal death and join all threads
+            this->endCapture.store(true);
+            joinAndKillThreads(inThreads);
+        }
 
-    // Stop the capture thread if there are no buffers left
-    if (rbs.size() == 0)
-    {
-        // Signal death and join all threads
-        this->endCapture.store(true);
-        joinAndKillThreads(inThreads);
+        // Prevent invalid iterator for copyToBuffers
+        this->rbs.erase(it);
     }
 }
 

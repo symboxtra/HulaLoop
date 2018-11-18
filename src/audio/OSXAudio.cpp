@@ -301,17 +301,13 @@ void OSXAudio::capture()
         exit(1); // TODO: Handle error
     }
 
+    hlDebugf("Capture thread keep-alive started...\n");
     while (!this->endCapture)
     {
         // Keep this thread alive
         // The second half of this function could be moved to a separate
         // function like endCapture() so that we don't have to keep this thread alive.
-
-        hlDebugf("Capture keep-alive\n");
-
-        // This value can be adjusted
-        // 100 msec is decent precision for now
-        Pa_Sleep(1000);
+        std::this_thread::yield();
     }
 
     hlDebugf("Capture thread ended keep-alive.\n");
