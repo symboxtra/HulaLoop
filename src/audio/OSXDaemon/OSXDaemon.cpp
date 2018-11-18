@@ -31,7 +31,7 @@ SOFTWARE.
 #include <sstream>
 #include <string>
 
-#include "JackClient.hpp"
+#include "JackClient.h"
 #include "JackBridge.h"
 #include "OSXDaemon.h"
 

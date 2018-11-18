@@ -24,8 +24,8 @@ SOFTWARE.
 
 #include <jack/jack.h>
 
-#ifndef HL_JACK_CLIENT_HPP
-#define HL_JACK_CLIENT_HPP
+#ifndef HL_JACK_CLIENT_H
+#define HL_JACK_CLIENT_H
 #define MAX_PORT_NUM 16
 typedef jack_default_audio_sample_t sample_t;
 
@@ -93,4 +93,4 @@ namespace hula
     };
 }
 
-#endif // END HL_JACK_CLIENT_HPP
+#endif // END HL_JACK_CLIENT_H
