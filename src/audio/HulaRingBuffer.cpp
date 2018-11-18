@@ -41,9 +41,12 @@
 #include "hlaudio/internal/HulaAudioError.h"
 #include "hlaudio/internal/HulaRingBuffer.h"
 
+using namespace hula;
+
 /**
  * Create a new ring buffer.
- * The ring buffer's size is determined using maxDuration * sampleRate * channelCount * sizeof(SAMPLE).
+ * The ring buffer's size is determined using the formula:
+ * \code maxDuration * sampleRate * channelCount * sampleSize \endcode
  *
  * @param maxDuration The maximum length in seconds that the ring buffer should be capable of holding.
  */
@@ -76,7 +79,7 @@ HulaRingBuffer::HulaRingBuffer(float maxDuration)
  * @param maxSamples Desired number of samples.
  * @return Number of samples read.
  */
-int32_t HulaRingBuffer::read(SAMPLE *data, int32_t maxSamples)
+ring_buffer_size_t HulaRingBuffer::read(SAMPLE *data, ring_buffer_size_t maxSamples)
 {
     ring_buffer_size_t samplesRead = PaUtil_ReadRingBuffer(&this->rb, (void *)data, (ring_buffer_size_t)maxSamples);
     if (samplesRead > 0)
@@ -101,7 +104,7 @@ int32_t HulaRingBuffer::read(SAMPLE *data, int32_t maxSamples)
  * @param size2 Number of elements available from dataPtr2.
  * @return Number of samples read.
  */
-int32_t HulaRingBuffer::directRead(int32_t maxSamples, void **dataPtr1, int32_t *size1, void **dataPtr2, int32_t *size2)
+ring_buffer_size_t HulaRingBuffer::directRead(ring_buffer_size_t maxSamples, void **dataPtr1, ring_buffer_size_t *size1, void **dataPtr2, ring_buffer_size_t *size2)
 {
     ring_buffer_size_t samplesInBuffer = PaUtil_GetRingBufferReadAvailable(&this->rb);
     ring_buffer_size_t samplesToWrite = std::min(samplesInBuffer, (ring_buffer_size_t)maxSamples);
@@ -113,7 +116,7 @@ int32_t HulaRingBuffer::directRead(int32_t maxSamples, void **dataPtr1, int32_t 
     *size2 = 0;
 
     // By using PaUtil_GetRingBufferReadRegions, we can read directly from the ring buffer
-    ring_buffer_size_t samplesRead = PaUtil_GetRingBufferReadRegions(&this->rb, samplesInBuffer, dataPtr1, (ring_buffer_size_t *)size1, dataPtr2, (ring_buffer_size_t *)size2);
+    ring_buffer_size_t samplesRead = PaUtil_GetRingBufferReadRegions(&this->rb, samplesToWrite, dataPtr1, (ring_buffer_size_t *)size1, dataPtr2, (ring_buffer_size_t *)size2);
     if (samplesRead > 0)
     {
         // printf("%sDirect read of %d elements.\n", HL_PRINT_PREFIX, samplesRead);
@@ -132,7 +135,7 @@ int32_t HulaRingBuffer::directRead(int32_t maxSamples, void **dataPtr1, int32_t 
  * @param maxSamples Number of samples contained in the array.
  * @return Number of samples written.
  */
-int32_t HulaRingBuffer::write(const SAMPLE *data, int32_t maxSamples)
+ring_buffer_size_t HulaRingBuffer::write(const SAMPLE *data, ring_buffer_size_t maxSamples)
 {
     ring_buffer_size_t elementsWriteable = PaUtil_GetRingBufferWriteAvailable(&this->rb);
     ring_buffer_size_t elementsToWrite = std::min(elementsWriteable, (ring_buffer_size_t)(maxSamples));
@@ -148,7 +151,13 @@ int32_t HulaRingBuffer::write(const SAMPLE *data, int32_t maxSamples)
 }
 
 /**
+ * \ingroup memory_management
+ *
  * Destructor for the ring buffer.
+ *
+ * A HulaRingBuffer should only be deleted after is has been
+ * removed from the OSAudio ring buffer list using a call to
+ * Controller::removeBuffer().
  */
 HulaRingBuffer::~HulaRingBuffer()
 {

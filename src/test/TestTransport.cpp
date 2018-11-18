@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <hlcontrol/hlcontrol.h>
 
+using namespace hula;
+
 class TestCTInterface : public Transport, public ::testing::Test {
 
     public:

@@ -3,35 +3,37 @@
 #include <fstream>
 #include <string>
 
+using namespace hula;
+
 /**
  * Construct a new instance of the Export class.
  *
  * @param The target directory of the file
  */
-Export::Export(string targetDirectory)
+Export::Export(std::string targetFile)
 {
-    this->targetDirectory = targetDirectory;
+    this->targetFile = targetFile;
 }
 
 /**
- * Copies the data from the temp file
+ * Copy data from the temp file to the output file.
  *
  * @param The input file directory to copy from
  */
-void Export::copyData(string inputFileDirectory)
+void Export::copyData(std::string inputFileDirectory)
 {
-    // opens the files
-    ifstream iFile(inputFileDirectory, ios::binary);
+    // Open the files
+    std::ifstream iFile(inputFileDirectory, std::ios::binary);
     if (iFile.fail())
     {
         // TODO: Handle error
-        cerr << "Error opening file: " << inputFileDirectory << endl;
+        std::cerr << "Error opening file: " << inputFileDirectory << std::endl;
     }
-    ofstream oFile(this->targetDirectory, ios::binary);
+    std::ofstream oFile(this->targetFile, std::ios::binary);
     if (oFile.fail())
     {
         // TODO: Handle error
-        cerr << "Error opening file: " << this->targetDirectory << endl;
+        std::cerr << "Error opening file: " << this->targetFile << std::endl;
     }
 
     // copies the file

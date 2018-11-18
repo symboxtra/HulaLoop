@@ -40,7 +40,7 @@ function (add_library_target _name _src_files)
     # Generate libraries
     add_library (${_name} STATIC ${_src_files})
     set_target_properties (${_name} PROPERTIES
-        VERSION ${VERSION}
+        VERSION ${HL_VERSION_STR}
         SOVERSION 1
         PUBLIC_HEADER include/${_name}/${_name}.h
     )

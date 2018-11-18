@@ -32,11 +32,11 @@ Rectangle {
                     return Math.random() ;
             }
         }
-        Timer {
+        /*Timer {
             interval: 300; running: true; repeat: true
             triggeredOnStart: true
             onTriggered: gennums.generate(rectgen)
-        }
+        }*/
         Repeater{
             id:rectgen
             model: Math.round(visualize.width / 10)

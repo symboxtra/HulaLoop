@@ -1,47 +1,65 @@
-#ifndef SYS_DEVICE
-#define SYS_DEVICE
+#ifndef HL_DEVICE_H
+#define HL_DEVICE_H
 
 #include <cstdint>
 #include <string>
 #include <vector>
 
-using namespace std;
-
-enum DeviceType
-{
-    RECORD = 1,
-    PLAYBACK = 2,
-    LOOPBACK = 4
-};
-
-union DeviceID
-{
-    string linuxID;
-    uint32_t *windowsID;
-};
-
-/**
- * Defines a system audio device
- */
-// TODO: Add better public description
-class Device {
-    private:
-        uint32_t *deviceID;
-        string deviceName;
-
-        DeviceType type;
-
-    public:
-        Device(uint32_t *id, string name, DeviceType t);
-        ~Device();
-
-        uint32_t *getID();
-
-        string getName();
-
-        DeviceType getType();
-
-        static void deleteDevices(vector<Device *> devices);
-};
-
+#ifdef _WIN32
+#include <windows.h>
 #endif
+
+namespace hula
+{
+    /**
+     * Denotes type of Device.
+     * Meant to be bitwise or'd together to support multiple capabilities.
+     */
+    enum DeviceType
+    {
+        RECORD = 1,
+        PLAYBACK = 2,
+        LOOPBACK = 4
+    };
+
+    /**
+     * Struct for the three types of device ID.
+     *
+     * PortAudio devices should use @ref portAudioID.
+     * Linux ALSA devices should use @ref linuxID.
+     * Windows WASAPI devices should use @ref windowsID.
+     */
+    struct DeviceID
+    {
+        std::string linuxID = "";
+        int portAudioID = -1;
+        #ifdef _WIN32
+        LPWSTR windowsID = nullptr;
+        #endif
+    };
+
+    /**
+     * Wrapper for OS specific device information.
+     */
+    class Device {
+        private:
+            DeviceID deviceID;
+            std::string deviceName;
+
+            DeviceType type;
+
+        public:
+            Device(DeviceID id, std::string name, DeviceType t);
+            ~Device();
+
+            DeviceID getID();
+
+            std::string getName();
+
+            DeviceType getType();
+
+            static void deleteDevices(std::vector<Device *> devices);
+    };
+}
+
+#endif // END HL_DEVICE_H

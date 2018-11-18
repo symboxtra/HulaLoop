@@ -1,5 +1,7 @@
 #include "OSXDaemon.h"
 
+using namespace hula;
+
 int main (int argc, char **argv)
 {
     // Create the loopback daemon

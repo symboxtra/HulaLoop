@@ -1,20 +1,37 @@
 #include "LinuxAudio.h"
+#include "hlaudio/internal/HulaAudioSettings.h"
 
+using namespace hula;
+
+/**
+ * Construct a new instance of LinuxAudio.
+ */
 LinuxAudio::LinuxAudio()
 {
 }
 
-vector<Device *> LinuxAudio::getDevices(DeviceType type)
+/**
+ * Fetch devices of the specified type.
+ * These devices must be deleted by the caller using the
+ * Device::deleteDevices() method.
+ *
+ * The list is designed for one-time use. Get the list,
+ * use the device, delete the list immediately.
+ *
+ * DO NOT STORE THIS as it may become out-of-date.
+ *
+ * @return List of Device objects
+ */
+std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
 {
     // variables needed for the getting of devices to work
-    vector<Device *> devices;
+    std::vector<Device *> devices;
     snd_ctl_card_info_t *cardInfo;
     snd_pcm_info_t *subInfo;
     snd_ctl_t *handle;
     int subDevice;
     int cardNumber = -1;
-    char cardName[64];
-    char deviceID[64];
+    std::string cardName;
 
     // check what devices we need to get
     bool loopSet = (type & DeviceType::LOOPBACK) == DeviceType::LOOPBACK;
@@ -24,17 +41,18 @@ vector<Device *> LinuxAudio::getDevices(DeviceType type)
     // add pavucontrol to loopback for now
     if (loopSet)
     {
-        string *pvc = new string("Pulse Audio Volume Control");
-        string temp = *pvc;
-        devices.push_back(new Device(reinterpret_cast<uint32_t *>(pvc), temp, DeviceType::LOOPBACK));
+        DeviceID id;
+        id.linuxID = std::string("default");
+        std::string temp("Pulse Audio Volume Control");
+        devices.push_back(new Device(id, temp, DeviceType::LOOPBACK));
     }
 
     // outer while gets all the sound cards
     while (snd_card_next(&cardNumber) >= 0 && cardNumber >= 0)
     {
         // open and init the sound card
-        sprintf(cardName, "hw:%i", cardNumber);
-        snd_ctl_open(&handle, cardName, 0);
+        cardName = "hw:" + std::to_string(cardNumber);
+        snd_ctl_open(&handle, cardName.c_str(), 0);
         snd_ctl_card_info_alloca(&cardInfo);
         snd_ctl_card_info(handle, cardInfo);
         // inner while gets all the sound card subdevices
@@ -51,12 +69,12 @@ vector<Device *> LinuxAudio::getDevices(DeviceType type)
                 snd_pcm_info_set_stream(subInfo, SND_PCM_STREAM_CAPTURE);
                 if (snd_ctl_pcm_info(handle, subInfo) >= 0)
                 {
-                    sprintf(deviceID, "hw:%d,%d", cardNumber, subDevice);
-                    string deviceName = snd_ctl_card_info_get_name(cardInfo);
-                    string subDeviceName = snd_pcm_info_get_name(subInfo);
-                    string fullDeviceName = deviceName + ": " + subDeviceName;
-                    string *sDeviceID = new string(deviceID);
-                    devices.push_back(new Device(reinterpret_cast<uint32_t *>(sDeviceID), fullDeviceName, DeviceType::RECORD));
+                    DeviceID id;
+                    id.linuxID = "hw:" + std::to_string(cardNumber) + "," + std::to_string(subDevice);
+                    std::string deviceName = snd_ctl_card_info_get_name(cardInfo);
+                    std::string subDeviceName = snd_pcm_info_get_name(subInfo);
+                    std::string fullDeviceName = deviceName + ": " + subDeviceName;
+                    devices.push_back(new Device(id, fullDeviceName, DeviceType::RECORD));
                 }
             }
             if (playSet)
@@ -64,12 +82,12 @@ vector<Device *> LinuxAudio::getDevices(DeviceType type)
                 snd_pcm_info_set_stream(subInfo, SND_PCM_STREAM_PLAYBACK);
                 if (snd_ctl_pcm_info(handle, subInfo) >= 0)
                 {
-                    sprintf(deviceID, "hw:%d,%d", cardNumber, subDevice);
-                    string deviceName = snd_ctl_card_info_get_name(cardInfo);
-                    string subDeviceName = snd_pcm_info_get_name(subInfo);
-                    string fullDeviceName = deviceName + ": " + subDeviceName;
-                    string *sDeviceID = new string(deviceID);
-                    devices.push_back(new Device(reinterpret_cast<uint32_t *>(sDeviceID), fullDeviceName, DeviceType::PLAYBACK));
+                    DeviceID id;
+                    id.linuxID = "hw:" + std::to_string(cardNumber) + "," + std::to_string(subDevice);
+                    std::string deviceName = snd_ctl_card_info_get_name(cardInfo);
+                    std::string subDeviceName = snd_pcm_info_get_name(subInfo);
+                    std::string fullDeviceName = deviceName + ": " + subDeviceName;
+                    devices.push_back(new Device(id, fullDeviceName, DeviceType::PLAYBACK));
                 }
             }
         }
@@ -79,7 +97,13 @@ vector<Device *> LinuxAudio::getDevices(DeviceType type)
     return devices;
 }
 
-bool LinuxAudio::checkRates(Device *device)
+/**
+ * Check with the hardware to ensure that the current audio settings
+ * are valid for the selected device.
+ *
+ * @param device Device to check against
+ */
+bool LinuxAudio::checkDeviceParams(Device *device)
 {
     int err;                     // return for commands that might return an error
     snd_pcm_t *pcmHandle = NULL; // default pcm handle
@@ -90,13 +114,13 @@ bool LinuxAudio::checkRates(Device *device)
     bool formatValid;            // bool that gets set if the format is valid
 
     // device id
-    char *id = (char *)reinterpret_cast<string *>(device->getID())->c_str();
-    cout << id << endl;
+    const char *id = device->getID().linuxID.c_str();
+    std::cout << id << std::endl;
     // open pcm device
     err = snd_pcm_open(&pcmHandle, id, SND_PCM_STREAM_CAPTURE, 0);
     if (err < 0)
     {
-        cerr << "Unable to test device: " << id << endl;
+        std::cerr << "Unable to test device: " << id << std::endl;
         return false;
     }
 
@@ -106,11 +130,11 @@ bool LinuxAudio::checkRates(Device *device)
 
     // test the desired sample rate
     // TODO: insert actual sampling rate
-    samplingRate = 44100;
+    samplingRate = HulaAudioSettings::getInstance()->getSampleRate();
     samplingRateValid = snd_pcm_hw_params_test_rate(pcmHandle, param, samplingRate, 0) == 0;
 
     // test the desired format (bit depth)
-    format = SND_PCM_FORMAT_S16_LE;
+    format = SND_PCM_FORMAT_FLOAT_LE;
     formatValid = snd_pcm_hw_params_test_format(pcmHandle, param, format) == 0;
 
     // clean up
@@ -119,43 +143,18 @@ bool LinuxAudio::checkRates(Device *device)
     snd_config_update_free_global();
     if (samplingRateValid && formatValid)
     {
-        cout << "Sampling rate and format valid" << endl;
+        std::cout << "Sample rate and format valid." << std::endl;
         return true;
     }
-    cout << "Something invalid" << endl;
+    std::cout << "Sample rate or format invalid." << std::endl;
     return false;
 }
 
-void LinuxAudio::setActiveOutputDevice(Device *device)
-{
-    // Set the active output device
-    this->activeOutputDevice = device;
-    cout << checkRates(device) << endl;
-    // Interrupt all threads and make sure they stop
-    // for (auto &t : execThreads)
-    // {
-    //     // TODO: Find better way of safely terminating thread
-    //     t.detach();
-    //     t.~thread();
-    // }
-
-    // // Clean the threads after stopping all threads
-    // execThreads.clear();
-
-    // // Start up new threads with new selected device info
-
-    // // Start capture thread and add to thread vector
-    // execThreads.emplace_back(thread(&LinuxAudio::test_capture, this));
-
-    // // TODO: Add playback thread later
-
-    // // Detach new threads to run independently
-    // for (auto &t : execThreads)
-    // {
-    //     t.detach();
-    // }
-}
-
+/**
+ * Open the program Pulse Audio Volume Control to the Record tab.
+ * This will allow the user to select the "Monitor of" source
+ * that they wish to capture loopback from.
+ */
 void LinuxAudio::startPAVUControl()
 {
     system("/usr/bin/pavucontrol -t 2");
@@ -166,12 +165,15 @@ void LinuxAudio::startPAVUControl()
    Device * recordingDevice is already formatted as hw:(int),(int)
    if Device is NULL then it chooses the default
    */
+/**
+ * Capture loop for LinuxAudio.
+ */
 void LinuxAudio::capture()
 {
-    thread(&LinuxAudio::startPAVUControl).detach();
+    std::thread(&LinuxAudio::startPAVUControl).detach();
     int err;                        // return for commands that might return an error
     snd_pcm_t *pcmHandle = NULL;    // default pcm handle
-    string defaultDevice;           // default hw id for the device
+    std::string defaultDevice;      // default hw id for the device
     snd_pcm_hw_params_t *param;     // object to store our paramets (they are just the default ones for now)
     int audioBufferSize;            // size of the buffer for the audio
     byte *audioBuffer = NULL;       // buffer for the audio
@@ -185,7 +187,7 @@ void LinuxAudio::capture()
     err = snd_pcm_open(&pcmHandle, defaultDevice.c_str(), SND_PCM_STREAM_CAPTURE, 0);
     if (err < 0)
     {
-        cerr << "Unable to open " << defaultDevice << " exiting..." << endl;
+        std::cerr << "Unable to open " << defaultDevice << " exiting..." << std::endl;
         exit(1);
     }
 
@@ -211,7 +213,7 @@ void LinuxAudio::capture()
     err = snd_pcm_hw_params(pcmHandle, param);
     if (err < 0)
     {
-        cerr << "Unable to set parameters: " << defaultDevice << " exiting..." << endl;
+        std::cerr << "Unable to set parameters: " << defaultDevice << " exiting..." << std::endl;
         exit(1);
     }
 
@@ -230,16 +232,16 @@ void LinuxAudio::capture()
         framesRead = snd_pcm_readi(pcmHandle, audioBuffer, frame);
         if (framesRead == -EPIPE)
         {
-            cerr << "Buffer overrun" << endl;
+            std::cerr << "Buffer overrun" << std::endl;
             snd_pcm_prepare(pcmHandle);
         }
         else if (framesRead < 0)
         {
-            cerr << "Read error" << endl;
+            std::cerr << "Read error" << std::endl;
         }
         else if (framesRead != (int)frame)
         {
-            cerr << "Read short, only read " << framesRead << " bytes" << endl;
+            std::cerr << "Read short, only read " << framesRead << " bytes" << std::endl;
         }
         copyToBuffers(audioBuffer, framesRead * NUM_CHANNELS * sizeof(SAMPLE));
     }
@@ -249,6 +251,9 @@ void LinuxAudio::capture()
     free(audioBuffer);
 }
 
+/**
+ * Destructor for LinuxAudio.
+ */
 LinuxAudio::~LinuxAudio()
 {
     // callbackList.clear();

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 
 #include <QQmlProperty>
@@ -9,11 +9,14 @@
 #include <iostream>
 
 #include "QMLBridge.h"
+#include "SystemTrayIcon.h"
+
+using namespace hula;
 
 class TestGUI : public ::testing::Test {
 
     protected:
-        QGuiApplication *app = nullptr;
+        QApplication *app = nullptr;
         QQmlApplicationEngine *engine = nullptr;
 
         virtual void SetUp()
@@ -21,9 +24,10 @@ class TestGUI : public ::testing::Test {
             int argc = 0;
             char **argv = nullptr;
 
-            app = new QGuiApplication(argc, argv);
+            app = new QApplication(argc, argv);
 
             qmlRegisterType<QMLBridge>("hulaloop.qmlbridge", 1, 0, "QMLBridge");
+            qmlRegisterType<SystemTrayIcon>("hulaloop.systrayicon", 1, 0, "SystemTrayIcon");
 
             engine = new QQmlApplicationEngine();
             engine->load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
@@ -96,7 +100,7 @@ class TestGUI : public ::testing::Test {
 
         bool isButtonPlay()
         {
-            QObject* obj = engine->rootObjects()[0]->findChild<QObject *>("play_icon");
+            QObject *obj = engine->rootObjects()[0]->findChild<QObject *>("play_icon");
 
             if (obj)
             {
@@ -152,7 +156,7 @@ TEST_F(TestGUI, init)
     ASSERT_TRUE(app != nullptr);
     ASSERT_TRUE(engine != nullptr);
 
-    QTimer::singleShot(300, app, &QGuiApplication::quit);
+    QTimer::singleShot(300, app, &QApplication::quit);
     ASSERT_EQ(app->exec(), 0);
 
 }
