@@ -9,6 +9,15 @@ using namespace hula;
 
 WindowsAudio::WindowsAudio()
 {
+    // Initialize PortAudio
+    int err = Pa_Initialize();
+    if (err != paNoError)
+    {
+        fprintf(stderr, "%sPortAudio failed to initialize.\n", HL_ERROR_PREFIX);
+        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+        exit(1); // TODO: Handle error
+    }
+
     pa_status = paNoError;
     activeInputDevice = NULL;
 }
@@ -120,7 +129,7 @@ std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
         {
             deviceInfo = Pa_GetDeviceInfo(i);
 
-            if (deviceInfo->maxInputChannels != 0 && deviceInfo->hostApi == (Pa_GetDefaultHostApi() + 1))
+            if (deviceInfo->maxInputChannels != 0 && deviceInfo->hostApi == Pa_GetDefaultHostApi())
             {
                 // Create instance of Device using acquired data
                 DeviceID id;
@@ -168,10 +177,40 @@ Exit:
 }
 
 /**
+ * This routine will be called by the PortAudio engine when audio is needed.
+ * It may be called at interrupt level on some machines so don't do anything
+ * that could mess up the system like calling malloc() or free().
+ */
+static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
+                            unsigned long framesPerBuffer,
+                            const PaStreamCallbackTimeInfo *timeInfo,
+                            PaStreamCallbackFlags statusFlags,
+                            void *userData)
+{
+    WindowsAudio *obj = (WindowsAudio *)userData;
+
+    // Prevent unused variable warnings.
+    (void)outputBuffer;
+    (void)timeInfo;
+    (void)statusFlags;
+    (void)userData;
+
+    // TODO: Make sure this calculation is right
+    obj->copyToBuffers(inputBuffer, framesPerBuffer * NUM_CHANNELS * sizeof(SAMPLE));
+
+    return paContinue;
+}
+
+/**
  * Execution loop for loopback capture
  */
 void WindowsAudio::capture()
 {
+    // Check if the following enums are set in the params
+    bool isLoopSet = (activeInputDevice->getType() & DeviceType::LOOPBACK) == DeviceType::LOOPBACK;
+    bool isRecSet = (activeInputDevice->getType() & DeviceType::RECORD) == DeviceType::RECORD;
+    bool isPlaySet = (activeInputDevice->getType() & DeviceType::PLAYBACK) == DeviceType::PLAYBACK;
+
     std::cout << "In Capture Mode" << std::endl; // TODO: Remove this later
 
     // TODO: Keep this here until the ringbuffer is debugged
@@ -183,135 +222,214 @@ void WindowsAudio::capture()
     //std::string temp = "C:\\Users\\patel\\AppData\\Local\\Temp\\hulaloop_log2.txt";
     //std::ofstream tempfile(temp.c_str(), ios::binary);
 
-    // Instantiate clients and services for audio capture
-    IAudioCaptureClient *captureClient = NULL;
-    IAudioClient *audioClient = NULL;
-    WAVEFORMATEX *pwfx = NULL;
-    IMMDevice *audioDevice = NULL;
-    UINT32 numFramesAvailable;
-    DWORD flags;
-    char *buffer = (char *)malloc(500);
-    uint32_t packetLength = 0;
-    DWORD duration;
-    REFERENCE_TIME req = REFTIMES_PER_SEC;
-
-    // Setup capture environment
-    status = CoInitialize(NULL);
-    HANDLE_ERROR(status);
-
-    // Creates a system instance of the device enumerator
-    status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
-    HANDLE_ERROR(status);
-
-    // Select the current active record/loopback device
-    status = pEnumerator->GetDevice(activeInputDevice->getID().windowsID, &audioDevice);
-    // status = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &audioDevice);
-    HANDLE_ERROR(status);
-    std::cout << "Selected Device: " << activeInputDevice->getName() << std::endl; // TODO: Remove this later
-
-    // Activate the IMMDevice
-    status = audioDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void **)&audioClient);
-    HANDLE_ERROR(status);
-
-    // Not sure what this does yet!?
-    status = audioClient->GetMixFormat(&pwfx);
-    HANDLE_ERROR(status);
-
-    // Initialize the audio client in loopback mode and set audio engine format
-    status = audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_LOOPBACK, req, 0, pwfx, NULL);
-    HANDLE_ERROR(status);
-
-    // Gets the maximum capacity of the endpoint buffer (audio frames)
-    status = audioClient->GetBufferSize(&captureBufferSize);
-    HANDLE_ERROR(status)
-
-    // Gets the capture client service under the audio client instance
-    status = audioClient->GetService(IID_IAudioCaptureClient, (void **)&captureClient);
-    HANDLE_ERROR(status);
-
-    // Start the audio stream
-    status = audioClient->Start();
-    HANDLE_ERROR(status);
-
-    // Sleep duration
-    duration = (DWORD)REFTIMES_PER_SEC * captureBufferSize / pwfx->nSamplesPerSec;
-
-    // Continue loop under process ends
-    // Each loop fills half of the shared buffer
-    while (!this->endCapture.load())
+    if (isLoopSet)
     {
-        // Sleep for half the buffer duration
-        Sleep(duration / (REFTIMES_PER_MILLISEC * 2));
+        // Instantiate clients and services for audio capture
+        IAudioCaptureClient *captureClient = NULL;
+        IAudioClient *audioClient = NULL;
+        WAVEFORMATEX *pwfx = NULL;
+        IMMDevice *audioDevice = NULL;
+        UINT32 numFramesAvailable;
+        DWORD flags;
+        char *buffer = (char *)malloc(500);
+        uint32_t packetLength = 0;
+        DWORD duration;
+        REFERENCE_TIME req = REFTIMES_PER_SEC;
 
-        // Get the packet size of the next captured buffer
-        status = captureClient->GetNextPacketSize(&packetLength);
+        // Setup capture environment
+        status = CoInitialize(NULL);
         HANDLE_ERROR(status);
 
-        while (packetLength != 0)
+        // Creates a system instance of the device enumerator
+        status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
+        HANDLE_ERROR(status);
+
+        // Select the current active record/loopback device
+        status = pEnumerator->GetDevice(activeInputDevice->getID().windowsID, &audioDevice);
+        // status = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &audioDevice);
+        HANDLE_ERROR(status);
+        std::cout << "Selected Device: " << activeInputDevice->getName() << std::endl; // TODO: Remove this later
+
+        // Activate the IMMDevice
+        status = audioDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void **)&audioClient);
+        HANDLE_ERROR(status);
+
+        // Not sure what this does yet!?
+        status = audioClient->GetMixFormat(&pwfx);
+        HANDLE_ERROR(status);
+
+        // Initialize the audio client in loopback mode and set audio engine format
+        status = audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_LOOPBACK, req, 0, pwfx, NULL);
+        HANDLE_ERROR(status);
+
+        // Gets the maximum capacity of the endpoint buffer (audio frames)
+        status = audioClient->GetBufferSize(&captureBufferSize);
+        HANDLE_ERROR(status)
+
+        // Gets the capture client service under the audio client instance
+        status = audioClient->GetService(IID_IAudioCaptureClient, (void **)&captureClient);
+        HANDLE_ERROR(status);
+
+        // Start the audio stream
+        status = audioClient->Start();
+        HANDLE_ERROR(status);
+
+        // Sleep duration
+        duration = (DWORD)REFTIMES_PER_SEC * captureBufferSize / pwfx->nSamplesPerSec;
+
+        // Continue loop under process ends
+        // Each loop fills half of the shared buffer
+        while (!this->endCapture.load())
         {
-            // Get the captured buffer
-            status = captureClient->GetBuffer(&pData, &numFramesAvailable, &flags, NULL, NULL);
-            HANDLE_ERROR(status);
+            // Sleep for half the buffer duration
+            Sleep(duration / (REFTIMES_PER_MILLISEC * 2));
 
-            if (flags & AUDCLNT_BUFFERFLAGS_SILENT)
-            {
-                pData = NULL;
-            }
-
-            // Copy to ringbuffers
-            float *floatData = (float *)pData;
-
-            this->copyToBuffers(floatData, numFramesAvailable * NUM_CHANNELS);
-
-            //for(int i = 0;i < numFramesAvailable * NUM_CHANNELS;i++)
-            //{
-            //    tempfile << floatData[i] << endl;
-            //}
-
-            // TODO: Keep this here until the ringbuffer is debugged
-            sf_count_t error = sf_writef_float(file, floatData, numFramesAvailable);
-            if (error != numFramesAvailable)
-            {
-                char errstr[256];
-                sf_error_str (0, errstr, sizeof (errstr) - 1);
-                fprintf (stderr, "cannot write sndfile (%s)\n", errstr);
-                fprintf(stderr, "%sWe done goofed...", HL_ERROR_PREFIX);
-                exit(1);
-            }
-
-            // Release buffer after data is captured and handled
-            status = captureClient->ReleaseBuffer(numFramesAvailable);
-            HANDLE_ERROR(status);
-
-            // Get next packet size of captured buffer
+            // Get the packet size of the next captured buffer
             status = captureClient->GetNextPacketSize(&packetLength);
             HANDLE_ERROR(status);
+
+            while (packetLength != 0)
+            {
+                // Get the captured buffer
+                status = captureClient->GetBuffer(&pData, &numFramesAvailable, &flags, NULL, NULL);
+                HANDLE_ERROR(status);
+
+                if (flags & AUDCLNT_BUFFERFLAGS_SILENT)
+                {
+                    pData = NULL;
+                }
+
+                // Copy to ringbuffers
+                float *floatData = (float *)pData;
+
+                this->copyToBuffers(floatData, numFramesAvailable * NUM_CHANNELS);
+
+                //for(int i = 0;i < numFramesAvailable * NUM_CHANNELS;i++)
+                //{
+                //    tempfile << floatData[i] << endl;
+                //}
+
+                // TODO: Keep this here until the ringbuffer is debugged
+                sf_count_t error = sf_writef_float(file, floatData, numFramesAvailable);
+                if (error != numFramesAvailable)
+                {
+                    char errstr[256];
+                    sf_error_str(0, errstr, sizeof(errstr) - 1);
+                    fprintf(stderr, "cannot write sndfile (%s)\n", errstr);
+                    fprintf(stderr, "%sWe done goofed...", HL_ERROR_PREFIX);
+                    exit(1);
+                }
+
+                // Release buffer after data is captured and handled
+                status = captureClient->ReleaseBuffer(numFramesAvailable);
+                HANDLE_ERROR(status);
+
+                // Get next packet size of captured buffer
+                status = captureClient->GetNextPacketSize(&packetLength);
+                HANDLE_ERROR(status);
+            }
+        }
+
+        // TODO: Keep this here until the ringbuffer is debugged
+        sf_close(file);
+        //tempfile.close();
+
+        // Stop the client capture once process exits
+        status = audioClient->Stop();
+        HANDLE_ERROR(status);
+
+        // goto label for exiting loop in-case of error
+    Exit:
+        CoTaskMemFree(pwfx);
+        SAFE_RELEASE(pEnumerator);
+        SAFE_RELEASE(audioDevice);
+        SAFE_RELEASE(audioClient);
+        SAFE_RELEASE(captureClient);
+
+        if (FAILED(status))
+        {
+            _com_error err(status);
+            LPCTSTR errMsg = err.ErrorMessage();
+            std::cerr << "\nError: " << errMsg << std::endl;
+            exit(1);
+            // TODO: Handle error accordingly
         }
     }
-
-    // TODO: Keep this here until the ringbuffer is debugged
-    sf_close(file);
-    //tempfile.close();
-
-    // Stop the client capture once process exits
-    status = audioClient->Stop();
-    HANDLE_ERROR(status);
-
-    // goto label for exiting loop in-case of error
-Exit:
-    CoTaskMemFree(pwfx);
-    SAFE_RELEASE(pEnumerator);
-    SAFE_RELEASE(audioDevice);
-    SAFE_RELEASE(audioClient);
-    SAFE_RELEASE(captureClient);
-
-    if (FAILED(status))
+    else if (isRecSet)
     {
-        _com_error err(status);
-        LPCTSTR errMsg = err.ErrorMessage();
-        std::cerr << "\nError: " << errMsg << std::endl;
-        exit(1);
-        // TODO: Handle error accordingly
+        PaStreamParameters inputParameters = {0};
+        PaStream *stream;
+        PaError err = paNoError;
+
+        inputParameters.device = this->activeInputDevice->getID().portAudioID;
+        if (inputParameters.device == paNoDevice)
+        {
+            fprintf(stderr, "%sNo device found.\n", HL_ERROR_PREFIX);
+            exit(1); // TODO: Handle error
+        }
+
+        // Setup the stream for the selected device
+        inputParameters.channelCount = Pa_GetDeviceInfo(inputParameters.device)->maxInputChannels;
+        inputParameters.sampleFormat = PA_SAMPLE_TYPE;
+        inputParameters.suggestedLatency = Pa_GetDeviceInfo(inputParameters.device)->defaultLowInputLatency;
+        inputParameters.hostApiSpecificStreamInfo = NULL;
+
+        err = Pa_OpenStream(
+            &stream,
+            &inputParameters,
+            NULL, // &outputParameters
+            SAMPLE_RATE,
+            FRAMES_PER_BUFFER,
+            paClipOff, // We won't output out of range samples so don't bother clipping them
+            paRecordCallback,
+            this // Pass our instance in
+        );
+
+        if (err != paNoError)
+        {
+            fprintf(stderr, "%sCould not open Port Audio device stream.\n", HL_ERROR_PREFIX);
+            fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+            exit(1); // TODO: Handle error
+        }
+
+        // Start the stream
+        err = Pa_StartStream(stream);
+        if (err != paNoError)
+        {
+            fprintf(stderr, "%sCould not start Port Audio device stream.\n", HL_ERROR_PREFIX);
+            fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+            exit(1); // TODO: Handle error
+        }
+
+        printf("%sCapture keep-alive\n", HL_PRINT_PREFIX);
+
+        while (!this->endCapture)
+        {
+            // Keep this thread alive
+            // The second half of this function could be moved to a separate
+            // function like endCapture() so that we don't have to keep this thread alive.
+
+            // This value can be adjusted
+            // 100 msec is decent precision for now
+            std::this_thread::yield();
+        }
+
+        printf("%sCapture thread ended keep-alive.\n\n", HL_PRINT_PREFIX);
+
+        if (err != paNoError)
+        {
+            fprintf(stderr, "%sError during read from device stream.\n", HL_ERROR_PREFIX);
+            fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+            exit(1); // TODO: Handle error
+        }
+
+        err = Pa_CloseStream(stream);
+        if (err != paNoError)
+        {
+            fprintf(stderr, "%sCould not close Port Audio device stream.\n", HL_ERROR_PREFIX);
+            fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+            exit(1); // TODO: Handle error
+        }
     }
 }
 
@@ -325,32 +443,32 @@ bool WindowsAudio::checkDeviceParams(Device *activeDevice)
     return true; // TODO: Remove this and add PortAudio checks and change deviceID code
 
     HRESULT status;
-    IMMDevice* device = NULL;
+    IMMDevice *device = NULL;
     PROPVARIANT prop;
-    IPropertyStore* store = nullptr;
+    IPropertyStore *store = nullptr;
     PWAVEFORMATEX deviceProperties;
-     // Setup capture environment
+    // Setup capture environment
     status = CoInitialize(NULL);
     HANDLE_ERROR(status);
-     // Creates a system instance of the device enumerator
+    // Creates a system instance of the device enumerator
     status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
     HANDLE_ERROR(status);
-     // Select the current active record/loopback device
+    // Select the current active record/loopback device
     status = pEnumerator->GetDevice(activeDevice->getID().windowsID, &device);
     HANDLE_ERROR(status);
-     status = device->OpenPropertyStore(STGM_READ, &store);
+    status = device->OpenPropertyStore(STGM_READ, &store);
     HANDLE_ERROR(status);
-     status = store->GetValue(PKEY_AudioEngine_DeviceFormat, &prop);
+    status = store->GetValue(PKEY_AudioEngine_DeviceFormat, &prop);
     HANDLE_ERROR(status);
-     deviceProperties = (PWAVEFORMATEX)prop.blob.pBlobData;
-     // Check number of channels
-    if(deviceProperties->nChannels != HulaAudioSettings::getInstance()->getNumberOfChannels())
+    deviceProperties = (PWAVEFORMATEX)prop.blob.pBlobData;
+    // Check number of channels
+    if (deviceProperties->nChannels != HulaAudioSettings::getInstance()->getNumberOfChannels())
     {
         std::cerr << "Invalid number of channels" << std::endl;
         return false;
     }
-     // Check sample rate
-    if(deviceProperties->nSamplesPerSec != HulaAudioSettings::getInstance()->getSampleRate())
+    // Check sample rate
+    if (deviceProperties->nSamplesPerSec != HulaAudioSettings::getInstance()->getSampleRate())
     {
         std::cerr << "Invalid sample rate" << std::endl;
         return false;
@@ -369,4 +487,12 @@ Exit:
 WindowsAudio::~WindowsAudio()
 {
     printf("%sWindowsAudio destructor called\n", HL_PRINT_PREFIX);
+
+    // Close the Port Audio session
+    PaError err = Pa_Terminate();
+    if (err != paNoError)
+    {
+        fprintf(stderr, "%sCould not terminate Port Audio session.\n", HL_ERROR_PREFIX);
+        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
+    }
 }
