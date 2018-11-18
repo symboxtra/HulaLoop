@@ -67,6 +67,15 @@ namespace hula
             std::atomic<bool> endCapture;
 
             /**
+             * Flag to syncronize the playback thread for an instance.
+             * This is used to break the playback loop when switching devices
+             * or when 0 buffers are present.
+             *
+             * Should never be set directly. Only by setActiveXXXDevice().
+             */
+            std::atomic<bool> endPlayback;
+
+            /**
              * I don't really know what this is for right now
              * but I'm going to add this comment so that Doxygen
              * will quit complaining.
@@ -97,6 +106,12 @@ namespace hula
              */
             virtual void capture() = 0;
             static void backgroundCapture(OSAudio *_this);
+
+            /**
+             * Execution loop for audio playback
+             */
+            virtual void playback() = 0;
+            static void backgroundPlayback(OSAudio *_this);
 
             /**
              * Verify the bit rate of set rate with the hardware device compatibility
