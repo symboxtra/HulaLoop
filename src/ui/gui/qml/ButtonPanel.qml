@@ -97,18 +97,7 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
                 background: Rectangle {
-//                    opacity: enabled ? 1 : 0.4
-                    color: recordBtn.pressed ? "grey" : "darkgrey"
-//                    color: {
-//                        if(recordBtn.enabled){
-//                            console.log("ENABLED");
-//                            return "darkgrey"
-//                        }
-//                        else{
-//                            console.log("DISABLED");
-//                            return "black"
-//                        }
-//                    }
+                    color: (recordBtn.pressed || !recordBtn.enabled) ?  "grey" : "darkgrey"
                     radius: recordBtn.width / 2
                 }
 
@@ -152,8 +141,7 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
                 background: Rectangle {
-                    opacity: enabled ? 1 : 0.15
-                    color: stopBtn.pressed ? "grey" : "darkgrey"
+                    color: (stopBtn.pressed || !stopBtn.enabled) ?  "grey" : "darkgrey"
                     radius: stopBtn.width / 2
                 }
 
@@ -206,8 +194,7 @@ Rectangle {
                 }
 
                 background: Rectangle {
-                    opacity: enabled ? 1 : 0.15
-                    color: playpauseBtn.pressed ? "grey" : "darkgrey"
+                    color: (playpauseBtn.pressed || !playpauseBtn.enabled) ?  "grey" : "darkgrey"
                     radius: playpauseBtn.width / 2
                 }
 
@@ -266,8 +253,7 @@ Rectangle {
                 }
 
                 background: Rectangle {
-                    opacity: enabled ? 1 : 0.15
-                    color: timerBtn.pressed ? "grey" : "darkgrey"
+                    color: (timerBtn.pressed || !timerBtn.enabled) ?  "grey" : "darkgrey"
                     radius: timerBtn.width / 2
                 }
 
@@ -294,8 +280,7 @@ Rectangle {
                 }
 
                 background: Rectangle {
-                    opacity: enabled ? 1 : 0.15
-                    color: exportBtn.pressed ? "grey" : "darkgrey"
+                    color: (exportBtn.pressed || !exportBtn.enabled) ?  "grey" : "darkgrey"
                     radius: exportBtn.width / 2
                 }
 
@@ -303,7 +288,17 @@ Rectangle {
             }
 
             DropShadow {
-                visible: recordBtn.enabled ? true : false
+                visible: (recordBtn.enabled && !recordBtn.pressed) ? true : false
+                color: "#606060"
+                anchors.fill: recordBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: recordBtn
+            }
+
+            InnerShadow {
+                visible: recordBtn.pressed ? true : false
                 color: "#606060"
                 anchors.fill: recordBtn
                 horizontalOffset: 2
@@ -313,7 +308,17 @@ Rectangle {
             }
 
             DropShadow {
-                visible: stopBtn.enabled ? true : false
+                visible: (stopBtn.enabled && !stopBtn.pressed) ? true : false
+                color: "#606060"
+                anchors.fill: stopBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: stopBtn
+            }
+
+            InnerShadow {
+                visible: stopBtn.pressed ? true : false
                 color: "#606060"
                 anchors.fill: stopBtn
                 horizontalOffset: 2
@@ -323,7 +328,17 @@ Rectangle {
             }
 
             DropShadow {
-                visible: playpauseBtn.enabled ? true : false
+                visible: (playpauseBtn.enabled && !playpauseBtn.pressed) ? true : false
+                color: "#606060"
+                anchors.fill: playpauseBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: playpauseBtn
+            }
+
+            InnerShadow {
+                visible: playpauseBtn.pressed ? true : false
                 color: "#606060"
                 anchors.fill: playpauseBtn
                 horizontalOffset: 2
@@ -333,7 +348,17 @@ Rectangle {
             }
 
             DropShadow {
-                visible: timerBtn.enabled ? true : false
+                visible: (timerBtn.enabled && !timerBtn.pressed) ? true : false
+                color: "#606060"
+                anchors.fill: timerBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: timerBtn
+            }
+
+            InnerShadow {
+                visible: timerBtn.pressed ? true : false
                 color: "#606060"
                 anchors.fill: timerBtn
                 horizontalOffset: 2
@@ -343,7 +368,17 @@ Rectangle {
             }
 
             DropShadow {
-                visible: exportBtn.enabled ? true : false
+                visible: (exportBtn.enabled && !exportBtn.pressed) ? true : false
+                color: "#606060"
+                anchors.fill: exportBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: exportBtn
+            }
+
+            InnerShadow {
+                visible: exportBtn.pressed ? true : false
                 color: "#606060"
                 anchors.fill: exportBtn
                 horizontalOffset: 2
