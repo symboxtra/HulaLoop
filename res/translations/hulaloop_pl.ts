@@ -66,188 +66,193 @@
 <context>
     <name>CLI</name>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="56"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="58"/>
         <source>Invalid argument &apos;%1&apos; provided to option &apos;%2&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="73"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="75"/>
         <source>Simple cross-platform audio loopback and recording.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="81"/>
         <source>Path to audio output file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="81"/>
         <source>output filepath</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="80"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="82"/>
         <source>Duration, in seconds, of the countdown timer before record.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="80"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="82"/>
         <source>delay</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="81"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="83"/>
         <source>Duration, in seconds, of the record.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="81"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="83"/>
         <source>record duration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="82"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="84"/>
         <source>Start the countdown/record immediately.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="83"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="85"/>
         <source>Desired sample rate of the output file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="83"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="85"/>
         <source>sample rate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="84"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="86"/>
         <source>Encoding format for the output file. Valid options are WAV and MP3. This will default to WAV.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="84"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="86"/>
         <source>encoding</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="85"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="87"/>
         <source>System name of the input device. This will default if not provided.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="85"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="87"/>
         <source>input device name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="86"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="88"/>
         <source>System name of the output device. This will default if not provided.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="86"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="88"/>
         <source>output device name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="87"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="89"/>
         <source>List available input and output devices.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="88"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="90"/>
         <source>Set the language of the application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="88"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="90"/>
         <source>target language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="102"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="104"/>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="355"/>
         <source>Translation file successfully loaded.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="106"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="108"/>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="359"/>
         <source>Could not find translation file for %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="165"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="167"/>
         <source>Only WAV format is supported at this time.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="188"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="190"/>
         <source>Device List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="61"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="63"/>
         <source>Device #%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="62"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="64"/>
         <source>Record</source>
         <comment>device capability</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="63"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="65"/>
         <source>Loopback</source>
         <comment>device capability</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="64"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="66"/>
         <source>Output</source>
         <comment>device capability</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="124"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="126"/>
         <source>Could not find input device matching: %1</source>
         <extracomment>The argument in this text is the name or id of the device that the user searched for</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="139"/>
-        <source>Output file</source>
-        <comment>setting</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="140"/>
-        <source>Delay</source>
-        <comment>seconds</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="141"/>
-        <source>Duration</source>
-        <comment>seconds</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="142"/>
-        <source>Sample rate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="142"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="159"/>
         <source>Hz</source>
         <comment>unit</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="143"/>
-        <source>Encoding</source>
+        <location filename="../../src/ui/cli/CLICommon.h" line="147"/>
+        <source>Output file:</source>
+        <comment>setting</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="152"/>
+        <source>Delay:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="153"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="156"/>
+        <source>s</source>
+        <comment>abbreviation for seconds</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="155"/>
+        <source>Duration:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="158"/>
+        <source>Sample rate:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="161"/>
+        <source>Encoding:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

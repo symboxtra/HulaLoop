@@ -44,6 +44,8 @@ typedef struct HulaImmediateArgs
 {
     bool startRecord = false;
     bool exit = false;
+    std::string inputDevice;
+    std::string outputDevice;
 } HulaImmediateArgs;
 
 /**

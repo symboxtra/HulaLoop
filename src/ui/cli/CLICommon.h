@@ -1,6 +1,8 @@
 #ifndef HULA_CLI_COMMON_H
 #define HULA_CLI_COMMON_H
 
+#include <iomanip>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -132,18 +134,41 @@ inline Device *findDevice(Transport *t, const std::string &name, DeviceType type
  */
 inline void printSettings()
 {
+    using std::cout;
+    using std::endl;
+    using std::setw;
+    using std::left;
+    int colW = 32;
+
     HulaSettings *settings = HulaSettings::getInstance();
 
-    printf("\n");
-    // TODO: Figure out language spacing on this
-    printf("%s:\t\t\t'%s'\n", qPrintable(CLI::tr("Output file", "setting")), settings->getOutputFilePath().c_str());
-    printf("%s:\t\t\t\t%.2f s\n", qPrintable(CLI::tr("Delay", "seconds")), settings->getDelayTimer());
-    printf("%s:\t\t\t%.2f s\n", qPrintable(CLI::tr("Duration", "seconds")), settings->getRecordDuration());
-    printf("%s:\t\t\t%d %s\n", qPrintable(CLI::tr("Sample rate")), settings->getSampleRate(), qPrintable(CLI::tr("Hz", "unit")));
-    printf("%s:\t\t\t%s\n", qPrintable(CLI::tr("Encoding")), "WAV");
-    printf("%s:\t\t\t%s\n", qPrintable("Input device"), settings->getDefaultInputDeviceName().c_str());
-    printf("%s:\t\t\t%s\n", qPrintable("Output device"), settings->getDefaultOutputDeviceName().c_str());
-    printf("\n");
+    cout << std::fixed << std::setprecision(2) << endl;
+
+    cout << left << setw(colW) << qPrintable(CLI::tr("Output file:", "setting"));
+    cout << settings->getOutputFilePath() << endl;
+
+    // Using SI typeset for the units. Shouldn't change with localization.
+    // https://english.stackexchange.com/questions/2794/punctuation-with-units
+    cout << left << setw(colW) << qPrintable(CLI::tr("Delay:"));
+    cout << settings->getDelayTimer() << " " << qPrintable(CLI::tr("s", "abbreviation for seconds")) << endl;
+
+    cout << left << setw(colW) << qPrintable(CLI::tr("Duration:"));
+    cout << settings->getRecordDuration() << " " << qPrintable(CLI::tr("s", "abbreviation for seconds")) << endl;
+
+    cout << left << setw(colW) << qPrintable(CLI::tr("Sample rate:"));
+    cout << settings->getSampleRate() << " " << qPrintable(CLI::tr("Hz", "unit")) << endl;
+
+    cout << left << setw(colW) << qPrintable(CLI::tr("Encoding:"));
+    cout << "WAV" << endl;
+
+    cout << left << setw(colW) << qPrintable("Input device:");
+    cout << settings->getDefaultInputDeviceName() << endl;
+
+    cout << left << setw(colW) << qPrintable("Output device:");
+    cout << settings->getDefaultOutputDeviceName() << endl;
+
+    cout << endl;
+    cout << endl;
 }
 
 #endif // END HULA_CLI_COMMON_H

@@ -75,7 +75,7 @@ bool QMLBridge::pause()
  */
 void QMLBridge::setActiveInputDevice(QString QDeviceName)
 {
-    std::cout << "setActiveDevice() called" << std::endl;
+    hlDebug() << "setActiveDevice() called" << std::endl;
     std::string deviceName = QDeviceName.toStdString();
     std::vector<Device *> iDevices = transport->getController()->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
     for (auto const &device : iDevices)
