@@ -173,7 +173,7 @@ ring_buffer_size_t HulaRingBuffer::write(const SAMPLE *data, ring_buffer_size_t 
         // }
         //PaUtil_AdvanceRingBufferWriteIndex(&pData->ringBuffer, itemsReadFromFile);
 
-    //elementsWritten = PaUtil_WriteRingBuffer(&this->rb, (void*)data, maxSamples);
+    elementsWritten = PaUtil_WriteRingBuffer(&this->rb, (void*)data, maxSamples);
 
 
     return elementsWritten;
