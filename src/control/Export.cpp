@@ -78,8 +78,6 @@ void Export::copyData(std::vector<std::string> dirs)
             sf_count_t framesRead = sf_readf_float(in_file, buffer, 512 / NUM_CHANNELS);
             sf_count_t framesWritten = sf_writef_float(out_file, buffer, framesRead);
 
-            //printf("Frames Read: %f\nFrames written: %f\n", framesRead, framesWritten);
-
             if(framesRead != 512 / NUM_CHANNELS)
                 break;
         }

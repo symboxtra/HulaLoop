@@ -167,6 +167,7 @@ Rectangle {
                         enabled = false;
 
                         recordBtn.enabled = true;
+                        recordBtn.contentItem.text = MDFont.Icon.deleteForever;
                         isStopped = true;
 
                         playpauseBtn.enabled = true;
@@ -236,8 +237,11 @@ Rectangle {
                             contentItem.text = MDFont.Icon.pause;
                             contentItem.color = "white";
 
-                            stopBtn.enabled = false;
-                            recordBtn.enabled = false;
+                            if(!stopBtn.isStopped)
+                            {
+                                stopBtn.enabled = false;
+                                recordBtn.enabled = false;
+                            }
                         }
                     }
 
@@ -519,10 +523,12 @@ Rectangle {
                         text: "Yes"
                         font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                         onClicked: {
-                            // discard files
+                            // Discard files
                             qmlbridge.cleanTempFiles()
-                            // start recording again
+
+                            // Start recording again
                             stopBtn.isStopped = false
+                            recordBtn.contentItem.text = MDFont.Icon.record
                             recordBtn.onClicked()
                             discardPopup.close()
                         }
