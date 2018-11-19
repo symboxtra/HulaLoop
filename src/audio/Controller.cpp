@@ -32,7 +32,7 @@ Controller::Controller()
 
     if (audio == NULL)
     {
-        hlDebug() << "Error initializing OS audio module!" << std::endl;
+        hlDebug() << HL_OS_INIT_FAILED_MSG << std::endl;
         exit(1);
     } // TODO: Handle error
 

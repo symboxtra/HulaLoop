@@ -48,15 +48,43 @@
 
 /******************************************************************************
  *
- * Collection of exceptions for hlaudio
+ * Collection of error codes and exceptions for hlaudio
  *
 ******************************************************************************/
 #define HL_SAMPLE_RATE_VALID "Sample rate and format are valid."
 #define HL_SAMPLE_RATE_INVALID "The specified sample rate or format is invalid."
 
+#define HL_OS_INIT_FAILED_CODE -1
+#define HL_OS_INIT_FAILED_MSG  "Error initializing OS audio module!"
+
 namespace hula
 {
+    /**
+     * Exception class for the control module and higher.
+     */
+    class AudioException {
 
+        private:
+            int errorCode;
+            std::string msg;
+
+        public:
+            AudioException(int errorCode, const std::string &msg)
+            {
+                this->errorCode = errorCode;
+                this->msg = msg;
+            }
+
+            const std::string getMessage() const
+            {
+                return msg;
+            }
+
+            int getErrorCode()
+            {
+                return errno;
+            }
+    };
 }
 
 #endif // END HL_AUDIO_ERROR_H
