@@ -87,15 +87,10 @@ TEST_F(TestController, set_output_works)
  */
 TEST_F(TestController, set_input_fails_when_given_output)
 {
-    std::vector<Device *> devices = this->getDevices(DeviceType::PLAYBACK);
+    Device device(DeviceID(), "Device", DeviceType::PLAYBACK);
 
-    if (devices.size() > 0)
-    {
-        bool success = this->setActiveInputDevice(devices[0]);
-        EXPECT_FALSE(success);
-    }
-
-    Device::deleteDevices(devices);
+    bool success = this->setActiveInputDevice(&device);
+    EXPECT_FALSE(success);
 }
 
 /**
@@ -106,15 +101,10 @@ TEST_F(TestController, set_input_fails_when_given_output)
  */
 TEST_F(TestController, set_output_fails_when_given_input)
 {
-    std::vector<Device *> devices = this->getDevices(DeviceType::RECORD);
+    Device device(DeviceID(), "Device", DeviceType::RECORD);
 
-    if (devices.size() > 0)
-    {
-        bool success = this->setActiveOutputDevice(devices[0]);
-        EXPECT_FALSE(success);
-    }
-
-    Device::deleteDevices(devices);
+    bool success = this->setActiveOutputDevice(&device);
+    EXPECT_FALSE(success);
 }
 
 /**
