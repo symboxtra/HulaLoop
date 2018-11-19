@@ -49,12 +49,20 @@ int main(int argc, char **argv)
 
     if (extraArgs.inputDevice.size() > 0)
     {
-        cli.processCommand(HL_INPUT_LONG, { extraArgs.inputDevice });
+        HulaCliStatus stat = cli.processCommand(HL_INPUT_LONG, { extraArgs.inputDevice });
+        if (stat == HulaCliStatus::HULA_CLI_FAILURE)
+        {
+            return 1;
+        }
     }
 
     if (extraArgs.outputDevice.size() > 0)
     {
-        cli.processCommand(HL_INPUT_LONG, { extraArgs.outputDevice });
+        HulaCliStatus stat = cli.processCommand(HL_OUTPUT_LONG, { extraArgs.outputDevice });
+        if (stat == HulaCliStatus::HULA_CLI_FAILURE)
+        {
+            return 1;
+        }
     }
 
     if (!extraArgs.startRecord)
@@ -65,5 +73,4 @@ int main(int argc, char **argv)
     {
         cli.processCommand(HL_RECORD_LONG, { extraArgs.delay, extraArgs.duration });
     }
-
 }

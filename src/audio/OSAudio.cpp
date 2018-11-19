@@ -126,24 +126,25 @@ void OSAudio::backgroundCapture(OSAudio *_this)
  * new device
  *
  * @param device Instance of Device that corresponds to the desired system device
+ * @return Success of device switch
  */
-void OSAudio::setActiveInputDevice(Device *device)
+bool OSAudio::setActiveInputDevice(Device *device)
 {
     // TODO: Handle error
     if (device == NULL)
     {
-        return;
+        return false;
     }
 
     // If this isn't a loopback or record device
     if (!(device->getType() & LOOPBACK || device->getType() & RECORD))
     {
-        return;
+        return false;
     }
 
     if(!this->checkDeviceParams(device))
     {
-        return;
+        return false;
     }
 
     if (this->activeInputDevice)
@@ -158,6 +159,8 @@ void OSAudio::setActiveInputDevice(Device *device)
 
     // Startup a new thread
     inThreads.emplace_back(std::thread(&backgroundCapture, this));
+
+    return true;
 }
 
 /**
@@ -183,24 +186,25 @@ void OSAudio::joinAndKillThreads(std::vector<std::thread> &threads)
  * new device
  *
  * @param device Instance of Device that corresponds to the desired system device
+ * @return Success of device switch
  */
-void OSAudio::setActiveOutputDevice(Device *device)
+bool OSAudio::setActiveOutputDevice(Device *device)
 {
     // TODO: Handle error
     if (device == NULL)
     {
-        return;
+        return false;
     }
 
     // If this isn't a loopback or record device
     if (!(device->getType() & PLAYBACK))
     {
-        return;
+        return false;
     }
 
     if (!this->checkDeviceParams(device))
     {
-        return;
+        return false;
     }
 
     if (this->activeOutputDevice)
@@ -208,6 +212,8 @@ void OSAudio::setActiveOutputDevice(Device *device)
         delete this->activeOutputDevice;
     }
     this->activeOutputDevice = new Device(*device);
+
+    return true;
 }
 
 /**

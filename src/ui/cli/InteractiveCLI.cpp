@@ -286,10 +286,23 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
         // Find device will already have printed a not-found error
         if (device != NULL)
         {
-            t->getController()->setActiveInputDevice(device);
-            printf("\n%s\n", qPrintable(tr("Input device set to: %1").arg(device->getName().c_str())));
+            bool ret = t->getController()->setActiveInputDevice(device);
+
+            if (ret)
+            {
+                printf("\n%s\n", qPrintable(tr("Input device set to: %1").arg(device->getName().c_str())));
+            }
+            else
+            {
+                fprintf(stderr, "\n%s\n", qPrintable(tr("Failed to set input device.")));
+            }
 
             delete device;
+
+            if (!ret)
+            {
+                return HulaCliStatus::HULA_CLI_FAILURE;
+            }
         }
         else
         {
@@ -313,10 +326,23 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
         // Find device will already have printed a not-found error
         if (device != NULL)
         {
-            t->getController()->setActiveOutputDevice(device);
-            printf("\n%s\n", qPrintable(tr("Output device set to: %1").arg(device->getName().c_str())));
+            bool ret = t->getController()->setActiveOutputDevice(device);
+
+            if (ret)
+            {
+                printf("\n%s\n", qPrintable(tr("Output device set to: %1").arg(device->getName().c_str())));
+            }
+            else
+            {
+                fprintf(stderr, "\n%s\n", qPrintable(tr("Failed to set output device.")));
+            }
 
             delete device;
+
+            if (!ret)
+            {
+                return HulaCliStatus::HULA_CLI_FAILURE;
+            }
         }
         else
         {

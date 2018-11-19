@@ -31,8 +31,8 @@ namespace hula
 
             std::vector<Device *> getDevices(DeviceType type) const;
 
-            void setActiveInputDevice(Device *device) const;
-            void setActiveOutputDevice(Device *device) const;
+            bool setActiveInputDevice(Device *device) const;
+            bool setActiveOutputDevice(Device *device) const;
     };
 }
 

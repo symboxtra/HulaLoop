@@ -417,12 +417,16 @@ TEST(TestInteractiveCLI, no_arg_long_input_select)
 }
 
 /**
+ * DISABLED:
+ *      Can't guarentee that device 0 will be
+ *      capable of input on all systems.
+ *
  * Set input device using ID.
  *
  * EXPECTED:
  *      process returns success
  */
-TEST(TestInteractiveCLI, select_by_id_long_input)
+TEST(TestInteractiveCLI, DISABLED_select_by_id_long_input)
 {
     OPT_TEST(HL_INPUT_LONG, "0");
 
@@ -461,12 +465,16 @@ TEST(TestInteractiveCLI, no_arg_long_ouput_select)
 }
 
 /**
+ * DISABLED:
+ *      Can't guarentee that device 0 will be
+ *      capable of output on all systems.
+ *
  * Set ouput device using ID.
  *
  * EXPECTED:
  *      process returns success
  */
-TEST(TestInteractiveCLI, select_by_id_long_output)
+TEST(TestInteractiveCLI, DISABLED_select_by_id_long_output)
 {
     OPT_TEST(HL_OUTPUT_LONG, "0");
 

@@ -127,10 +127,11 @@ std::vector<Device *> Controller::getDevices(DeviceType type) const
  * can be used without issue.
  *
  * @param device Desired input device
+ * @return Success of device switch
  */
-void Controller::setActiveInputDevice(Device *device) const
+bool Controller::setActiveInputDevice(Device *device) const
 {
-    audio->setActiveInputDevice(device);
+    return audio->setActiveInputDevice(device);
 }
 
 /**
@@ -143,10 +144,11 @@ void Controller::setActiveInputDevice(Device *device) const
  * can be used without issue.
  *
  * @param device - Device instance that is to be set as the active output device
+ * @return Success of device switch
  */
-void Controller::setActiveOutputDevice(Device *device) const
+bool Controller::setActiveOutputDevice(Device *device) const
 {
-    audio->setActiveOutputDevice(device);
+    return audio->setActiveOutputDevice(device);
 }
 
 /**

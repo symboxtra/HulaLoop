@@ -118,7 +118,16 @@ bool LinuxAudio::checkDeviceParams(Device *device)
     const char *id = device->getID().linuxID.c_str();
     hlDebug() << id << std::endl;
     // open pcm device
-    err = snd_pcm_open(&pcmHandle, id, SND_PCM_STREAM_CAPTURE, 0);
+
+    if (device->getType() == DeviceType::PLAYBACK)
+    {
+        err = snd_pcm_open(&pcmHandle, id, SND_PCM_STREAM_PLAYBACK, 0);
+    }
+    else
+    {
+        err = snd_pcm_open(&pcmHandle, id, SND_PCM_STREAM_CAPTURE, 0);
+    }
+
     if (err < 0)
     {
         hlDebug() << "Unable to test device: " << id << std::endl;
@@ -144,12 +153,19 @@ bool LinuxAudio::checkDeviceParams(Device *device)
     snd_config_update_free_global();
     if (samplingRateValid && formatValid)
     {
-        // TODO: qOut()
         hlDebug() << HL_SAMPLE_RATE_VALID << std::endl;
         return true;
     }
 
-    // TODO: qOut()
+    if (!samplingRateValid)
+    {
+        hlDebug() << "Sampling rate was invalid." << std::endl;
+    }
+    else
+    {
+        hlDebug() << "Format was invalid." << std::endl;
+    }
+
     hlDebug() << HL_SAMPLE_RATE_INVALID << std::endl;
     return false;
 }
