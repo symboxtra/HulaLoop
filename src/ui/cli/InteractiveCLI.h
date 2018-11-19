@@ -30,6 +30,10 @@ namespace hula
             Transport *t;
             HulaSettings *settings;
 
+            double delay = 0;
+            double duration = HL_INFINITE_RECORD;
+            std::string outputFilePath;
+
         public:
             HulaInteractiveCli(QCoreApplication *app);
 
@@ -40,6 +44,7 @@ namespace hula
             void start();
             HulaCliStatus processCommand(const std::string &command, const std::vector<std::string> &args);
             TransportState getState();
+            void setOutputFilePath(const std::string &path);
 
             ~HulaInteractiveCli();
     };

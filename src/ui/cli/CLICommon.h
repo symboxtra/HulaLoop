@@ -1,6 +1,11 @@
 #ifndef HULA_CLI_COMMON_H
 #define HULA_CLI_COMMON_H
 
+// Convert numeric defines to strings
+// https://stackoverflow.com/questions/5459868/concatenate-int-to-string-using-c-preprocessor
+#define STR_HELPER(x) #x
+#define STR(x) STR_HELPER(x)
+
 #include <iomanip>
 #include <iostream>
 #include <string>
@@ -36,139 +41,172 @@ namespace hula
     class CLI {
         Q_DECLARE_TR_FUNCTIONS(CLI)
     };
-}
 
-/**
- * Utility CLI function to print the device list to the console.
- *
- * @param t Transport from which devices should be requested
- */
-inline void printDeviceList(Transport *t)
-{
-    HulaSettings *settings = HulaSettings::getInstance();
-
-    std::vector<Device *> devices;
-    if (settings->getShowRecordDevices())
+    /**
+     * Args parsed from CLI flags.
+     */
+    typedef struct HulaImmediateArgs
     {
-        devices = t->getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK | RECORD));
-    }
-    else
-    {
-        devices = t->getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK));
-    }
+        bool startRecord = false;
+        bool exit = false;
+        std::string delay = "0";
+        std::string duration = STR(HL_INFINITE_RECORD);
+        std::string outputFilePath;
+        std::string inputDevice;
+        std::string outputDevice;
+    } HulaImmediateArgs;
 
-    printf("\n");
-    for (size_t i = 0; i < devices.size(); i++)
+    /**
+     * Utility CLI function to print the device list to the console.
+     *
+     * @param t Transport from which devices should be requested
+     */
+    inline void printDeviceList(Transport *t)
     {
-        printf("%s: %s\n", qPrintable(CLI::tr("Device #%1").arg(i)), devices[i]->getName().c_str());
-        printf("%s:   %s\n", qPrintable(CLI::tr("Record", "device capability")), (devices[i]->getType() & DeviceType::RECORD) ? "true" : "false");
-        printf("%s: %s\n", qPrintable(CLI::tr("Loopback", "device capability")), (devices[i]->getType() & DeviceType::LOOPBACK) ? "true" : "false");
-        printf("%s:   %s\n", qPrintable(CLI::tr("Output", "device capability")), (devices[i]->getType() & DeviceType::PLAYBACK) ? "true" : "false");
-        printf("\n");
-    }
+        using std::cout;
+        using std::endl;
+        using std::setw;
+        using std::left;
+        int colW = 12;
 
-    Device::deleteDevices(devices);
-}
+        HulaSettings *settings = HulaSettings::getInstance();
 
-/**
- * Utility function for searching the list of devices.
- *
- * Search is limited to devices of DeviceType @ref type.
- *
- * @param t Transport from which devices should be requested
- * @param name Name of the desired device
- * @param type Expected type of the desired device
- * @return Pointer to newly allocated Device object if found
- * @return NULL if not found
- */
-inline Device *findDevice(Transport *t, const std::string &name, DeviceType type)
-{
-    Device *device = NULL;
-    std::vector<Device *> devices;
-    devices = t->getController()->getDevices(type);
-
-    // Check if we got a numeric id
-    // Since we all do this differently,
-    // we'll just use the relative ordering to pick
-    // ids
-    int id = -1;
-    try
-    {
-        id = std::stoi(name, nullptr);
-    }
-    catch (std::invalid_argument &e)
-    {
-        // Wasn't an id
-        (void)e;
-    }
-
-    for (size_t i = 0; i < devices.size(); i++)
-    {
-        // Check id and name
-        if (i == id || devices[i]->getName() == name)
+        std::vector<Device *> devices;
+        if (settings->getShowRecordDevices())
         {
-            device = devices[i];
-            break;
+            devices = t->getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK | RECORD));
         }
+        else
+        {
+            devices = t->getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK));
+        }
+
+        printf("\n");
+        for (size_t i = 0; i < devices.size(); i++)
+        {
+            cout << left << setw(colW) << qPrintable(CLI::tr("Device #%1:").arg(i)) << devices[i]->getName() << endl;
+
+            cout << left << setw(colW) << qPrintable(CLI::tr("Record:", "device capability"));
+            cout << ((devices[i]->getType() & DeviceType::RECORD) ? "true" : "false") << endl;
+
+            cout << left << setw(colW) << qPrintable(CLI::tr("Loopback:", "device capability"));
+            cout << ((devices[i]->getType() & DeviceType::LOOPBACK) ? "true" : "false") << endl;
+
+            cout << left << setw(colW) << qPrintable(CLI::tr("Output:", "device capability"));
+            cout << ((devices[i]->getType() & DeviceType::PLAYBACK) ? "true" : "false") << endl;
+
+            cout << endl;
+        }
+
+        Device::deleteDevices(devices);
     }
 
-    // Make a copy so that we can delete all
-    if (device != NULL)
+    /**
+     * Utility function for searching the list of devices.
+     *
+     * Search is NOT limited to devices of DeviceType @ref type.
+     * Since restricting type would mess up indexing, it is ignored
+     * for now.
+     *
+     * @param t Transport from which devices should be requested
+     * @param name Name of the desired device
+     * @param type Expected type of the desired device
+     * @return Pointer to newly allocated Device object if found
+     * @return NULL if not found
+     */
+    inline Device * findDevice(Transport *t, const std::string &name, DeviceType type)
     {
-        device = new Device(*device);
+        Device *device = NULL;
+        std::vector<Device *> devices;
+
+        // TODO: Change this when proper device indexing is possible
+        // devices = t->getController()->getDevices(type);
+        devices = t->getController()->getDevices((DeviceType)(DeviceType::LOOPBACK | DeviceType::RECORD | DeviceType::PLAYBACK));
+
+        // Check if we got a numeric id
+        // Since we all do this differently,
+        // we'll just use the relative ordering to pick
+        // ids
+        int id = -1;
+        try
+        {
+            id = std::stoi(name, nullptr);
+        }
+        catch (std::invalid_argument &e)
+        {
+            // Wasn't an id
+            (void)e;
+        }
+
+        for (size_t i = 0; i < devices.size(); i++)
+        {
+            // Check id and name
+            if (i == id || devices[i]->getName() == name)
+            {
+                device = devices[i];
+                break;
+            }
+        }
+
+        // Make a copy so that we can delete all
+        if (device != NULL)
+        {
+            device = new Device(*device);
+        }
+
+        Device::deleteDevices(devices);
+
+        if (device == NULL)
+        {
+            //: The argument in this text is the name or id of the device that the user searched for
+            fprintf(stderr, "\n%s\n", qPrintable(CLI::tr("Could not find device matching: %1").arg(name.c_str())));
+        }
+
+        return device;
     }
 
-    Device::deleteDevices(devices);
-
-    if (device == NULL)
+    /**
+     * Utility function for printing the current application settings.
+     */
+    inline void printSettings(const HulaImmediateArgs &args)
     {
-        //: The argument in this text is the name or id of the device that the user searched for
-        fprintf(stderr, "\n%s\n", qPrintable(CLI::tr("Could not find input device matching: %1").arg(name.c_str())));
+        using std::cout;
+        using std::endl;
+        using std::setw;
+        using std::left;
+        int colW = 32;
+
+        HulaSettings *settings = HulaSettings::getInstance();
+
+        cout << std::fixed << std::setprecision(2) << endl;
+
+        cout << left << setw(colW) << qPrintable(CLI::tr("Output file:", "setting"));
+        cout << args.outputFilePath << endl;
+
+        // Using SI typeset for the units. Shouldn't change with localization.
+        // https://english.stackexchange.com/questions/2794/punctuation-with-units
+        cout << left << setw(colW) << qPrintable(CLI::tr("Delay:"));
+        cout << stod(args.delay) << " " << qPrintable(CLI::tr("s", "abbreviation for seconds")) << endl;
+
+        cout << left << setw(colW) << qPrintable(CLI::tr("Duration:"));
+        cout << stod(args.duration) << " " << qPrintable(CLI::tr("s", "abbreviation for seconds")) << endl;
+
+        cout << left << setw(colW) << qPrintable(CLI::tr("Sample rate:"));
+        cout << settings->getSampleRate() << " " << qPrintable(CLI::tr("Hz", "unit")) << endl;
+
+        // TODO: Change this once MP3 gets in here
+        cout << left << setw(colW) << qPrintable(CLI::tr("Encoding:"));
+        cout << "WAV" << endl;
+
+        cout << left << setw(colW) << qPrintable("Input device:");
+        cout << args.inputDevice << endl;
+
+        cout << left << setw(colW) << qPrintable("Output device:");
+        cout << args.outputDevice << endl;
+
+        cout << endl;
+        cout << endl;
     }
-
-    return device;
-}
-
-/**
- * Utility function for printing the current application settings.
- */
-inline void printSettings()
-{
-    using std::cout;
-    using std::endl;
-    using std::setw;
-    using std::left;
-    int colW = 32;
-
-    HulaSettings *settings = HulaSettings::getInstance();
-
-    cout << std::fixed << std::setprecision(2) << endl;
-
-    cout << left << setw(colW) << qPrintable(CLI::tr("Output file:", "setting"));
-    cout << settings->getOutputFilePath() << endl;
-
-    // Using SI typeset for the units. Shouldn't change with localization.
-    // https://english.stackexchange.com/questions/2794/punctuation-with-units
-    cout << left << setw(colW) << qPrintable(CLI::tr("Delay:"));
-    cout << settings->getDelayTimer() << " " << qPrintable(CLI::tr("s", "abbreviation for seconds")) << endl;
-
-    cout << left << setw(colW) << qPrintable(CLI::tr("Duration:"));
-    cout << settings->getRecordDuration() << " " << qPrintable(CLI::tr("s", "abbreviation for seconds")) << endl;
-
-    cout << left << setw(colW) << qPrintable(CLI::tr("Sample rate:"));
-    cout << settings->getSampleRate() << " " << qPrintable(CLI::tr("Hz", "unit")) << endl;
-
-    cout << left << setw(colW) << qPrintable(CLI::tr("Encoding:"));
-    cout << "WAV" << endl;
-
-    cout << left << setw(colW) << qPrintable("Input device:");
-    cout << settings->getDefaultInputDeviceName() << endl;
-
-    cout << left << setw(colW) << qPrintable("Output device:");
-    cout << settings->getDefaultOutputDeviceName() << endl;
-
-    cout << endl;
-    cout << endl;
 }
 
 #endif // END HULA_CLI_COMMON_H

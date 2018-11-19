@@ -38,17 +38,6 @@ using namespace hula;
 #define HL_LANG_LO            "lang"
 
 /**
- * Args parsed from CLI flags.
- */
-typedef struct HulaImmediateArgs
-{
-    bool startRecord = false;
-    bool exit = false;
-    std::string inputDevice;
-    std::string outputDevice;
-} HulaImmediateArgs;
-
-/**
  * Print an error message about the invalid argument and exit.
  *
  * @param name Name of the option to which an invalid argument was supplied
@@ -111,31 +100,17 @@ bool parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
 
     if (parser.isSet(HL_OUT_FILE_LO))
     {
-        settings->setOutputFilePath(parser.value(HL_OUT_FILE_LO).toStdString());
+        extraArgs.outputFilePath = parser.value(HL_OUT_FILE_LO).toStdString();
     }
 
     if (parser.isSet(HL_DELAY_TIME_LO))
     {
-        bool ok = false;
-        double delay = parser.value(HL_DELAY_TIME_LO).toDouble(&ok);
-        if (!ok)
-        {
-            invalidArg(HL_DELAY_TIME_LO, parser.value(HL_DELAY_TIME_LO));
-            return false;
-        }
-        settings->setDelayTimer(delay);
+        extraArgs.delay = parser.value(HL_DELAY_TIME_LO).toStdString();
     }
 
     if (parser.isSet(HL_RECORD_TIME_LO))
     {
-        bool ok = false;
-        double duration = parser.value(HL_RECORD_TIME_LO).toDouble(&ok);
-        if (!ok)
-        {
-            invalidArg(HL_RECORD_TIME_LO, parser.value(HL_RECORD_TIME_LO));
-            return false;
-        }
-        settings->setRecordDuration(duration);
+        extraArgs.duration = parser.value(HL_RECORD_TIME_LO).toStdString();
     }
 
     if (parser.isSet(HL_TRIGGER_RECORD_LO))
@@ -171,16 +146,12 @@ bool parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
 
     if (parser.isSet(HL_INPUT_DEVICE_LO))
     {
-        std::string device = parser.value(HL_INPUT_DEVICE_LO).toStdString();
-        // TODO: See if we can check device list here
-        settings->setDefaultInputDeviceName(device);
+        extraArgs.inputDevice = parser.value(HL_INPUT_DEVICE_LO).toStdString();
     }
 
     if (parser.isSet(HL_OUTPUT_DEVICE_LO))
     {
-        std::string device = parser.value(HL_OUTPUT_DEVICE_LO).toStdString();
-        // TODO: See if we can check device list here
-        settings->setDefaultOutputDeviceName(device);
+        extraArgs.outputDevice = parser.value(HL_OUTPUT_DEVICE_LO).toStdString();
     }
 
     if (parser.isSet(HL_LIST_DEVICES_LO))

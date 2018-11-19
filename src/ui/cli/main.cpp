@@ -4,6 +4,7 @@
 #include <hlcontrol/hlcontrol.h>
 
 #include "CLIArgs.h"
+#include "CLICommands.h"
 #include "CLICommon.h"
 #include "InteractiveCLI.h"
 
@@ -32,20 +33,37 @@ int main(int argc, char **argv)
         return 0;
     }
 
-    fprintf(stdout, "%s", HL_CLI_ASCII_HEADER);
+    // Print the banner and settings before other output
+    if (!extraArgs.startRecord)
+    {
+        printf(HL_CLI_ASCII_HEADER);
+        printSettings(extraArgs);
+    }
 
-    // Print the arguments provided
-    printSettings();
+    HulaInteractiveCli cli(&app);
+
+    // Use the flag values and interactive CLI commands to setup state
+    cli.processCommand(HL_DELAY_TIMER_LONG, { extraArgs.delay });
+    cli.processCommand(HL_RECORD_TIMER_LONG, { extraArgs.duration });
+    cli.setOutputFilePath(extraArgs.outputFilePath);
+
+    if (extraArgs.inputDevice.size() > 0)
+    {
+        cli.processCommand(HL_INPUT_LONG, { extraArgs.inputDevice });
+    }
+
+    if (extraArgs.outputDevice.size() > 0)
+    {
+        cli.processCommand(HL_INPUT_LONG, { extraArgs.outputDevice });
+    }
 
     if (!extraArgs.startRecord)
     {
-        HulaInteractiveCli cli(&app);
         cli.start();
     }
     else
     {
-        Transport t;
-        t.record();
+        cli.processCommand(HL_RECORD_LONG, { extraArgs.delay, extraArgs.duration });
     }
 
 }
