@@ -29,8 +29,8 @@ namespace hula
     class Transport {
         private:
             TransportState state;
-            bool recordState = true;
-            bool playbackState = false;
+            bool recordState;
+            bool playbackState;
 
         protected:
             Record *recorder;

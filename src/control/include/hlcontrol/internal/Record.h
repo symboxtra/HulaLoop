@@ -26,6 +26,7 @@ namespace hula
             void recorder();
 
             std::vector<std::string> getExportPaths();
+            void clearExportPaths();
 
             void start();
             void stop();

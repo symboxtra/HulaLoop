@@ -14,6 +14,9 @@ Transport::Transport()
 {
     controller = new Controller();
     recorder = new Record(controller);
+
+    recordState = true;
+    playbackState = false;
 }
 
 #ifndef NDEBUG
@@ -140,22 +143,6 @@ bool Transport::pause()
 }
 
 /**
- * Discard any recorded audio and reset the state.
- *
- * @return bool Success of command
- */
-/*
-bool Transport::Discard()
-{
-    state = INITIAL;
-    recordState = true;
-    playbackState = false;
-
-    return true;
-}
-*/
-
-/**
  * Return the current state of the Transport object.
  *
  * @return state Current transport state.
@@ -212,16 +199,23 @@ void Transport::exportFile(std::string targetDirectory)
     #else
         exp.copyData(recorder->getExportPaths());
     #endif
+
+    recorder->clearExportPaths();
 }
 
 /**
- * Send the files from record to export for deletion
+ * Reset transport states and delete captured audio files from system temp folder
  */
 void Transport::deleteTempFiles()
 {
+    // Reset states
     recordState = true;
     playbackState = false;
+    state = (TransportState)-1;
+
+    // Delete audio files from system temp folder
     Export::deleteTempFiles(recorder->getExportPaths());
+    recorder->clearExportPaths();
 }
 
 /**

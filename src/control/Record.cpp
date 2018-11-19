@@ -51,11 +51,6 @@ void Record::recorder()
     std::string file_path = Export::getTempPath() + "/hulaloop_" + std::string(timestamp) + ".wav";
     SNDFILE *file = sf_open(file_path.c_str(), SFM_WRITE, &sfinfo);
 
-    // TODO: Remove once debugged
-    //std::string temp = Export::getTempPath() + "/hulaloop_log1.txt";
-    //std::ofstream tempfile(temp.c_str(), ios::binary);
-
-
     // Add file_path to vector of files
     exportPaths.push_back(file_path);
 
@@ -71,10 +66,6 @@ void Record::recorder()
 
         if (samplesRead > 0)
         {
-            //for(int i = 0;i < samplesRead;i++)
-            //{
-            //    tempfile << buffer[i] << endl;
-            //}
             printf("Samples read: %d\n", samplesRead);
 
             for(int i = 0;i < 2 && ptr[i] != NULL;i++)
@@ -91,8 +82,8 @@ void Record::recorder()
             }
         }
     }
+
     sf_close(file);
-    //tempfile.close();
     this->controller->removeBuffer(this->rb);
 }
 
@@ -108,12 +99,24 @@ void Record::stop()
         recordThread.join();
 }
 
+/**
+ * @brief Get list of all files that contains captured audio in the current recording session
+ *
+ * @return std::vector<std::string> Vector of strings that represents file path to captured audio
+ */
 std::vector<std::string> Record::getExportPaths()
 {
-    std::vector<std::string> path_copy = exportPaths;
-    exportPaths.clear();
+    return exportPaths;
+}
 
-    return path_copy;
+/**
+ * @brief Clear the vector to denote that the captured data has been discarded or
+ * exported to a new file
+ *
+ */
+void Record::clearExportPaths()
+{
+    exportPaths.clear();
 }
 
 /**

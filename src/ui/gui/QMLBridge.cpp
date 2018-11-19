@@ -172,6 +172,8 @@ void QMLBridge::saveFile(QString dir)
     }
     directory = directory.substr(substrLen);
     transport->exportFile(directory);
+
+    cleanTempFiles();
 }
 
 /**
