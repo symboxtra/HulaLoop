@@ -38,7 +38,9 @@ int main(int argc, char *argv[])
             msgBox.setWindowTitle(Updater::tr("HulaLoop Updater"));
             msgBox.setIconPixmap(QPixmap(":/res/hulaloop-logo.png"));
 
-            if (updater.checkForUpdate())
+            int ret = updater.checkForUpdate();
+
+            if (ret == 1)
             {
 
                 msgBox.setText(Updater::tr("A newer version has been detected!") + "\n\n" + Updater::tr("Click Ok to update!"));
@@ -61,14 +63,19 @@ int main(int argc, char *argv[])
                 }
 
             }
-            else
+            else if (ret == 0)
             {
-
                 msgBox.setText(Updater::tr("All systems are up-to-date!"));
                 msgBox.setStandardButtons(QMessageBox::Ok);
 
                 msgBox.exec();
+            }
+            else
+            {
+                msgBox.setText(updater.getErrorMessage());
+                msgBox.setStandardButtons(QMessageBox::Ok);
 
+                msgBox.exec();
             }
 
         }

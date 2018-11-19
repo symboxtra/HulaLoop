@@ -35,18 +35,18 @@ class TestUpdater : public ::testing::Test {
 TEST_F(TestUpdater, checkAndDownloadUpdate)
 {
     updater->setUpdateHost("https://api.github.com/repos/jmcker/HulaLoop/releases/latest");
-    ASSERT_TRUE(updater->checkForUpdate());
-    ASSERT_TRUE(updater->downloadUpdate());
+    ASSERT_EQ(updater->checkForUpdate(), 1);
+    ASSERT_EQ(updater->downloadUpdate(), 1);
 
     QFile file(QDir::tempPath() + "/" + updater->getDownloadFileName());
     ASSERT_TRUE(file.exists());
-    ASSERT_TRUE(file.size() == updater->getDownloadSize());
+    ASSERT_EQ(file.size(), updater->getDownloadSize());
 }
 
 TEST_F(TestUpdater, checkForUpdateError)
 {
     updater->setUpdateHost("https://google.com");
-    ASSERT_FALSE(updater->checkForUpdate());
+    ASSERT_EQ(updater->checkForUpdate(), 0);
 }
 
 TEST_F(TestUpdater, parseTag1)
