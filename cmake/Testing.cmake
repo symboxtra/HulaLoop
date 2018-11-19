@@ -27,13 +27,12 @@ function (create_test _test_file _src_files _timeout _do_memcheck _only_master)
     endif ()
 
     # Add memory test
-    # We don't currently have a solution for Windows
-    if (_do_memcheck AND NOT WIN32)
+    if (_do_memcheck AND NOT WIN32 AND NOT OSX)
         if (NOT VALGRIND_EXECUTABLE)
             message (STATUS "Valgrind could not be found. Skipping requested memcheck for ${_test_name}.")
         else ()
             add_test (
-                NAME memcheck_${_test_name}
+                NAME only_master_memcheck_${_test_name}
                 COMMAND ${VALGRIND_EXECUTABLE} --leak-check=full --error-exitcode=1 --track-origins=yes $<TARGET_FILE:${_test_name}>
                 WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
             )
