@@ -9,6 +9,7 @@
 
 #include "switch.h"
 #include "style.h"
+
 #include "QMLBridge.h"
 #include "SystemTrayIcon.h"
 
@@ -49,7 +50,7 @@ int main(int argc, char *argv[])
     // QAction *quitAction = new QAction(QObject::tr("&Quit"), root);
     // root->connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
 
-    Switch* switch1 = new Switch("SWITCH");
+    /*Switch* switch1 = new Switch("SWITCH");
         mainLayout.addWidget(switch1);
         Switch* switch2 = new Switch("SWITCH");
         mainLayout.addWidget(switch2);
@@ -72,6 +73,6 @@ int main(int argc, char *argv[])
         mainLayout.addWidget(item2);
         mainLayout.setMargin(100);
 
-    container.show();
+    container.show();*/
     return app.exec();
 }

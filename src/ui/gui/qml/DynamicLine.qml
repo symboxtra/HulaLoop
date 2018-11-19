@@ -27,7 +27,7 @@ Canvas {
             id: dline
             startY: 200
             startX: 0
-            PathCurve { x: 0; y: 200-(itemarr.items[5]*100)}
+            /*PathCurve { x: 0; y: 200-(itemarr.items[5]*100)}
             PathCurve { x: 80; y: 200-(itemarr.items[7]*100) }
             PathCurve { x: 160; y: 200-(itemarr.items[9]*100)}
             PathCurve { x: 240; y: 200-(itemarr.items[11]*100) }
@@ -43,7 +43,23 @@ Canvas {
             PathCurve { x: 960; y: 200-(itemarr.items[29]*100)}
             PathCurve { x: 1040; y: 200-(itemarr.items[31]*100) }
             PathCurve { x: 1120; y: 200-(itemarr.items[33]*100)}
-            PathCurve { x: 1200; y: 200-(itemarr.items[35]*100) }
+            PathCurve { x: 1200; y: 200-(itemarr.items[35]*100) }*/
+            PathCurve { x: 0; y: 200}
+            PathCurve { x: 80; y: 200-(20) }
+            PathCurve { x: 160; y: 200-(40)}
+            PathCurve { x: 240; y: 200-(60) }
+            PathCurve { x: 320; y: 200-(80)}
+            PathCurve { x: 400; y: 200-(100) }
+            PathCurve { x: 480; y: 200-(120)}
+            PathCurve { x: 560; y: 200-(140) }
+
+            PathCurve { x: 480; y: 200}
+            PathCurve { x: 400; y: 200+20 }
+            PathCurve { x: 320; y: 200+40}
+            PathCurve { x: 240; y: 200+60 }
+            PathCurve { x: 160; y: 200+80}
+            PathCurve { x: 80; y: 200+100}
+
 
 
     }
