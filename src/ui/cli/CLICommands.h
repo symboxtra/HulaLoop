@@ -1,8 +1,8 @@
 #ifndef HL_CLI_COMMANDS_H
 #define HL_CLI_COMMANDS_H
 
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
 #include "CLICommon.h"
 
