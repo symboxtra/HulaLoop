@@ -47,12 +47,57 @@ namespace hula
      */
     typedef struct HulaImmediateArgs
     {
+        /**
+         * Signal that the caller should trigger the record immediately.
+         */
         bool startRecord = false;
+
+        /**
+         * Signal that the caller should exit.
+         */
         bool exit = false;
+
+        /**
+         * Store the delay as a string to be converted by
+         * @ref InteractiveCLI.
+         *
+         * This is passed to @ref InteractiveCLI.
+         */
         std::string delay = "0";
+
+        /**
+         * Store the record duration as a string to be converted
+         * by @ref InteractiveCLI.
+         *
+         * The default of @ref HL_INFINITE_RECORD indicates
+         * that the record should continue until stopped.
+         *
+         * This is passed to @ref InteractiveCLI.
+         */
         std::string duration = STR(HL_INFINITE_RECORD);
+
+        /**
+         * Store the output file path parsed from the
+         * CLI flags.
+         *
+         * This is passed to @ref InteractiveCLI.
+         */
         std::string outputFilePath;
+
+        /**
+         * Store the input device name parsed from the
+         * CLI flags.
+         *
+         * This is passed to @ref InteractiveCLI.
+         */
         std::string inputDevice;
+
+        /**
+         * Store the output device name parsed from the
+         * CLI flags.
+         *
+         * This is passed to @ref InteractiveCLI.
+         */
         std::string outputDevice;
     } HulaImmediateArgs;
 
