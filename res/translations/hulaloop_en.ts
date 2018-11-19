@@ -66,124 +66,124 @@
 <context>
     <name>CLI</name>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="58"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="47"/>
         <source>Invalid argument &apos;%1&apos; provided to option &apos;%2&apos;.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="75"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="64"/>
         <source>Simple cross-platform audio loopback and recording.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="81"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="70"/>
         <source>Path to audio output file.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="81"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="70"/>
         <source>output filepath</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="82"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="71"/>
         <source>Duration, in seconds, of the countdown timer before record.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="82"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="71"/>
         <source>delay</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="83"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="72"/>
         <source>Duration, in seconds, of the record.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="83"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="72"/>
         <source>record duration</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="84"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="73"/>
         <source>Start the countdown/record immediately.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="85"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="74"/>
         <source>Desired sample rate of the output file.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="85"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="74"/>
         <source>sample rate</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="86"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="75"/>
         <source>Encoding format for the output file. Valid options are WAV and MP3. This will default to WAV.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="86"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="75"/>
         <source>encoding</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="87"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="76"/>
         <source>System name of the input device. This will default if not provided.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="87"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="76"/>
         <source>input device name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="88"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="77"/>
         <source>System name of the output device. This will default if not provided.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="88"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="77"/>
         <source>output device name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="89"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="78"/>
         <source>List available input and output devices.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="90"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
         <source>Set the language of the application</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="90"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
         <source>target language</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="104"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="355"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="93"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="384"/>
         <source>Translation file successfully loaded.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="108"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="359"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="97"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="388"/>
         <source>Could not find translation file for %1.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="167"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="142"/>
         <source>Only WAV format is supported at this time.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="190"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="161"/>
         <source>Device List</source>
         <translation></translation>
     </message>
@@ -283,70 +283,70 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="63"/>
-        <source>Device #%1</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="64"/>
-        <source>Record</source>
-        <comment>device capability</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="65"/>
-        <source>Loopback</source>
-        <comment>device capability</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="66"/>
-        <source>Output</source>
-        <comment>device capability</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="126"/>
-        <source>Could not find input device matching: %1</source>
-        <extracomment>The argument in this text is the name or id of the device that the user searched for</extracomment>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="159"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="195"/>
         <source>Hz</source>
         <comment>unit</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="147"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="183"/>
         <source>Output file:</source>
         <comment>setting</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="152"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="87"/>
+        <source>Device #%1:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="89"/>
+        <source>Record:</source>
+        <comment>device capability</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="92"/>
+        <source>Loopback:</source>
+        <comment>device capability</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="95"/>
+        <source>Output:</source>
+        <comment>device capability</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="162"/>
+        <source>Could not find device matching: %1</source>
+        <extracomment>The argument in this text is the name or id of the device that the user searched for</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="188"/>
         <source>Delay:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="153"/>
-        <location filename="../../src/ui/cli/CLICommon.h" line="156"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="189"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="192"/>
         <source>s</source>
         <comment>abbreviation for seconds</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="155"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="191"/>
         <source>Duration:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="158"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="194"/>
         <source>Sample rate:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="161"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="198"/>
         <source>Encoding:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -371,32 +371,42 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="287"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="293"/>
         <source>Input device set to: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="320"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="297"/>
+        <source>Failed to set input device.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="333"/>
         <source>Output device set to: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="379"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="337"/>
+        <source>Failed to set output device.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="408"/>
         <source>System command returned: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="384"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="413"/>
         <source>No system command processor is available.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="394"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="423"/>
         <source>Unrecognized command &apos;%1&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="401"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="430"/>
         <source>Command failed with value of &apos;false&apos;.</source>
         <translation></translation>
     </message>

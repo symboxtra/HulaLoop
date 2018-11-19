@@ -7,6 +7,9 @@ function (create_test _test_file _src_files _timeout _do_memcheck _only_master)
     # Make sure the real application builds first
     if (NOT HL_BUILD_ONLY_AUDIO)
         add_dependencies (${_test_name} hulaloop hulaloop-cli hulaloop-launcher)
+        if (OSX)
+            add_dependencies (${_test_name} hulaloop-osx-daemon)
+        endif ()
     endif ()
 
     if (_only_master)
@@ -43,13 +46,11 @@ function (create_test _test_file _src_files _timeout _do_memcheck _only_master)
     endif ()
 
     # Copy PortAudio DLLs to bin/test for successful testing
-    if(WIN32)
-        add_custom_command (
-            TARGET ${_test_name}
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -DSOURCE_DIR="${PROJECT_SOURCE_DIR}" -DBINARY_DIR="${CMAKE_BINARY_DIR}" -P ${PROJECT_SOURCE_DIR}/cmake/MoveDLLsToTest.cmake
-        )
-    endif ()
+    add_custom_command (
+        TARGET ${_test_name}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -DSOURCE_DIR="${PROJECT_SOURCE_DIR}" -DBINARY_DIR="${CMAKE_BINARY_DIR}" -P ${PROJECT_SOURCE_DIR}/cmake/MoveFilesToTest.cmake
+    )
 
 endfunction ()
 
