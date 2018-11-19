@@ -40,16 +40,30 @@ namespace hula
             int errorCode;
 
         public:
+            /**
+             * Constructor of ControlException.
+             */
             ControlException(int errorCode)
             {
                 this->errorCode = errorCode;
             }
 
+            /**
+             * This method returns the error message that corresponds to the error
+             * code in the locale given by the application.
+             *
+             * @return std::string - The translated error message
+             */
             const std::string getMessage() const
             {
                 return std::string(qPrintable(getTranslatedErrorMessage(errorCode)));
             }
 
+            /**
+             * This method returns the error code.
+             *
+             * @return int - The error code
+             */
             int getErrorCode()
             {
                 return errorCode;

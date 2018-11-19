@@ -38,10 +38,16 @@
  */
 #define HL_ERROR_PREFIX "[HulaLoop] "
 
+/**
+ * Debug macro that prefixes each debug statement with the HulaLoop prefix.
+ */
 #define hlDebug() \
     if (HL_NO_DEBUG_OUTPUT) {} \
     else std::cerr << HL_PRINT_PREFIX
 
+/**
+ * Debug macro that prefixes each debug statement with the HulaLoop prefix.
+ */
 #define hlDebugf(...) \
     if (HL_NO_DEBUG_OUTPUT) {} \
     else fprintf(stderr, HL_PRINT_PREFIX __VA_ARGS__);
@@ -69,17 +75,30 @@ namespace hula
             std::string msg;
 
         public:
+            /**
+             * Constructor of AudioException.
+             */
             AudioException(int errorCode, const std::string &msg)
             {
                 this->errorCode = errorCode;
                 this->msg = msg;
             }
 
+            /**
+             * This method returns the error message that corresponds to the error code.
+             *
+             * @return std::string - The error message
+             */
             const std::string getMessage() const
             {
                 return msg;
             }
 
+            /**
+             * This method returns the error code.
+             *
+             * @return int - The error code
+             */
             int getErrorCode()
             {
                 return errno;

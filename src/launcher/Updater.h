@@ -12,8 +12,20 @@ namespace hula
 {
     class Updater : public QObject {
             Q_OBJECT
+
+            /**
+             * Exposes the updateHostUrl property to QML.
+             */
             Q_PROPERTY(QString updateHostUrl READ getUpdateHost WRITE setUpdateHost)
+
+            /**
+             * Exposes the downloadSize property to QML.
+             */
             Q_PROPERTY(qint64 downloadSize READ getDownloadSize)
+
+            /**
+             * Exposes the numBytesDownloaded property to QML.
+             */
             Q_PROPERTY(qint64 numBytesDownloaded READ getNumBytesDownloaded)
 
         private:
@@ -49,6 +61,12 @@ namespace hula
             Q_INVOKABLE void startHulaLoopApp();
 
         signals:
+            /**
+             * A signal emitted when QNetworkReply's readyRead signal is triggered.
+             *
+             * This method informs the QML side of how many bytes were read by the
+             * network request and is used to update the progress bar accordingly.
+             */
             void bytesDownloaded();
     };
 }
