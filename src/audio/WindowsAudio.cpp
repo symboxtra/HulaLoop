@@ -4,8 +4,8 @@
 
 using namespace hula;
 
-#include <sndfile.h>
-#include <fstream>
+//#include <sndfile.h>
+//#include <fstream>
 
 WindowsAudio::WindowsAudio()
 {
@@ -214,11 +214,11 @@ void WindowsAudio::capture()
     std::cout << "In Capture Mode" << std::endl; // TODO: Remove this later
 
     // TODO: Keep this here until the ringbuffer is debugged
-    SF_INFO sfinfo;
+    /*SF_INFO sfinfo;
     sfinfo.samplerate = 44100;
     sfinfo.channels = NUM_CHANNELS;
     sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
-    SNDFILE *file = sf_open("C:\\Users\\patel\\AppData\\Local\\Temp\\hulaloop_temp.wav", SFM_WRITE, &sfinfo);
+    SNDFILE *file = sf_open("C:\\Users\\patel\\AppData\\Local\\Temp\\hulaloop_temp.wav", SFM_WRITE, &sfinfo);*/
     //std::string temp = "C:\\Users\\patel\\AppData\\Local\\Temp\\hulaloop_log2.txt";
     //std::ofstream tempfile(temp.c_str(), ios::binary);
 
@@ -302,14 +302,9 @@ void WindowsAudio::capture()
                 // Copy to ringbuffers
                 float *floatData = (float *)pData;
 
-                this->copyToBuffers(floatData, numFramesAvailable * NUM_CHANNELS);
+                this->copyToBuffers(floatData, numFramesAvailable * NUM_CHANNELS * sizeof(SAMPLE));
 
-                //for(int i = 0;i < numFramesAvailable * NUM_CHANNELS;i++)
-                //{
-                //    tempfile << floatData[i] << endl;
-                //}
-
-                // TODO: Keep this here until the ringbuffer is debugged
+                /*// TODO: Keep this here until the ringbuffer is debugged
                 sf_count_t error = sf_writef_float(file, floatData, numFramesAvailable);
                 if (error != numFramesAvailable)
                 {
@@ -318,7 +313,7 @@ void WindowsAudio::capture()
                     fprintf(stderr, "cannot write sndfile (%s)\n", errstr);
                     fprintf(stderr, "%sWe done goofed...", HL_ERROR_PREFIX);
                     exit(1);
-                }
+                }*/
 
                 // Release buffer after data is captured and handled
                 status = captureClient->ReleaseBuffer(numFramesAvailable);
@@ -331,7 +326,7 @@ void WindowsAudio::capture()
         }
 
         // TODO: Keep this here until the ringbuffer is debugged
-        sf_close(file);
+        //sf_close(file);
         //tempfile.close();
 
         // Stop the client capture once process exits
