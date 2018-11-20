@@ -16,7 +16,7 @@ using namespace hula;
 Record::Record(Controller *control)
 {
     this->controller = control;
-    this->rb = NULL;
+    this->rb = this->controller->createBuffer(0.5);
 }
 
 /**
@@ -26,8 +26,7 @@ Record::Record(Controller *control)
  */
 void Record::start()
 {
-    if (this->rb == NULL)
-        this->rb = this->controller->createBuffer(0.5);
+    this->controller->addBuffer(this->rb);
 
     this->endRecord.store(false);
     recordThread = std::thread(&Record::recorder, this);
@@ -53,9 +52,6 @@ void Record::recorder()
 
     // Add file_path to vector of files
     exportPaths.push_back(file_path);
-
-    // Add ringbuffer to buffer list
-    this->controller->addBuffer(this->rb);
 
     // Keep recording until recording is stopped
     while (!this->endRecord.load())

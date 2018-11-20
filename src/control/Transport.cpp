@@ -17,6 +17,7 @@ Transport::Transport()
 
     recordState = true;
     playbackState = false;
+    initRecordClicked = false;
 }
 
 #ifndef NDEBUG
@@ -59,6 +60,7 @@ bool Transport::record(double delay, double duration)
         std::cout << "STARTED RECORDING" << std::endl;
         recorder->start();
 
+        initRecordClicked = true;
         recordState = false;
 
         return true;
@@ -132,7 +134,9 @@ bool Transport::pause()
 
         return true;
     }
-    else if (!playbackState) // Pause playback
+    // TODO: Currently a bool is used to check if record is successfully clicked atleast once
+    // TODO: Find a better way to do it?
+    else if (!playbackState && initRecordClicked) // Pause playback
     {
         // TODO: Add playback pause call
         playbackState = true;

@@ -31,6 +31,7 @@ namespace hula
             TransportState state;
             bool recordState;
             bool playbackState;
+            bool initRecordClicked;
 
         protected:
             Record *recorder;
