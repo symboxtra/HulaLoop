@@ -16,6 +16,11 @@ void OSAudio::setBufferSize(uint32_t size)
     this->captureBufferSize = size;
 }
 
+HulaRingBuffer* OSAudio::getPlaybackBuffer()
+{
+    return playBuffer;
+}
+
 /**
  * Add an initialized buffer to the list of buffers that receive audio data.
  * If already present, the ring buffer will not be duplicated.
