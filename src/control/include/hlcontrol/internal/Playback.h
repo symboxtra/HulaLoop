@@ -10,9 +10,14 @@ namespace hula
         private:
             Controller *controller;
 
+            std::thread playThread;
+            std::atomic<bool> endPlay;
+
         public:
             Playback(Controller *controller);
             ~Playback();
+
+            void player();
 
             void start(uint32_t initTime);
             void stop();

@@ -432,11 +432,9 @@ void WindowsAudio::capture()
  */
 void WindowsAudio::playback()
 {
-    // TODO: Add new ringbuffer to ringbuffer list and read from there
-    //HulaRingBuffer rb(0.5);
-    //addBuffer(&rb);
+    HulaRingBuffer rb(0.5);
+    addBuffer(&rb);
 
-    // TODO: Implement WASAPI playback
     // Instantiate clients and services for audio capture
     IAudioRenderClient *renderClient = NULL;
     IAudioClient *audioClient = NULL;
@@ -449,6 +447,7 @@ void WindowsAudio::playback()
     uint32_t packetLength = 0;
     DWORD duration;
     REFERENCE_TIME req = REFTIMES_PER_SEC;
+    ring_buffer_size_t samplesRead;
 
     // Setup capture environment
     status = CoInitialize(NULL);
@@ -520,6 +519,20 @@ void WindowsAudio::playback()
         // TODO: Add audio data to rData pointer
         float *data = reinterpret_cast<float*>(rData);
         // TODO: rb->directRead();
+        void* ptr[2] = {0};
+        ring_buffer_size_t sizes[2] = {0};
+        samplesRead = rb.directRead(numFramesAvailable * NUM_CHANNELS, ptr + 0, sizes + 0, ptr + 1, sizes + 1);
+
+        if( sizes[1] > 0 )
+        {
+            memcpy(data, ptr[0], sizes[0] * sizeof(float) );
+            data = data + (sizes[0] * sizeof(float));
+            memcpy( data, ptr[1], sizes[1] * sizeof(float) );
+        }
+        else
+        {
+            memcpy(data, ptr[0], sizes[0] * sizeof(float) );
+        }
 
         status = renderClient->ReleaseBuffer(numFramesAvailable, 0);
         HANDLE_ERROR(status);

@@ -14,7 +14,6 @@ namespace hula
             HulaRingBuffer *rb;
 
             std::thread recordThread;
-
             std::atomic<bool> endRecord;
 
             std::vector<std::string> exportPaths;

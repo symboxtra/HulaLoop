@@ -35,6 +35,7 @@ namespace hula
 
         protected:
             Record *recorder;
+            Playback *player;
 
         public:
             Controller *controller;

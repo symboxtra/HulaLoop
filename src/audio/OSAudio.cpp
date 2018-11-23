@@ -34,8 +34,6 @@ void OSAudio::addBuffer(HulaRingBuffer *rb)
         // Signal death and join all threads
         this->endCapture.store(true);
         joinAndKillThreads(inThreads);
-        this->endPlayback.store(true);
-        joinAndKillThreads(outThreads);
 
         // Start up the capture thread
         // TODO: Figure out what to do in case of out threads
@@ -123,7 +121,7 @@ void OSAudio::backgroundCapture(OSAudio *_this)
 
     // Kill any live playback threads before starting audio capture
     _this->endPlayback.store(true);
-    joinAndKillThreads(outThreads);
+    _this->joinAndKillThreads(_this->outThreads);
 
     // Reset the thread interrupt flag
     _this->endCapture.store(false);
@@ -162,7 +160,7 @@ void OSAudio::backgroundPlayback(OSAudio *_this)
 
     // Kill any live playback threads before starting audio capture
     _this->endCapture.store(true);
-    joinAndKillThreads(inThreads);
+    _this->joinAndKillThreads(_this->inThreads);
 
     // Reset the thread interrupt flag
     _this->endPlayback.store(false);
