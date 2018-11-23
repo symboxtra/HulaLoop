@@ -195,14 +195,7 @@ Controller *Transport::getController() const
 void Transport::exportFile(std::string targetDirectory)
 {
     Export exp(targetDirectory);
-    // TODO: Remove harcoded path (Only for demo)
-    #if WIN32
-        std::vector<std::string> temp;
-        temp.push_back("C:\\Users\\patel\\AppData\\Local\\Temp\\hulaloop_temp.wav");
-        exp.copyData(temp);
-    #else
-        exp.copyData(recorder->getExportPaths());
-    #endif
+    exp.copyData(recorder->getExportPaths());
 
     recorder->clearExportPaths();
 }

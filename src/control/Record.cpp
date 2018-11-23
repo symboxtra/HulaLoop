@@ -62,7 +62,7 @@ void Record::recorder()
 
         if (samplesRead > 0)
         {
-            printf("Samples read: %d\n", samplesRead);
+            //printf("Samples read: %d\n", samplesRead);
 
             for(int i = 0;i < 2 && ptr[i] != NULL;i++)
             {
