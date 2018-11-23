@@ -28,7 +28,9 @@ namespace hula
         public:
             LinuxAudio();
             ~LinuxAudio();
+
             void capture();
+            void playback();
 
             static void startPAVUControl();
 

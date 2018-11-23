@@ -49,6 +49,7 @@ namespace hula
             const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
             const IID IID_IAudioClient = __uuidof(IAudioClient);
             const IID IID_IAudioCaptureClient = __uuidof(IAudioCaptureClient);
+            const IID IID_IAudioRenderClient = __uuidof(IAudioRenderClient);
 
             // System necessary variables
             HRESULT status;
@@ -62,6 +63,7 @@ namespace hula
 
             // Audio data
             uint8_t *pData;
+            uint8_t *rData;
 
         public:
             WindowsAudio();
@@ -71,6 +73,7 @@ namespace hula
             std::vector<Device *> getDevices(DeviceType type);
 
             void capture();
+            void playback();
     };
 }
 

@@ -40,6 +40,11 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
             }
         }
 
+        void playback()
+        {
+
+        }
+
         static bool checkThreadCount(TestOSAudio *_this)
         {
             while (_this->inThreads.size() > 0)

@@ -19,7 +19,6 @@ WindowsAudio::WindowsAudio()
     }
 
     pa_status = paNoError;
-    activeInputDevice = NULL;
 }
 
 /**
@@ -425,6 +424,128 @@ void WindowsAudio::capture()
             fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
             exit(1); // TODO: Handle error
         }
+    }
+}
+
+/**
+ * Execution loop for playback
+ */
+void WindowsAudio::playback()
+{
+    // TODO: Add new ringbuffer to ringbuffer list and read from there
+    //HulaRingBuffer rb(0.5);
+    //addBuffer(&rb);
+
+    // TODO: Implement WASAPI playback
+    // Instantiate clients and services for audio capture
+    IAudioRenderClient *renderClient = NULL;
+    IAudioClient *audioClient = NULL;
+    WAVEFORMATEX *pwfx = NULL;
+    IMMDevice *audioDevice = NULL;
+    UINT32 numFramesAvailable;
+    UINT32 numFramesPadding;
+    DWORD flags;
+    char *buffer = (char *)malloc(500);
+    uint32_t packetLength = 0;
+    DWORD duration;
+    REFERENCE_TIME req = REFTIMES_PER_SEC;
+
+    // Setup capture environment
+    status = CoInitialize(NULL);
+    HANDLE_ERROR(status);
+
+    // Creates a system instance of the device enumerator
+    status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
+    HANDLE_ERROR(status);
+
+    // Select the current active record/loopback device
+    //status = pEnumerator->GetDevice(activeOutputDevice->getID().windowsID, &audioDevice);
+    status = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &audioDevice);
+    HANDLE_ERROR(status);
+    std::cout << "Selected Device: " << activeOutputDevice->getName() << std::endl; // TODO: Remove this later
+
+    // Activate the IMMDevice
+    status = audioDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void **)&audioClient);
+    HANDLE_ERROR(status);
+
+    // Not sure what this does yet!?
+    status = audioClient->GetMixFormat(&pwfx);
+    HANDLE_ERROR(status);
+
+    // Initialize the audio client in loopback mode and set audio engine format
+    status = audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, 0, req, 0, pwfx, NULL);
+    HANDLE_ERROR(status);
+
+    // Gets the maximum capacity of the endpoint buffer (audio frames)
+    status = audioClient->GetBufferSize(&captureBufferSize);
+    HANDLE_ERROR(status);
+
+    // Gets the capture client service under the audio client instance
+    status = audioClient->GetService(IID_IAudioRenderClient, (void **)&renderClient);
+    HANDLE_ERROR(status);
+
+    // Initial silence before actual audio is passed to remove excess noise
+    rData = nullptr;
+    status = renderClient->GetBuffer(captureBufferSize, &rData);
+    HANDLE_ERROR(status);
+
+    status = renderClient->ReleaseBuffer(captureBufferSize, AUDCLNT_BUFFERFLAGS_SILENT);
+    HANDLE_ERROR(status);
+
+    // Start the audio stream
+    status = audioClient->Start();
+    HANDLE_ERROR(status);
+
+    // Sleep duration
+    duration = (DWORD)REFTIMES_PER_SEC * captureBufferSize / pwfx->nSamplesPerSec;
+
+    // Continue loop under process ends
+    // Each loop fills half of the shared buffer
+    while (!this->endPlayback.load())
+    {
+        // Sleep for half the buffer duration
+        Sleep(duration / (REFTIMES_PER_MILLISEC * 2));
+
+        // See how much buffer space is available.
+        status = audioClient->GetCurrentPadding(&numFramesPadding);
+        HANDLE_ERROR(status);
+
+        numFramesAvailable = captureBufferSize - numFramesPadding;
+
+        // Grab all the available space in the shared buffer.
+        rData = nullptr;
+        status = renderClient->GetBuffer(numFramesAvailable, &rData);
+        HANDLE_ERROR(status);
+
+        // TODO: Add audio data to rData pointer
+        float *data = reinterpret_cast<float*>(rData);
+        // TODO: rb->directRead();
+
+        status = renderClient->ReleaseBuffer(numFramesAvailable, 0);
+        HANDLE_ERROR(status);
+    }
+
+    // Wait for last data in buffer to play before stopping.
+    Sleep((DWORD)(captureBufferSize / (REFTIMES_PER_MILLISEC * 2)));
+
+    status = audioClient->Stop();  // Stop playing.
+    HANDLE_ERROR(status);
+
+    // goto label for exiting loop in-case of error
+Exit:
+    CoTaskMemFree(pwfx);
+    SAFE_RELEASE(pEnumerator);
+    SAFE_RELEASE(audioDevice);
+    SAFE_RELEASE(audioClient);
+    SAFE_RELEASE(renderClient);
+
+    if (FAILED(status))
+    {
+        _com_error err(status);
+        LPCTSTR errMsg = err.ErrorMessage();
+        std::cerr << "\nError: " << errMsg << std::endl;
+        exit(1);
+        // TODO: Handle error accordingly
     }
 }
 

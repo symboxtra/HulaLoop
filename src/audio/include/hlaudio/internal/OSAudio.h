@@ -110,7 +110,7 @@ namespace hula
             /**
              * Execution loop for audio playback
              */
-            virtual void playback() = 0;
+            virtual void playback() = 0; // TODO: Make this pure virtual once all OS implementation is complete
             static void backgroundPlayback(OSAudio *_this);
 
             /**
