@@ -88,8 +88,11 @@ set (HL_LIBRARIES)
 
 # Link Windows specific libraries
 if (WIN32)
-    set (HL_LIBRARIES ${HL_LIBRARIES} winmm.lib ) # TODO: Add required windows libraries
+    list (APPEND HL_LIBRARIES winmm.lib ) # TODO: Add required windows libraries
 endif ()
+
+# Make sure we can find our Find<package>.cmake files
+list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 
 
@@ -144,8 +147,7 @@ find_package (Qt5 REQUIRED
     Widgets
 )
 
-set (HL_LIBRARIES
-    ${HL_LIBRARIES}
+list (APPEND HL_LIBRARIES
     Qt5::Core
     Qt5::Gui
     Qt5::Qml
@@ -154,8 +156,17 @@ set (HL_LIBRARIES
     Qt5::Widgets
 )
 
+# Required Sndfile packages
+find_package (SndFile REQUIRED)
 
+add_include_dir (${LIBSNDFILE_INCLUDE})
+list (APPEND HL_LIBRARIES ${LIBSNDFILE_LIB})
 
+# Copy DLL to application bin folder
+if (WIN32)
+    MESSAGE (STATUS "Found SndFile DLL: ${LIBSNDFILE_DLL}")
+    file (COPY ${LIBSNDFILE_DLL} DESTINATION ${CMAKE_BINARY_DIR}/bin)
+endif ()
 
 ######## Libraries ########
 
@@ -166,9 +177,6 @@ endif ()
 
 # Build and install portaudio to our build/lib folder
 add_subdirectory (src/libs/portaudio)
-
-# Make sure we can find our Find<package>.cmake files
-list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 # Add coverage flags for GCC after 3rd party libs are built
 set (CXX_FLAGS_NOCOV "${CMAKE_CXX_FLAGS}")
@@ -213,8 +221,6 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     create_test ("src/test/TestOSAudio.cpp" "" 3 FALSE FALSE)
     create_test ("src/test/TestHulaRingBuffer.cpp" "" 0.5 TRUE FALSE)
     create_test ("src/test/TestController.cpp" "" -1 TRUE FALSE)
-    create_test ("src/test/TestCLIArgs.cpp" "" -1 FALSE FALSE) # TODO: memcheck can be turned on once Device::id is fixed
-    create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/InteractiveCLI.cpp" -1 FALSE FALSE)
 
     if (OSX)
         create_test ("src/test/TestOSXAudio.cpp" "" -1 FALSE FALSE)
@@ -224,6 +230,10 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
     if (NOT HL_BUILD_ONLY_AUDIO)
         create_test ("src/test/TestTransport.cpp" "" -1 TRUE FALSE)
+        create_test ("src/test/TestRecord.cpp" "" -1 FALSE FALSE)
+
+        create_test ("src/test/TestCLIArgs.cpp" "" -1 FALSE FALSE)
+        create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/InteractiveCLI.cpp" -1 FALSE FALSE)
     endif ()
 
 endif ()

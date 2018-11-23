@@ -25,8 +25,11 @@ Rectangle {
             if (textCountdown.time == 0) {
                 textCountdown.text = 0
                 countDownTimer.stop()
-                qmlbridge.record()
-                recordingTimer.start()
+
+                recordBtn.onClicked()
+
+                if(textCountdown.time2 == 0)
+                    recordingTimer.inf = true
             } else {
                 textCountdown.text = textCountdown.time
                 textCountdown.time--
@@ -41,12 +44,14 @@ Rectangle {
         interval: 1000
         running: false
         repeat: true
+        property bool inf: false
         onTriggered: {
             // Since the timer starts at 0, go to endTime - 1
-            if (textCountdown.time >= textCountdown.time2 - 1) {
+            console.log(recordingTimer.inf + " Timer time: " + textCountdown.time);
+            if (!recordingTimer.inf && textCountdown.time >= textCountdown.time2 - 1) {
                 textCountdown.text = textCountdown.time + 1
-                qmlbridge.stop()
-                recordingTimer.stop()
+
+                stopBtn.onClicked()
             } else {
                 textCountdown.text = textCountdown.time + 1
                 textCountdown.time++
@@ -91,8 +96,26 @@ Rectangle {
                 }
 
                 onClicked: {
+                    if(stopBtn.isStopped)
+                    {
+                        discardPopup.open()
+                        return
+                    }
+
+                    if(textCountdown.time != 0)
+                    {
+                        countDownTimer.start()
+                        return
+                    }
+
+                    if(textCountdown.time2 == 0)
+                    {
+                        recordingTimer.inf = true
+                    }
 
                     let success = qmlbridge.record()
+
+                    recordingTimer.start()
 
                     if(success && (qmlbridge.getTransportState() === "Recording"))
                     {
@@ -143,7 +166,8 @@ Rectangle {
                     {
                         enabled = false;
 
-                        recordBtn.enabled = false;
+                        recordBtn.enabled = true;
+                        recordBtn.contentItem.text = MDFont.Icon.deleteForever;
                         isStopped = true;
 
                         playpauseBtn.enabled = true;
@@ -151,6 +175,9 @@ Rectangle {
                         playpauseBtn.contentItem.color = "green";
 
                         exportBtn.enabled = true;
+
+                        textCountdown.time = 0
+                        recordingTimer.stop()
                     }
                 }
             }
@@ -198,6 +225,7 @@ Rectangle {
                                 stopBtn.enabled = true;
                                 recordBtn.enabled = true;
                             }
+                            recordingTimer.stop()
                         }
                     }
                     else
@@ -209,8 +237,11 @@ Rectangle {
                             contentItem.text = MDFont.Icon.pause;
                             contentItem.color = "white";
 
-                            stopBtn.enabled = false;
-                            recordBtn.enabled = false;
+                            if(!stopBtn.isStopped)
+                            {
+                                stopBtn.enabled = false;
+                                recordBtn.enabled = false;
+                            }
                         }
                     }
 
@@ -302,11 +333,10 @@ Rectangle {
             id: saveDialog
             objectName: "saveDialog"
             fileMode: FileDialog.SaveFile
-            nameFilters: saveDialog.nameFilters
+            nameFilters: ["WAVE Sound (*.wav)", "FLAC (*.flac)", "Core Audio Format (*.caf)", "Audio Interchange File Format (*.aiff)", "All files (*)"]
             folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
             onAccepted: {
                 qmlbridge.saveFile(saveDialog.currentFile);
-//                console.log(saveDialog.fileUrl.toString());
             }
         }
 
@@ -456,6 +486,59 @@ Rectangle {
     }
 
     Popup {
+        id: discardPopup
+        objectName: "discardPopup"
+
+        x: Math.round((window.width - width) / 2)
+        y: Math.round((window.height - height) / 2)
+
+        modal: true
+        focus: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        ColumnLayout {
+            spacing: Math.round(window.height * 0.15)
+            ColumnLayout {
+                spacing: Math.round(discardPopup.height * 0.15)
+                RowLayout{
+                    Text {
+                        id: textbot
+                        color: "white"
+                        font.pointSize: Math.round((window.height + window.width) / 96)
+                        text: qsTr("Are you sure you want to discard?")
+                    }
+                }
+                RowLayout {
+                    Layout.alignment: Qt.AlignCenter
+                    spacing: Math.round(buttonPanel.width * 0.05)
+                    width: gridLayout.width / 2
+                    Button {
+                        text: "No"
+                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                        onClicked: {
+                            discardPopup.close()
+                        }
+                    }
+
+                    Button {
+                        text: "Yes"
+                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                        onClicked: {
+                            // Discard files
+                            qmlbridge.cleanTempFiles()
+
+                            // Start recording again
+                            stopBtn.isStopped = false
+                            recordBtn.contentItem.text = MDFont.Icon.record
+                            recordBtn.onClicked()
+                            discardPopup.close()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Popup {
         id: timerPopup
         objectName: "timerPopup"
 
@@ -541,7 +624,6 @@ Rectangle {
                     Layout.alignment: Qt.AlignRight
                     id: okBtn
                     onClicked: {
-                        countDownTimer.start()
                         timerPopup.close()
                     }
 

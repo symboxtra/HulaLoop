@@ -105,6 +105,11 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
  */
 bool LinuxAudio::checkDeviceParams(Device *device)
 {
+    if(device->getName() == "Pulse Audio Volume Control")
+    {
+        std::thread(&LinuxAudio::startPAVUControl).detach();
+        return true;
+    }
     int err;                     // return for commands that might return an error
     snd_pcm_t *pcmHandle = NULL; // default pcm handle
     snd_pcm_hw_params_t *param;  // defaults param for the pcm
@@ -157,7 +162,12 @@ bool LinuxAudio::checkDeviceParams(Device *device)
  */
 void LinuxAudio::startPAVUControl()
 {
+    static bool pavuControlOpen = false;
+    if(pavuControlOpen)
+        return;
+    pavuControlOpen = true;
     system("/usr/bin/pavucontrol -t 2");
+    pavuControlOpen = false;
 }
 
 /*
@@ -176,7 +186,7 @@ void LinuxAudio::capture()
     std::string defaultDevice;      // default hw id for the device
     snd_pcm_hw_params_t *param;     // object to store our paramets (they are just the default ones for now)
     int audioBufferSize;            // size of the buffer for the audio
-    byte *audioBuffer = NULL;       // buffer for the audio
+    uint8_t *audioBuffer = NULL;       // buffer for the audio
     snd_pcm_uframes_t *temp = NULL; // useless parameter because the api requires it
     int framesRead = 0;             // amount of frames read
 
@@ -222,9 +232,9 @@ void LinuxAudio::capture()
 
     // allocate memory for the buffer
     audioBufferSize = frame * NUM_CHANNELS * sizeof(SAMPLE);
-    audioBuffer = (byte *)malloc(audioBufferSize);
+    audioBuffer = (uint8_t *)malloc(audioBufferSize);
 
-    while (true)
+    while (!this->endCapture.load())
     {
         // while (callbackList.size() > 0)
         // {
@@ -246,8 +256,12 @@ void LinuxAudio::capture()
         copyToBuffers(audioBuffer, framesRead * NUM_CHANNELS * sizeof(SAMPLE));
     }
     // cleanup stuff
-    snd_pcm_drain(pcmHandle);
-    snd_pcm_close(pcmHandle);
+    err = snd_pcm_close(pcmHandle);
+    if (err < 0)
+    {
+        std::cerr << "Unable to close" << std::endl;
+        exit(1);
+    }
     free(audioBuffer);
 }
 

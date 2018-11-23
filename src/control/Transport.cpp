@@ -1,4 +1,5 @@
 #include <iostream>
+#include <time.h>
 
 #include "hlcontrol/internal/Export.h"
 #include "hlcontrol/internal/HulaControlError.h"
@@ -13,6 +14,10 @@ Transport::Transport()
 {
     controller = new Controller();
     recorder = new Record(controller);
+
+    recordState = true;
+    playbackState = false;
+    initRecordClicked = false;
 }
 
 #ifndef NDEBUG
@@ -28,7 +33,10 @@ Transport::Transport()
 Transport::Transport(bool dryRun)
 {
     controller = new Controller(dryRun);
-    recorder = nullptr;
+    recorder = new Record(controller);
+
+    recordState = true;
+    playbackState = false;
 }
 #endif
 
@@ -49,8 +57,10 @@ bool Transport::record(double delay, double duration)
 
     if (recordState)
     {
+        std::cout << "STARTED RECORDING" << std::endl;
         recorder->start();
 
+        initRecordClicked = true;
         recordState = false;
 
         return true;
@@ -124,7 +134,9 @@ bool Transport::pause()
 
         return true;
     }
-    else if (!playbackState) // Pause playback
+    // TODO: Currently a bool is used to check if record is successfully clicked atleast once
+    // TODO: Find a better way to do it?
+    else if (!playbackState && initRecordClicked) // Pause playback
     {
         // TODO: Add playback pause call
         playbackState = true;
@@ -133,22 +145,6 @@ bool Transport::pause()
     }
     return false;
 }
-
-/**
- * Discard any recorded audio and reset the state.
- *
- * @return bool Success of command
- */
-/*
-bool Transport::Discard()
-{
-    state = INITIAL;
-    recordState = true;
-    playbackState = false;
-
-    return true;
-}
-*/
 
 /**
  * Return the current state of the Transport object.
@@ -199,8 +195,24 @@ Controller *Transport::getController() const
 void Transport::exportFile(std::string targetDirectory)
 {
     Export exp(targetDirectory);
-    // TODO: Make it an actual directory
-    exp.copyData("/tmp/temp.txt");
+    exp.copyData(recorder->getExportPaths());
+
+    recorder->clearExportPaths();
+}
+
+/**
+ * Reset transport states and delete captured audio files from system temp folder
+ */
+void Transport::deleteTempFiles()
+{
+    // Reset states
+    recordState = true;
+    playbackState = false;
+    state = (TransportState)-1;
+
+    // Delete audio files from system temp folder
+    Export::deleteTempFiles(recorder->getExportPaths());
+    recorder->clearExportPaths();
 }
 
 /**

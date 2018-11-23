@@ -3,6 +3,7 @@
 #include <QCoreApplication>
 #include <QProcess>
 #include <QUrl>
+#include <QDir>
 
 #include <string>
 
@@ -162,10 +163,25 @@ QString QMLBridge::getOutputDevices()
  */
 void QMLBridge::saveFile(QString dir)
 {
-    // create a Qurl so it is easy to convert
-    QUrl url(dir);
-    std::string directory = url.path().toStdString();
+    std::string directory = dir.toStdString();
+    int substrLen = 7;
+    if (dir[9] == ':')
+    {
+        // WINDOWS
+        substrLen = 8;
+    }
+    directory = directory.substr(substrLen);
     transport->exportFile(directory);
+
+    cleanTempFiles();
+}
+
+/**
+ * Deletes all the temp files that the program has created
+ */
+void QMLBridge::cleanTempFiles()
+{
+    transport->deleteTempFiles();
 }
 
 /**

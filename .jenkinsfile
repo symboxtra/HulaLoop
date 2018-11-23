@@ -97,7 +97,7 @@ pipeline {
                                     sh '''
                                         echo "Running test suite on ${HL_OS}..."
 
-                                        lcov -c -i -d build-linux -o build-linux/coverage.base
+                                        # lcov -c -i -d build-linux -o build-linux/coverage.base
 
                                         # These will run on PRs and master and should also be run locally if you think you are leaking.
                                         cd ./build-linux
@@ -105,8 +105,8 @@ pipeline {
                                         ctest -V -E ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER}
                                         cd ..
 
-                                        lcov -c -d build-linux -o build-linux/coverage.actual
-                                        lcov -a build-linux/coverage.base -a build-linux/coverage.actual -o build-linux/coverage.info
+                                        # lcov -c -d build-linux -o build-linux/coverage.actual
+                                        # lcov -a build-linux/coverage.base -a build-linux/coverage.actual -o build-linux/coverage.info
                                     '''
 
                                 }
@@ -231,7 +231,7 @@ pipeline {
                                 sh '''
                                     echo "Running test suite on ${HL_OS}..."
 
-                                    lcov -c -i -d build-osx -o build-osx/coverage.base
+                                    # lcov -c -i -d build-osx -o build-osx/coverage.base
 
                                     # Run everything but the memtests
                                     # These will run on PRs and master and should also be run locally if you think you are leaking
@@ -240,20 +240,20 @@ pipeline {
                                     ctest -V -E ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER}
                                     cd ..
 
-                                    lcov -c -d build-osx -o build-osx/coverage.actual
-                                    lcov -a build-osx/coverage.base -a build-osx/coverage.actual -o build-osx/coverage.info
+                                    # lcov -c -d build-osx -o build-osx/coverage.actual
+                                    # lcov -a build-osx/coverage.base -a build-osx/coverage.actual -o build-osx/coverage.info
 
                                     # Strip mismarked function lines
                                     # Ref: https://github.com/linux-test-project/lcov/issues/30#issuecomment-353799085
-                                    if [ ! -f ./remove-function-lines.py ]; then
-                                        curl https://raw.githubusercontent.com/symboxtra/lcov-llvm-function-mishit-filter/master/remove-function-lines.py > remove-function-lines.py && chmod +x remove-function-lines.py
-                                    fi
+                                    # if [ ! -f ./remove-function-lines.py ]; then
+                                    #     curl https://raw.githubusercontent.com/symboxtra/lcov-llvm-function-mishit-filter/master/remove-function-lines.py > remove-function-lines.py && chmod +x remove-function-lines.py
+                                    # fi
 
                                     # Execute script if report was generated
-                                    if [ -f build-osx/coverage.info ]; then
-                                        python remove-function-lines.py build-osx/coverage.info build-osx/coverage.info
-                                        echo "Coverage report cleaned."
-                                    fi
+                                    # if [ -f build-osx/coverage.info ]; then
+                                    #     python remove-function-lines.py build-osx/coverage.info build-osx/coverage.info
+                                    #     echo "Coverage report cleaned."
+                                    # fi
                                 '''
 
                             }

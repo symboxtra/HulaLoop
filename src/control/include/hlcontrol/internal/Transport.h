@@ -29,8 +29,9 @@ namespace hula
     class Transport {
         private:
             TransportState state;
-            bool recordState = true;
-            bool playbackState = false;
+            bool recordState;
+            bool playbackState;
+            bool initRecordClicked;
 
         protected:
             Record *recorder;
@@ -56,6 +57,7 @@ namespace hula
             Controller *getController() const;
 
             void exportFile(std::string targetDirectory);
+            void deleteTempFiles();
 
             TransportState getState() const;
             std::string stateToStr(const TransportState state) const;

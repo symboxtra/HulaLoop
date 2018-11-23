@@ -11,6 +11,8 @@ using namespace hula;
 // Single instance since Transport has to be created
 HulaInteractiveCli cli;
 
+#define MOCK_CONTROL_TIME 200
+
 #define OPT_TEST(name, ...)                            \
     std::vector<std::string> args{__VA_ARGS__};        \
                                                        \
@@ -144,6 +146,7 @@ TEST(TestInteractiveCLI, NAN_arg_long_delay)
 TEST(TestInteractiveCLI, short_duration)
 {
     OPT_TEST(HL_RECORD_TIMER_SHORT, "5.7");
+    std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CONTROL_TIME));
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
     EXPECT_EQ(s->getRecordDuration(), 5.7);
@@ -206,6 +209,7 @@ TEST(TestInteractiveCLI, NAN_arg_long_duration)
 TEST(TestInteractiveCLI, short_record)
 {
     OPT_TEST(HL_RECORD_SHORT);
+    std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CONTROL_TIME));
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
     EXPECT_EQ(cli.getState(), TransportState::RECORDING);
@@ -223,6 +227,7 @@ TEST(TestInteractiveCLI, short_record)
 TEST(TestInteractiveCLI, long_record)
 {
     OPT_TEST(HL_RECORD_LONG);
+    std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CONTROL_TIME));
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
     EXPECT_EQ(cli.getState(), TransportState::RECORDING);
@@ -240,6 +245,7 @@ TEST(TestInteractiveCLI, long_record)
 TEST(TestInteractiveCLI, delay_long_record)
 {
     OPT_TEST(HL_RECORD_LONG, "5.7");
+    std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CONTROL_TIME));
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
     EXPECT_EQ(cli.getState(), TransportState::RECORDING);
@@ -257,6 +263,7 @@ TEST(TestInteractiveCLI, delay_long_record)
 TEST(TestInteractiveCLI, delay_and_dur_long_record)
 {
     OPT_TEST(HL_RECORD_LONG, "5.7", "-1");
+    std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CONTROL_TIME));
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_SUCCESS);
     EXPECT_EQ(cli.getState(), TransportState::RECORDING);
@@ -273,6 +280,7 @@ TEST(TestInteractiveCLI, delay_and_dur_long_record)
 TEST(TestInteractiveCLI, NAN_delay_long_record)
 {
     OPT_TEST(HL_RECORD_LONG, "not_a_number");
+    std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CONTROL_TIME));
 
     ASSERT_EQ(r, HulaCliStatus::HULA_CLI_FAILURE);
 

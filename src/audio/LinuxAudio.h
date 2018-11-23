@@ -16,7 +16,6 @@
     #define ALSA_PCM_NEW_HW_PARAMS_API
 #endif
 #define FRAME_TIME 8192
-using byte = uint8_t;
 
 namespace hula
 {

@@ -7,6 +7,7 @@
         "xstring": "cpp",
         "deque": "cpp",
         "vector": "cpp",
-        "stdexcept": "cpp"
+        "stdexcept": "cpp",
+        "string": "cpp"
     }
 }
