@@ -29,8 +29,6 @@ namespace hula
             {
                 this->activeInputDevice = NULL;
                 this->activeOutputDevice = NULL;
-
-                playBuffer = new HulaRingBuffer(0.5);
             };
 
             /**
@@ -76,13 +74,6 @@ namespace hula
              * Should never be set directly. Only by setActiveXXXDevice().
              */
             std::atomic<bool> endPlayback;
-
-            /**
-             * HulaRingbuffer that is used for audio playback
-             * This once instance will be used to write and read playback data since
-             * there cannot be multiple buffers to read and play audio from
-             */
-            HulaRingBuffer *playBuffer;
 
             /**
              * I don't really know what this is for right now

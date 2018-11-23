@@ -16,11 +16,6 @@ void OSAudio::setBufferSize(uint32_t size)
     this->captureBufferSize = size;
 }
 
-HulaRingBuffer* OSAudio::getPlaybackBuffer()
-{
-    return playBuffer;
-}
-
 /**
  * Add an initialized buffer to the list of buffers that receive audio data.
  * If already present, the ring buffer will not be duplicated.
@@ -39,8 +34,11 @@ void OSAudio::addBuffer(HulaRingBuffer *rb)
         // Signal death and join all threads
         this->endCapture.store(true);
         joinAndKillThreads(inThreads);
+        this->endPlayback.store(true);
+        joinAndKillThreads(outThreads);
 
         // Start up the capture thread
+        // TODO: Figure out what to do in case of out threads
         inThreads.emplace_back(std::thread(&backgroundCapture, this));
     }
 }
@@ -68,6 +66,9 @@ void OSAudio::removeBuffer(HulaRingBuffer *rb)
         // Signal death and join all threads
         this->endCapture.store(true);
         joinAndKillThreads(inThreads);
+
+        this->endPlayback.store(true);
+        joinAndKillThreads(outThreads);
     }
 }
 
@@ -120,6 +121,10 @@ void OSAudio::backgroundCapture(OSAudio *_this)
         Device::deleteDevices(devices);
     }
 
+    // Kill any live playback threads before starting audio capture
+    _this->endPlayback.store(true);
+    joinAndKillThreads(outThreads);
+
     // Reset the thread interrupt flag
     _this->endCapture.store(false);
     _this->capture();
@@ -154,6 +159,10 @@ void OSAudio::backgroundPlayback(OSAudio *_this)
         _this->activeOutputDevice = new Device(*devices[0]);
         Device::deleteDevices(devices);
     }
+
+    // Kill any live playback threads before starting audio capture
+    _this->endCapture.store(true);
+    joinAndKillThreads(inThreads);
 
     // Reset the thread interrupt flag
     _this->endPlayback.store(false);
@@ -252,7 +261,7 @@ void OSAudio::setActiveOutputDevice(Device *device)
     joinAndKillThreads(outThreads);
 
     // Startup a new thread
-    inThreads.emplace_back(std::thread(&backgroundPlayback, this));
+    outThreads.emplace_back(std::thread(&backgroundPlayback, this));
 }
 
 /**
