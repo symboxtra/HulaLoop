@@ -1,6 +1,9 @@
 # Linguist tools for translation
-# This is not required
-find_package (Qt5LinguistTools)
+# This is optional
+# The base Qt5 package is found based on the Qt5_DIR set in the root CMakeLists.txt
+find_package (Qt5
+    OPTIONAL_COMPONENTS LinguistTools
+)
 set (FOUND_QT_LINGUIST FALSE)
 if (Qt5_LUPDATE_EXECUTABLE AND Qt5_LRELEASE_EXECUTABLE)
     message (STATUS "Qt5LinguistTools: Found")
