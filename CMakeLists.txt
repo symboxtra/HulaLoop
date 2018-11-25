@@ -53,6 +53,7 @@ endif ()
 option (HL_BUILD_ONLY_AUDIO "Build only the audio library." OFF)
 option (HL_BUILD_CLI "Build the command line application." ON)
 option (HL_BUILD_GUI "Build the graphical application." ON)
+option (HL_BUILD_EXAMPLES "Build example programs." OFF)
 
 # Turn on coverage flags if needed
 set (HL_ADD_COVERAGE_FLAGS OFF)
@@ -210,6 +211,9 @@ if (NOT HL_BUILD_ONLY_AUDIO)
     add_subdirectory (${PROJECT_SOURCE_DIR}/res/translations)
     include (cmake/Translation.cmake)
 
+    if (HL_BUILD_EXAMPLES)
+        add_subdirectory (examples)
+    endif ()
 endif ()
 
 
