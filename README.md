@@ -26,17 +26,38 @@ git submodule update --remote --merge
 #### Debian-based Linux ####
 Required:
 ```bash
-sudo apt install g++ build-essential libgl1-mesa-dev cmake libasound2 libasound2-dev
+sudo apt install g++ build-essential cmake libgl1-mesa-dev libasound2 libasound2-dev
 ```
 
-**IMPORTANT:** Qt must be installed using the GUI installer since ```apt``` does not backport a recent enough version.
+**IMPORTANT:** This application requires Qt 5.10+. This typically has to be installed using the Qt GUI installer since ```apt``` does not backport a recent enough version.
+
+If using GNOME (fixes system tray icons and notifications):
+```bash
+sudo apt install gnome-shell-extension-appindicator
+```
 
 If you want to compile documentation:
 ```bash
-sudo apt install python3-sphinx doxygen graphviz
-python -m pip install recommonmark
+sudo apt install python-sphinx doxygen graphviz help2man
+python -m pip install --user recommonmark
 ```
 
+#### RPM-based Linux ####
+Required:
+```bash
+sudo dnf install gcc-c++ make cmake qt5-devel qt5-qtquickcontrols2-devel alsa-lib alsa-lib-devel
+```
+
+To enable the system tray icon and notifications the ```Topicons plus``` extension must be installed via ```dnf``` and enabled under *Tweaks->Extensions*.
+```bash
+sudo dnf install gnome-shell-extension-topicons-plus
+```
+
+If you want to compile documentation:
+```bash
+sudo dnf install python-sphinx doxygen graphviz help2man
+python -m pip install --user recommonmark
+```
 
 #### OSX ####
 Install ```brew```:
@@ -57,9 +78,16 @@ python -m pip install recommonmark
 ```
 
 #### Windows ####
-- Install Qt
-- Install CMake
-- Install Visual Studio or the MSVC build tools
+- Install [Qt](https://www.qt.io/download)
+- Install [Visual Studio](https://visualstudio.microsoft.com/downloads/) or the MSVC build tools
+- Install [Chocolatey](https://chocolatey.org/docs/installation) (package manager for Windows)
+- Install Chocolatey packages
+```powershell
+choco install git
+choco install cmake
+choco install doxygen
+```
+
 - Good luck...
 
 ### CMake ###
@@ -72,11 +100,34 @@ cmake --build .
 ./bin/<executable name>
 ```
 
+#### Windows Tips ####
+We've found the ```msbuild``` output on Windows to be rather unruly.
+Passing the ```/verbosity:minimal``` or ```/v:m``` options at build time makes the output much more make-like.
+Relevant information, warnings, and errors are still displayed.
+
+```console
+cmake --build . -- /verbosity:minimal
+cmake --build . -- /v:m
+```
+
 ### CTest ###
 
+All tests:
 ```bash
 cd build
 ctest -C Debug -V
+```
+
+Without checks for memory leaks:
+```bash
+cd build
+ctest -C Debug -V -E memcheck
+```
+
+Only memory leak checks:
+```bash
+cd build
+ctest -C Debug -V -R memcheck
 ```
 
 ### Build Tutorials and Documentation ###

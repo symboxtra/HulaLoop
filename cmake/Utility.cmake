@@ -1,13 +1,15 @@
 # Manually generate and build a CMake project at generation time
-function (generate_and_install_lib _name _generation_flags)
+function (generate_and_install_lib _path _generation_flags)
     set (PROCESS_RESULT 0)
 
+    # Strip the name from the path
+    get_filename_component(_name ${_path} NAME)
+
     message (STATUS "Building and installing library ${_name} to ${CMAKE_INSTALL_PREFIX}...\n")
-    string (TOLOWER "${_name}" _name_lower)
-    
+
     # Manually generate and install
     execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/${_name})
-    execute_process (COMMAND ${CMAKE_COMMAND} ${CMAKE_SOURCE_DIR}/src/libs/${_name_lower} ${_generation_flags} -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+    execute_process (COMMAND ${CMAKE_COMMAND} ${_path} ${_generation_flags} -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${_name}
         RESULT_VARIABLE PROCESS_RESULT
     )
@@ -30,6 +32,36 @@ function (generate_and_install_lib _name _generation_flags)
     message (STATUS "")
     message (STATUS "Built and installed ${_name}.")
     message (STATUS "Continuing CMake generation...\n")
+
+endfunction ()
+
+function (add_library_target _name _src_files)
+
+    # Generate libraries
+    add_library (${_name} STATIC ${_src_files})
+    set_target_properties (${_name} PROPERTIES
+        VERSION ${HL_VERSION_STR}
+        SOVERSION 1
+        PUBLIC_HEADER include/${_name}/${_name}.h
+    )
+
+    # Target public and private headers
+    target_include_directories (${_name} PUBLIC include)
+    target_include_directories (${_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
+    # Copy the include directory
+    install (DIRECTORY include/${_name}
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/include
+    )
+
+    # Copy the library
+    install (TARGETS ${_name}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin                               # DLLs
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib                               # Static libs
+        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib                               # Shared libs (non-DLL)
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${_name}  # Headers
+        COMPONENT library
+    )
 
 endfunction ()
 

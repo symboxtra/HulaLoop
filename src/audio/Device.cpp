@@ -1,4 +1,6 @@
-#include "Device.h"
+#include "hlaudio/internal/Device.h"
+
+using namespace hula;
 
 /**
  * Constructs an instance of the Device object
@@ -7,7 +9,7 @@
  * @param name Name of the audio device
  * @param t DeviceType of the audio device
  */
-Device::Device(uint32_t *id, string name, DeviceType t)
+Device::Device(DeviceID id, std::string name, DeviceType t)
 {
     this->deviceID = id;
     this->deviceName = name;
@@ -15,23 +17,13 @@ Device::Device(uint32_t *id, string name, DeviceType t)
 }
 
 /**
- * Set the ID of a system audio device
- *
- * @param id Pointer to ID value due to Windows return values
- */
-void Device::setID(uint32_t *id)
-{
-    this->deviceID = id;
-}
-
-/**
  * Get the ID of a system audio device
  *
  * @return id Pointer to a integer
  */
-uint32_t *Device::getID()
+DeviceID Device::getID()
 {
-    return this->deviceID;
+    return deviceID;
 }
 
 /**
@@ -39,19 +31,9 @@ uint32_t *Device::getID()
  *
  * @return name String representing the name of the device
  */
-string Device::getName()
+std::string Device::getName()
 {
     return deviceName;
-}
-
-/**
- * Set the name of the system audio device
- *
- * @param name String representing the name of the device
- */
-void Device::setName(string name)
-{
-    this->deviceName = name;
 }
 
 /**
@@ -65,21 +47,30 @@ DeviceType Device::getType()
 }
 
 /**
- * Set the type of system audio device
+ * @ingroup memory_management
  *
- * @param type DeviceType enum value
+ * Delete all the device pointers inside the vector
  */
-void Device::setType(DeviceType t)
+void Device::deleteDevices(std::vector<Device *> devices)
 {
-    this->type = t;
+    for (auto const &device : devices)
+    {
+        // cout << device->getName() << std::endl;
+        delete device;
+    }
+    devices.clear();
 }
 
 /**
- * Deconstructs the device instance
+ * @ingroup memory_management
+ *
+ * Free any resources associated with the Device.
+ *
+ * This does not typically need to be called directly.
+ * A call to Device::deleteDevices() using the vector
+ * received from Controller::getDevices() is usually
+ * more appropriate.
  */
 Device::~Device()
 {
-    delete deviceID;
-
-    deviceName = "";
 }

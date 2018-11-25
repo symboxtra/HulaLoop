@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
+   width="1653.282pt"
+   height="1568.1656pt"
+   viewBox="0 0 1653.282 1568.1656"
+   preserveAspectRatio="xMidYMid meet"
+   id="svg8"
+   sodipodi:docname="hulaloop-logo-v2.svg"
+   inkscape:export-filename="D:\jmcker\Google Drive\Symboxtra\HulaLoop\hulaloop-logo-v2-1280.png"
+   inkscape:export-xdpi="55.743668"
+   inkscape:export-ydpi="55.743668"
+   inkscape:version="0.92.1 r15371">
+  <metadata
+     id="metadata14">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs12" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1057"
+     id="namedview10"
+     showgrid="false"
+     fit-margin-top="200"
+     fit-margin-left="200"
+     fit-margin-right="200"
+     fit-margin-bottom="200"
+     inkscape:zoom="0.15553603"
+     inkscape:cx="1.5722542"
+     inkscape:cy="1058.9916"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg8"
+     showguides="false" />
+  <g
+     style="display:inline;fill:#f75c26;stroke:none"
+     id="g6-2"
+     transform="matrix(0.08891125,0.04146006,0.04956432,-0.10629094,-24.387915,1123.7196)">
+    <path
+       inkscape:connector-curvature="0"
+       id="path2-8"
+       d="m 10550,10764 c 0,-463 -69,-1095 -170,-1569 -12,-55 -24,-115 -27,-132 l -6,-33 -99,93 c -522,487 -932,792 -1426,1061 -505,275 -1112,484 -1657,571 -55,8 -112,17 -128,20 -88,15 -318,36 -486,45 -418,23 -906,-28 -1356,-141 C 4336,10462 3560,10001 2880,9304 2239,8647 1669,7722 1315,6770 c -57,-154 -115,-327 -115,-344 0,-5 24,13 53,40 71,67 147,124 307,231 372,248 771,455 1219,635 135,53 134,53 146,-11 26,-145 131,-523 205,-736 85,-242 255,-618 313,-689 l 23,-29 38,154 c 66,266 194,635 320,916 355,796 876,1430 1457,1774 324,192 708,317 1139,371 156,19 582,16 740,-6 775,-108 1461,-414 2163,-965 106,-83 122,-101 91,-101 -25,0 -211,-55 -391,-116 -408,-136 -755,-298 -1068,-498 l -80,-51 80,-7 c 228,-20 477,-75 760,-170 707,-235 1425,-654 2150,-1253 153,-127 195,-157 195,-141 0,2 11,46 24,97 69,268 113,574 158,1099 17,197 17,998 0,1195 -36,422 -63,636 -123,965 -98,535 -280,1118 -509,1630 -28,63 -53,116 -55,119 -3,2 -5,-49 -5,-115 z" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path4-8"
+       d="m 1736,5629 c -14,-42 -131,-768 -146,-904 -40,-366 -44,-454 -44,-925 -1,-550 12,-739 85,-1245 94,-655 276,-1289 542,-1893 l 72,-162 2,92 c 8,320 35,718 69,978 29,228 126,764 140,779 3,3 53,-42 112,-100 292,-287 630,-559 987,-795 675,-445 1421,-732 2190,-843 293,-42 355,-46 705,-46 402,1 554,14 895,81 1211,236 2259,928 3096,2046 474,634 857,1365 1120,2138 21,63 39,118 39,123 0,4 -28,-17 -63,-48 -289,-258 -964,-638 -1527,-859 l -115,-45 -11,37 c -7,20 -26,98 -44,172 -62,265 -144,525 -247,790 -68,172 -195,434 -236,484 l -24,29 -31,-129 C 9158,4797 8896,4196 8575,3717 8005,2864 7327,2423 6405,2304 c -180,-23 -562,-23 -745,0 -773,98 -1486,416 -2200,980 -47,37 -86,71 -88,75 -1,4 37,18 85,31 129,33 478,150 628,210 238,95 515,235 739,374 l 99,61 -69,7 c -731,73 -1658,474 -2479,1072 -101,73 -510,412 -597,494 -27,26 -39,32 -42,21 z" />
+  </g>
+</svg>

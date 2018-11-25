@@ -1,9 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>qml/main.qml</file>
-        <file>qml/ButtonPanel.qml</file>
-        <file>fonts/Icon.js</file>
-        <file>fonts/materialdesignicons-webfont.ttf</file>
-        <file>qml/Visualizer.qml</file>
-    </qresource>
-</RCC>

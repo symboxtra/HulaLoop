@@ -1,7 +1,8 @@
 #include <algorithm>
-
-#include "Controller.h"
 #include <fstream>
+
+#include "hlaudio/internal/Controller.h"
+#include "include/hlaudio/internal/HulaAudioError.h"
 
 #if _WIN32
     #include "WindowsAudio.h"
@@ -10,6 +11,8 @@
 #elif __APPLE__
     #include "OSXAudio.h"
 #endif
+
+using namespace hula;
 
 /**
  * Construct an instance of Controller class.
@@ -28,87 +31,136 @@ Controller::Controller()
 
     if (audio == NULL)
     {
-        cerr << "OS Audio error !" << endl;
-    }//TODO: Handle error
+        std::cerr << "OS Audio error !" << std::endl;
+    } // TODO: Handle error
 
-    // Add current Controller instance as buffercallback to
-    // OSAudio
-    audio->addBufferReadyCallback(this);
 }
 
+#ifndef NDEBUG
 /**
- * Callback function that is triggered when audio is captured
- * by OSAudio
+ * ---------------- FOR TESTING/DEBUG BUILDS ONLY -----------------
  *
- * @param size Size of returned audio data (frames)
- * @param data Audio data in byte buffer
- */
-void Controller::handleData(byte *data, uint32_t size)
-{
-    cout << "Data received: " << size << endl;
-
-    // Trigger upper layer callback functions
-    for (int i = 0; i < callbackList.size(); i++)
-    {
-        callbackList[i]->handleData(data, size);
-    }
-}
-
-/**
- * Add upper layer functions to the callback list
+ * A "dry run" is a run in which full application functionality is not
+ * required. This is usually used by unit tests targeting upper-level
+ * modules that don't require the initialization of lower-level modules.
  *
- * @param func Derived instance of iCallback class
+ * This constructor is designed for testing purposes and exists only in debug builds.
  */
-void Controller::addBufferReadyCallback(ICallback *func)
+Controller::Controller(bool dryRun)
 {
-    // Add self to OSAudio callback when first callback is added
-    if (this->callbackList.size() == 0)
-    {
-        audio->addBufferReadyCallback(this);
-    }
-
-    // Check if callback function already exists
-    if (find(callbackList.begin(), callbackList.end(), func) == callbackList.end())
-    {
-        this->callbackList.push_back(func);
-    }
+    audio = NULL;
 }
+#endif
 
 /**
- * Remove upper layer functions to the callback list
+ * Add an initialized buffer to the list of buffers that receive audio data.
+ * As soon as the buffer is added, it should begin receiving data.
  *
- * @param func Derived instance of iCallback class
- */
-void Controller::removeBufferReadyCallback(ICallback *func)
+ * If already present, the ring buffer will not be duplicated.
+ *
+ * This is a publicly exposed wrapper for the OSAudio method.
+ *
+ * @param rb HulaLoop ring buffer to add to the list
+*/
+void Controller::addBuffer(HulaRingBuffer *rb)
 {
-    // Check if callback function exists to remove
-    vector<ICallback *>::iterator it = find(callbackList.begin(), callbackList.end(), func);
-    if (it != callbackList.end())
-    {
-        this->callbackList.erase(it);
-    }
-
-    // Remove self from callback when last callback is removed
-    if (this->callbackList.size() == 0)
-    {
-        audio->removeBufferReadyCallback(this);
-    }
+    audio->addBuffer(rb);
 }
 
 /**
- * Get input devices from OSAudio
+ * \ingroup memory_management
+ *
+ * Allocate and initialize a HulaRingBuffer that can be added to
+ * the OSAudio ring buffer list via Controller::addBuffer.
+ *
+ * @return Newly allocated ring buffer
  */
-vector<Device *> Controller::getInputDevices()
+HulaRingBuffer *Controller::createBuffer(float duration)
 {
-    return audio->getInputDevices();
+    return new HulaRingBuffer(duration);
 }
 
 /**
- * Get output devices from OSAudio
+ * \ingroup memory_management
+ *
+ * Allocate and initialize a HulaRingBuffer and automatically
+ * add it to the OSAudio ring buffer list.
  */
-vector<Device *> Controller::getOutputDevices()
+HulaRingBuffer *Controller::createAndAddBuffer(float duration)
 {
-    return audio->getOutputDevices();
+    HulaRingBuffer *rb = new HulaRingBuffer(duration);
+    addBuffer(rb);
+    return rb;
+}
+
+/**
+ * \ingroup memory_management
+ *
+ * Remove a buffer from the list of buffers that receive audio data.
+ * The removed buffer is not deleted and must be deleted by the user.
+ *
+ * This enables pausing retrieval when audio is not needed and
+ * re-adding the same buffer when audio data is again needed.
+ *
+ * This is a publicly exposed wrapper for the OSAudio method.
+ *
+ * @param rb HulaLoop ring buffer to remove from the list.
+*/
+void Controller::removeBuffer(HulaRingBuffer *rb)
+{
+    audio->removeBuffer(rb);
+}
+
+/**
+ * \ingroup memory_management
+ *
+ * Fetch a list of devices for the given DeviceType.
+ *
+ * For requests of more than one type, bitwise OR the types together
+ * and cast back to a DeviceType.
+ * \code
+ * getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK))
+ * \endcode
+ *
+ * @param type DeviceType that is combination from the DeviceType enum
+ *
+ * @return std::vector<Device*> A list of Device instances that carry the necessary device information
+ */
+std::vector<Device *> Controller::getDevices(DeviceType type) const
+{
+    return audio->getDevices(type);
+}
+
+/**
+ * \ingroup memory_management
+ *
+ * Set the device from which audio should be captured.
+ *
+ * This method will make a copy of the passed Device
+ * so that subsequent (and necessary) calls to Device::deleteDevices()
+ * can be used without issue.
+ *
+ * @param device Desired input device
+ */
+void Controller::setActiveInputDevice(Device *device) const
+{
+    audio->setActiveInputDevice(device);
+}
+
+/**
+ * \ingroup memory_management
+ *
+ * Set the device to which audio should be played back.
+ *
+ * This method will make a copy of the passed Device
+ * so that subsequent (and necessary) calls to Device::deleteDevices()
+ * can be used without issue.
+ *
+ * @param device - Device instance that is to be set as the active output device
+ */
+void Controller::setActiveOutputDevice(Device *device) const
+{
+    audio->setActiveOutputDevice(device);
 }
 
 /**
@@ -116,7 +168,11 @@ vector<Device *> Controller::getOutputDevices()
  */
 Controller::~Controller()
 {
+    printf("%sController destructor called\n", HL_PRINT_PREFIX);
+
     // Don't do this until mem management is fixed
-    // delete audio;
-    callbackList.clear();
+    if (audio)
+    {
+        delete audio;
+    }
 }

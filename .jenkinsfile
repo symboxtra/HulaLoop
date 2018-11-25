@@ -4,6 +4,8 @@ pipeline {
     environment {
         HL_WEBHOOK_URL = credentials('HULALOOP_WEBHOOK_URL')
         HL_CODECOV_TOKEN = credentials('HL_CODECOV_TOKEN')
+        HL_MEMCHECK_PREFIX = "memcheck"
+        HL_ONLY_MASTER = "only_master"
     }
 
     options {
@@ -43,19 +45,18 @@ pipeline {
                         QT_PLUGIN_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/plugins"
                         QML_IMPORT_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/qml"
                         QML2_IMPORT_PATH = "${HL_QT_PREFIX}/qt/${HL_QT_VERSION}/gcc_64/qml"
-                        QT_DEBUG_PLUGINS = 1
-                        QT_IMPORT_TRACE = 1
+                        QT_DEBUG_PLUGINS = 0
+                        QT_IMPORT_TRACE = 0
                     }
 
                     stages {
 
-                        // Generate CMake and build any required dependencies
-                        stage('Dependencies - Linux') {
+                        stage('Generate - Linux') {
 
                             steps {
 
                                 sh '''
-                                    echo "Configuring dependencies for ${HL_OS}..."
+                                    echo "CMake generation for ${HL_OS}..."
 
                                     env
                                     echo "Path: ${PATH}"
@@ -98,8 +99,10 @@ pipeline {
 
                                         lcov -c -i -d build-linux -o build-linux/coverage.base
 
+                                        # These will run on PRs and master and should also be run locally if you think you are leaking.
                                         cd ./build-linux
-                                        ctest -V
+
+                                        ctest -V -E ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER}
                                         cd ..
 
                                         lcov -c -d build-linux -o build-linux/coverage.actual
@@ -110,6 +113,25 @@ pipeline {
 
                             }
 
+                        }
+
+                        stage('Master Only - Linux') {
+                            when {
+                                anyOf {
+                                    branch 'master'
+                                    branch 'develop'
+                                    changeRequest target: 'master'
+                                    changeRequest target: 'develop'
+                                }
+                            }
+
+                            steps {
+
+                                sh '''
+                                    cd ./build-linux
+                                    ctest -V -R ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER}
+                                '''
+                            }
                         }
 
                     } // END stages
@@ -155,12 +177,12 @@ pipeline {
 
                     stages {
 
-                        stage('Dependencies - OSX') {
+                        stage('Generate - OSX') {
 
                             steps {
 
                                 sh '''
-                                    echo "Configuring dependencies for ${HL_OS}..."
+                                    echo "CMake generation for ${HL_OS}..."
 
                                     echo "Path: ${PATH}"
                                     qmake -v
@@ -211,8 +233,11 @@ pipeline {
 
                                     lcov -c -i -d build-osx -o build-osx/coverage.base
 
+                                    # Run everything but the memtests
+                                    # These will run on PRs and master and should also be run locally if you think you are leaking
                                     cd ./build-osx
-                                    ctest -V
+
+                                    ctest -V -E ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER}
                                     cd ..
 
                                     lcov -c -d build-osx -o build-osx/coverage.actual
@@ -234,6 +259,26 @@ pipeline {
                             }
 
                         }
+
+                        stage('Master Only - OSX') {
+                            when {
+                                anyOf {
+                                    branch 'master'
+                                    branch 'develop'
+                                    changeRequest target: 'master'
+                                    changeRequest target: 'develop'
+                                }
+                            }
+
+                            steps {
+
+                                sh '''
+                                    cd ./build-osx
+                                    ctest -V -R ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER}
+                                '''
+                            }
+                        }
+
                     } // END stages
 
                     post {
@@ -276,12 +321,12 @@ pipeline {
 
                     stages {
 
-                        stage('Dependencies - Windows') {
+                        stage('Generate - Windows') {
 
                             steps {
 
                                 powershell '''
-                                    echo "Configuring dependencies for ${ENV:HL_OS}..."
+                                    echo "CMake generation for ${ENV:HL_OS}..."
 
                                     # Not on path
                                     # qmake -v
@@ -302,7 +347,7 @@ pipeline {
 
                                 powershell '''
                                     echo "Building application for ${ENV:HL_OS}..."
-                                    cmake --build ./build-win
+                                    cmake --build ./build-win -- /verbosity:minimal
                                 '''
 
                             }
@@ -317,16 +362,35 @@ pipeline {
                                     echo "Running test suite on ${ENV:HL_OS}..."
 
                                     # cd build-win
-                                    # ctest -C Debug -V
+                                    # ctest -C Debug -V -E ${ENV:HL_MEMCHECK_PREFIX} ${ENV:HL_ONLY_MASTER}
                                     # if ($LastExitCode -ne 0) {$host.SetShouldExit($LastExitCode)} # Exit with test error code
 
                                     # cd ..
 
-                                    ./win-coverage.ps1 build-win
+                                    ./win-coverage.ps1 build-win -E ${ENV:HL_ONLY_MASTER}
                                 '''
 
                             }
 
+                        }
+
+                        stage('Master Only - Windows') {
+                            when {
+                                anyOf {
+                                    branch 'master'
+                                    branch 'develop'
+                                    changeRequest target: 'master'
+                                    changeRequest target: 'develop'
+                                }
+                            }
+
+                            steps {
+
+                                powershell '''
+                                    cd ./build-win
+                                    ./win-coverage.ps1 build-win -R ${ENV:HL_ONLY_MASTER}
+                                '''
+                            }
                         }
                     } // END stages
 
@@ -375,7 +439,7 @@ pipeline {
                             DOX_ERR_COUNT=$(echo "${DOX_UNDOCUMENTED}" | wc -l)
 
                             echo -e "Doxygen completed with ${DOX_ERR_COUNT} undocumented member(s)"
-                            echo ${DOX_UNDOCUMENTED}
+                            echo "${DOX_UNDOCUMENTED}"
 
                             # Exit with error if Doxygen had too many undocumented members
                             if [ "${DOX_ERR_COUNT}" -gt "${HL_DOX_UNDOCUMENTED_LIMIT}" ]; then

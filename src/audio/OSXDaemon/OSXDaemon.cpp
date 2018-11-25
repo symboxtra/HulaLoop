@@ -31,14 +31,12 @@ SOFTWARE.
 #include <sstream>
 #include <string>
 
-#include "../HulaAudioError.h"
+#include "hlaudio/internal/HulaAudioError.h"
 #include "JackClient.hpp"
 #include "JackBridge.h"
 #include "OSXDaemon.h"
 
-/*
- * OSXDaemon.cpp
- */
+using namespace hula;
 
 /**
  * Construct an OSXDaemon.
@@ -77,12 +75,6 @@ OSXDaemon::OSXDaemon(const char *name, int id) : JackClient(name, JACK_PROCESS_C
         printf("HulaLoop #%d: Started with samplerate: %d Hz, buffersize: %d bytes\n", instance, SampleRate, BufSize);
     }
 }
-
-/**
- * Destruct OSXDaemon.
- */
-OSXDaemon::~OSXDaemon()
-{}
 
 /**
  * Handle a callback from JACK saying that data is ready.
@@ -246,4 +238,12 @@ void OSXDaemon::check_progress()
         }
     }
     lastHostTime = mach_absolute_time();
+}
+
+/**
+ * Destruct OSXDaemon.
+ */
+OSXDaemon::~OSXDaemon()
+{
+    printf("%sOSXDaemon destructor called\n", HL_PRINT_PREFIX);
 }
