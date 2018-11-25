@@ -157,12 +157,12 @@
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
-        <source>Set the language of the application</source>
+        <source>target language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
-        <source>target language</source>
+        <source>Set the language of the application.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -402,17 +402,13 @@
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="109"/>
+        <location filename="../../src/ui/cli/CLICommands.h" line="113"/>
         <source>The timer will be overridden by an argument to the record command.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="112"/>
         <source>Set the duration, in seconds, of the record.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="113"/>
-        <source>The timer will be orverriden by an argument to the record command.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

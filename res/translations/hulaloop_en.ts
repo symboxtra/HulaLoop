@@ -7,25 +7,25 @@
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="100"/>
         <source>Recording</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="145"/>
         <source>Stopped</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="194"/>
         <source>Paused</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="210"/>
         <source>Playing</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="325"/>
@@ -157,12 +157,12 @@
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
-        <source>Set the language of the application</source>
+        <source>target language</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
-        <source>target language</source>
+        <source>Set the language of the application.</source>
         <translation></translation>
     </message>
     <message>
@@ -264,17 +264,13 @@
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="109"/>
+        <location filename="../../src/ui/cli/CLICommands.h" line="113"/>
         <source>The timer will be overridden by an argument to the record command.</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="112"/>
         <source>Set the duration, in seconds, of the record.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="113"/>
-        <source>The timer will be orverriden by an argument to the record command.</source>
         <translation></translation>
     </message>
     <message>
@@ -292,73 +288,73 @@
         <location filename="../../src/ui/cli/CLICommon.h" line="228"/>
         <source>Output file:</source>
         <comment>setting</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="132"/>
         <source>Device #%1:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="134"/>
         <source>Record:</source>
         <comment>device capability</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="137"/>
         <source>Loopback:</source>
         <comment>device capability</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="140"/>
         <source>Output:</source>
         <comment>device capability</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="207"/>
         <source>Could not find device matching: %1</source>
         <extracomment>The argument in this text is the name or id of the device that the user searched for</extracomment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="233"/>
         <source>Delay:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="234"/>
         <location filename="../../src/ui/cli/CLICommon.h" line="237"/>
         <source>s</source>
         <comment>abbreviation for seconds</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="236"/>
         <source>Duration:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="239"/>
         <source>Sample rate:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="243"/>
         <source>Encoding:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="246"/>
         <source>Input device:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="249"/>
         <source>Output device:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="37"/>
@@ -388,7 +384,7 @@
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="297"/>
         <source>Failed to set input device.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="333"/>
@@ -398,7 +394,7 @@
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="337"/>
         <source>Failed to set output device.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="408"/>

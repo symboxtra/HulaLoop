@@ -110,7 +110,7 @@ inline void printInteractiveHelp()
 
     cout << C1 << HL_RECORD_TIMER_SHORT ", " << C2 << HL_RECORD_TIMER_LONG " <" HL_RECORD_TIMER_ARG1 "> ";
     cout << qPrintable(CLI::tr("Set the duration, in seconds, of the record.")) << endl;
-    cout << C1 << " " << C2 << " " << qPrintable(CLI::tr("The timer will be orverriden by an argument to the record command.")) << endl;
+    cout << C1 << " " << C2 << " " << qPrintable(CLI::tr("The timer will be overridden by an argument to the record command.")) << endl;
     cout << endl;
 
     cout << C1 << HL_SYSTEM_SHORT  ", " << C2 << HL_SYSTEM_LONG  << qPrintable(CLI::tr("Run a system command from within HulaLoop.")) << endl;

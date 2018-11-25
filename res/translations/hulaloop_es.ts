@@ -11,25 +11,25 @@
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="100"/>
         <source>Recording</source>
         <comment>state</comment>
-        <translation type="unfinished">Grabando</translation>
+        <translation>Grabando</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="145"/>
         <source>Stopped</source>
         <comment>state</comment>
-        <translation type="unfinished">Parado</translation>
+        <translation>Parado</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="194"/>
         <source>Paused</source>
         <comment>state</comment>
-        <translation type="unfinished">Pausada</translation>
+        <translation>Pausada</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="210"/>
         <source>Playing</source>
         <comment>state</comment>
-        <translation type="unfinished">Sonando</translation>
+        <translation>Sonando</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="325"/>
@@ -123,79 +123,83 @@
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="74"/>
         <source>Desired sample rate of the output file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Velocidad de muestra del archivo de salida.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="74"/>
         <source>sample rate</source>
-        <translation type="unfinished"></translation>
+        <translation>velocidad de muestra</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="75"/>
         <source>Encoding format for the output file. Valid options are WAV and MP3. This will default to WAV.</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato de codificación para el archivo de salida.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="75"/>
         <source>encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>codificación</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="76"/>
         <source>System name of the input device. This will default if not provided.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre del dispositivo de entrada. Esto será predeterminado si no se proporciona.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="76"/>
         <source>input device name</source>
-        <translation type="unfinished"></translation>
+        <translation>nombre del dispositivo de entrada</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="77"/>
         <source>System name of the output device. This will default if not provided.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre del dispositivo de salida. Esto será predeterminado si no se proporciona.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="77"/>
         <source>output device name</source>
-        <translation type="unfinished"></translation>
+        <translation>nombre del dispositivo de salida</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="78"/>
         <source>List available input and output devices.</source>
-        <translation type="unfinished"></translation>
+        <translation>Listar todos los dispositivos de entrada y salida.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
         <source>Set the language of the application</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Cambiar el idioma de la aplicación.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
         <source>target language</source>
-        <translation type="unfinished"></translation>
+        <translation>lengua de llegada</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
+        <source>Set the language of the application.</source>
+        <translation>Cambiar el idioma de la aplicación.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="93"/>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="384"/>
         <source>Translation file successfully loaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivo de traducción cargado.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="97"/>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="388"/>
         <source>Could not find translation file for %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo encontrar el archivo de traducción para %1.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="142"/>
         <source>Only WAV format is supported at this time.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sólo el formato WAV es compatible en este momento.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="161"/>
         <source>Device List</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista de dispositivos</translation>
     </message>
     <message>
         <source>Record</source>
@@ -206,139 +210,139 @@
         <location filename="../../src/ui/cli/CLICommon.h" line="240"/>
         <source>Hz</source>
         <comment>unit</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="228"/>
         <source>Output file:</source>
         <comment>setting</comment>
-        <translation type="unfinished"></translation>
+        <translation>Archivo de salida:</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="132"/>
         <source>Device #%1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dispositivo #%1:</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="134"/>
         <source>Record:</source>
         <comment>device capability</comment>
-        <translation type="unfinished"></translation>
+        <translation>Grabar:</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="137"/>
         <source>Loopback:</source>
         <comment>device capability</comment>
-        <translation type="unfinished"></translation>
+        <translation>Bucle invertido:</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="140"/>
         <source>Output:</source>
         <comment>device capability</comment>
-        <translation type="unfinished"></translation>
+        <translation>Reproducción:</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="207"/>
         <source>Could not find device matching: %1</source>
         <extracomment>The argument in this text is the name or id of the device that the user searched for</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo encontrar un dispositivo: %1</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="233"/>
         <source>Delay:</source>
-        <translation type="unfinished"></translation>
+        <translation>Retraso:</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="234"/>
         <location filename="../../src/ui/cli/CLICommon.h" line="237"/>
         <source>s</source>
         <comment>abbreviation for seconds</comment>
-        <translation type="unfinished"></translation>
+        <translation>s</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="236"/>
         <source>Duration:</source>
-        <translation type="unfinished"></translation>
+        <translation>Duración:</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="239"/>
         <source>Sample rate:</source>
-        <translation type="unfinished"></translation>
+        <translation>Velocidad de muestra:</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="243"/>
         <source>Encoding:</source>
-        <translation type="unfinished"></translation>
+        <translation>Codificación:</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="246"/>
         <source>Input device:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dispositivo de entrada:</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="249"/>
         <source>Output device:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dispositivo de salida:</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="37"/>
         <source>Warning: Unused argument &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Advertencia: Argumento no utilizado &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="48"/>
         <source>Missing argument &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Argumento faltante &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="60"/>
         <source>Malformed argument &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Mal argumento &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="61"/>
         <source>&apos;%1&apos; is not a valid %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; no es %2.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="293"/>
         <source>Input device set to: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Dispositivo de entrada cambiado a: %1</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="297"/>
         <source>Failed to set input device.</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al cambiar el dispositivo de entrada.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="333"/>
         <source>Output device set to: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al cambiar el dispositivo de entrada: %1</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="337"/>
         <source>Failed to set output device.</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al cambiar el dispositivo de salida.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="408"/>
         <source>System command returned: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Comando del sistema devuelto: %1</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="413"/>
         <source>No system command processor is available.</source>
-        <translation type="unfinished"></translation>
+        <translation>No hay procesador de comandos del sistema.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="423"/>
         <source>Unrecognized command &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Comando no reconocido: &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="430"/>
         <source>Command failed with value of &apos;false&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>El comando falló con el valor &apos;falso&apos;.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="84"/>
@@ -363,77 +367,77 @@
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="88"/>
         <source>Switch the application language.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar el idioma de la aplicación.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="89"/>
         <source>Quit the application.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sale del programa.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="93"/>
         <source>Start recording.</source>
-        <translation type="unfinished"></translation>
+        <translation>Iniciar grabación.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="94"/>
         <source>Stop playback or recording.</source>
-        <translation type="unfinished"></translation>
+        <translation>Detener reproducción o grabación.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="95"/>
         <source>Playback captured audio.</source>
-        <translation type="unfinished"></translation>
+        <translation>Iniciar reproducción.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="96"/>
         <source>Pause playback or recording.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pausar reproducción o grabación.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="97"/>
         <source>Export captured audio to the specified file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar audio capturado al archivo.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="98"/>
         <source>Discard the current recording.</source>
-        <translation type="unfinished"></translation>
+        <translation>Descartar la grabación.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="102"/>
         <source>Set the input device.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar el dispositivo de entrada.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="104"/>
         <source>Set the output device.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar el dispositivo de salida.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="108"/>
         <source>Set the delay, in seconds, of the countdown timer before record.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar el retraso (segundos) del temporizador de cuenta atrás antes de grabar.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="109"/>
+        <location filename="../../src/ui/cli/CLICommands.h" line="113"/>
         <source>The timer will be overridden by an argument to the record command.</source>
-        <translation type="unfinished"></translation>
+        <translation>El temporizador se anulará por un argumento al comando de grabación.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="112"/>
         <source>Set the duration, in seconds, of the record.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar la duración (segundos) de la grabación.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="113"/>
         <source>The timer will be orverriden by an argument to the record command.</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">El temporizador se anulará por un argumento al comando de grabación.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="116"/>
         <source>Run a system command from within HulaLoop.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ejecutar un comando del sistema desde HulaLoop.</translation>
     </message>
 </context>
 <context>

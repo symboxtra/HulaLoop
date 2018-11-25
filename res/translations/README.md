@@ -24,4 +24,8 @@ linguist res/translations/hulaloop_XX.ts
 
 After the strings have been translated, the modified ```.ts``` file should be committed.
 
-Normal CMake builds will keep the ```.ts``` file up-to-date with the application's English strings from this point on. Rerunning the generation stage (use ```cmake ..``` from the build directory) usually forces the translations to update if they appear stagnant.
+CMake builds will keep the ```.ts``` file up-to-date with the application's English strings from this point on. Rerunning the generation stage (use ```cmake ..``` from the build directory) forces the translations to update if they become stagnant.
+
+If English is not your native tongue, you can choose to translate to a new language from one of the previously completed translations. When provided two files, the above ```linguist``` command will open the files side-by-side, allowing you to view both files simultaneously.
+
+Please let us know if there are any issues. Thank you for your contribution!

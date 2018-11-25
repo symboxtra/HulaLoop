@@ -76,7 +76,7 @@ bool parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
         {{HL_INPUT_DEVICE_SO, HL_INPUT_DEVICE_LO}, CLI::tr("System name of the input device. This will default if not provided."), CLI::tr("input device name")},
         {{HL_OUTPUT_DEVICE_SO, HL_OUTPUT_DEVICE_LO}, CLI::tr("System name of the output device. This will default if not provided."), CLI::tr("output device name")},
         {{HL_LIST_DEVICES_SO, HL_LIST_DEVICES_LO}, CLI::tr("List available input and output devices.")},
-        {{HL_LANG_SO, HL_LANG_LO}, CLI::tr("Set the language of the application"), CLI::tr("target language")}
+        {{HL_LANG_SO, HL_LANG_LO}, CLI::tr("Set the language of the application."), CLI::tr("target language")}
     });
 
     // This will exit if any of the args are incorrect

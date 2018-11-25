@@ -156,14 +156,18 @@
         <translation>Wyświetl dostępne urządzenia wejściowe i wyjściowe.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
         <source>Set the language of the application</source>
-        <translation>Ustaw język aplikacji</translation>
+        <translation type="vanished">Ustaw język aplikacji</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
         <source>target language</source>
         <translation>Język docelowy</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
+        <source>Set the language of the application.</source>
+        <translation>Ustaw język aplikacji.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="93"/>
@@ -402,6 +406,7 @@
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="109"/>
+        <location filename="../../src/ui/cli/CLICommands.h" line="113"/>
         <source>The timer will be overridden by an argument to the record command.</source>
         <translation>Licznik ćwiczeń nadpisany przez argument polecenia rekord.</translation>
     </message>
@@ -409,11 +414,6 @@
         <location filename="../../src/ui/cli/CLICommands.h" line="112"/>
         <source>Set the duration, in seconds, of the record.</source>
         <translation>Ustaw czas trwania nagrania w sekundach.</translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="113"/>
-        <source>The timer will be orverriden by an argument to the record command.</source>
-        <translation>Licznik zostanie nadpisany przez argument polecenia record.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommands.h" line="116"/>
