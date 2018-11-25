@@ -243,10 +243,10 @@ namespace hula
         cout << left << setw(colW) << qPrintable(CLI::tr("Encoding:"));
         cout << "WAV" << endl;
 
-        cout << left << setw(colW) << qPrintable("Input device:");
+        cout << left << setw(colW) << qPrintable(CLI::tr("Input device:"));
         cout << args.inputDevice << endl;
 
-        cout << left << setw(colW) << qPrintable("Output device:");
+        cout << left << setw(colW) << qPrintable(CLI::tr("Output device:"));
         cout << args.outputDevice << endl;
 
         cout << endl;

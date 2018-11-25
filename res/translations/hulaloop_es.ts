@@ -203,71 +203,81 @@
         <translation type="obsolete">Grabar</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="195"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="240"/>
         <source>Hz</source>
         <comment>unit</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="183"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="228"/>
         <source>Output file:</source>
         <comment>setting</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="87"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="132"/>
         <source>Device #%1:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="89"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="134"/>
         <source>Record:</source>
         <comment>device capability</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="92"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="137"/>
         <source>Loopback:</source>
         <comment>device capability</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="95"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="140"/>
         <source>Output:</source>
         <comment>device capability</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="162"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="207"/>
         <source>Could not find device matching: %1</source>
         <extracomment>The argument in this text is the name or id of the device that the user searched for</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="188"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="233"/>
         <source>Delay:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="189"/>
-        <location filename="../../src/ui/cli/CLICommon.h" line="192"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="234"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="237"/>
         <source>s</source>
         <comment>abbreviation for seconds</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="191"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="236"/>
         <source>Duration:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="194"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="239"/>
         <source>Sample rate:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="198"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="243"/>
         <source>Encoding:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="246"/>
+        <source>Input device:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="249"/>
+        <source>Output device:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
