@@ -4,6 +4,7 @@ import QtQuick.Dialogs 1.0
 import QtQuick.Controls 2.3
 import QtQuick.Window 2.0
 import Qt.labs.platform 1.0
+import QtGraphicalEffects 1.0
 import "../fonts/Icon.js" as MDFont
 
 Rectangle {
@@ -11,8 +12,8 @@ Rectangle {
     id: buttonPanel
 
     width: parent.width
-    height: transportLayout.height
-    color: "lightgrey"
+    height: 115
+    color: window.barColor
 
     Timer {
         id: countDownTimer
@@ -22,14 +23,14 @@ Rectangle {
         running: false
         repeat: true
         onTriggered: {
-            if (textCountdown.time == 0) {
-                textCountdown.text = 0
+            if (timeFuncs.time === 0) {
+                window.textDisplayed = "Elapsed: 0"
                 countDownTimer.stop()
                 qmlbridge.record()
                 recordingTimer.start()
             } else {
-                textCountdown.text = textCountdown.time
-                textCountdown.time--
+                window.textDisplayed = "Countdown: " + timeFuncs.time
+                timeFuncs.time--
             }
         }
     }
@@ -43,14 +44,35 @@ Rectangle {
         repeat: true
         onTriggered: {
             // Since the timer starts at 0, go to endTime - 1
-            if (textCountdown.time >= textCountdown.time2 - 1) {
-                textCountdown.text = textCountdown.time + 1
+            if (timeFuncs.time >= timeFuncs.time2 - 1) {
+                window.textDisplayed = "Elapsed: " + (timeFuncs.time + 1)
                 qmlbridge.stop()
                 recordingTimer.stop()
             } else {
-                textCountdown.text = textCountdown.time + 1
-                textCountdown.time++
+                window.textDisplayed = "Elapsed: " + (++timeFuncs.time)
             }
+        }
+    }
+
+    Item {
+        id: timeFuncs
+        property int time: getTime()
+        property int time2: getTime2()
+        function getTime() {
+            var d = delayInput.text
+            var h = parseInt(d.substring(0, 2))
+            var m = parseInt(d.substring(3, 5))
+            var s = parseInt(d.substring(6, 8))
+            var timeRem = h * 60 * 60 + m * 60 + s
+            return timeRem
+        }
+        function getTime2() {
+            var d = recordTimeInput.text
+            var h = parseInt(d.substring(0, 2))
+            var m = parseInt(d.substring(3, 5))
+            var s = parseInt(d.substring(6, 8))
+            var timeRem = h * 60 * 60 + m * 60 + s
+            return timeRem
         }
     }
 
@@ -75,8 +97,7 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
                 background: Rectangle {
-                    opacity: enabled ? 1 : 0.15
-                    color: recordBtn.pressed ? "grey" : "darkgrey"
+                    color: (recordBtn.pressed || !recordBtn.enabled) ?  "grey" : "darkgrey"
                     radius: recordBtn.width / 2
                 }
 
@@ -120,8 +141,7 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
                 background: Rectangle {
-                    opacity: enabled ? 1 : 0.15
-                    color: stopBtn.pressed ? "grey" : "darkgrey"
+                    color: (stopBtn.pressed || !stopBtn.enabled) ?  "grey" : "darkgrey"
                     radius: stopBtn.width / 2
                 }
 
@@ -175,8 +195,7 @@ Rectangle {
                 }
 
                 background: Rectangle {
-                    opacity: enabled ? 1 : 0.15
-                    color: playpauseBtn.pressed ? "grey" : "darkgrey"
+                    color: (playpauseBtn.pressed || !playpauseBtn.enabled) ?  "grey" : "darkgrey"
                     radius: playpauseBtn.width / 2
                 }
 
@@ -235,8 +254,7 @@ Rectangle {
                 }
 
                 background: Rectangle {
-                    opacity: enabled ? 1 : 0.15
-                    color: timerBtn.pressed ? "grey" : "darkgrey"
+                    color: (timerBtn.pressed || !timerBtn.enabled) ?  "grey" : "darkgrey"
                     radius: timerBtn.width / 2
                 }
 
@@ -263,8 +281,7 @@ Rectangle {
                 }
 
                 background: Rectangle {
-                    opacity: enabled ? 1 : 0.15
-                    color: exportBtn.pressed ? "grey" : "darkgrey"
+                    color: (exportBtn.pressed || !exportBtn.enabled) ?  "grey" : "darkgrey"
                     radius: exportBtn.width / 2
                 }
 
@@ -297,6 +314,105 @@ Rectangle {
                 onClicked: qmlbridge.launchUpdateProcess()
             }
 
+            DropShadow {
+                visible: (recordBtn.enabled && !recordBtn.pressed) ? true : false
+                color: "#606060"
+                anchors.fill: recordBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: recordBtn
+            }
+
+            InnerShadow {
+                visible: recordBtn.pressed ? true : false
+                color: "#606060"
+                anchors.fill: recordBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: recordBtn
+            }
+
+            DropShadow {
+                visible: (stopBtn.enabled && !stopBtn.pressed) ? true : false
+                color: "#606060"
+                anchors.fill: stopBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: stopBtn
+            }
+
+            InnerShadow {
+                visible: stopBtn.pressed ? true : false
+                color: "#606060"
+                anchors.fill: stopBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: stopBtn
+            }
+
+            DropShadow {
+                visible: (playpauseBtn.enabled && !playpauseBtn.pressed) ? true : false
+                color: "#606060"
+                anchors.fill: playpauseBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: playpauseBtn
+            }
+
+            InnerShadow {
+                visible: playpauseBtn.pressed ? true : false
+                color: "#606060"
+                anchors.fill: playpauseBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: playpauseBtn
+            }
+
+            DropShadow {
+                visible: (timerBtn.enabled && !timerBtn.pressed) ? true : false
+                color: "#606060"
+                anchors.fill: timerBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: timerBtn
+            }
+
+            InnerShadow {
+                visible: timerBtn.pressed ? true : false
+                color: "#606060"
+                anchors.fill: timerBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: timerBtn
+            }
+
+            DropShadow {
+                visible: (exportBtn.enabled && !exportBtn.pressed) ? true : false
+                color: "#606060"
+                anchors.fill: exportBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: exportBtn
+            }
+
+            InnerShadow {
+                visible: exportBtn.pressed ? true : false
+                color: "#606060"
+                anchors.fill: exportBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: exportBtn
+            }
         }
         FileDialog {
             id: saveDialog
@@ -307,46 +423,6 @@ Rectangle {
             onAccepted: {
                 qmlbridge.saveFile(saveDialog.currentFile);
 //                console.log(saveDialog.fileUrl.toString());
-            }
-        }
-
-        RowLayout {
-            id: timeLabelLayout
-
-            Label {
-                id: timerLabel
-
-                color: "black"
-                font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                text: "Timer:"
-            }
-
-            Text {
-                id: textCountdown
-                objectName: "textCountdown"
-
-                color: "black"
-                font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                text: "0"
-
-                property int time: getTime()
-                property int time2: getTime2()
-                function getTime() {
-                    var d = delayInput.text
-                    var h = parseInt(d.substring(0, 2))
-                    var m = parseInt(d.substring(3, 5))
-                    var s = parseInt(d.substring(6, 8))
-                    var timeRem = h * 60 * 60 + m * 60 + s
-                    return timeRem
-                }
-                function getTime2() {
-                    var d = recordTimeInput.text
-                    var h = parseInt(d.substring(0, 2))
-                    var m = parseInt(d.substring(3, 5))
-                    var s = parseInt(d.substring(6, 8))
-                    var timeRem = h * 60 * 60 + m * 60 + s
-                    return timeRem
-                }
             }
         }
 
@@ -462,12 +538,14 @@ Rectangle {
         x: Math.round((window.width - width) / 2)
         y: Math.round((window.height - height) / 2)
 
+        width: 350
+        height: 170
         modal: true
         focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
         ColumnLayout {
-            spacing: Math.round(buttonPanel.height * 0.15)
+            spacing: 10
 
             GridLayout {
                 id: gridLayout
@@ -477,7 +555,7 @@ Rectangle {
 
                 Label {
                     font.family: "Roboto"
-                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+//                    font.pixelSize: 20
                     text: "Delay Recording (hh:mm:ss)"
                     color: "white"
 
@@ -485,10 +563,10 @@ Rectangle {
                     verticalAlignment: Text.AlignVCenter
                 }
 
-                TextInput {
+                TextField {
                     id: delayInput
+                    width: 100
                     objectName: "delayInput"
-
                     text: "00:00:00"
                     inputMask: "00:00:00"
                     color: "white"
@@ -496,7 +574,7 @@ Rectangle {
 
                 Label {
                     font.family: "Roboto"
-                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+//                    font.pixelSize: 20
                     text: "Recording Time (hh:mm:ss)"
                     color: "white"
 
@@ -504,10 +582,10 @@ Rectangle {
                     verticalAlignment: Text.AlignVCenter
                 }
 
-                TextInput {
+                TextField {
                     id: recordTimeInput
+                    width: 100
                     objectName: "recordTimeInput"
-
                     text: "00:00:00"
                     inputMask: "00:00:00"
                     color: "white"
@@ -516,19 +594,19 @@ Rectangle {
 
             RowLayout {
                 Layout.alignment: Qt.AlignCenter
-                spacing: Math.round(buttonPanel.width * 0.05)
-                width: gridLayout.width / 2
-
+                spacing: 60
+                width: gridLayout.width
+                anchors.leftMargin: 300
                 Button {
                     Layout.alignment: Qt.AlignLeft
                     id: cancelBtn
                     onClicked: {
                         timerPopup.close()
                     }
-                    Layout.preferredWidth: Math.round(buttonPanel.width * 0.15)
+                    Layout.preferredWidth: 75
                     contentItem: Text {
                         font.family: "Roboto"
-                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+//                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                         text: "CANCEL"
                         color: "white"
 
@@ -545,10 +623,10 @@ Rectangle {
                         timerPopup.close()
                     }
 
-                    Layout.preferredWidth: Math.round(buttonPanel.width * 0.15)
+                    Layout.preferredWidth: 75
                     contentItem: Text {
                         font.family: "Roboto"
-                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+//                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                         text: "OK"
                         color: "white"
 
@@ -557,6 +635,10 @@ Rectangle {
                     }
                 }
             }
+        }
+
+        onClosed: {
+            console.log("popup clsoed");
         }
     }
 }
