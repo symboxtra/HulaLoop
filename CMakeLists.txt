@@ -202,6 +202,14 @@ if (NOT HL_BUILD_ONLY_AUDIO)
     endif ()
 endif ()
 
+install (
+    DIRECTORY ${CMAKE_BINARY_DIR}/bin
+    DESTINATION ${CMAKE_INSTALL_PREFIX}
+    USE_SOURCE_PERMISSIONS
+    PATTERN "*.ilk" EXCLUDE
+    PATTERN "*.pdb" EXCLUDE
+)
+
 
 
 
@@ -242,6 +250,8 @@ if (NOT DEFINED GEN_INSTALL)
 endif ()
 
 if(GEN_INSTALL AND NOT BUILD_ONLY_AUDIO)
+    message(STATUS "HERE1")
+
 
     set(CPACK_PACKAGE_NAME "HulaLoop Installer")
     set(CPACK_PACKAGE_VENDOR "Symboxtra Software")
@@ -295,6 +305,21 @@ if(GEN_INSTALL AND NOT BUILD_ONLY_AUDIO)
         set(CPACK_GENERATOR "DMG")
     else () # Debian Linux
         set(CPACK_GENERATOR "DEB")
+        set(CPACK_PACKAGE_VENDOR "Symboxtra")
+        set(CPACK_COMPONENTS_ALL exe link configs lastversion script log monitor)
+        set(CPACK_PACKAGE_FILE_NAME "HulaLoop")
+        set(CPACK_PACKAGE_NAME "HulaLoop")
+        set(CPACK_PACKAGE_VERSION 0.0.1)
+        set(CPACK_PACKAGE_VERSION_MAJOR 0)
+        set(CPACK_PACKAGE_VERSION_MINOR 0)
+        set(CPACK_PACKAGE_VERSION_PATCH 1)
+        set(CPACK_DEBIAN_PACKAGE_DEPENDS "")
+        set(CPACK_PACKAGE_DESCRIPTION "Some Description")
+        set(CPACK_PACKAGE_CONTACT "support@company.com")
+        install(FILES ${PROJECT_SOURCE_DIR}/res/installer/hulaloop.desktop DESTINATION /usr/share/applications)
+        install(FILES ${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.svg DESTINATION /usr/share/icons/hicolor/scalable/apps)
+        include(CPack)
+
     endif ()
 
 endif()
