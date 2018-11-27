@@ -245,80 +245,69 @@ endif ()
 
 
 ######## CPack ########
-if (NOT DEFINED GEN_INSTALL)
-    set (GEN_INSTALL false)
-endif ()
+if (NOT BUILD_ONLY_AUDIO)
 
-if(GEN_INSTALL AND NOT BUILD_ONLY_AUDIO)
-
-    set(CPACK_PACKAGE_NAME "HulaLoop Installer")
-    set(CPACK_PACKAGE_VENDOR "Symboxtra Software")
-    set(CPACK_PACKAGE_VERSION "0.0.0")
+    set (CPACK_PACKAGE_NAME "HulaLoop Installer")
+    set (CPACK_PACKAGE_VENDOR "Symboxtra Software")
+    set (CPACK_PACKAGE_VERSION "0.0.0")
 
     if (64BIT) # Windows x64
 
-        set(CPACK_GENERATOR "NSIS64")
+        set (CPACK_GENERATOR "NSIS64")
 
-        set(CPACK_NSIS_MUI_ICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
-        set(CPACK_NSIS_MUI_UNIICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
-#        set(CPACK_PACKAGE_ICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.bmp")
-        set(CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
-        set(CPACK_PACKAGE_INSTALL_DIRECTORY "Test CPack")
-        set(CPACK_NSIS_MODIFY_PATH ON)
-        set(CPACK_COMPONENTS_ALL app)
+        set (CPACK_NSIS_MUI_ICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
+        set (CPACK_NSIS_MUI_UNIICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
+#        set (CPACK_PACKAGE_ICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.bmp")
+        set (CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
+        set (CPACK_PACKAGE_INSTALL_DIRECTORY "Test CPack")
+        set (CPACK_NSIS_MODIFY_PATH ON)
+        set (CPACK_COMPONENTS_ALL app)
 
-        if(PACK)
-            set(INSTALL_DIR bin)
-            set(LIB_DIR bin/lib)
-        endif()
+        if (PACK)
+            set (INSTALL_DIR bin)
+            set (LIB_DIR bin/lib)
+        endif ()
 
 
         # Configuration file with custom definitions for NSIS
-        # configure_file(
+        # configure_file (
             # /res/nsis/NSIS.definitions.nsh.in
             # ${CMAKE_CURRENT_BINARY_DIR}/res/nsis/NSIS.definitions.nsh
         # )
 
     elseif (WIN32) # Windows x86
+        set (CPACK_GENERATOR "NSIS")
 
-        set(CPACK_GENERATOR "NSIS")
+        set (CPACK_NSIS_MUI_ICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
+        set (CPACK_NSIS_MUI_UNIICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
+#        set (CPACK_PACKAGE_ICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.bmp")
+        set (CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
+        set (CPACK_PACKAGE_INSTALL_DIRECTORY "Test CPack")
+        set (CPACK_NSIS_MODIFY_PATH ON)
+        set (CPACK_COMPONENTS_ALL app)
 
-        set(CPACK_NSIS_MUI_ICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
-        set(CPACK_NSIS_MUI_UNIICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
-#        set(CPACK_PACKAGE_ICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.bmp")
-        set(CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
-        set(CPACK_PACKAGE_INSTALL_DIRECTORY "Test CPack")
-        set(CPACK_NSIS_MODIFY_PATH ON)
-        set(CPACK_COMPONENTS_ALL app)
-
-        if(PACK)
-            set(INSTALL_DIR bin)
-            set(LIB_DIR bin/lib)
-        endif()
-
+        if (PACK)
+            set (INSTALL_DIR bin)
+            set (LIB_DIR bin/lib)
+        endif ()
 
     elseif (OSX) # Mac OS X
-        set(CPACK_GENERATOR "DMG")
-    else () # Debian Linux
-        set(CPACK_GENERATOR "DEB")
-        set(CPACK_PACKAGE_VENDOR "Symboxtra")
-        set(CPACK_COMPONENTS_ALL exe link configs lastversion script log monitor)
-        set(CPACK_PACKAGE_FILE_NAME "HulaLoop")
-        set(CPACK_PACKAGE_NAME "HulaLoop")
-        set(CPACK_PACKAGE_VERSION 0.0.1)
-        set(CPACK_PACKAGE_VERSION_MAJOR 0)
-        set(CPACK_PACKAGE_VERSION_MINOR 0)
-        set(CPACK_PACKAGE_VERSION_PATCH 1)
-        set(CPACK_DEBIAN_PACKAGE_DEPENDS "")
-        set(CPACK_PACKAGE_DESCRIPTION "Some Description")
-        set(CPACK_PACKAGE_CONTACT "support@company.com")
+        set (CPACK_GENERATOR "DMG")
+
+    else  () # Debian Linux
+        set (CPACK_GENERATOR "DEB")
+        set (CPACK_PACKAGE_FILE_NAME "HulaLoop")
+        set (CPACK_DEBIAN_PACKAGE_NAME "HulaLoop")
+        set (CPACK_DEBIAN_PACKAGE_DESCRIPTION "Simple cross-platform audio loopback and recording.")
+        set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Symboxtra Software")
+        # !!!! Add contact email
+        set (CPACK_DEBIAN_PACKAGE_DEPENDS "g++, build-essential, cmake, libgl1-mesa-dev, libasound2, libasound2-dev")
         # install logo file and the desktop shortcut
-        install(FILES ${PROJECT_SOURCE_DIR}/res/installer/hulaloop.desktop DESTINATION /usr/share/applications)
-        install(FILES ${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.svg DESTINATION /usr/share/icons/hicolor/scalable/apps)
+        install (FILES ${PROJECT_SOURCE_DIR}/res/installer/hulaloop.desktop DESTINATION /usr/share/applications)
+        install (FILES ${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.svg DESTINATION /usr/share/icons/hicolor/scalable/apps)
+    endif  ()
 
-    endif ()
+    include (CPack)
 
-    include(CPack)
-
-endif()
+endif ()
 message (STATUS "")
