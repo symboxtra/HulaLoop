@@ -526,7 +526,7 @@ Rectangle {
                         font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                         onClicked: {
                             // Discard files
-                            qmlbridge.cleanTempFiles()
+                            qmlbridge.discard()
 
                             // Start recording again
                             stopBtn.isStopped = false

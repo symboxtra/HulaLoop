@@ -71,6 +71,14 @@ bool QMLBridge::pause()
 }
 
 /**
+ * Deletes all the temp files that the program has created
+ */
+void QMLBridge::discard()
+{
+    transport->discard();
+}
+
+/**
  * Match a string that the user chose to the input device list
  * and notify the backend
  */
@@ -174,15 +182,7 @@ void QMLBridge::saveFile(QString dir)
     directory = directory.substr(substrLen);
     transport->exportFile(directory);
 
-    cleanTempFiles();
-}
-
-/**
- * Deletes all the temp files that the program has created
- */
-void QMLBridge::cleanTempFiles()
-{
-    transport->deleteTempFiles();
+    discard();
 }
 
 /**

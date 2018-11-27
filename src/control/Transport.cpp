@@ -180,7 +180,7 @@ void Transport::exportFile(std::string targetDirectory)
 /**
  * Reset transport states and delete captured audio files from system temp folder
  */
-void Transport::deleteTempFiles()
+void Transport::discard()
 {
     // Reset states
     recordState = true;

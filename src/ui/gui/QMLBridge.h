@@ -33,10 +33,9 @@ namespace hula
             Q_INVOKABLE bool stop();
             Q_INVOKABLE bool play();
             Q_INVOKABLE bool pause();
+            Q_INVOKABLE void discard();
 
             Q_INVOKABLE void saveFile(QString dir);
-
-            Q_INVOKABLE void cleanTempFiles();
 
             Q_INVOKABLE void launchUpdateProcess();
 

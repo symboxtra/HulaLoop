@@ -186,13 +186,13 @@
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="93"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="384"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="398"/>
         <source>Translation file successfully loaded.</source>
         <translation>Archivo de traducción cargado.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="97"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="388"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="402"/>
         <source>Could not find translation file for %1.</source>
         <translation>No se pudo encontrar el archivo de traducción para %1.</translation>
     </message>
@@ -338,42 +338,42 @@
         <translation>&apos;%1&apos; no es %2.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="293"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="307"/>
         <source>Input device set to: %1</source>
         <translation>Dispositivo de entrada cambiado a: %1</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="297"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="311"/>
         <source>Failed to set input device.</source>
         <translation>Error al cambiar el dispositivo de entrada.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="333"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="347"/>
         <source>Output device set to: %1</source>
         <translation>Error al cambiar el dispositivo de entrada: %1</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="337"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="351"/>
         <source>Failed to set output device.</source>
         <translation>Error al cambiar el dispositivo de salida.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="408"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="422"/>
         <source>System command returned: %1</source>
         <translation>Comando del sistema devuelto: %1</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="413"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="427"/>
         <source>No system command processor is available.</source>
         <translation>No hay procesador de comandos del sistema.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="423"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="437"/>
         <source>Unrecognized command &apos;%1&apos;</source>
         <translation>Comando no reconocido: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="430"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="444"/>
         <source>Command failed with value of &apos;false&apos;.</source>
         <translation>El comando falló con el valor &apos;falso&apos;.</translation>
     </message>

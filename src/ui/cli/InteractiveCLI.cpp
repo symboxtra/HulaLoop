@@ -265,6 +265,21 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
             return HulaCliStatus::HULA_CLI_FAILURE;
         }
     }
+    else if (command == HL_DISCARD_SHORT || command == HL_DISCARD_LONG)
+    {
+        std::string resp = "N";
+        printf("%s", qPrintable(CLI::tr("Are you sure you want to discard? (y/N): ")));
+        std::getline(std::cin, resp);
+
+        if (resp.size() > 0 && (resp[0] == 'Y' || resp[0] == 'y'))
+        {
+            t->discard();
+        }
+        else
+        {
+            printf("%s\n", qPrintable(CLI::tr("Discard cancelled.")));
+        }
+    }
     else if (command == HL_LIST_SHORT || command == HL_LIST_LONG)
     {
         printDeviceList(t);

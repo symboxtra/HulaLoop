@@ -88,7 +88,7 @@ TEST_F(TestCTInterface, verify_tempfile_deletion)
 
     // Delete temp files and check if vector is empty
     std::vector<std::string> dirs = recorder->getExportPaths();
-    deleteTempFiles();
+    discard();
     ASSERT_EQ(recorder->getExportPaths().size(), 0);
 
     struct stat buffer;

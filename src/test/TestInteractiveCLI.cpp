@@ -27,10 +27,7 @@ HulaInteractiveCli cli(&app);
 void restoreState()
 {
     std::vector<std::string> args;
-    //cli.processCommand(HL_STOP_LONG, args);
-
-    // Temporary fix until Transport::Discard is fixed
-    cli.processCommand(HL_PAUSE_LONG, args);
+    cli.processCommand(HL_STOP_LONG, args);
 
     args.push_back(HL_DISCARD_ARG1);
     cli.processCommand(HL_DISCARD_LONG, args);

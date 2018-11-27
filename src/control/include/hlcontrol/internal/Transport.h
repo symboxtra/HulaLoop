@@ -53,11 +53,11 @@ namespace hula
             bool stop();
             bool play();
             bool pause();
+            void discard();
 
             Controller *getController() const;
 
             void exportFile(std::string targetDirectory);
-            void deleteTempFiles();
 
             TransportState getState() const;
             std::string stateToStr(const TransportState state) const;
