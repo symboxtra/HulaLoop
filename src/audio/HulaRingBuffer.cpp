@@ -57,7 +57,7 @@ HulaRingBuffer::HulaRingBuffer(float maxDuration)
     this->rbMemory = new SAMPLE[numSamples];
 
     // Make sure ring buffer was allocated
-    if (this->rbMemory == NULL)
+    if (this->rbMemory == nullptr)
     {
         hlDebugf("Could not allocate ring buffer of size %zu.\n", numSamples * sizeof(SAMPLE));
         exit(1);
@@ -100,16 +100,16 @@ ring_buffer_size_t HulaRingBuffer::read(SAMPLE *data, ring_buffer_size_t maxSamp
  * @param maxSamples Desired number of samples.
  * @param dataPtr1 The address where the first pointer should be stored.
  * @param size1 Number of elements available from dataPtr1.
- * @param dataPtr2 The address where the second pointer (if required) will be stored. NULL if not used.
+ * @param dataPtr2 The address where the second pointer (if required) will be stored. nullptr if not used.
  * @param size2 Number of elements available from dataPtr2.
  * @return Number of samples read.
  */
 ring_buffer_size_t HulaRingBuffer::directRead(ring_buffer_size_t maxSamples, void **dataPtr1, ring_buffer_size_t *size1, void **dataPtr2, ring_buffer_size_t *size2)
 {
     // Initialize
-    *dataPtr1 = NULL;
+    *dataPtr1 = nullptr;
     *size1 = 0;
-    *dataPtr2 = NULL;
+    *dataPtr2 = nullptr;
     *size2 = 0;
 
 /*
@@ -174,7 +174,7 @@ ring_buffer_size_t HulaRingBuffer::write(const SAMPLE *data, ring_buffer_size_t 
  */
 HulaRingBuffer::~HulaRingBuffer()
 {
-    if (this->rbMemory != NULL)
+    if (this->rbMemory != nullptr)
     {
         PaUtil_FlushRingBuffer(&this->rb);
         delete [] this->rbMemory;

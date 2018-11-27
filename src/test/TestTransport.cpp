@@ -17,7 +17,7 @@ class TestCTInterface : public Transport, public ::testing::Test {
 
 TEST_F(TestCTInterface, verifyController)
 {
-    ASSERT_FALSE(getController() == NULL);
+    ASSERT_FALSE(getController() == nullptr);
 }
 
 /**

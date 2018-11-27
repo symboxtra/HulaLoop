@@ -10,7 +10,7 @@ using namespace hula;
 
 // Single instance since Transport has to be created
 int num = 0;
-QCoreApplication app(num, NULL);
+QCoreApplication app(num, nullptr);
 HulaInteractiveCli cli(&app);
 
 #define MOCK_CONTROL_TIME 200

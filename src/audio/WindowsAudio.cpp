@@ -19,7 +19,7 @@ WindowsAudio::WindowsAudio()
     }
 
     pa_status = paNoError;
-    activeInputDevice = NULL;
+    activeInputDevice = nullptr;
 }
 
 /**
@@ -44,11 +44,11 @@ std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
     if (isLoopSet | isPlaySet)
     {
         // Setup capture environment
-        status = CoInitialize(NULL);
+        status = CoInitialize(nullptr);
         HANDLE_ERROR(status);
 
         // Creates a system instance of the device enumerator
-        status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
+        status = CoCreateInstance(CLSID_MMDeviceEnumerator, nullptr, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
         HANDLE_ERROR(status);
 
         // Get the collection of all devices
@@ -66,8 +66,8 @@ std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
         {
             // Initialize variables for current loop
             IMMDevice *device;
-            DWORD state = NULL;
-            LPWSTR id = NULL;
+            DWORD state = nullptr;
+            LPWSTR id = nullptr;
             IPropertyStore *propKey;
             PROPVARIANT varName;
             PropVariantInit(&varName);
@@ -216,10 +216,10 @@ void WindowsAudio::capture()
     if (isLoopSet)
     {
         // Instantiate clients and services for audio capture
-        IAudioCaptureClient *captureClient = NULL;
-        IAudioClient *audioClient = NULL;
-        WAVEFORMATEX *pwfx = NULL;
-        IMMDevice *audioDevice = NULL;
+        IAudioCaptureClient *captureClient = nullptr;
+        IAudioClient *audioClient = nullptr;
+        WAVEFORMATEX *pwfx = nullptr;
+        IMMDevice *audioDevice = nullptr;
         UINT32 numFramesAvailable;
         DWORD flags;
         char *buffer = (char *)malloc(500);
@@ -228,11 +228,11 @@ void WindowsAudio::capture()
         REFERENCE_TIME req = REFTIMES_PER_SEC;
 
         // Setup capture environment
-        status = CoInitialize(NULL);
+        status = CoInitialize(nullptr);
         HANDLE_ERROR(status);
 
         // Creates a system instance of the device enumerator
-        status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
+        status = CoCreateInstance(CLSID_MMDeviceEnumerator, nullptr, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
         HANDLE_ERROR(status);
 
         // Select the current active record/loopback device
@@ -242,7 +242,7 @@ void WindowsAudio::capture()
         hlDebug() << "Selected Device: " << activeInputDevice->getName() << std::endl; // TODO: Remove this later
 
         // Activate the IMMDevice
-        status = audioDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void **)&audioClient);
+        status = audioDevice->Activate(IID_IAudioClient, CLSCTX_ALL, nullptr, (void **)&audioClient);
         HANDLE_ERROR(status);
 
         // Not sure what this does yet!?
@@ -250,7 +250,7 @@ void WindowsAudio::capture()
         HANDLE_ERROR(status);
 
         // Initialize the audio client in loopback mode and set audio engine format
-        status = audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_LOOPBACK, req, 0, pwfx, NULL);
+        status = audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_LOOPBACK, req, 0, pwfx, nullptr);
         HANDLE_ERROR(status);
 
         // Gets the maximum capacity of the endpoint buffer (audio frames)
@@ -282,12 +282,12 @@ void WindowsAudio::capture()
             while (packetLength != 0)
             {
                 // Get the captured buffer
-                status = captureClient->GetBuffer(&pData, &numFramesAvailable, &flags, NULL, NULL);
+                status = captureClient->GetBuffer(&pData, &numFramesAvailable, &flags, nullptr, nullptr);
                 HANDLE_ERROR(status);
 
                 if (flags & AUDCLNT_BUFFERFLAGS_SILENT)
                 {
-                    pData = NULL;
+                    pData = nullptr;
                 }
 
                 // Copy to ringbuffers
@@ -347,12 +347,12 @@ void WindowsAudio::capture()
         inputParameters.channelCount = Pa_GetDeviceInfo(inputParameters.device)->maxInputChannels;
         inputParameters.sampleFormat = PA_SAMPLE_TYPE;
         inputParameters.suggestedLatency = Pa_GetDeviceInfo(inputParameters.device)->defaultLowInputLatency;
-        inputParameters.hostApiSpecificStreamInfo = NULL;
+        inputParameters.hostApiSpecificStreamInfo = nullptr;
 
         err = Pa_OpenStream(
             &stream,
             &inputParameters,
-            NULL, // &outputParameters
+            nullptr, // &outputParameters
             SAMPLE_RATE,
             FRAMES_PER_BUFFER,
             paClipOff, // We won't output out of range samples so don't bother clipping them
@@ -418,15 +418,15 @@ bool WindowsAudio::checkDeviceParams(Device *activeDevice)
     return true; // TODO: Remove this and add PortAudio checks and change deviceID code
 
     HRESULT status;
-    IMMDevice *device = NULL;
+    IMMDevice *device = nullptr;
     PROPVARIANT prop;
     IPropertyStore *store = nullptr;
     PWAVEFORMATEX deviceProperties;
     // Setup capture environment
-    status = CoInitialize(NULL);
+    status = CoInitialize(nullptr);
     HANDLE_ERROR(status);
     // Creates a system instance of the device enumerator
-    status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
+    status = CoCreateInstance(CLSID_MMDeviceEnumerator, nullptr, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
     HANDLE_ERROR(status);
     // Select the current active record/loopback device
     status = pEnumerator->GetDevice(activeDevice->getID().windowsID, &device);

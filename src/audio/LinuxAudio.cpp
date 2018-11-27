@@ -105,7 +105,7 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
  */
 bool LinuxAudio::setActiveInputDevice(Device *device)
 {
-    if(device->getName() == "Pulse Audio Volume Control")
+    if(device != nullptr && device->getName() == "Pulse Audio Volume Control")
     {
         std::thread(&LinuxAudio::startPAVUControl).detach();
     }
@@ -122,7 +122,7 @@ bool LinuxAudio::setActiveInputDevice(Device *device)
 bool LinuxAudio::checkDeviceParams(Device *device)
 {
     int err;                     // return for commands that might return an error
-    snd_pcm_t *pcmHandle = NULL; // default pcm handle
+    snd_pcm_t *pcmHandle = nullptr; // default pcm handle
     snd_pcm_hw_params_t *param;  // defaults param for the pcm
     snd_pcm_format_t format;     // format that user chooses
     unsigned samplingRate;       // sampling rate the user choooses
@@ -203,7 +203,7 @@ void LinuxAudio::startPAVUControl()
 /*
    lengthOfRecording is in ms
    Device * recordingDevice is already formatted as hw:(int),(int)
-   if Device is NULL then it chooses the default
+   if Device is nullptr then it chooses the default
    */
 /**
  * Capture loop for LinuxAudio.
@@ -211,12 +211,12 @@ void LinuxAudio::startPAVUControl()
 void LinuxAudio::capture()
 {
     int err;                        // return for commands that might return an error
-    snd_pcm_t *pcmHandle = NULL;    // default pcm handle
+    snd_pcm_t *pcmHandle = nullptr;    // default pcm handle
     std::string defaultDevice;      // default hw id for the device
     snd_pcm_hw_params_t *param;     // object to store our paramets (they are just the default ones for now)
     int audioBufferSize;            // size of the buffer for the audio
-    uint8_t *audioBuffer = NULL;       // buffer for the audio
-    snd_pcm_uframes_t *temp = NULL; // useless parameter because the api requires it
+    uint8_t *audioBuffer = nullptr;       // buffer for the audio
+    snd_pcm_uframes_t *temp = nullptr; // useless parameter because the api requires it
     int framesRead = 0;             // amount of frames read
 
     // just writing to a buffer for now
@@ -242,11 +242,11 @@ void LinuxAudio::capture()
     // we set the sampling rate to whatever the user or device wants
     // TODO insert sample rate
     unsigned int sampleRate = 44100;
-    snd_pcm_hw_params_set_rate_near(pcmHandle, param, &sampleRate, NULL);
+    snd_pcm_hw_params_set_rate_near(pcmHandle, param, &sampleRate, nullptr);
 
     // set the period size to 32 TODO
     snd_pcm_uframes_t frame = FRAME_TIME;
-    snd_pcm_hw_params_set_period_size_near(pcmHandle, param, &frame, NULL);
+    snd_pcm_hw_params_set_period_size_near(pcmHandle, param, &frame, nullptr);
 
     // send the param to the the pcm device
     err = snd_pcm_hw_params(pcmHandle, param);
@@ -257,7 +257,7 @@ void LinuxAudio::capture()
     }
 
     // get the size of one period
-    snd_pcm_hw_params_get_period_size(param, &frame, NULL);
+    snd_pcm_hw_params_get_period_size(param, &frame, nullptr);
 
     // allocate memory for the buffer
     audioBufferSize = frame * NUM_CHANNELS * sizeof(SAMPLE);

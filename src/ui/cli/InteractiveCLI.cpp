@@ -271,7 +271,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
     }
     else if (command == HL_INPUT_SHORT || command == HL_INPUT_LONG)
     {
-        Device *device = NULL;
+        Device *device = nullptr;
         // Make sure the arg exists
         if (args.size() != 0)
         {
@@ -284,7 +284,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
         }
 
         // Find device will already have printed a not-found error
-        if (device != NULL)
+        if (device != nullptr)
         {
             bool ret = t->getController()->setActiveInputDevice(device);
 
@@ -311,7 +311,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
     }
     else if (command == HL_OUTPUT_SHORT || command == HL_OUTPUT_LONG)
     {
-        Device *device = NULL;
+        Device *device = nullptr;
         // Make sure the arg exists
         if (args.size() != 0)
         {
@@ -324,7 +324,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
         }
 
         // Find device will already have printed a not-found error
-        if (device != NULL)
+        if (device != nullptr)
         {
             bool ret = t->getController()->setActiveOutputDevice(device);
 
@@ -392,7 +392,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
     else if (command == HL_SYSTEM_SHORT || command == HL_SYSTEM_LONG)
     {
         // Make sure there is a command processor available
-        if (system(NULL))
+        if (system(nullptr))
         {
             // Construct the sys command from args
             std::string sysCommand = "";

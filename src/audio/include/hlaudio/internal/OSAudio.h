@@ -27,8 +27,8 @@ namespace hula
              */
             OSAudio()
             {
-                this->activeInputDevice = NULL;
-                this->activeOutputDevice = NULL;
+                this->activeInputDevice = nullptr;
+                this->activeOutputDevice = nullptr;
             };
 
             /**

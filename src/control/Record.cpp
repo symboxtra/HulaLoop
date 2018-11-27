@@ -62,7 +62,7 @@ void Record::recorder()
 
         if (samplesRead > 0)
         {
-            for(int i = 0;i < 2 && ptr[i] != NULL;i++)
+            for(int i = 0;i < 2 && ptr[i] != nullptr;i++)
             {
                 sf_count_t samplesWritten = sf_write_float(file, (float*)ptr[i], sizes[i]);
                 if (samplesWritten != sizes[i])

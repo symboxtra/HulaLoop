@@ -31,7 +31,7 @@ class TestOSXAudio : public ::testing::Test {
         }
 };
 
-OSXAudio *TestOSXAudio::audio = NULL;
+OSXAudio *TestOSXAudio::audio = nullptr;
 
 /**
  * Get input (record or loopback) devices.

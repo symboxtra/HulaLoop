@@ -73,7 +73,7 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
 };
 
 /**
- * NULL device does not cause a switch.
+ * nullptr device does not cause a switch.
  *
  * EXPECTED:
  *      Device does not switch.
@@ -81,7 +81,7 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
 TEST_F(TestOSAudio, null_does_not_switch)
 {
     setActiveInputDevice(this->testDevice);
-    setActiveInputDevice(NULL);
+    setActiveInputDevice(nullptr);
     EXPECT_EQ(this->activeInputDevice->getName(), this->testDevice->getName());
 
     waitForThreadDeathBeforeDestruction();

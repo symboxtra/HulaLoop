@@ -170,11 +170,11 @@ namespace hula
      * @param name Name of the desired device
      * @param type Expected type of the desired device
      * @return Pointer to newly allocated Device object if found
-     * @return NULL if not found
+     * @return nullptr if not found
      */
     inline Device * findDevice(Transport *t, const std::string &name, DeviceType type)
     {
-        Device *device = NULL;
+        Device *device = nullptr;
         std::vector<Device *> devices;
 
         // TODO: Change this when proper device indexing is possible
@@ -207,14 +207,14 @@ namespace hula
         }
 
         // Make a copy so that we can delete all
-        if (device != NULL)
+        if (device != nullptr)
         {
             device = new Device(*device);
         }
 
         Device::deleteDevices(devices);
 
-        if (device == NULL)
+        if (device == nullptr)
         {
             //: The argument in this text is the name or id of the device that the user searched for
             fprintf(stderr, "\n%s\n", qPrintable(CLI::tr("Could not find device matching: %1").arg(name.c_str())));

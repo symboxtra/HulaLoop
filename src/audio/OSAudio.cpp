@@ -100,7 +100,7 @@ void OSAudio::backgroundCapture(OSAudio *_this)
         return;
     }
 
-    if (_this->activeInputDevice == NULL)
+    if (_this->activeInputDevice == nullptr)
     {
         std::vector<Device *> devices = _this->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
         if (devices.empty())
@@ -131,7 +131,7 @@ void OSAudio::backgroundCapture(OSAudio *_this)
 bool OSAudio::setActiveInputDevice(Device *device)
 {
     // TODO: Handle error
-    if (device == NULL)
+    if (device == nullptr)
     {
         return false;
     }
@@ -191,7 +191,7 @@ void OSAudio::joinAndKillThreads(std::vector<std::thread> &threads)
 bool OSAudio::setActiveOutputDevice(Device *device)
 {
     // TODO: Handle error
-    if (device == NULL)
+    if (device == nullptr)
     {
         return false;
     }
