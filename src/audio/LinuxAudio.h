@@ -30,6 +30,7 @@ namespace hula
             ~LinuxAudio();
             void capture();
 
+            void setActiveInputDevice(Device *device);
             static void startPAVUControl();
 
             std::vector<Device *> getDevices(DeviceType type);

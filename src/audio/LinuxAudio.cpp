@@ -98,6 +98,21 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
 }
 
 /**
+ * Override of OSAudio base method. Checks if the selected
+ * device is PAVUControl and opens the program if necessary.
+ * Control is then passed on to the base method.
+ */
+void LinuxAudio::setActiveInputDevice(Device *device)
+{
+    if(device->getName() == "Pulse Audio Volume Control")
+    {
+        std::thread(&LinuxAudio::startPAVUControl).detach();
+    }
+
+    OSAudio::setActiveInputDevice(device);
+}
+
+/**
  * Check with the hardware to ensure that the current audio settings
  * are valid for the selected device.
  *
@@ -105,11 +120,6 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
  */
 bool LinuxAudio::checkDeviceParams(Device *device)
 {
-    if(device->getName() == "Pulse Audio Volume Control")
-    {
-        std::thread(&LinuxAudio::startPAVUControl).detach();
-        return true;
-    }
     int err;                     // return for commands that might return an error
     snd_pcm_t *pcmHandle = NULL; // default pcm handle
     snd_pcm_hw_params_t *param;  // defaults param for the pcm
@@ -180,7 +190,6 @@ void LinuxAudio::startPAVUControl()
  */
 void LinuxAudio::capture()
 {
-    std::thread(&LinuxAudio::startPAVUControl).detach();
     int err;                        // return for commands that might return an error
     snd_pcm_t *pcmHandle = NULL;    // default pcm handle
     std::string defaultDevice;      // default hw id for the device

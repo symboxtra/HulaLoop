@@ -229,7 +229,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     endif ()
 
     if (NOT HL_BUILD_ONLY_AUDIO)
-        create_test ("src/test/TestTransport.cpp" "" -1 TRUE FALSE)
+        create_test ("src/test/TestTransport.cpp" "" -1 FALSE FALSE)
         create_test ("src/test/TestRecord.cpp" "" -1 FALSE FALSE)
 
         create_test ("src/test/TestCLIArgs.cpp" "" -1 FALSE FALSE)
