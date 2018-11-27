@@ -176,13 +176,13 @@
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="93"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="398"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="408"/>
         <source>Translation file successfully loaded.</source>
         <translation>Plik z tłumaczeniem został pomyślnie załadowany.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="97"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="402"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="412"/>
         <source>Could not find translation file for %1.</source>
         <translation>Nie można znaleźć pliku tłumaczącego dla &apos;%1&apos;.</translation>
     </message>
@@ -328,42 +328,52 @@
         <translation>&apos;%1&apos; nie jest prawidłowy &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="307"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="279"/>
+        <source>Are you sure you want to discard? (y/N): </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="289"/>
+        <source>Discard cancelled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="317"/>
         <source>Input device set to: %1</source>
         <translation>Urządzenie wejściowe ustawione do &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="311"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="321"/>
         <source>Failed to set input device.</source>
         <translation>Nie można ustawić urządzenia wejściowego.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="347"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="357"/>
         <source>Output device set to: %1</source>
         <translation>Urządzenie wyjściowe ustawione do &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="351"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="361"/>
         <source>Failed to set output device.</source>
         <translation>Nie można ustawić urządzenia wyjściowego.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="422"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="432"/>
         <source>System command returned: %1</source>
         <translation>Polecenie systemowe zostało zwrócone: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="427"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="437"/>
         <source>No system command processor is available.</source>
         <translation>Żaden procesor poleceń systemu nie jest dostępny.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="437"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="447"/>
         <source>Unrecognized command &apos;%1&apos;</source>
         <translation>Polecenie nierozpoznane &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="444"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="454"/>
         <source>Command failed with value of &apos;false&apos;.</source>
         <translation>Polecenie nie powiodło się z wartością &apos;false&apos;.</translation>
     </message>

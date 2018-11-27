@@ -66,7 +66,7 @@ std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
         {
             // Initialize variables for current loop
             IMMDevice *device;
-            DWORD state = nullptr;
+            DWORD state = 0;
             LPWSTR id = nullptr;
             IPropertyStore *propKey;
             PROPVARIANT varName;
@@ -202,16 +202,7 @@ void WindowsAudio::capture()
     bool isRecSet = (activeInputDevice->getType() & DeviceType::RECORD) == DeviceType::RECORD;
     bool isPlaySet = (activeInputDevice->getType() & DeviceType::PLAYBACK) == DeviceType::PLAYBACK;
 
-    hlDebug() << "In Capture Mode" << std::endl; // TODO: Remove this later
-
-    // TODO: Keep this here until the ringbuffer is debugged
-    /*SF_INFO sfinfo;
-    sfinfo.samplerate = 44100;
-    sfinfo.channels = NUM_CHANNELS;
-    sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
-    SNDFILE *file = sf_open("C:\\Users\\patel\\AppData\\Local\\Temp\\hulaloop_temp.wav", SFM_WRITE, &sfinfo);*/
-    //std::string temp = "C:\\Users\\patel\\AppData\\Local\\Temp\\hulaloop_log2.txt";
-    //std::ofstream tempfile(temp.c_str(), ios::binary);
+    hlDebug() << "In Capture Mode" << std::endl;
 
     if (isLoopSet)
     {
@@ -239,7 +230,7 @@ void WindowsAudio::capture()
         status = pEnumerator->GetDevice(activeInputDevice->getID().windowsID, &audioDevice);
         // status = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &audioDevice);
         HANDLE_ERROR(status);
-        hlDebug() << "Selected Device: " << activeInputDevice->getName() << std::endl; // TODO: Remove this later
+        hlDebug() << "Selected Device: " << activeInputDevice->getName() << std::endl;
 
         // Activate the IMMDevice
         status = audioDevice->Activate(IID_IAudioClient, CLSCTX_ALL, nullptr, (void **)&audioClient);
@@ -285,15 +276,7 @@ void WindowsAudio::capture()
                 status = captureClient->GetBuffer(&pData, &numFramesAvailable, &flags, nullptr, nullptr);
                 HANDLE_ERROR(status);
 
-                if (flags & AUDCLNT_BUFFERFLAGS_SILENT)
-                {
-                    pData = nullptr;
-                }
-
-                // Copy to ringbuffers
-                float *floatData = (float *)pData;
-
-                this->copyToBuffers(floatData, numFramesAvailable * NUM_CHANNELS * sizeof(SAMPLE));
+                this->copyToBuffers((float *)pData, numFramesAvailable * NUM_CHANNELS * sizeof(SAMPLE));
 
                 // Release buffer after data is captured and handled
                 status = captureClient->ReleaseBuffer(numFramesAvailable);
@@ -304,10 +287,6 @@ void WindowsAudio::capture()
                 HANDLE_ERROR(status);
             }
         }
-
-        // TODO: Keep this here until the ringbuffer is debugged
-        //sf_close(file);
-        //tempfile.close();
 
         // Stop the client capture once process exits
         status = audioClient->Stop();
