@@ -213,15 +213,6 @@ void WindowsAudio::capture()
 
     std::cout << "In Capture Mode" << std::endl; // TODO: Remove this later
 
-    // TODO: Keep this here until the ringbuffer is debugged
-    /*SF_INFO sfinfo;
-    sfinfo.samplerate = 44100;
-    sfinfo.channels = NUM_CHANNELS;
-    sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
-    SNDFILE *file = sf_open("C:\\Users\\patel\\AppData\\Local\\Temp\\hulaloop_temp.wav", SFM_WRITE, &sfinfo);*/
-    //std::string temp = "C:\\Users\\patel\\AppData\\Local\\Temp\\hulaloop_log2.txt";
-    //std::ofstream tempfile(temp.c_str(), ios::binary);
-
     if (isLoopSet)
     {
         // Instantiate clients and services for audio capture
@@ -294,26 +285,7 @@ void WindowsAudio::capture()
                 status = captureClient->GetBuffer(&pData, &numFramesAvailable, &flags, NULL, NULL);
                 HANDLE_ERROR(status);
 
-                if (flags & AUDCLNT_BUFFERFLAGS_SILENT)
-                {
-                    pData = NULL;
-                }
-
-                // Copy to ringbuffers
-                float *floatData = (float *)pData;
-
-                this->copyToBuffers(floatData, numFramesAvailable * NUM_CHANNELS * sizeof(SAMPLE));
-
-                /*// TODO: Keep this here until the ringbuffer is debugged
-                sf_count_t error = sf_writef_float(file, floatData, numFramesAvailable);
-                if (error != numFramesAvailable)
-                {
-                    char errstr[256];
-                    sf_error_str(0, errstr, sizeof(errstr) - 1);
-                    fprintf(stderr, "cannot write sndfile (%s)\n", errstr);
-                    fprintf(stderr, "%sWe done goofed...", HL_ERROR_PREFIX);
-                    exit(1);
-                }*/
+                this->copyToBuffers((float*)pData, numFramesAvailable * NUM_CHANNELS * sizeof(SAMPLE));
 
                 // Release buffer after data is captured and handled
                 status = captureClient->ReleaseBuffer(numFramesAvailable);
@@ -324,10 +296,6 @@ void WindowsAudio::capture()
                 HANDLE_ERROR(status);
             }
         }
-
-        // TODO: Keep this here until the ringbuffer is debugged
-        //sf_close(file);
-        //tempfile.close();
 
         // Stop the client capture once process exits
         status = audioClient->Stop();

@@ -146,7 +146,7 @@ TEST_F(TestWindowsAudio, short_capture)
 
     // Sleep for a few seconds to allow thread to start
     // and data to flow in
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    //std::this_thread::sleep_for(std::chrono::milliseconds(200));
     std::string command = "PowerShell -Command \"(New-Object Media.SoundPlayer (Resolve-Path \'" + path + "test.wav\')).PlaySync()\"";
     system(command.c_str());
 
