@@ -37,22 +37,20 @@ void Playback::player()
     float* buffer = new float[512];
 
     // TODO: Math to determine which temp file and location in temp file
-    std::string file_path = "C:\\Users\\patel\\Desktop\\test.wav";
+    std::string file_path = "C:\\Users\\Symboxtra Software\\Desktop\\test.wav";
     SNDFILE *file = sf_open(file_path.c_str(), SFM_WRITE, &sfinfo);
 
     this->controller->startPlayback();
-    std::cout << "I'm here" << std::endl;
     while(!this->endPlay.load())
     {
         sf_count_t samplesRead = sf_read_float(file, buffer, 512);
 
-        //this->controller->copyToBuffers(buffer, samplesRead * sizeof(float));
-        //if(samplesRead != 512)
-         //   this->endPlay.store(true);
+        this->controller->copyToBuffers(buffer, samplesRead * sizeof(float));
+        if(samplesRead != 512)
+           this->endPlay.store(true);
     }
     sf_close(file);
     this->controller->endPlayback();
-    std::cout << "I'm here2" << std::endl;
 }
 
 /**

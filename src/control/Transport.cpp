@@ -16,8 +16,8 @@ Transport::Transport()
     recorder = new Record(controller);
     player = new Playback(controller);
 
-    recordState = true;
-    playbackState = false;
+    canRecord = true;
+    canPlayback = false;
     initRecordClicked = false;
 }
 
@@ -36,8 +36,8 @@ Transport::Transport(bool dryRun)
     controller = new Controller(dryRun);
     recorder = new Record(controller);
 
-    recordState = true;
-    playbackState = false;
+    canRecord = true;
+    canPlayback = false;
 }
 #endif
 
@@ -54,16 +54,17 @@ bool Transport::record(double delay, double duration)
     std::cout << "Record triggered!" << std::endl;
     std::cout << "Delay set to: " << delay << std::endl;
     std::cout << "Duration set to: " << duration << std::endl;
-    state = RECORDING;
 
-    if (recordState)
+    if (canRecord)
     {
         std::cout << "STARTED RECORDING" << std::endl;
         recorder->start();
 
         initRecordClicked = true;
-        recordState = false;
+        canRecord = false;
+        canPlayback = false;
 
+        state = RECORDING;
         return true;
     }
     return false;
@@ -86,15 +87,15 @@ bool Transport::record()
 bool Transport::stop()
 {
     std::cout << "Stop button clicked!" << std::endl;
-    state = STOPPED;
 
-    if (!recordState || playbackState)
+    if ((!canRecord && !canPlayback) || state == PAUSED)
     {
         recorder->stop();
 
-        recordState = false;
-        playbackState = true;
+        canRecord = false;
+        canPlayback = true;
 
+        state = STOPPED;
         return true;
     }
     return false;
@@ -106,14 +107,15 @@ bool Transport::stop()
 bool Transport::play()
 {
     std::cout << "Play button clicked!" << std::endl;
-    state = PLAYING;
 
-    if (playbackState)
+    if (canPlayback)
     {
-        // TODO: Add playback call
         player->start(0);
-        playbackState = false;
 
+        canPlayback = false;
+        canRecord = false;
+
+        state = PLAYING;
         return true;
     }
     return false;
@@ -125,26 +127,24 @@ bool Transport::play()
 bool Transport::pause()
 {
     std::cout << "Pause button clicked!" << std::endl;
-    state = PAUSED;
 
-    if (!recordState) // Pause record
+    if (state == RECORDING && !canRecord) // Pause record
     {
         recorder->stop();
 
-        recordState = true;
-        playbackState = true;
+        canRecord = true;
+        canPlayback = true;
 
+        state = PAUSED;
         return true;
     }
-    // TODO: Currently a bool is used to check if record is successfully clicked atleast once
-    // TODO: Find a better way to do it?
-    else if (!playbackState && initRecordClicked) // Pause playback
+    else if (!canPlayback && initRecordClicked) // Pause playback
     {
-        // TODO: Add playback pause call
-        std::cout << "HI" << std::endl;
         player->stop();
-        playbackState = true;
 
+        canPlayback = true;
+
+        state = PAUSED;
         return true;
     }
     return false;
@@ -210,8 +210,8 @@ void Transport::exportFile(std::string targetDirectory)
 void Transport::deleteTempFiles()
 {
     // Reset states
-    recordState = true;
-    playbackState = false;
+    canRecord = true;
+    canPlayback = false;
     state = (TransportState)-1;
 
     // Delete audio files from system temp folder
