@@ -274,7 +274,6 @@ Rectangle {
                     font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                     text: MDFont.Icon.export
                     color: "white"
-                    //transform: Rotation {angle: 270}
 
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -422,7 +421,6 @@ Rectangle {
             folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
             onAccepted: {
                 qmlbridge.saveFile(saveDialog.currentFile);
-//                console.log(saveDialog.fileUrl.toString());
             }
         }
 
@@ -555,7 +553,6 @@ Rectangle {
 
                 Label {
                     font.family: "Roboto"
-//                    font.pixelSize: 20
                     text: "Delay Recording (hh:mm:ss)"
                     color: "white"
 
@@ -574,7 +571,6 @@ Rectangle {
 
                 Label {
                     font.family: "Roboto"
-//                    font.pixelSize: 20
                     text: "Recording Time (hh:mm:ss)"
                     color: "white"
 
@@ -596,7 +592,6 @@ Rectangle {
                 Layout.alignment: Qt.AlignCenter
                 spacing: 60
                 width: gridLayout.width
-                anchors.leftMargin: 300
                 Button {
                     Layout.alignment: Qt.AlignLeft
                     id: cancelBtn
@@ -606,7 +601,6 @@ Rectangle {
                     Layout.preferredWidth: 75
                     contentItem: Text {
                         font.family: "Roboto"
-//                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                         text: "CANCEL"
                         color: "white"
 
@@ -626,7 +620,6 @@ Rectangle {
                     Layout.preferredWidth: 75
                     contentItem: Text {
                         font.family: "Roboto"
-//                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                         text: "OK"
                         color: "white"
 

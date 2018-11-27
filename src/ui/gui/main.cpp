@@ -2,10 +2,11 @@
 #include <QFontDatabase>
 #include <QIcon>
 #include <QQmlApplicationEngine>
-#include <QQmlDebuggingEnabler>
 #include <QQuickStyle>
 
-#include <QtDebug>
+#ifndef NDEBUG
+#include <QQmlDebuggingEnabler>
+#endif
 
 #include "QMLBridge.h"
 #include "SystemTrayIcon.h"
@@ -14,8 +15,9 @@ using namespace hula;
 
 int main(int argc, char *argv[])
 {
-
+    #ifndef NDEBUG
     QQmlDebuggingEnabler debug;
+    #endif
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
