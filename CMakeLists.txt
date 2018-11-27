@@ -112,59 +112,66 @@ include_directories (${CMAKE_BINARY_DIR})
 
 ######## Qt ########
 
-# Prime for Qt
-set (CMAKE_INCLUDE_CURRENT_DIR ON)
-set (CMAKE_AUTOUIC ON)
-set (CMAKE_AUTOMOC ON)
-set (CMAKE_AUTORCC ON)
+if (NOT HL_BUILD_ONLY_AUDIO)
+    # Prime for Qt
+    set (CMAKE_INCLUDE_CURRENT_DIR ON)
+    set (CMAKE_AUTOUIC ON)
+    set (CMAKE_AUTOMOC ON)
+    set (CMAKE_AUTORCC ON)
 
-if (WIN32 AND NOT DEFINED QT_ROOT)
-    if (DEFINED ENV{QT_ROOT})
+    if (WIN32 AND NOT DEFINED QT_ROOT)
+        if (DEFINED ENV{QT_ROOT})
+            set (QT_ROOT $ENV{QT_ROOT} CACHE STRING "Path to Qt Installation")
+        else ()
+            message (FATAL_ERROR "QT_ROOT environment variable not set. Add the environment variable in Windows Environment Variables or cmake with -DQT_ROOT=C:\\path\\to\\qt\\5.XX.X")
+        endif ()
+    elseif (WIN32)
         set (QT_ROOT $ENV{QT_ROOT} CACHE STRING "Path to Qt Installation")
-    else ()
-        message (FATAL_ERROR "QT_ROOT environment variable not set. Add the environment variable in Windows Environment Variables or cmake with -DQT_ROOT=C:\\path\\to\\qt\\5.XX.X")
     endif ()
-elseif (WIN32)
-    set (QT_ROOT $ENV{QT_ROOT} CACHE STRING "Path to Qt Installation")
-endif ()
 
-message (STATUS "QT_ROOT: " ${QT_ROOT} "\n")
+    message (STATUS "QT_ROOT: " ${QT_ROOT} "\n")
 
-if (WIN32 AND NOT DEFINED Qt5_DIR)
-    if(64BIT)
-        set (Qt5_DIR "${QT_ROOT}\\msvc2017_64\\lib\\cmake\\Qt5")
-    else ()
-        set (Qt5_DIR "${QT_ROOT}\\msvc2015\\lib\\cmake\\Qt5")
+    if (WIN32 AND NOT DEFINED Qt5_DIR)
+        if(64BIT)
+            set (Qt5_DIR "${QT_ROOT}\\msvc2017_64\\lib\\cmake\\Qt5")
+        else ()
+            set (Qt5_DIR "${QT_ROOT}\\msvc2015\\lib\\cmake\\Qt5")
+        endif ()
+    endif ()
+
+    message (STATUS "Qt5_DIR: ${Qt5_DIR}")
+
+    # Required Qt packages
+    find_package (Qt5 REQUIRED
+        Core
+    )
+
+    # Minimum set of libs required
+    # for translation
+    set (QT_TRANSLATION_LIBS
+        Qt5::Core
+    )
+
+    if (HL_BUILD_GUI)
+        find_package(Qt5 REQUIRED
+            Gui
+            Qml
+            Quick
+            QuickControls2
+            Widgets
+        )
+
+        set (HL_LIBRARIES
+            ${HL_LIBRARIES}
+            Qt5::Core
+            Qt5::Gui
+            Qt5::Qml
+            Qt5::Quick
+            Qt5::QuickControls2
+            Qt5::Widgets
+        )
     endif ()
 endif ()
-
-message (STATUS "Qt5_DIR: ${Qt5_DIR}")
-
-# Required Qt packages
-find_package (Qt5 REQUIRED
-    Core
-    Gui
-    Qml
-    Quick
-    QuickControls2
-    Widgets
-)
-
-# Minimum set of libs required
-# for translation
-set (QT_TRANSLATION_LIBS
-    Qt5::Core
-)
-
-set (HL_LIBRARIES
-    ${HL_LIBRARIES}
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Qml
-    Qt5::Quick
-    Qt5::QuickControls2
-    Qt5::Widgets
-)
 
 
 
@@ -241,8 +248,11 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
     if (NOT HL_BUILD_ONLY_AUDIO)
         create_test ("src/test/TestTransport.cpp" "" -1 TRUE FALSE)
-        create_test ("src/test/TestCLIArgs.cpp" "" -1 TRUE FALSE)
-        create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/InteractiveCLI.cpp" -1 TRUE FALSE)
+
+        if (HL_BUILD_CLI)
+            create_test ("src/test/TestCLIArgs.cpp" "" -1 TRUE FALSE)
+            create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/InteractiveCLI.cpp" -1 TRUE FALSE)
+        endif ()
     endif ()
 
 endif ()

@@ -37,9 +37,14 @@ if (FOUND_QT_LINGUIST)
     add_dependencies (Translation TranslationUpdate)
 
     # Add the targets as dependencies to the main application
-    add_dependencies (hulaloop TranslationUpdate)
-    add_dependencies (hulaloop-cli TranslationUpdate)
-    add_dependencies (hulaloop-launcher TranslationUpdate)
+    if (HL_BUILD_GUI)
+        add_dependencies (hulaloop TranslationUpdate)
+        add_dependencies (hulaloop-launcher TranslationUpdate)
+    endif ()
+
+    if (HL_BUILD_CLI)
+        add_dependencies (hulaloop-cli TranslationUpdate)
+    endif ()
 
     # Install information for the translation files
     if (OSX)

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <QApplication>
+#include <QCoreApplication>
 #include <vector>
 
 #include "CLIArgs.h"
