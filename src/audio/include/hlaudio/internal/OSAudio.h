@@ -29,6 +29,8 @@ namespace hula
             {
                 this->activeInputDevice = NULL;
                 this->activeOutputDevice = NULL;
+
+                playbackBuffer = new HulaRingBuffer(0.5);
             };
 
             /**
@@ -46,6 +48,8 @@ namespace hula
              * Data received from the operating system is copied into each of these buffers.
              */
             std::vector<HulaRingBuffer *> rbs;
+
+            HulaRingBuffer *playbackBuffer;
 
             /**
              * Thread for input device activities.
@@ -73,7 +77,7 @@ namespace hula
              *
              * Should never be set directly. Only by setActiveXXXDevice().
              */
-            std::atomic<bool> endPlayback;
+            std::atomic<bool> endPlay;
 
             /**
              * I don't really know what this is for right now
@@ -91,6 +95,9 @@ namespace hula
             void addBuffer(HulaRingBuffer *rb);
             void removeBuffer(HulaRingBuffer *rb);
             void copyToBuffers(const void *data, uint32_t bytes);
+
+            void startPlayback();
+            void endPlayback();
 
             /**
              * Receive the list of available record, playback and/or loopback audio devices

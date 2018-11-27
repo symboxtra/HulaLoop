@@ -14,6 +14,7 @@ Transport::Transport()
 {
     controller = new Controller();
     recorder = new Record(controller);
+    player = new Playback(controller);
 
     recordState = true;
     playbackState = false;
@@ -110,6 +111,7 @@ bool Transport::play()
     if (playbackState)
     {
         // TODO: Add playback call
+        player->start(0);
         playbackState = false;
 
         return true;
@@ -139,6 +141,8 @@ bool Transport::pause()
     else if (!playbackState && initRecordClicked) // Pause playback
     {
         // TODO: Add playback pause call
+        std::cout << "HI" << std::endl;
+        player->stop();
         playbackState = true;
 
         return true;
@@ -230,5 +234,10 @@ Transport::~Transport()
     if (recorder)
     {
         delete recorder;
+    }
+
+    if(player)
+    {
+        delete player;
     }
 }

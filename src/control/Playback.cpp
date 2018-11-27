@@ -2,6 +2,9 @@
 
 using namespace hula;
 
+#include <iostream>
+#include <sndfile.h>
+
 /**
  * @brief Construct a new Playback instance to replay the captured audio data
  *
@@ -37,14 +40,19 @@ void Playback::player()
     std::string file_path = "C:\\Users\\patel\\Desktop\\test.wav";
     SNDFILE *file = sf_open(file_path.c_str(), SFM_WRITE, &sfinfo);
 
+    this->controller->startPlayback();
+    std::cout << "I'm here" << std::endl;
     while(!this->endPlay.load())
     {
-        sf_count_t samplesRead = sf_read_float(in_file, buffer, 512);
+        sf_count_t samplesRead = sf_read_float(file, buffer, 512);
 
-        // copyToBuffers(buffer, samplesRead * sizeof(float));
-        if(samplesRead != 512)
-            this->endPlay.store(true);
+        //this->controller->copyToBuffers(buffer, samplesRead * sizeof(float));
+        //if(samplesRead != 512)
+         //   this->endPlay.store(true);
     }
+    sf_close(file);
+    this->controller->endPlayback();
+    std::cout << "I'm here2" << std::endl;
 }
 
 /**

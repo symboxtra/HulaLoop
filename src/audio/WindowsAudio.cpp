@@ -500,7 +500,7 @@ void WindowsAudio::playback()
 
     // Continue loop under process ends
     // Each loop fills half of the shared buffer
-    while (!this->endPlayback.load())
+    while (!this->endPlay.load())
     {
         // Sleep for half the buffer duration
         Sleep(duration / (REFTIMES_PER_MILLISEC * 2));

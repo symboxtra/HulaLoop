@@ -42,6 +42,35 @@ void OSAudio::addBuffer(HulaRingBuffer *rb)
 }
 
 /**
+ * Signal the start of the playback thread. Add playback buffer to the
+ * HulaRingBuffer vector and start the playback thread. This signal is to notify
+ * the backend to start reading data that will be played to the selected audio device.
+ *
+ */
+void OSAudio::startPlayback()
+{
+    if (find(rbs.begin(), rbs.end(), playbackBuffer) == rbs.end())
+    {
+        this->rbs.push_back(playbackBuffer);
+    }
+    outThreads.emplace_back(std::thread(&backgroundPlayback, this));
+}
+
+/**
+ * Signal the end of the playback thread. Kill all playback threads and remove the
+ * buffer from the HulaRingBuffer list. This signal is to notify the backend to stop reading
+ * data to playback to the selected audio device.
+ *
+ */
+void OSAudio::endPlayback()
+{
+    this->endPlay.store(true);
+    joinAndKillThreads(outThreads);
+
+    removeBuffer(playbackBuffer);
+}
+
+/**
  * Remove a buffer from the list of buffers that receive audio data.
  * The removed buffer is not deleted and must be deleted by the user.
  *
@@ -65,7 +94,7 @@ void OSAudio::removeBuffer(HulaRingBuffer *rb)
         this->endCapture.store(true);
         joinAndKillThreads(inThreads);
 
-        this->endPlayback.store(true);
+        this->endPlay.store(true);
         joinAndKillThreads(outThreads);
     }
 }
@@ -120,7 +149,7 @@ void OSAudio::backgroundCapture(OSAudio *_this)
     }
 
     // Kill any live playback threads before starting audio capture
-    _this->endPlayback.store(true);
+    _this->endPlay.store(true);
     _this->joinAndKillThreads(_this->outThreads);
 
     // Reset the thread interrupt flag
@@ -163,7 +192,7 @@ void OSAudio::backgroundPlayback(OSAudio *_this)
     _this->joinAndKillThreads(_this->inThreads);
 
     // Reset the thread interrupt flag
-    _this->endPlayback.store(false);
+    _this->endPlay.store(false);
     _this->playback();
 }
 
@@ -255,7 +284,7 @@ void OSAudio::setActiveOutputDevice(Device *device)
     }
     this->activeOutputDevice = new Device(*device);
 
-    this->endPlayback.store(true);
+    this->endPlay.store(true);
     joinAndKillThreads(outThreads);
 
     // Startup a new thread
@@ -282,5 +311,10 @@ OSAudio::~OSAudio()
     if (activeOutputDevice)
     {
         delete activeOutputDevice;
+    }
+
+    if(playbackBuffer)
+    {
+        delete playbackBuffer;
     }
 }

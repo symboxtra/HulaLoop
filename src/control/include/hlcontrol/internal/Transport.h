@@ -5,6 +5,7 @@
 #include <string>
 
 #include "Record.h"
+#include "Playback.h"
 
 #define HL_INFINITE_RECORD -1
 
