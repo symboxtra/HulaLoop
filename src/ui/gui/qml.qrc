@@ -3,6 +3,7 @@
         <file>qml/main.qml</file>
         <file>qml/ButtonPanel.qml</file>
         <file>qml/Visualizer.qml</file>
+        <file>qml/BottomRectangle.qml</file>
         <file>fonts/Icon.js</file>
         <file>fonts/materialdesignicons-webfont.ttf</file>
         <file>res/hulaloop-logo.png</file>

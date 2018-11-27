@@ -18,11 +18,16 @@ ApplicationWindow {
 
     Material.theme: Material.Grey
     Material.accent: Material.Orange
+    property string textDisplayed: "Elapsed: 0"
+    property string currentState: "Unknown"
+    property string barColor: "#888888"
 
     QMLBridge {
         id: qmlbridge
 
         onStateChanged: {
+            currentState = qmlbridge.getTransportState()
+
             if(qmlbridge.getTransportState() === "Recording")
             {
                 systrayicon.showMessage(qsTr("HulaLoop Information"), qsTr("HulaLoop has started recording audio!"))
@@ -32,8 +37,8 @@ ApplicationWindow {
             {
                 systrayicon.setDefaultIcon()
             }
-            systrayicon.setToolTip("HulaLoop - " + qmlbridge.getTransportState())
-            transportState.text = qmlbridge.getTransportState()
+
+            systrayicon.setToolTip(qsTr("HulaLoop - " + qmlbridge.getTransportState()))
         }
     }
 
@@ -51,12 +56,8 @@ ApplicationWindow {
         id: visualize
     }
 
-    Label {
-        id: transportState
-        objectName: "transportState"
-
-        anchors.top: btnPanel.bottom
-        text: qmlbridge.getTransportState()
+    BottomRectangle {
+        id: bottomRectangle
     }
 
 }
