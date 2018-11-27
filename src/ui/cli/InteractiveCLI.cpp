@@ -268,8 +268,17 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
     else if (command == HL_DISCARD_SHORT || command == HL_DISCARD_LONG)
     {
         std::string resp = "N";
-        printf("%s", qPrintable(CLI::tr("Are you sure you want to discard? (y/N): ")));
-        std::getline(std::cin, resp);
+
+        // Handle force option
+        if (args.size() >= 1 && args[0] == HL_DISCARD_ARG1)
+        {
+            resp = "Y";
+        }
+        else
+        {
+            printf("%s", qPrintable(CLI::tr("Are you sure you want to discard? (y/N): ")));
+            std::getline(std::cin, resp);
+        }
 
         if (resp.size() > 0 && (resp[0] == 'Y' || resp[0] == 'y'))
         {
