@@ -188,80 +188,94 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="240"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="255"/>
         <source>Hz</source>
         <comment>unit</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="228"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="243"/>
         <source>Output file:</source>
         <comment>setting</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="132"/>
-        <source>Device #%1:</source>
+        <location filename="../../src/ui/cli/CLICommon.h" line="144"/>
+        <source>Device #%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="134"/>
-        <source>Record:</source>
+        <location filename="../../src/ui/cli/CLICommon.h" line="147"/>
+        <source>Record</source>
         <comment>device capability</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="137"/>
-        <source>Loopback:</source>
+        <location filename="../../src/ui/cli/CLICommon.h" line="148"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="151"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="154"/>
+        <source>Yes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="148"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="151"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="154"/>
+        <source>No</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="150"/>
+        <source>Loopback</source>
         <comment>device capability</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="140"/>
-        <source>Output:</source>
+        <location filename="../../src/ui/cli/CLICommon.h" line="153"/>
+        <source>Output</source>
         <comment>device capability</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="207"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="220"/>
         <source>Could not find device matching: %1</source>
         <extracomment>The argument in this text is the name or id of the device that the user searched for</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="233"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="248"/>
         <source>Delay:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="234"/>
-        <location filename="../../src/ui/cli/CLICommon.h" line="237"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="249"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="252"/>
         <source>s</source>
         <comment>abbreviation for seconds</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="236"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="251"/>
         <source>Duration:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="239"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="254"/>
         <source>Sample rate:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="243"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="258"/>
         <source>Encoding:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="246"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="261"/>
         <source>Input device:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="249"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="264"/>
         <source>Output device:</source>
         <translation type="unfinished"></translation>
     </message>

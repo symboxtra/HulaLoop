@@ -38,6 +38,7 @@ int main(int argc, char **argv)
     {
         printf(HL_CLI_ASCII_HEADER);
         printSettings(extraArgs);
+        printf("\n");
     }
 
     HulaInteractiveCli cli(&app);

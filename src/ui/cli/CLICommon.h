@@ -15,6 +15,7 @@
 #include <hlcontrol/hlcontrol.h>
 
 #include <QCoreApplication>
+#include <QTextStream>
 
 #include <HulaVersion.h>
 
@@ -32,6 +33,13 @@ using namespace hula;
     "                                         |_|\n" \
     "----------------------------------------------------\n\n" \
 
+/**
+ * Print a fixed-width QTextStream column and then return the stream to 0 width.
+ */
+#define QCOL(stream, width, text)   \
+    stream.setFieldWidth(width);    \
+    stream << text;                 \
+    stream.setFieldWidth(0);
 
 /**
  * Wrapper around translation functions for Qt.
@@ -108,11 +116,15 @@ namespace hula
      */
     inline void printDeviceList(Transport *t)
     {
-        using std::cout;
-        using std::endl;
-        using std::setw;
-        using std::left;
-        int colW = 12;
+        // Strip one padding char for the extra space
+        int colW = 32 - 1;
+
+        QTextStream cout(stdout);
+        cout.setAutoDetectUnicode(true);
+        cout.setRealNumberNotation(QTextStream::FixedNotation);
+        cout.setRealNumberPrecision(2);
+        cout.setPadChar('.');
+        cout.setFieldAlignment(QTextStream::AlignLeft);
 
         HulaSettings *settings = HulaSettings::getInstance();
 
@@ -129,16 +141,17 @@ namespace hula
         printf("\n");
         for (size_t i = 0; i < devices.size(); i++)
         {
-            cout << left << setw(colW) << qPrintable(CLI::tr("Device #%1:").arg(i)) << devices[i]->getName() << endl;
+            QCOL(cout, colW, CLI::tr("Device #%1").arg(i).append(" "));
+            cout << " " << devices[i]->getName().c_str() << endl;
 
-            cout << left << setw(colW) << qPrintable(CLI::tr("Record:", "device capability"));
-            cout << ((devices[i]->getType() & DeviceType::RECORD) ? "true" : "false") << endl;
+            QCOL(cout, colW, CLI::tr("Record", "device capability").append(" "));
+            cout << " " << ((devices[i]->getType() & DeviceType::RECORD) ? CLI::tr("Yes") : CLI::tr("No")) << endl;
 
-            cout << left << setw(colW) << qPrintable(CLI::tr("Loopback:", "device capability"));
-            cout << ((devices[i]->getType() & DeviceType::LOOPBACK) ? "true" : "false") << endl;
+            QCOL(cout, colW, CLI::tr("Loopback", "device capability").append(" "));
+            cout << " " << ((devices[i]->getType() & DeviceType::LOOPBACK) ? CLI::tr("Yes") : CLI::tr("No")) << endl;
 
-            cout << left << setw(colW) << qPrintable(CLI::tr("Output:", "device capability"));
-            cout << ((devices[i]->getType() & DeviceType::PLAYBACK) ? "true" : "false") << endl;
+            QCOL(cout, colW, CLI::tr("Output", "device capability").append(" "));
+            cout << " " << ((devices[i]->getType() & DeviceType::PLAYBACK) ? CLI::tr("Yes") : CLI::tr("No")) << endl;
 
             cout << endl;
         }
@@ -215,42 +228,41 @@ namespace hula
      */
     inline void printSettings(const HulaImmediateArgs &args)
     {
-        using std::cout;
-        using std::endl;
-        using std::setw;
-        using std::left;
         int colW = 32;
+
+        QTextStream cout(stdout);
+        cout.setAutoDetectUnicode(true);
+        cout.setRealNumberNotation(QTextStream::FixedNotation);
+        cout.setRealNumberPrecision(2);
+        cout.setFieldAlignment(QTextStream::AlignLeft);
 
         HulaSettings *settings = HulaSettings::getInstance();
 
-        cout << std::fixed << std::setprecision(2) << endl;
+        cout << endl;
 
-        cout << left << setw(colW) << qPrintable(CLI::tr("Output file:", "setting"));
-        cout << args.outputFilePath << endl;
+        QCOL(cout, colW, CLI::tr("Output file:", "setting"));
+        cout << QString::fromStdString(args.outputFilePath) << endl;
 
         // Using SI typeset for the units. Shouldn't change with localization.
         // https://english.stackexchange.com/questions/2794/punctuation-with-units
-        cout << left << setw(colW) << qPrintable(CLI::tr("Delay:"));
-        cout << stod(args.delay) << " " << qPrintable(CLI::tr("s", "abbreviation for seconds")) << endl;
+        QCOL(cout, colW, CLI::tr("Delay:"));
+        cout << stod(args.delay) << " " << CLI::tr("s", "abbreviation for seconds") << endl;
 
-        cout << left << setw(colW) << qPrintable(CLI::tr("Duration:"));
-        cout << stod(args.duration) << " " << qPrintable(CLI::tr("s", "abbreviation for seconds")) << endl;
+        QCOL(cout, colW, CLI::tr("Duration:"));
+        cout << stod(args.duration) << " " << CLI::tr("s", "abbreviation for seconds") << endl;
 
-        cout << left << setw(colW) << qPrintable(CLI::tr("Sample rate:"));
-        cout << settings->getSampleRate() << " " << qPrintable(CLI::tr("Hz", "unit")) << endl;
+        QCOL(cout, colW, CLI::tr("Sample rate:"));
+        cout << settings->getSampleRate() << " " << CLI::tr("Hz", "unit") << endl;
 
         // TODO: Change this once MP3 gets in here
-        cout << left << setw(colW) << qPrintable(CLI::tr("Encoding:"));
+        QCOL(cout, colW, CLI::tr("Encoding:"));
         cout << "WAV" << endl;
 
-        cout << left << setw(colW) << qPrintable(CLI::tr("Input device:"));
-        cout << args.inputDevice << endl;
+        QCOL(cout, colW, CLI::tr("Input device:"));
+        cout << QString::fromStdString(args.inputDevice) << endl;
 
-        cout << left << setw(colW) << qPrintable(CLI::tr("Output device:"));
-        cout << args.outputDevice << endl;
-
-        cout << endl;
-        cout << endl;
+        QCOL(cout, colW, CLI::tr("Output device:"));
+        cout << QString::fromStdString(args.outputDevice) << endl;
     }
 }
 
