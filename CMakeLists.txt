@@ -250,8 +250,6 @@ if (NOT DEFINED GEN_INSTALL)
 endif ()
 
 if(GEN_INSTALL AND NOT BUILD_ONLY_AUDIO)
-    message(STATUS "HERE1")
-
 
     set(CPACK_PACKAGE_NAME "HulaLoop Installer")
     set(CPACK_PACKAGE_VENDOR "Symboxtra Software")
@@ -274,7 +272,6 @@ if(GEN_INSTALL AND NOT BUILD_ONLY_AUDIO)
             set(LIB_DIR bin/lib)
         endif()
 
-        include(CPack)
 
         # Configuration file with custom definitions for NSIS
         # configure_file(
@@ -299,7 +296,6 @@ if(GEN_INSTALL AND NOT BUILD_ONLY_AUDIO)
             set(LIB_DIR bin/lib)
         endif()
 
-        include(CPack)
 
     elseif (OSX) # Mac OS X
         set(CPACK_GENERATOR "DMG")
@@ -316,11 +312,13 @@ if(GEN_INSTALL AND NOT BUILD_ONLY_AUDIO)
         set(CPACK_DEBIAN_PACKAGE_DEPENDS "")
         set(CPACK_PACKAGE_DESCRIPTION "Some Description")
         set(CPACK_PACKAGE_CONTACT "support@company.com")
+        # install logo file and the desktop shortcut
         install(FILES ${PROJECT_SOURCE_DIR}/res/installer/hulaloop.desktop DESTINATION /usr/share/applications)
         install(FILES ${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.svg DESTINATION /usr/share/icons/hicolor/scalable/apps)
-        include(CPack)
 
     endif ()
+
+    include(CPack)
 
 endif()
 message (STATUS "")
