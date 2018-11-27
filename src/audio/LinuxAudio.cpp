@@ -300,6 +300,7 @@ void LinuxAudio::capture()
  */
 LinuxAudio::~LinuxAudio()
 {
-    // callbackList.clear();
-    // execThreads.clear();
+    hlDebugf("LinuxAudio destructor called.\n");
+
+    system("pkill pavucontrol");
 }
