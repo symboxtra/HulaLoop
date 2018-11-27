@@ -35,7 +35,6 @@ namespace hula
             std::string defaultOutputDeviceName;
 
             std::string outputFilePath;
-            Encoding outputFileEncoding;
 
             double delayTimer;
             double recordDuration;
@@ -56,8 +55,6 @@ namespace hula
             int getSampleRate();
             int getSampleSize();
 
-            Encoding getOutputFileEncoding();
-
             /**
              * Setters
              */
@@ -67,8 +64,6 @@ namespace hula
             void setNumberOfChannels(int);
             void setSampleRate(int);
             void setSampleSize(int);
-
-            void setOutputFileEncoding(Encoding);
 
             ~HulaAudioSettings();
     };

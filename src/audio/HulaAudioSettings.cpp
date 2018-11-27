@@ -18,9 +18,6 @@ HulaAudioSettings::HulaAudioSettings()
     this->numberOfChannels = 2;
     this->sampleRate = 44100;
     this->sampleSize = sizeof(float);
-
-    // Output file
-    this->outputFileEncoding = WAV;
 }
 
 /**
@@ -90,19 +87,6 @@ int HulaAudioSettings::getSampleSize()
 }
 
 /**
- * Get the output encoding for the current global
- * configuration. This is the configuration that buffers and
- * output files have been setup for. Changing it mid-anything may
- * break stuff.
- *
- * @return Encoding enum value indicating current encoding type
- */
-Encoding HulaAudioSettings::getOutputFileEncoding()
-{
-    return getInstance()->outputFileEncoding;
-}
-
-/**
  * Set whether or not true record devices (i.e. microphones)
  * should be displayed in the device lists.
  *
@@ -150,19 +134,6 @@ void HulaAudioSettings::setSampleRate(int val)
 void HulaAudioSettings::setSampleSize(int val)
 {
     getInstance()->sampleSize = val;
-}
-
-/**
- * Set the output encoding for the current global
- * configuration. This is the configuration that buffers and
- * output files have been setup for. Changing it mid-anything may
- * break stuff.
- *
- * @param val Encoding enum value indicating current encoding type
- */
-void HulaAudioSettings::setOutputFileEncoding(Encoding val)
-{
-    getInstance()->outputFileEncoding = val;
 }
 
 /**
