@@ -432,9 +432,6 @@ void WindowsAudio::capture()
  */
 void WindowsAudio::playback()
 {
-    HulaRingBuffer rb(0.5);
-    addBuffer(&rb);
-
     // Instantiate clients and services for audio capture
     IAudioRenderClient *renderClient = NULL;
     IAudioClient *audioClient = NULL;
@@ -448,6 +445,9 @@ void WindowsAudio::playback()
     DWORD duration;
     REFERENCE_TIME req = REFTIMES_PER_SEC;
     ring_buffer_size_t samplesRead;
+    float phase = 0.0f;
+    std::vector<char> mixFormatBuf;
+
 
     // Setup capture environment
     status = CoInitialize(NULL);
@@ -466,6 +466,15 @@ void WindowsAudio::playback()
     // Activate the IMMDevice
     status = audioDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void **)&audioClient);
     HANDLE_ERROR(status);
+
+    {
+        WAVEFORMATEX* p = nullptr;
+        audioClient->GetMixFormat(&p);
+        mixFormatBuf.resize(sizeof(*p) + p->cbSize);
+        memcpy(mixFormatBuf.data(), p, mixFormatBuf.size());
+        CoTaskMemFree(p);
+    }
+    auto* const pMixFormat = reinterpret_cast<const WAVEFORMATEX*>(mixFormatBuf.data());
 
     // Not sure what this does yet!?
     status = audioClient->GetMixFormat(&pwfx);
@@ -500,7 +509,9 @@ void WindowsAudio::playback()
 
     // Continue loop under process ends
     // Each loop fills half of the shared buffer
-    while (!this->endPlay.load())
+    std::cout << "End Play?: " << this->endPlay.load() << std::endl;
+    const auto dPhase = static_cast<float>(440.0f * 2.0f * 3.1415 / pMixFormat->nSamplesPerSec);
+    while (1)
     {
         // Sleep for half the buffer duration
         Sleep(duration / (REFTIMES_PER_MILLISEC * 2));
@@ -517,22 +528,36 @@ void WindowsAudio::playback()
         HANDLE_ERROR(status);
 
         // TODO: Add audio data to rData pointer
-        float *data = reinterpret_cast<float*>(rData);
+        float *data = reinterpret_cast<float *>(rData);
         // TODO: rb->directRead();
-        void* ptr[2] = {0};
+        void *ptr[2] = {0};
         ring_buffer_size_t sizes[2] = {0};
-        samplesRead = rb.directRead(numFramesAvailable * NUM_CHANNELS, ptr + 0, sizes + 0, ptr + 1, sizes + 1);
-
-        if( sizes[1] > 0 )
+        samplesRead = this->playbackBuffer->directRead(numFramesAvailable * NUM_CHANNELS, ptr + 0, sizes + 0, ptr + 1, sizes + 1);
+        /*for (UINT32 iFrame = 0; iFrame < numFramesAvailable; ++iFrame)
         {
-            memcpy(data, ptr[0], sizes[0] * sizeof(float) );
+            const auto v = sinf(phase) * 0.25f;
+            for (int iChannel = 0; iChannel < NUM_CHANNELS; ++iChannel)
+            {
+                *data++ = v;
+            }
+            phase += dPhase;
+        }*/
+        if (sizes[1] > 0)
+        {
+            memcpy(data, (float*)ptr[0], sizes[0] * sizeof(float));
             data = data + (sizes[0] * sizeof(float));
-            memcpy( data, ptr[1], sizes[1] * sizeof(float) );
+            memcpy(data, (float*)ptr[1], sizes[1] * sizeof(float));
         }
         else
         {
-            memcpy(data, ptr[0], sizes[0] * sizeof(float) );
+            memcpy(data, (float*)ptr[0], sizes[0] * sizeof(float));
         }
+        /*for(UINT32 i = 0;i < sizes[0] * sizeof(float);i++)
+        {
+            *data++ = *((float*)ptr[0] + i);
+            std::cout << *((float*)ptr[0] + i) << std::endl;
+        }*/
+        std::cout << "Playing audio" << std::endl;
 
         status = renderClient->ReleaseBuffer(numFramesAvailable, 0);
         HANDLE_ERROR(status);
@@ -541,7 +566,7 @@ void WindowsAudio::playback()
     // Wait for last data in buffer to play before stopping.
     Sleep((DWORD)(captureBufferSize / (REFTIMES_PER_MILLISEC * 2)));
 
-    status = audioClient->Stop();  // Stop playing.
+    status = audioClient->Stop(); // Stop playing.
     HANDLE_ERROR(status);
 
     // goto label for exiting loop in-case of error

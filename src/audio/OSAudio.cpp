@@ -51,7 +51,7 @@ void OSAudio::startPlayback()
 {
     if (find(rbs.begin(), rbs.end(), playbackBuffer) == rbs.end())
     {
-        this->rbs.push_back(playbackBuffer);
+        this->rbs.push_back(this->playbackBuffer);
     }
     outThreads.emplace_back(std::thread(&backgroundPlayback, this));
 }
@@ -94,8 +94,8 @@ void OSAudio::removeBuffer(HulaRingBuffer *rb)
         this->endCapture.store(true);
         joinAndKillThreads(inThreads);
 
-        this->endPlay.store(true);
-        joinAndKillThreads(outThreads);
+        //this->endPlay.store(true);
+        //joinAndKillThreads(outThreads);
     }
 }
 
@@ -149,8 +149,8 @@ void OSAudio::backgroundCapture(OSAudio *_this)
     }
 
     // Kill any live playback threads before starting audio capture
-    _this->endPlay.store(true);
-    _this->joinAndKillThreads(_this->outThreads);
+    //_this->endPlay.store(true);
+    //_this->joinAndKillThreads(_this->outThreads);
 
     // Reset the thread interrupt flag
     _this->endCapture.store(false);
