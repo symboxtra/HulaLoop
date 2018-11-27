@@ -10,4 +10,6 @@
 
 #define HL_PACKAGE_TYPE  "@HL_PACKAGE_TYPE@"
 
+#define HL_NO_DEBUG_OUTPUT @HL_NO_DEBUG_OUTPUT@
+
 #endif

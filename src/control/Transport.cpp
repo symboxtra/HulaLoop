@@ -1,6 +1,3 @@
-#include <iostream>
-#include <time.h>
-
 #include "hlcontrol/internal/Export.h"
 #include "hlcontrol/internal/HulaControlError.h"
 #include "hlcontrol/internal/Transport.h"
@@ -20,26 +17,6 @@ Transport::Transport()
     initRecordClicked = false;
 }
 
-#ifndef NDEBUG
-/**
- * ---------------- FOR TESTING/DEBUG BUILDS ONLY -----------------
- *
- * A "dry run" is a run in which full application functionality is not
- * required. This is usually used by unit tests targeting upper-level
- * modules that don't require the initialization of lower-level modules.
- *
- * This constructor is designed for testing purposes and exists only in debug builds.
- */
-Transport::Transport(bool dryRun)
-{
-    controller = new Controller(dryRun);
-    recorder = new Record(controller);
-
-    recordState = true;
-    playbackState = false;
-}
-#endif
-
 /**
  * Start and handle the process of recording.
  *
@@ -50,14 +27,14 @@ Transport::Transport(bool dryRun)
  */
 bool Transport::record(double delay, double duration)
 {
-    std::cout << "Record triggered!" << std::endl;
-    std::cout << "Delay set to: " << delay << std::endl;
-    std::cout << "Duration set to: " << duration << std::endl;
+    hlDebug() << "Record triggered!" << std::endl;
+    hlDebug() << "Delay set to: " << delay << std::endl;
+    hlDebug() << "Duration set to: " << duration << std::endl;
     state = RECORDING;
 
     if (recordState)
     {
-        std::cout << "STARTED RECORDING" << std::endl;
+        hlDebug() << "STARTED RECORDING" << std::endl;
         recorder->start();
 
         initRecordClicked = true;
@@ -84,7 +61,7 @@ bool Transport::record()
  */
 bool Transport::stop()
 {
-    std::cout << "Stop button clicked!" << std::endl;
+    hlDebug() << "Stop button clicked!" << std::endl;
     state = STOPPED;
 
     if (!recordState || playbackState)
@@ -104,7 +81,7 @@ bool Transport::stop()
  */
 bool Transport::play()
 {
-    std::cout << "Play button clicked!" << std::endl;
+    hlDebug() << "Play button clicked!" << std::endl;
     state = PLAYING;
 
     if (playbackState)
@@ -122,7 +99,7 @@ bool Transport::play()
  */
 bool Transport::pause()
 {
-    std::cout << "Pause button clicked!" << std::endl;
+    hlDebug() << "Pause button clicked!" << std::endl;
     state = PAUSED;
 
     if (!recordState) // Pause record
@@ -168,15 +145,15 @@ std::string Transport::stateToStr(const TransportState state) const
     {
 
         case RECORDING:
-            return "Recording";
+            return std::string(qPrintable(tr("Recording", "state")));
         case STOPPED:
-            return "Stopped";
+            return std::string(qPrintable(tr("Stopped", "state")));
         case PLAYING:
-            return "Playing";
+            return std::string(qPrintable(tr("Playing", "state")));
         case PAUSED:
-            return "Paused";
+            return std::string(qPrintable(tr("Paused", "state")));
         default:
-            return "Unknown";
+            return std::string(qPrintable(tr("Unknown", "state")));
 
     }
 
@@ -220,7 +197,7 @@ void Transport::deleteTempFiles()
  */
 Transport::~Transport()
 {
-    printf("%sTransport destructor called\n", HL_PRINT_PREFIX);
+    hlDebugf("Transport destructor called\n");
 
     if (controller)
     {

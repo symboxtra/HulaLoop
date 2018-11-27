@@ -4,6 +4,8 @@
 #include <hlaudio/hlaudio.h>
 #include <string>
 
+#include <QCoreApplication>
+
 #include "Record.h"
 
 #define HL_INFINITE_RECORD -1
@@ -27,6 +29,9 @@ namespace hula
      * Extra class for managing the state of the application and all audio related processes.
      */
     class Transport {
+
+        Q_DECLARE_TR_FUNCTIONS(Transport)
+
         private:
             TransportState state;
             bool recordState;
@@ -40,11 +45,6 @@ namespace hula
             Controller *controller;
 
         public:
-
-            #ifndef NDEBUG
-            Transport(bool dryRun);
-            #endif // END NDEBUG
-
             Transport();
             virtual ~Transport();
 

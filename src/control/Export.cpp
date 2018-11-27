@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <fstream>
+#include <iostream>
 #include <string>
 
 #include <QDir>
@@ -40,7 +41,7 @@ void Export::copyData(std::vector<std::string> dirs)
     // Get file extension of the target export file
     std::string extension = getFileExtension(this->targetFile.c_str()); // TODO: Return encoding enum value from HulaAudioSettings
 
-    std::cout << extension << std::endl;
+    hlDebug() << "Extension: " << extension << std::endl;
 
     // Initialize libsndfile info.
     SF_INFO sfinfo_in;
@@ -125,5 +126,5 @@ void Export::deleteTempFiles(std::vector<std::string> dirs)
  */
 Export::~Export()
 {
-
+    hlDebugf("Export destructor called\n");
 }

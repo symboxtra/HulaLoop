@@ -1,12 +1,13 @@
 #ifndef HL_OSX_DAEMON_H
 #define HL_OSX_DAEMON_H
 
-#include "JackClient.hpp"
+#include "JackClient.h"
 #include "JackBridge.h"
 
 namespace hula
 {
     class OSXDaemon : public JackClient, public JackBridgeDriverIF {
+
         public:
 
             OSXDaemon(const char *name, int id);

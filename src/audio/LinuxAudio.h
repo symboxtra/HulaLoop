@@ -5,7 +5,6 @@
 
 #include <stdlib.h>
 #include <cstdint>
-#include <iostream>
 #include <thread>
 #include <vector>
 
@@ -19,7 +18,11 @@
 
 namespace hula
 {
+    /**
+     * An audio class that captures system wide audio on Linux.
+     */
     class LinuxAudio : public OSAudio {
+
         private:
             int bitrate;
             std::vector<Device *> iDevices;
@@ -30,7 +33,7 @@ namespace hula
             ~LinuxAudio();
             void capture();
 
-            void setActiveInputDevice(Device *device);
+            bool setActiveInputDevice(Device *device);
             static void startPAVUControl();
 
             std::vector<Device *> getDevices(DeviceType type);

@@ -59,14 +59,14 @@ HulaRingBuffer::HulaRingBuffer(float maxDuration)
     // Make sure ring buffer was allocated
     if (this->rbMemory == NULL)
     {
-        fprintf(stderr, "%sCould not allocate ring buffer of size %zu.\n", HL_ERROR_PREFIX, numSamples * sizeof(SAMPLE));
+        hlDebugf("Could not allocate ring buffer of size %zu.\n", numSamples * sizeof(SAMPLE));
         exit(1);
         // TODO: Handle error
     }
 
     if (PaUtil_InitializeRingBuffer(&this->rb, sizeof(SAMPLE), numSamples, this->rbMemory) < 0)
     {
-        fprintf(stderr, "%sFailed to initialize ring buffer. Perhaps size is not power of 2?\nSize: %d\n", HL_ERROR_PREFIX, numSamples);
+        hlDebugf("Failed to initialize ring buffer. Perhaps the size is not power of 2?\nSize: %d\n", numSamples);
         exit(1);
         // TODO: Handle error
     }
@@ -82,6 +82,12 @@ HulaRingBuffer::HulaRingBuffer(float maxDuration)
 ring_buffer_size_t HulaRingBuffer::read(SAMPLE *data, ring_buffer_size_t maxSamples)
 {
     ring_buffer_size_t samplesRead = PaUtil_ReadRingBuffer(&this->rb, (void *)data, maxSamples);
+    if (samplesRead > 0)
+    {
+        // hlDebug() << "Read of " << samplesRead << " elements." << std::endl;
+
+        // Do not call Advance here... It's called by PaUtil_ReadRingBuffer.
+    }
 
     return samplesRead;
 }
@@ -114,7 +120,7 @@ ring_buffer_size_t HulaRingBuffer::directRead(ring_buffer_size_t maxSamples, voi
     ring_buffer_size_t samplesRead = PaUtil_GetRingBufferReadRegions(&this->rb, samplesToRead, dataPtr1, size1, dataPtr2, size2);
     if (samplesRead > 0)
     {
-        // printf("%sDirect read of %d elements.\n", HL_PRINT_PREFIX, samplesRead);
+        // hlDebug() << "Direct read of " << samplesRead << " elements." << std::endl;
 
         // Advance the index after successful read
         PaUtil_AdvanceRingBufferReadIndex(&this->rb, samplesRead);
@@ -144,37 +150,15 @@ ring_buffer_size_t HulaRingBuffer::directRead(ring_buffer_size_t maxSamples, voi
  */
 ring_buffer_size_t HulaRingBuffer::write(const SAMPLE *data, ring_buffer_size_t maxSamples)
 {
-    /*ring_buffer_size_t elementsWriteable = PaUtil_GetRingBufferWriteAvailable(&this->rb);
+    ring_buffer_size_t elementsWriteable = PaUtil_GetRingBufferWriteAvailable(&this->rb);
     ring_buffer_size_t elementsToWrite = std::min(elementsWriteable, (ring_buffer_size_t)(maxSamples));
 
     ring_buffer_size_t elementsWritten = PaUtil_WriteRingBuffer(&this->rb, data, elementsToWrite);
 
-    printf("Samples wrote: %d\n", elementsWritten);
-
     if (elementsWritten < maxSamples)
     {
-        printf("%sOverrun: %d of %d samples written\n", HL_PRINT_PREFIX, elementsWritten, maxSamples);
-    }*/
-    ring_buffer_size_t elementsInBuffer = PaUtil_GetRingBufferWriteAvailable(&this->rb);
-
-    void* ptr[2] = {0};
-    ring_buffer_size_t sizes[2] = {0};
-
-    /* By using PaUtil_GetRingBufferWriteRegions, we can write directly into the ring buffer */
-    PaUtil_GetRingBufferWriteRegions(&this->rb, elementsInBuffer, ptr + 0, sizes + 0, ptr + 1, sizes + 1);
-
-    ring_buffer_size_t elementsWritten = 0;
-
-        ring_buffer_size_t itemsReadFromFile = 0;
-        int i;
-        // for (i = 0; i < 2 && ptr[i] != NULL; ++i)
-        // {
-        //     itemsReadFromFile += (ring_buffer_size_t)fread(ptr[i], pData->ringBuffer.elementSizeBytes, sizes[i], pData->file);
-        // }
-        //PaUtil_AdvanceRingBufferWriteIndex(&pData->ringBuffer, itemsReadFromFile);
-
-    elementsWritten = PaUtil_WriteRingBuffer(&this->rb, (void*)data, maxSamples);
-
+        hlDebug() << "Overrun: " << elementsWritten << " of " << maxSamples << " written." << std::endl;
+    }
 
     return elementsWritten;
 }

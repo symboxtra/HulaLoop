@@ -31,9 +31,20 @@ namespace hula
      */
     struct DeviceID
     {
+        /**
+         * ID used by ALSA devices.
+         */
         std::string linuxID = "";
+
+        /**
+         * ID used by PortAudio devices.
+         */
         int portAudioID = -1;
+
         #ifdef _WIN32
+        /**
+         * ID used by Windows WASAPI devices.
+         */
         LPWSTR windowsID = nullptr;
         #endif
     };

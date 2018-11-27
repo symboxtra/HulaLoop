@@ -62,8 +62,6 @@ void Record::recorder()
 
         if (samplesRead > 0)
         {
-            //printf("Samples read: %d\n", samplesRead);
-
             for(int i = 0;i < 2 && ptr[i] != NULL;i++)
             {
                 sf_count_t samplesWritten = sf_write_float(file, (float*)ptr[i], sizes[i]);
@@ -71,8 +69,7 @@ void Record::recorder()
                 {
                     char errstr[256];
                     sf_error_str (0, errstr, sizeof (errstr) - 1);
-                    fprintf (stderr, "cannot write sndfile (%s)\n", errstr);
-                    fprintf(stderr, "%sWe done goofed...", HL_ERROR_PREFIX);
+                    hlDebugf("Could not write sndfile (%s)\n", errstr);
                     exit(1);
                 }
             }
@@ -121,5 +118,7 @@ void Record::clearExportPaths()
  */
 Record::~Record()
 {
+    hlDebugf("Record destructor called\n");
+
     delete rb;
 }

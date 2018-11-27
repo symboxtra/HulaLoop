@@ -103,8 +103,8 @@ namespace hula
              */
             virtual bool checkDeviceParams(Device *device) = 0;
 
-            virtual void setActiveInputDevice(Device *device);
-            virtual void setActiveOutputDevice(Device *device);
+            virtual bool setActiveInputDevice(Device *device);
+            virtual bool setActiveOutputDevice(Device *device);
     };
 }
 

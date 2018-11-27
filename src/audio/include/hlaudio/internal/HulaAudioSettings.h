@@ -56,14 +56,7 @@ namespace hula
             int getSampleRate();
             int getSampleSize();
 
-            std::string getDefaultInputDeviceName();
-            std::string getDefaultOutputDeviceName();
-
-            std::string getOutputFilePath();
             Encoding getOutputFileEncoding();
-
-            double getDelayTimer();
-            double getRecordDuration();
 
             /**
              * Setters
@@ -75,14 +68,7 @@ namespace hula
             void setSampleRate(int);
             void setSampleSize(int);
 
-            void setDefaultInputDeviceName(std::string);
-            void setDefaultOutputDeviceName(std::string);
-
-            void setOutputFilePath(std::string);
             void setOutputFileEncoding(Encoding);
-
-            void setDelayTimer(double);
-            void setRecordDuration(double);
 
             ~HulaAudioSettings();
     };
