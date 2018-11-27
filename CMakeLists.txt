@@ -62,9 +62,11 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug" AND (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR
 endif ()
 
 # Control debug output
-set (HL_NO_DEBUG_OUTPUT 1)
-if (CMAKE_BUILD_TYPE MATCHES "Debug")
-    set (HL_NO_DEBUG_OUTPUT 0)
+if (NOT DEFINED HL_NO_DEBUG_OUTPUT)
+    set (HL_NO_DEBUG_OUTPUT 1)
+    if (CMAKE_BUILD_TYPE MATCHES "Debug")
+        set (HL_NO_DEBUG_OUTPUT 0)
+    endif ()
 endif ()
 
 # Set output for binaries

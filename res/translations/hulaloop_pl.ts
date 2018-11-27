@@ -4,61 +4,60 @@
 <context>
     <name>ButtonPanel</name>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="100"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="121"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation>Nagrywa</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="145"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="165"/>
         <source>Stopped</source>
         <comment>state</comment>
         <translation>Zatrzymany</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="194"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="213"/>
         <source>Paused</source>
         <comment>state</comment>
         <translation>Wstrzymane</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="210"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="229"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation>Gra</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="325"/>
         <source>Timer:</source>
-        <translation>Regulator czasowy:</translation>
+        <translation type="vanished">Regulator czasowy:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="365"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="439"/>
         <source>Input Device:</source>
         <translation>Urządzenia wejściowe:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="411"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="485"/>
         <source>Output Device:</source>
         <translation>Urządzenia zewnętrzne:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="483"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="558"/>
         <source>Delay Recording (hh:mm:ss)</source>
         <translation>Opóźnione nagrywanie (gg:mm:ss)</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="502"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="577"/>
         <source>Record Duration (hh:mm:ss)</source>
         <translation>Czas trwania nagrywanie (gg:mm:ss)</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="534"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="609"/>
         <source>CANCEL</source>
         <translation>ANULUJ</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="554"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="628"/>
         <source>OK</source>
         <translation></translation>
     </message>
@@ -566,12 +565,12 @@
         <translation>Nie znaleziono żadnych aktualizacji.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="28"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="33"/>
         <source>HulaLoop Information</source>
         <translation>Informacja HulaLoop</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="28"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="33"/>
         <source>HulaLoop has started recording audio!</source>
         <translation>HulaLoop zaczeło nagrywać dźwięk!</translation>
     </message>
