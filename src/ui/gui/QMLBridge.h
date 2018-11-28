@@ -1,9 +1,11 @@
 #ifndef QMLBRIDGE_H
 #define QMLBRIDGE_H
 
+#include <atomic>
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <thread>
 #include <vector>
 
 #include <hlaudio/hlaudio.h>
@@ -22,6 +24,9 @@ namespace hula
             Transport *transport;
             HulaRingBuffer *rb;
 
+            std::vector<std::thread> visThreads;
+            std::atomic<bool> endVis;
+
         public:
             explicit QMLBridge(QObject *parent = nullptr);
 
@@ -38,12 +43,11 @@ namespace hula
             Q_INVOKABLE void discard();
 
             Q_INVOKABLE void saveFile(QString dir);
-            void getData();
+
+            void startVisThread();
+            void stopVisThread();
             static void updateVisualizer(QMLBridge* _this);
             static void reverseBits(size_t x, int n);
-
-            bool pauseNotPressed;
-            bool getPauseState();
 
             Q_INVOKABLE void launchUpdateProcess();
 

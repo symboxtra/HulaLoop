@@ -35,8 +35,6 @@ QMLBridge::QMLBridge(QObject *parent) : QObject(parent)
 {
     transport = new Transport();
     rb = transport->getController()->createBuffer(1);
-    pauseNotPressed = false;
-    getData();
 }
 
 /**
@@ -57,7 +55,7 @@ bool QMLBridge::record()
     bool success = transport->record();
     emit stateChanged();
 
-    pauseNotPressed = true;
+    startVisThread();
 
     return success;
 }
@@ -70,6 +68,8 @@ bool QMLBridge::stop()
     bool success = transport->stop();
     emit stateChanged();
 
+    stopVisThread();
+
     return success;
 }
 
@@ -81,7 +81,7 @@ bool QMLBridge::play()
     bool success = transport->play();
     emit stateChanged();
 
-    pauseNotPressed = true;
+    startVisThread();
 
     return success;
 }
@@ -94,7 +94,7 @@ bool QMLBridge::pause()
     bool success = transport->pause();
     emit stateChanged();
 
-    pauseNotPressed = false;
+    stopVisThread();
 
     return success;
 }
@@ -114,6 +114,7 @@ void QMLBridge::discard()
 void QMLBridge::setActiveInputDevice(QString QDeviceName)
 {
     hlDebug() << "setActiveDevice() called" << std::endl;
+
     std::string deviceName = QDeviceName.toStdString();
     std::vector<Device *> iDevices = transport->getController()->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
     for (auto const &device : iDevices)
@@ -125,7 +126,8 @@ void QMLBridge::setActiveInputDevice(QString QDeviceName)
             return;
         }
     }
-    //Should not get here should have found the device
+
+    // Should not get here should have found the device
     hlDebug() << "Input device not found: " << deviceName << std::endl;
 }
 
@@ -146,7 +148,8 @@ void QMLBridge::setActiveOutputDevice(QString QDeviceName)
             return;
         }
     }
-    //Should not get here should have found the device
+
+    // Should not get here should have found the device
     hlDebug() << "Output device not found: " << deviceName << std::endl;
 }
 
@@ -167,6 +170,7 @@ QString QMLBridge::getInputDevices()
             devices += ",";
         }
     }
+
     Device::deleteDevices(vd);
     return QString::fromStdString(devices);
 }
@@ -188,6 +192,7 @@ QString QMLBridge::getOutputDevices()
             devices += ",";
         }
     }
+
     Device::deleteDevices(vd);
     return QString::fromStdString(devices);
 }
@@ -216,9 +221,30 @@ void QMLBridge::saveFile(QString dir)
  * Start the thread that reads the ring buffer and updates
  * the visualizer.
  */
-void QMLBridge::getData()
+void QMLBridge::startVisThread()
 {
-    visThread = thread(&updateVisualizer, this);
+    // Stop the previous thread if present
+    stopVisThread();
+
+    // Reset the state
+    endVis.store(false);
+
+    // Start the new thread
+    visThreads.emplace_back(std::thread(&updateVisualizer, this));
+}
+
+void QMLBridge::stopVisThread()
+{
+    endVis.store(true);
+
+    for (auto &t : visThreads)
+    {
+        if (t.joinable())
+        {
+            t.join();
+        }
+    }
+    visThreads.clear();
 }
 
 /**
@@ -226,77 +252,49 @@ void QMLBridge::getData()
  */
 void QMLBridge::updateVisualizer(QMLBridge *_this)
 {
+    _this->transport->getController()->addBuffer(_this->rb);
+
     int maxSize = 512;
     float *temp = new float[maxSize];
-    bool firstTime = true;
-    bool lastTime = true;
 
-    while (1)
+    while (!_this->endVis.load())
     {
-        if (_this->pauseNotPressed)
+        vector<double> actualoutreal;
+        vector<double> actualoutimag;
+        ring_buffer_size_t bytesRead;
+
+        while (actualoutreal.size() < maxSize)
         {
-            if (firstTime)
-            {
-                _this->transport->getController()->addBuffer(_this->rb);
-                firstTime = false;
-                lastTime = true;
-            }
-
-            vector<double> actualoutreal;
-            vector<double> actualoutimag;
-            size_t bytesRead;
-            while(actualoutreal.size() < maxSize)
-            {
-                bytesRead =_this->rb->read(temp, maxSize);
-                for(int i = 0; i < bytesRead; i++)
-                {
-                    actualoutimag.push_back(temp[i]);
-                    actualoutreal.push_back(temp[i]);
-                }
-            }
-
-            Fft::transform(actualoutreal, actualoutimag);
-
-            std::vector<double> heights;
-            double sum = 0;
+            bytesRead =_this->rb->read(temp, maxSize);
             for (int i = 0; i < bytesRead; i++)
             {
-                if (i % 8 == 0)
-                {
-                    sum = fabs(sum);
-                    heights.push_back(sum);
-                    sum = 0;
-                }
-                else
-                {
-                    sum+=actualoutreal[i];
-                }
+                actualoutimag.push_back(temp[i]);
+                actualoutreal.push_back(temp[i]);
             }
-
-            _this->emit visData(heights);
         }
-        else
+
+        Fft::transform(actualoutreal, actualoutimag);
+
+        std::vector<double> heights;
+        double sum = 0;
+        for (int i = 0; i < actualoutreal.size(); i++)
         {
-            if (lastTime)
+            if (i % 8 == 0)
             {
-                _this->transport->getController()->removeBuffer(_this->rb);
-                lastTime = false;
-                firstTime = true;
+                sum = fabs(sum);
+                heights.push_back(sum);
+                sum = 0;
+            }
+            else
+            {
+                sum += actualoutreal[i];
             }
         }
-    }
-}
 
-/**
- * Fetch whether or not the state is paused.
- *
- * TODO: Perhaps this should be replaced with transport->getState().
- *
- * @return bool Pause state
- */
-bool QMLBridge::getPauseState()
-{
-    return this->pauseNotPressed;
+        _this->emit visData(heights);
+    }
+
+    _this->transport->getController()->removeBuffer(_this->rb);
 }
 
 /**
