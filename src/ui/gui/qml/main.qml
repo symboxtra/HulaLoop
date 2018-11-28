@@ -51,14 +51,18 @@ ApplicationWindow {
         onVisData: {
 
             // TODO: Update when we have the ability to switch visualizers
-            if (false)
+            if (true)
             {
                 // Update the number of bars
-                lastVisBarCount = dataIn.length - trimBack - trimFront
+                /*lastVisBarCount = dataIn.length - trimBack - trimFront
 
                 for (var i = trimFront; i < dataIn.length - trimBack; i++) {
                     rectgen.itemAt(i - trimFront).height = Math.round(Math.min(dataIn[i], 1) * visualize.height)
-                }
+                }*/
+
+                //circle visualizer instead of bars
+                canvas2.readValues(dataIn)
+                canvas2.clear()
             }
             else
             {
@@ -96,6 +100,15 @@ ApplicationWindow {
 
         DynamicLine {
             id: canvas
+
+            width: parent.width
+            height: parent.height
+            z: 100
+
+            anchors.centerIn: parent
+        }
+        CircleVis {
+            id: canvas2
 
             width: parent.width
             height: parent.height

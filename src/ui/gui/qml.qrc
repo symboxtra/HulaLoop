@@ -6,6 +6,7 @@
         <file>fonts/Icon.js</file>
         <file>fonts/materialdesignicons-webfont.ttf</file>
         <file>qml/DynamicLine.qml</file>
+        <file>qml/CircleVis.qml</file>
         <file>res/hulaloop-logo.png</file>
         <file>res/hulaloop-logo.svg</file>
         <file>res/hulaloop-logo-recording.svg</file>
