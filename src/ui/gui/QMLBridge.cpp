@@ -258,22 +258,53 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
     _this->transport->getController()->addBuffer(_this->rb);
 
     int maxSize = 512;
-    float *temp = new float[maxSize];
+    int accuracy = 5;
+    // float *temp = new float[maxSize];
 
     while (!_this->endVis.load())
     {
         vector<double> actualoutreal;
         vector<double> actualoutimag;
+
+        float *data1;
+        float *data2;
+        ring_buffer_size_t size1;
+        ring_buffer_size_t size2;
         ring_buffer_size_t bytesRead;
+
+        // Only process every @ref accuracy cycles
+        int cycle = 1;
 
         while (actualoutreal.size() < maxSize)
         {
-            bytesRead =_this->rb->read(temp, maxSize);
-            for (int i = 0; i < bytesRead; i++)
-            {
-                actualoutimag.push_back(temp[i]);
-                actualoutreal.push_back(temp[i]);
-            }
+                // Do directRead until Windows read is fixed
+                // bytesRead =_this->rb->read(temp, maxSize
+                bytesRead = _this->rb->directRead(maxSize, (void **)&data1, &size1, (void **)&data2, &size2);
+
+                // Keep draining the buffer, but only actually
+                // process the drained data every nth cycle
+                if (cycle % accuracy == 0)
+                {
+                    for (int i = 0; i < size1; i++)
+                    {
+                        actualoutimag.push_back(data1[i]);
+                        actualoutreal.push_back(data1[i]);
+                    }
+
+                    for (int i = 0; i < size2; i++)
+                    {
+                        actualoutimag.push_back(data2[i]);
+                        actualoutreal.push_back(data2[i]);
+                    }
+                }
+                else
+                {
+                    // Only count cycles that actually have data
+                    if (bytesRead > 0)
+                    {
+                        cycle++;
+                    }
+                }
         }
 
         Fft::transform(actualoutreal, actualoutimag);

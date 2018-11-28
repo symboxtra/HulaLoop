@@ -25,7 +25,7 @@ ApplicationWindow {
     property string currentState: "Unknown"
     property string barColor: "#888888"
 
-    property int lastVisBarCount: 64
+    property int lastVisBarCount: 0
     property int trimFront: 3
     property int trimBack: 3
 
@@ -52,13 +52,13 @@ ApplicationWindow {
             // Update the number of bars
             lastVisBarCount = dataIn.length - trimBack - trimFront
 
-            for (var i = trimFront; i < dataIn.length - trimBack; i++) {
-                rectgen.itemAt(i - trimFront).height = Math.round(Math.min(dataIn[i], 1) * visualize.height)
-            }
+            // Comment this out until we have the ability to switch between visualizers
+            //for (var i = trimFront; i < dataIn.length - trimBack; i++) {
+            //    rectgen.itemAt(i - trimFront).height = Math.round(Math.min(dataIn[i], 1) * visualize.height)
+            //}
 
             canvas.readValues(dataIn)
             canvas.clear()
-            canvas.requestPaint()
         }
     }
 
@@ -93,9 +93,13 @@ ApplicationWindow {
             z: 100
 
             anchors.centerIn: parent
+
+            // Track the number of bins
+            binCount: lastVisBarCount
         }
 
         Row {
+            // Shift over to accomodate for the weird gap
             x: visualize.width / lastVisBarCount * -2
             y: parent.height - 50
             width: parent.width

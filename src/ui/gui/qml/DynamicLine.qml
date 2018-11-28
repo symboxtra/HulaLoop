@@ -6,10 +6,16 @@ Canvas {
     id: canvas
 
     contextType: "2d"
+    renderStrategy: Canvas.Threaded
 
-    // Determine the spacing between each point
+    // Track the number of bins we have
+    property int binCount: 0
+
+    // Determine the spacing between each point and the interval on which to select bins
     property int numPoints: 16
+    property int startPos: parent.height / 2 + 150
     property int sp: Math.round(parent.width / numPoints)
+    property int intv: Math.floor(binCount / numPoints)
 
     function clear() {
         let ctx = getContext('2d');
@@ -23,30 +29,30 @@ Canvas {
 
     Item{
         id: itemarr
-        property variant items: []
+        property variant items: [0]
     }
 
     Path {
         id: dline
-        startY: parent.height / 2
+        startY: startPos
         startX: 0
-        PathCurve { x: sp * 1; y: parent.height / 2 - (itemarr.items[5]*100)  }
-        PathCurve { x: sp * 2; y: parent.height / 2 - (itemarr.items[7]*100)  }
-        PathCurve { x: sp * 3; y: parent.height / 2 - (itemarr.items[9]*100)  }
-        PathCurve { x: sp * 4; y: parent.height / 2 - (itemarr.items[11]*100) }
-        PathCurve { x: sp * 5; y: parent.height / 2 - (itemarr.items[13]*100) }
-        PathCurve { x: sp * 6; y: parent.height / 2 - (itemarr.items[15]*100) }
-        PathCurve { x: sp * 7; y: parent.height / 2 - (itemarr.items[17]*100) }
-        PathCurve { x: sp * 8; y: parent.height / 2 - (itemarr.items[19]*100) }
-        PathCurve { x: sp * 9; y: parent.height / 2 - (itemarr.items[21]*100) }
+        PathCurve { x: sp * 1; y: startPos - (itemarr.items[intv * 1]*100)  }
+        PathCurve { x: sp * 2; y: startPos - (itemarr.items[intv * 2]*100)  }
+        PathCurve { x: sp * 3; y: startPos - (itemarr.items[intv * 3]*100)  }
+        PathCurve { x: sp * 4; y: startPos - (itemarr.items[intv * 4]*100) }
+        PathCurve { x: sp * 5; y: startPos - (itemarr.items[intv * 5]*100) }
+        PathCurve { x: sp * 6; y: startPos - (itemarr.items[intv * 6]*100) }
+        PathCurve { x: sp * 7; y: startPos - (itemarr.items[intv * 7]*100) }
+        PathCurve { x: sp * 8; y: startPos - (itemarr.items[intv * 8]*100) }
+        PathCurve { x: sp * 9; y: startPos - (itemarr.items[intv * 9]*100) }
 
-        PathCurve { x: sp * 10; y: parent.height / 2 - (itemarr.items[23]*100) }
-        PathCurve { x: sp * 11; y: parent.height / 2 - (itemarr.items[25]*100) }
-        PathCurve { x: sp * 12; y: parent.height / 2 - (itemarr.items[27]*100) }
-        PathCurve { x: sp * 13; y: parent.height / 2 - (itemarr.items[29]*100) }
-        PathCurve { x: sp * 14; y: parent.height / 2 - (itemarr.items[31]*100) }
-        PathCurve { x: sp * 15; y: parent.height / 2 - (itemarr.items[33]*100) }
-        PathCurve { x: sp * 16; y: parent.height / 2 - (itemarr.items[35]*100) }
+        PathCurve { x: sp * 10; y: startPos - (itemarr.items[intv * 10]*100) }
+        PathCurve { x: sp * 11; y: startPos - (itemarr.items[intv * 11]*100) }
+        PathCurve { x: sp * 12; y: startPos - (itemarr.items[intv * 12]*100) }
+        PathCurve { x: sp * 13; y: startPos - (itemarr.items[intv * 13]*100) }
+        PathCurve { x: sp * 14; y: startPos - (itemarr.items[intv * 14]*100) }
+        PathCurve { x: sp * 15; y: startPos - (itemarr.items[intv * 15]*100) }
+        PathCurve { x: sp * 16; y: startPos - (itemarr.items[intv * 16]*100) }
     }
 
     onPaint: {
