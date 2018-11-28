@@ -30,7 +30,7 @@ namespace hula
                 this->activeInputDevice = NULL;
                 this->activeOutputDevice = NULL;
 
-                playbackBuffer = new HulaRingBuffer(0.5);
+                playbackBuffer = new HulaRingBuffer(5);
             };
 
             /**
@@ -48,8 +48,6 @@ namespace hula
              * Data received from the operating system is copied into each of these buffers.
              */
             std::vector<HulaRingBuffer *> rbs;
-
-            HulaRingBuffer *playbackBuffer;
 
             /**
              * Thread for input device activities.
@@ -88,6 +86,8 @@ namespace hula
             uint32_t captureBufferSize;
 
         public:
+            HulaRingBuffer *playbackBuffer;
+
             virtual ~OSAudio() = 0;
 
             void setBufferSize(uint32_t size);

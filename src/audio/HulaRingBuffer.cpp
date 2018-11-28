@@ -144,7 +144,7 @@ ring_buffer_size_t HulaRingBuffer::directRead(ring_buffer_size_t maxSamples, voi
  */
 ring_buffer_size_t HulaRingBuffer::write(const SAMPLE *data, ring_buffer_size_t maxSamples)
 {
-    /*ring_buffer_size_t elementsWriteable = PaUtil_GetRingBufferWriteAvailable(&this->rb);
+    ring_buffer_size_t elementsWriteable = PaUtil_GetRingBufferWriteAvailable(&this->rb);
     ring_buffer_size_t elementsToWrite = std::min(elementsWriteable, (ring_buffer_size_t)(maxSamples));
 
     ring_buffer_size_t elementsWritten = PaUtil_WriteRingBuffer(&this->rb, data, elementsToWrite);
@@ -154,26 +154,26 @@ ring_buffer_size_t HulaRingBuffer::write(const SAMPLE *data, ring_buffer_size_t 
     if (elementsWritten < maxSamples)
     {
         printf("%sOverrun: %d of %d samples written\n", HL_PRINT_PREFIX, elementsWritten, maxSamples);
-    }*/
-    ring_buffer_size_t elementsInBuffer = PaUtil_GetRingBufferWriteAvailable(&this->rb);
+    }
+    // ring_buffer_size_t elementsInBuffer = PaUtil_GetRingBufferWriteAvailable(&this->rb);
 
-    void* ptr[2] = {0};
-    ring_buffer_size_t sizes[2] = {0};
+    // void* ptr[2] = {0};
+    // ring_buffer_size_t sizes[2] = {0};
 
-    /* By using PaUtil_GetRingBufferWriteRegions, we can write directly into the ring buffer */
-    PaUtil_GetRingBufferWriteRegions(&this->rb, elementsInBuffer, ptr + 0, sizes + 0, ptr + 1, sizes + 1);
+    // /* By using PaUtil_GetRingBufferWriteRegions, we can write directly into the ring buffer */
+    // PaUtil_GetRingBufferWriteRegions(&this->rb, elementsInBuffer, ptr + 0, sizes + 0, ptr + 1, sizes + 1);
 
-    ring_buffer_size_t elementsWritten = 0;
+    // ring_buffer_size_t elementsWritten = 0;
 
-        ring_buffer_size_t itemsReadFromFile = 0;
-        int i;
-        // for (i = 0; i < 2 && ptr[i] != NULL; ++i)
-        // {
-        //     itemsReadFromFile += (ring_buffer_size_t)fread(ptr[i], pData->ringBuffer.elementSizeBytes, sizes[i], pData->file);
-        // }
-        //PaUtil_AdvanceRingBufferWriteIndex(&pData->ringBuffer, itemsReadFromFile);
+    //     ring_buffer_size_t itemsReadFromFile = 0;
+    //     int i;
+    //     // for (i = 0; i < 2 && ptr[i] != NULL; ++i)
+    //     // {
+    //     //     itemsReadFromFile += (ring_buffer_size_t)fread(ptr[i], pData->ringBuffer.elementSizeBytes, sizes[i], pData->file);
+    //     // }
+    //     //PaUtil_AdvanceRingBufferWriteIndex(&pData->ringBuffer, itemsReadFromFile);
 
-    elementsWritten = PaUtil_WriteRingBuffer(&this->rb, (void*)data, maxSamples);
+    // elementsWritten = PaUtil_WriteRingBuffer(&this->rb, (void*)data, maxSamples);
 
 
     return elementsWritten;
