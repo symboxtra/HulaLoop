@@ -586,6 +586,7 @@ Rectangle {
             Layout.preferredWidth: 10
         }
     }
+
     Popup {
         id: settingsPopup
         objectName: "settingsPopup"
@@ -598,6 +599,7 @@ Rectangle {
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
         ColumnLayout {
+            id: colLayout
             spacing: Math.round(buttonPanel.height * 0.15)
 
             GridLayout {
@@ -608,58 +610,33 @@ Rectangle {
 
                 Label {
                     font.family: "Roboto"
-                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                    text: "Setting#1"
+                    text: "Display record devices"
                     color: "white"
 
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
 
-                ComboBox {
-                    id: settings1
-                    Layout.preferredWidth: Math.max(Math.round(window.width * 0.2),
-                                                    320)
-                    model: ListModel {
-                        id: settings1options
-                        Component.onCompleted: {
-                            var options = ["on","off"]
-                            var i
-                            for (i = 0; i < options.length; i++) {
-                                append({
-                                           "text": options[i]
-                                       })
-                            }
-                        }
-                    }
-                    onActivated: {
-                        //add behavior for which setting it was just changed to
-                    }
-
-                    onPressedChanged: {
-
-                    }
-                    currentIndex: 0
+                Switch {
+                    id: displayRecordDev
                 }
-
 
                 Label {
                     font.family: "Roboto"
-                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                    text: "Setting#2"
+                    text: "Visualizer type"
                     color: "white"
 
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
+
                 ComboBox {
                     id: settings2
-                    Layout.preferredWidth: Math.max(Math.round(window.width * 0.2),
-                                                    320)
+
                     model: ListModel {
                         id: settings2options
                         Component.onCompleted: {
-                            var options = ["on","off"]
+                            var options = ["Bar", "Circle", "Line"]
                             var i
                             for (i = 0; i < options.length; i++) {
                                 append({
@@ -677,23 +654,23 @@ Rectangle {
                     }
                     currentIndex: 0
                 }
+
                 Label {
                     font.family: "Roboto"
-                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                    text: "Setting#3"
+                    text: "Language"
                     color: "white"
 
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
+
                 ComboBox {
                     id: settings3
-                    Layout.preferredWidth: Math.max(Math.round(window.width * 0.2),
-                                                    320)
+
                     model: ListModel {
                         id: settings3options
                         Component.onCompleted: {
-                            var options = ["on","off"]
+                            var options = ["en", "es", "fr", "hi", "pl"]
                             var i
                             for (i = 0; i < options.length; i++) {
                                 append({
@@ -711,87 +688,13 @@ Rectangle {
                     }
                     currentIndex: 0
                 }
-                Label {
-                    font.family: "Roboto"
-                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                    text: "Setting#4"
-                    color: "white"
 
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                }
-                ComboBox {
-                    id: settings4
-                    Layout.preferredWidth: Math.max(Math.round(window.width * 0.2),
-                                                    320)
-                    model: ListModel {
-                        id: settings4options
-                        Component.onCompleted: {
-                            var options = ["on","off"]
-                            var i
-                            for (i = 0; i < options.length; i++) {
-                                append({
-                                           "text": options[i]
-                                       })
-                            }
-                        }
-                    }
-                    onActivated: {
-                        //add behavior for which setting it was just changed to
-                    }
-
-                    onPressedChanged: {
-
-                    }
-                    currentIndex: 0
-                }
             }
 
-            RowLayout {
-                Layout.alignment: Qt.AlignCenter
-                spacing: Math.round(buttonPanel.width * 0.05)
-                width: gridLayout.width / 2
-
-                Button {
-                    Layout.alignment: Qt.AlignLeft
-                    id: cancelBtn2
-                    onClicked: {
-                        settingsPopup.close()
-                    }
-                    Layout.preferredWidth: Math.round(buttonPanel.width * 0.15)
-                    contentItem: Text {
-                        font.family: "Roboto"
-                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                        text: "CANCEL"
-                        color: "white"
-
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                }
-
-                Button {
-                    Layout.alignment: Qt.AlignRight
-                    id: okBtn2
-                    onClicked: {
-                        countDownTimer.start()
-                        settingsPopup.close()
-                    }
-
-                    Layout.preferredWidth: Math.round(buttonPanel.width * 0.15)
-                    contentItem: Text {
-                        font.family: "Roboto"
-                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                        text: "OK"
-                        color: "white"
-
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                }
-            }
         }
+
     }
+
     Popup {
         id: discardPopup
         objectName: "discardPopup"
@@ -810,7 +713,6 @@ Rectangle {
                     Text {
                         id: textbot
                         color: "white"
-                        font.pointSize: Math.round((window.height + window.width) / 96)
                         text: qsTr("Are you sure you want to discard?")
                     }
                 }
@@ -820,7 +722,6 @@ Rectangle {
                     width: gridLayout.width / 2
                     Button {
                         text: "No"
-                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                         onClicked: {
                             discardPopup.close()
                         }
@@ -828,7 +729,6 @@ Rectangle {
 
                     Button {
                         text: "Yes"
-                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                         onClicked: {
                             // Discard files
                             qmlbridge.discard()
