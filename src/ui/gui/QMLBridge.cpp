@@ -33,8 +33,10 @@ using namespace hula;
  */
 QMLBridge::QMLBridge(QObject *parent) : QObject(parent)
 {
-    transport = new Transport;
-    rb=transport->getController()->createBuffer(1);
+    transport = new Transport();
+    rb = transport->getController()->createBuffer(1);
+    pauseNotPressed = false;
+    getData();
 }
 
 /**
@@ -56,7 +58,6 @@ bool QMLBridge::record()
     emit stateChanged();
 
     pauseNotPressed = true;
-    getData();
 
     return success;
 }
@@ -105,8 +106,6 @@ void QMLBridge::discard()
 {
     transport->discard();
 }
-
-
 
 /**
  * Match a string that the user chose to the input device list
@@ -211,8 +210,6 @@ void QMLBridge::saveFile(QString dir)
     }
     directory = directory.substr(substrLen);
     transport->exportFile(directory);
-
-    discard();
 }
 
 /**
@@ -221,8 +218,7 @@ void QMLBridge::saveFile(QString dir)
  */
 void QMLBridge::getData()
 {
-    std::thread visThread(&updateVisualizer,this);
-    visThread.detach();
+    visThread = thread(&updateVisualizer, this);
 }
 
 /**
@@ -230,38 +226,65 @@ void QMLBridge::getData()
  */
 void QMLBridge::updateVisualizer(QMLBridge *_this)
 {
-    _this->transport->getController()->addBuffer(_this->rb);
     int maxSize = 512;
-    float * temp = new float[maxSize];
-    while(1){
-        vector<double> actualoutreal;
-        vector<double> actualoutimag;
-        size_t bytesRead;
-        while(actualoutreal.size()<maxSize){
-            bytesRead=_this->rb->read(temp, maxSize);
-            for(int i=0;i<bytesRead;i++){
-                actualoutimag.push_back(temp[i]);
-                actualoutreal.push_back(temp[i]);
+    float *temp = new float[maxSize];
+    bool firstTime = true;
+    bool lastTime = true;
+
+    while (1)
+    {
+        if (_this->pauseNotPressed)
+        {
+            if (firstTime)
+            {
+                _this->transport->getController()->addBuffer(_this->rb);
+                firstTime = false;
+                lastTime = true;
             }
-        }
-	    Fft::transform(actualoutreal, actualoutimag);
-        std::vector<double> heights;
-        double sum=0;
-        for(int i=0;i<bytesRead;i++){
-                if(i%8==0){
-                    sum=fabs(sum);
-                    heights.push_back(sum);
-                    sum=0;
+
+            vector<double> actualoutreal;
+            vector<double> actualoutimag;
+            size_t bytesRead;
+            while(actualoutreal.size() < maxSize)
+            {
+                bytesRead =_this->rb->read(temp, maxSize);
+                for(int i = 0; i < bytesRead; i++)
+                {
+                    actualoutimag.push_back(temp[i]);
+                    actualoutreal.push_back(temp[i]);
                 }
-                else{
+            }
+
+            Fft::transform(actualoutreal, actualoutimag);
+
+            std::vector<double> heights;
+            double sum = 0;
+            for (int i = 0; i < bytesRead; i++)
+            {
+                if (i % 8 == 0)
+                {
+                    sum = fabs(sum);
+                    heights.push_back(sum);
+                    sum = 0;
+                }
+                else
+                {
                     sum+=actualoutreal[i];
                 }
+            }
+
+            _this->emit visData(heights);
         }
-        if(_this->pauseNotPressed){
-        _this->emit visData(heights);
+        else
+        {
+            if (lastTime)
+            {
+                _this->transport->getController()->removeBuffer(_this->rb);
+                lastTime = false;
+                firstTime = true;
+            }
         }
     }
-    _this->transport->getController()->removeBuffer(_this->rb);
 }
 
 /**
