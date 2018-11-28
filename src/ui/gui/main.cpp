@@ -24,6 +24,11 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     app.setWindowIcon(QIcon(":/res/hulaloop-logo.png"));
 
+    HulaSettings *settings = HulaSettings::getInstance();
+    QTranslator *trans = settings->getTranslator();
+
+    app.installTranslator(trans);
+
     qmlRegisterType<QMLBridge>("hulaloop.qmlbridge", 1, 0, "QMLBridge");
     qmlRegisterType<SystemTrayIcon>("hulaloop.systrayicon", 1, 0, "SystemTrayIcon");
 

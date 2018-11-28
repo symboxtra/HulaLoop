@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <QApplication>
+#include <QCoreApplication>
 #include <vector>
 
 #include "CLIArgs.h"
@@ -28,12 +28,6 @@ class TestCLIArgs {
         TestCLIArgs(const std::vector<std::string> &args)
         {
             createArgv(args);
-
-            for (int i = 0; i < argc; i++)
-            {
-                printf("|%s|\n", argv[i]);
-            }
-
             this->app = new QCoreApplication(this->argc, this->argv);
         }
 
@@ -107,7 +101,7 @@ TEST(TestCLIArgs, short_opt_output_file)
 {
     OPT_TEST(SHORT_OPT HL_OUT_FILE_SO, "test-file");
 
-    EXPECT_EQ(s->getOutputFilePath(), "test-file");
+    EXPECT_EQ(t.extraArgs.outputFilePath, "test-file");
 }
 
 /**
@@ -120,7 +114,7 @@ TEST(TestCLIArgs, long_opt_output_file)
 {
     OPT_TEST(LONG_OPT HL_OUT_FILE_LO, "test-file");
 
-    EXPECT_EQ(s->getOutputFilePath(), "test-file");
+    EXPECT_EQ(t.extraArgs.outputFilePath, "test-file");
 }
 
 /************************************************************/
@@ -135,7 +129,7 @@ TEST(TestCLIArgs, short_opt_delay)
 {
     OPT_TEST(SHORT_OPT HL_DELAY_TIME_SO, "5.7");
 
-    EXPECT_EQ(s->getDelayTimer(), 5.7);
+    EXPECT_EQ(t.extraArgs.delay, "5.7");
 }
 
 /**
@@ -148,20 +142,7 @@ TEST(TestCLIArgs, long_opt_delay)
 {
     OPT_TEST(LONG_OPT HL_DELAY_TIME_LO, "5.7");
 
-    EXPECT_EQ(s->getDelayTimer(), 5.7);
-}
-
-/**
- * Delay long opt with invalid number
- *
- * EXPECTED:
- *      parse returns false and prints error
- */
-TEST(TestCLIArgs, NAN_arg_long_opt_delay)
-{
-    OPT_TEST(LONG_OPT HL_DELAY_TIME_LO, "not_a_number");
-
-    EXPECT_FALSE(success);
+    EXPECT_EQ(t.extraArgs.delay, "5.7");
 }
 
 /************************************************************/
@@ -176,7 +157,7 @@ TEST(TestCLIArgs, short_opt_duration)
 {
     OPT_TEST(SHORT_OPT HL_RECORD_TIME_SO, "5.7");
 
-    EXPECT_EQ(s->getRecordDuration(), 5.7);
+    EXPECT_EQ(t.extraArgs.duration, "5.7");
 }
 
 /**
@@ -189,20 +170,7 @@ TEST(TestCLIArgs, long_opt_duration)
 {
     OPT_TEST(LONG_OPT HL_RECORD_TIME_LO, "5.7");
 
-    EXPECT_EQ(s->getRecordDuration(), 5.7);
-}
-
-/**
- * Record timer long opt with invalid number
- *
- * EXPECTED:
- *      parse returns false and prints error
- */
-TEST(TestCLIArgs, NAN_arg_long_opt_duration)
-{
-    OPT_TEST(LONG_OPT HL_RECORD_TIME_LO, "not_a_number");
-
-    EXPECT_FALSE(success);
+    EXPECT_EQ(t.extraArgs.duration, "5.7");
 }
 
 /************************************************************/
@@ -327,7 +295,7 @@ TEST(TestCLIArgs, short_opt_input_device)
 {
     OPT_TEST(SHORT_OPT HL_INPUT_DEVICE_SO, "Device");
 
-    EXPECT_EQ(s->getDefaultInputDeviceName(), "Device");
+    EXPECT_EQ(t.extraArgs.inputDevice, "Device");
 }
 
 /**
@@ -340,10 +308,8 @@ TEST(TestCLIArgs, long_opt_input_device)
 {
     OPT_TEST(LONG_OPT HL_INPUT_DEVICE_LO, "Device");
 
-    EXPECT_EQ(s->getDefaultInputDeviceName(), "Device");
+    EXPECT_EQ(t.extraArgs.inputDevice, "Device");
 }
-
-// TODO: Non-existent device catch
 
 /************************************************************/
 
@@ -357,7 +323,7 @@ TEST(TestCLIArgs, short_opt_output_device)
 {
     OPT_TEST(SHORT_OPT HL_OUTPUT_DEVICE_SO, "Device");
 
-    EXPECT_EQ(s->getDefaultOutputDeviceName(), "Device");
+    EXPECT_EQ(t.extraArgs.outputDevice, "Device");
 }
 
 /**
@@ -370,7 +336,7 @@ TEST(TestCLIArgs, long_opt_output_device)
 {
     OPT_TEST(LONG_OPT HL_OUTPUT_DEVICE_LO, "Device");
 
-    EXPECT_EQ(s->getDefaultOutputDeviceName(), "Device");
+    EXPECT_EQ(t.extraArgs.outputDevice, "Device");
 }
 
 // TODO: Non-existent device catch

@@ -6,11 +6,7 @@ using namespace hula;
 class TestCTInterface : public Transport, public ::testing::Test {
 
     public:
-        /**
-         * Create the Transport in "dry run" mode.
-         * No backend audio services or devices are initialized.
-         */
-        TestCTInterface() : Transport(true)
+        TestCTInterface() : Transport()
         { }
 
 };

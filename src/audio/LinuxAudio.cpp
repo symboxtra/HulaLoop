@@ -1,4 +1,5 @@
 #include "LinuxAudio.h"
+#include "hlaudio/internal/HulaAudioError.h"
 #include "hlaudio/internal/HulaAudioSettings.h"
 
 using namespace hula;
@@ -115,12 +116,21 @@ bool LinuxAudio::checkDeviceParams(Device *device)
 
     // device id
     const char *id = device->getID().linuxID.c_str();
-    std::cout << id << std::endl;
+    hlDebug() << id << std::endl;
     // open pcm device
-    err = snd_pcm_open(&pcmHandle, id, SND_PCM_STREAM_CAPTURE, 0);
+
+    if (device->getType() == DeviceType::PLAYBACK)
+    {
+        err = snd_pcm_open(&pcmHandle, id, SND_PCM_STREAM_PLAYBACK, 0);
+    }
+    else
+    {
+        err = snd_pcm_open(&pcmHandle, id, SND_PCM_STREAM_CAPTURE, 0);
+    }
+
     if (err < 0)
     {
-        std::cerr << "Unable to test device: " << id << std::endl;
+        hlDebug() << "Unable to test device: " << id << std::endl;
         return false;
     }
 
@@ -143,10 +153,20 @@ bool LinuxAudio::checkDeviceParams(Device *device)
     snd_config_update_free_global();
     if (samplingRateValid && formatValid)
     {
-        std::cout << "Sample rate and format valid." << std::endl;
+        hlDebug() << HL_SAMPLE_RATE_VALID << std::endl;
         return true;
     }
-    std::cout << "Sample rate or format invalid." << std::endl;
+
+    if (!samplingRateValid)
+    {
+        hlDebug() << "Sampling rate was invalid." << std::endl;
+    }
+    else
+    {
+        hlDebug() << "Format was invalid." << std::endl;
+    }
+
+    hlDebug() << HL_SAMPLE_RATE_INVALID << std::endl;
     return false;
 }
 
@@ -187,7 +207,7 @@ void LinuxAudio::capture()
     err = snd_pcm_open(&pcmHandle, defaultDevice.c_str(), SND_PCM_STREAM_CAPTURE, 0);
     if (err < 0)
     {
-        std::cerr << "Unable to open " << defaultDevice << " exiting..." << std::endl;
+        hlDebug() << "Unable to open " << defaultDevice << " exiting..." << std::endl;
         exit(1);
     }
 
@@ -213,7 +233,7 @@ void LinuxAudio::capture()
     err = snd_pcm_hw_params(pcmHandle, param);
     if (err < 0)
     {
-        std::cerr << "Unable to set parameters: " << defaultDevice << " exiting..." << std::endl;
+        hlDebug() << "Unable to set parameters: " << defaultDevice << " exiting..." << std::endl;
         exit(1);
     }
 
@@ -232,16 +252,17 @@ void LinuxAudio::capture()
         framesRead = snd_pcm_readi(pcmHandle, audioBuffer, frame);
         if (framesRead == -EPIPE)
         {
-            std::cerr << "Buffer overrun" << std::endl;
+            hlDebug() << "Buffer overrun" << std::endl;
             snd_pcm_prepare(pcmHandle);
         }
         else if (framesRead < 0)
         {
-            std::cerr << "Read error" << std::endl;
+            // TODO: This really needs to not be properly switchable and not defaultDevice
+            hlDebug() << "ALSA read on device " << defaultDevice << " failed." << std::endl;
         }
         else if (framesRead != (int)frame)
         {
-            std::cerr << "Read short, only read " << framesRead << " bytes" << std::endl;
+            hlDebug() << "Underrun: Exepected " << frame << " frames but got " << framesRead << std::endl;
         }
         copyToBuffers(audioBuffer, framesRead * NUM_CHANNELS * sizeof(SAMPLE));
     }

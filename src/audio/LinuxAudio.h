@@ -5,7 +5,6 @@
 
 #include <stdlib.h>
 #include <cstdint>
-#include <iostream>
 #include <thread>
 #include <vector>
 
@@ -20,7 +19,11 @@ using byte = uint8_t;
 
 namespace hula
 {
+    /**
+     * An audio class that captures system wide audio on Linux.
+     */
     class LinuxAudio : public OSAudio {
+
         private:
             int bitrate;
             std::vector<Device *> iDevices;

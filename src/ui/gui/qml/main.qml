@@ -10,7 +10,7 @@ import hulaloop.systrayicon 1.0
 ApplicationWindow {
 
     id: window
-    title: qsTr("HulaLoop")
+    title: "HulaLoop"
 
     visible: true
     width: 1024
@@ -30,11 +30,13 @@ ApplicationWindow {
 
             if(qmlbridge.getTransportState() === "Recording")
             {
-                systrayicon.showMessage("HulaLoop Information", "HulaLoop has started recording audio!")
+                systrayicon.showMessage(qsTr("HulaLoop Information"), qsTr("HulaLoop has started recording audio!"))
                 systrayicon.setRecordIcon()
             }
             else
+            {
                 systrayicon.setDefaultIcon()
+            }
 
             systrayicon.setToolTip(qsTr("HulaLoop - " + qmlbridge.getTransportState()))
         }

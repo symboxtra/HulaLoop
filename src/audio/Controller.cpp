@@ -1,8 +1,10 @@
 #include <algorithm>
 #include <fstream>
+#include <iostream>
 
 #include "hlaudio/internal/Controller.h"
-#include "include/hlaudio/internal/HulaAudioError.h"
+#include "hlaudio/internal/HulaAudioError.h"
+#include "hlaudio/internal/HulaAudioSettings.h"
 
 #if _WIN32
     #include "WindowsAudio.h"
@@ -31,26 +33,11 @@ Controller::Controller()
 
     if (audio == NULL)
     {
-        std::cerr << "OS Audio error !" << std::endl;
+        hlDebug() << "Error initializing OS audio module!" << std::endl;
+        exit(1);
     } // TODO: Handle error
 
 }
-
-#ifndef NDEBUG
-/**
- * ---------------- FOR TESTING/DEBUG BUILDS ONLY -----------------
- *
- * A "dry run" is a run in which full application functionality is not
- * required. This is usually used by unit tests targeting upper-level
- * modules that don't require the initialization of lower-level modules.
- *
- * This constructor is designed for testing purposes and exists only in debug builds.
- */
-Controller::Controller(bool dryRun)
-{
-    audio = NULL;
-}
-#endif
 
 /**
  * Add an initialized buffer to the list of buffers that receive audio data.
@@ -68,7 +55,7 @@ void Controller::addBuffer(HulaRingBuffer *rb)
 }
 
 /**
- * \ingroup memory_management
+ * @ingroup memory_management
  *
  * Allocate and initialize a HulaRingBuffer that can be added to
  * the OSAudio ring buffer list via Controller::addBuffer.
@@ -81,7 +68,7 @@ HulaRingBuffer *Controller::createBuffer(float duration)
 }
 
 /**
- * \ingroup memory_management
+ * @ingroup memory_management
  *
  * Allocate and initialize a HulaRingBuffer and automatically
  * add it to the OSAudio ring buffer list.
@@ -94,7 +81,7 @@ HulaRingBuffer *Controller::createAndAddBuffer(float duration)
 }
 
 /**
- * \ingroup memory_management
+ * @ingroup memory_management
  *
  * Remove a buffer from the list of buffers that receive audio data.
  * The removed buffer is not deleted and must be deleted by the user.
@@ -112,7 +99,7 @@ void Controller::removeBuffer(HulaRingBuffer *rb)
 }
 
 /**
- * \ingroup memory_management
+ * @ingroup memory_management
  *
  * Fetch a list of devices for the given DeviceType.
  *
@@ -132,7 +119,7 @@ std::vector<Device *> Controller::getDevices(DeviceType type) const
 }
 
 /**
- * \ingroup memory_management
+ * @ingroup memory_management
  *
  * Set the device from which audio should be captured.
  *
@@ -141,14 +128,15 @@ std::vector<Device *> Controller::getDevices(DeviceType type) const
  * can be used without issue.
  *
  * @param device Desired input device
+ * @return Success of device switch
  */
-void Controller::setActiveInputDevice(Device *device) const
+bool Controller::setActiveInputDevice(Device *device) const
 {
-    audio->setActiveInputDevice(device);
+    return audio->setActiveInputDevice(device);
 }
 
 /**
- * \ingroup memory_management
+ * @ingroup memory_management
  *
  * Set the device to which audio should be played back.
  *
@@ -157,10 +145,11 @@ void Controller::setActiveInputDevice(Device *device) const
  * can be used without issue.
  *
  * @param device - Device instance that is to be set as the active output device
+ * @return Success of device switch
  */
-void Controller::setActiveOutputDevice(Device *device) const
+bool Controller::setActiveOutputDevice(Device *device) const
 {
-    audio->setActiveOutputDevice(device);
+    return audio->setActiveOutputDevice(device);
 }
 
 /**
@@ -168,7 +157,7 @@ void Controller::setActiveOutputDevice(Device *device) const
  */
 Controller::~Controller()
 {
-    printf("%sController destructor called\n", HL_PRINT_PREFIX);
+    hlDebug() << "Controller destructor called" << std::endl;
 
     // Don't do this until mem management is fixed
     if (audio)

@@ -2,8 +2,22 @@ function (create_test _test_file _src_files _timeout _do_memcheck _only_master)
 
     get_filename_component (_test_name ${_test_file} NAME_WE)
     add_executable (${_test_name} ${_test_file} ${_src_files})
-    add_dependencies (${_test_name} hulaloop hulaloop-cli hulaloop-launcher) # Make sure the real application builds first
     target_link_libraries (${_test_name} ${HL_LIBRARIES} gtest gtest_main ${CMAKE_THREAD_LIBS_INIT})
+
+    # Make sure the real application builds first
+    if (NOT HL_BUILD_ONLY_AUDIO)
+        if (HL_BUILD_GUI)
+            add_dependencies (${_test_name} hulaloop hulaloop-launcher)
+        endif ()
+
+        if (HL_BUILD_CLI)
+            add_dependencies (${_test_name} hulaloop-cli)
+        endif ()
+
+        if (OSX)
+            add_dependencies (${_test_name} hulaloop-osx-daemon)
+        endif ()
+    endif ()
 
     if (_only_master)
         add_test (
@@ -20,13 +34,12 @@ function (create_test _test_file _src_files _timeout _do_memcheck _only_master)
     endif ()
 
     # Add memory test
-    # We don't currently have a solution for Windows
-    if (_do_memcheck AND NOT WIN32)
+    if (_do_memcheck AND NOT WIN32 AND NOT OSX)
         if (NOT VALGRIND_EXECUTABLE)
             message (STATUS "Valgrind could not be found. Skipping requested memcheck for ${_test_name}.")
         else ()
             add_test (
-                NAME memcheck_${_test_name}
+                NAME only_master_memcheck_${_test_name}
                 COMMAND ${VALGRIND_EXECUTABLE} --leak-check=full --error-exitcode=1 --track-origins=yes $<TARGET_FILE:${_test_name}>
                 WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
             )
@@ -39,13 +52,11 @@ function (create_test _test_file _src_files _timeout _do_memcheck _only_master)
     endif ()
 
     # Copy PortAudio DLLs to bin/test for successful testing
-    if(WIN32)
-        add_custom_command (
-            TARGET ${_test_name}
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -DSOURCE_DIR="${PROJECT_SOURCE_DIR}" -DBINARY_DIR="${CMAKE_BINARY_DIR}" -P ${PROJECT_SOURCE_DIR}/cmake/MoveDLLsToTest.cmake
-        )
-    endif ()
+    add_custom_command (
+        TARGET ${_test_name}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -DSOURCE_DIR="${PROJECT_SOURCE_DIR}" -DBINARY_DIR="${CMAKE_BINARY_DIR}" -P ${PROJECT_SOURCE_DIR}/cmake/MoveFilesToTest.cmake
+    )
 
 endfunction ()
 

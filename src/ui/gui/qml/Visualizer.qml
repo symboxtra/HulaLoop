@@ -3,7 +3,6 @@ import QtQuick.Layouts 1.3
 
 import QtQuick.Controls 2.2
 
-
 import "../fonts/Icon.js" as MDFont
 
 Rectangle {

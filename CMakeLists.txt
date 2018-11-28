@@ -22,9 +22,8 @@ message (STATUS "Building ${PROJECT_NAME} v${HL_VERSION_STR}")
 message (STATUS "")
 
 # Set build type if not provided
-# Default to DEBUG
 if (NOT CMAKE_BUILD_TYPE)
-    set (CMAKE_BUILD_TYPE Debug)
+    set (CMAKE_BUILD_TYPE Debug CACHE STRING "Configuration of build." FORCE)
 endif ()
 
 set (OSX FALSE)
@@ -55,11 +54,19 @@ option (HL_BUILD_ONLY_AUDIO "Build only the audio library." OFF)
 option (HL_BUILD_CLI "Build the command line application." ON)
 option (HL_BUILD_GUI "Build the graphical application." ON)
 option (HL_BUILD_EXAMPLES "Build example programs." OFF)
-option (HL_ADD_COVERAGE_FLAGS "Add coverage options to compiler flags" OFF)
 
-# Disable coverage flags by default
+# Turn on coverage flags if needed
+set (HL_ADD_COVERAGE_FLAGS OFF)
 if (CMAKE_BUILD_TYPE MATCHES "Debug" AND (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
     set (HL_ADD_COVERAGE_FLAGS ON)
+endif ()
+
+# Control debug output
+if (NOT DEFINED HL_NO_DEBUG_OUTPUT)
+    set (HL_NO_DEBUG_OUTPUT 1)
+    if (CMAKE_BUILD_TYPE MATCHES "Debug")
+        set (HL_NO_DEBUG_OUTPUT 0)
+    endif ()
 endif ()
 
 # Set output for binaries
@@ -107,53 +114,66 @@ include_directories (${CMAKE_BINARY_DIR})
 
 ######## Qt ########
 
-# Prime for Qt
-set (CMAKE_INCLUDE_CURRENT_DIR ON)
-set (CMAKE_AUTOUIC ON)
-set (CMAKE_AUTOMOC ON)
-set (CMAKE_AUTORCC ON)
+if (NOT HL_BUILD_ONLY_AUDIO)
+    # Prime for Qt
+    set (CMAKE_INCLUDE_CURRENT_DIR ON)
+    set (CMAKE_AUTOUIC ON)
+    set (CMAKE_AUTOMOC ON)
+    set (CMAKE_AUTORCC ON)
 
-if (WIN32 AND NOT DEFINED QT_ROOT)
-    if (DEFINED ENV{QT_ROOT})
+    if (WIN32 AND NOT DEFINED QT_ROOT)
+        if (DEFINED ENV{QT_ROOT})
+            set (QT_ROOT $ENV{QT_ROOT} CACHE STRING "Path to Qt Installation")
+        else ()
+            message (FATAL_ERROR "QT_ROOT environment variable not set. Add the environment variable in Windows Environment Variables or cmake with -DQT_ROOT=C:\\path\\to\\qt\\5.XX.X")
+        endif ()
+    elseif (WIN32)
         set (QT_ROOT $ENV{QT_ROOT} CACHE STRING "Path to Qt Installation")
-    else ()
-        message (FATAL_ERROR "QT_ROOT environment variable not set. Add the environment variable in Windows Environment Variables or cmake with -DQT_ROOT=C:\\path\\to\\qt\\5.XX.X")
     endif ()
-elseif (WIN32)
-    set (QT_ROOT $ENV{QT_ROOT} CACHE STRING "Path to Qt Installation")
-endif ()
 
-message (STATUS "QT_ROOT: " ${QT_ROOT} "\n")
+    message (STATUS "QT_ROOT: " ${QT_ROOT} "\n")
 
-if (WIN32 AND NOT DEFINED Qt5_DIR)
-    if(64BIT)
-        set (Qt5_DIR "${QT_ROOT}\\msvc2017_64\\lib\\cmake\\Qt5")
-    else ()
-        set (Qt5_DIR "${QT_ROOT}\\msvc2015\\lib\\cmake\\Qt5")
+    if (WIN32 AND NOT DEFINED Qt5_DIR)
+        if(64BIT)
+            set (Qt5_DIR "${QT_ROOT}\\msvc2017_64\\lib\\cmake\\Qt5")
+        else ()
+            set (Qt5_DIR "${QT_ROOT}\\msvc2015\\lib\\cmake\\Qt5")
+        endif ()
+    endif ()
+
+    message (STATUS "Qt5_DIR: ${Qt5_DIR}")
+
+    # Required Qt packages
+    find_package (Qt5 REQUIRED
+        Core
+    )
+
+    # Minimum set of libs required
+    # for translation
+    set (QT_TRANSLATION_LIBS
+        Qt5::Core
+    )
+
+    if (HL_BUILD_GUI)
+        find_package(Qt5 REQUIRED
+            Gui
+            Qml
+            Quick
+            QuickControls2
+            Widgets
+        )
+
+        set (HL_LIBRARIES
+            ${HL_LIBRARIES}
+            Qt5::Core
+            Qt5::Gui
+            Qt5::Qml
+            Qt5::Quick
+            Qt5::QuickControls2
+            Qt5::Widgets
+        )
     endif ()
 endif ()
-
-message (STATUS "Qt5_DIR: ${Qt5_DIR}")
-
-# Required Qt packages
-find_package (Qt5 REQUIRED
-    Core
-    Gui
-    Qml
-    Quick
-    QuickControls2
-    Widgets
-)
-
-set (HL_LIBRARIES
-    ${HL_LIBRARIES}
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Qml
-    Qt5::Quick
-    Qt5::QuickControls2
-    Qt5::Widgets
-)
 
 
 
@@ -197,6 +217,9 @@ if (NOT HL_BUILD_ONLY_AUDIO)
         include_directories (${INCLUDE_DIRS})
     endif ()
 
+    add_subdirectory (${PROJECT_SOURCE_DIR}/res/translations)
+    include (cmake/Translation.cmake)
+
     if (HL_BUILD_EXAMPLES)
         add_subdirectory (examples)
     endif ()
@@ -218,8 +241,6 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     create_test ("src/test/TestOSAudio.cpp" "" 3 FALSE FALSE)
     create_test ("src/test/TestHulaRingBuffer.cpp" "" 0.5 TRUE FALSE)
     create_test ("src/test/TestController.cpp" "" -1 TRUE FALSE)
-    create_test ("src/test/TestCLIArgs.cpp" "" -1 FALSE FALSE) # TODO: memcheck can be turned on once Device::id is fixed
-    create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/InteractiveCLI.cpp" -1 FALSE FALSE)
 
     if (OSX)
         create_test ("src/test/TestOSXAudio.cpp" "" -1 FALSE FALSE)
@@ -229,6 +250,11 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
     if (NOT HL_BUILD_ONLY_AUDIO)
         create_test ("src/test/TestTransport.cpp" "" -1 TRUE FALSE)
+
+        if (HL_BUILD_CLI)
+            create_test ("src/test/TestCLIArgs.cpp" "" -1 TRUE FALSE)
+            create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/InteractiveCLI.cpp" -1 TRUE FALSE)
+        endif ()
     endif ()
 
 endif ()

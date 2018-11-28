@@ -16,8 +16,9 @@ using namespace hula;
  *
  * This will not start the command loop.
  */
-HulaInteractiveCli::HulaInteractiveCli()
+HulaInteractiveCli::HulaInteractiveCli(QCoreApplication *app)
 {
+    this->app = app;
     this->t = new Transport();
     this->settings = HulaSettings::getInstance();
 }
@@ -33,7 +34,7 @@ void HulaInteractiveCli::unusedArgs(const std::vector<std::string> &args, int nu
 {
     for (size_t i = numUsed - 1; i < args.size(); i++)
     {
-        fprintf(stderr, "%sWarning: Unused argument '%s'.\n", HL_ERROR_PREFIX, args[i].c_str());
+        fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, qPrintable(tr("Warning: Unused argument '%1'.").arg(args[i].c_str())));
     }
 }
 
@@ -44,7 +45,7 @@ void HulaInteractiveCli::unusedArgs(const std::vector<std::string> &args, int nu
  */
 void HulaInteractiveCli::missingArg(const std::string &argName) const
 {
-    fprintf(stderr, "%sMissing argument '%s'\n", HL_ERROR_PREFIX, argName.c_str());
+    fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, qPrintable(tr("Missing argument '%1'").arg(argName.c_str())));
 }
 
 /**
@@ -56,8 +57,8 @@ void HulaInteractiveCli::missingArg(const std::string &argName) const
  */
 void HulaInteractiveCli::malformedArg(const std::string &argName, const std::string &val, const std::string &type) const
 {
-    fprintf(stderr, "%sMalformed argument '%s'\n", HL_ERROR_PREFIX, argName.c_str());
-    fprintf(stderr, "%s'%s' is not a valid %s.\n", HL_ERROR_PREFIX, val.c_str(), type.c_str());
+    fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, qPrintable(tr("Malformed argument '%1'").arg(argName.c_str())));
+    fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, qPrintable(tr("'%1' is not a valid %2.").arg(val.c_str(), type.c_str())));
 }
 
 /**
@@ -94,7 +95,6 @@ void HulaInteractiveCli::start()
         }
         else
         {
-            fprintf(stderr, "%sEnd of stream.\n", HL_ERROR_PREFIX);
             break;
         }
 
@@ -133,7 +133,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
             try
             {
                 delay = std::stod(args[0], nullptr);
-                HulaSettings::getInstance()->setDelayTimer(delay);
+                this->delay = delay;
             }
             catch (std::invalid_argument &e)
             {
@@ -158,7 +158,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
             try
             {
                 duration = std::stod(args[0], nullptr);
-                HulaSettings::getInstance()->setRecordDuration(duration);
+                this->duration = duration;
             }
             catch (std::invalid_argument &e)
             {
@@ -179,7 +179,10 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
         double delay = 0;
         double duration = HL_INFINITE_RECORD;
 
-        // Make sure the arg exists
+        // Try to use the args provided to the record command
+        // If the args are not provided, this will default to
+        // the delay and duration set by the 'delay' and 'duration'
+        // commands
         if (args.size() == 2)
         {
             try
@@ -226,7 +229,11 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
         }
         else
         {
-            success = t->record();
+            printf("Using stored delay and duration.\n");
+            printf("Delay: %.2f\n", this->delay);
+            printf("Duration: %.2f\n", this->duration);
+
+            success = t->record(this->delay, this->duration);
         }
     }
     else if (command == HL_STOP_SHORT || command == HL_STOP_LONG)
@@ -244,13 +251,13 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
     else if (command == HL_EXPORT_SHORT || command == HL_EXPORT_LONG)
     {
         // Make sure the arg exists
-        if (args.size() != 0)
+        if (args.size() > 0)
         {
             t->exportFile(args[0]);
         }
-        else if (settings->getOutputFilePath().size() != 0)
+        else if (this->outputFilePath.size() != 0)
         {
-            t->exportFile(settings->getOutputFilePath());
+            t->exportFile(this->outputFilePath);
         }
         else
         {
@@ -270,10 +277,6 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
         {
             device = findDevice(t, args[0], (DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
         }
-        else if (settings->getDefaultInputDeviceName().size() != 0)
-        {
-            device = findDevice(t, settings->getDefaultInputDeviceName(), (DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
-        }
         else
         {
             missingArg(HL_INPUT_ARG1);
@@ -283,12 +286,23 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
         // Find device will already have printed a not-found error
         if (device != NULL)
         {
-            t->getController()->setActiveInputDevice(device);
-            printf("\nInput device set to: %s\n", device->getName().c_str());
+            bool ret = t->getController()->setActiveInputDevice(device);
 
-            // TODO: Settings shouldn't really store this
-            settings->setDefaultInputDeviceName(device->getName());
+            if (ret)
+            {
+                printf("\n%s\n", qPrintable(tr("Input device set to: %1").arg(device->getName().c_str())));
+            }
+            else
+            {
+                fprintf(stderr, "\n%s\n", qPrintable(tr("Failed to set input device.")));
+            }
+
             delete device;
+
+            if (!ret)
+            {
+                return HulaCliStatus::HULA_CLI_FAILURE;
+            }
         }
         else
         {
@@ -303,10 +317,6 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
         {
             device = findDevice(t, args[0], DeviceType::PLAYBACK);
         }
-        else if (settings->getDefaultOutputDeviceName().size() != 0)
-        {
-            device = findDevice(t, settings->getDefaultOutputDeviceName(), DeviceType::PLAYBACK);
-        }
         else
         {
             missingArg(HL_OUTPUT_ARG1);
@@ -316,12 +326,23 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
         // Find device will already have printed a not-found error
         if (device != NULL)
         {
-            t->getController()->setActiveOutputDevice(device);
-            printf("\nOutput device set to: %s\n", device->getName().c_str());
+            bool ret = t->getController()->setActiveOutputDevice(device);
 
-            // TODO: Settings shouldn't really store this
-            settings->setDefaultOutputDeviceName(device->getName());
+            if (ret)
+            {
+                printf("\n%s\n", qPrintable(tr("Output device set to: %1").arg(device->getName().c_str())));
+            }
+            else
+            {
+                fprintf(stderr, "\n%s\n", qPrintable(tr("Failed to set output device.")));
+            }
+
             delete device;
+
+            if (!ret)
+            {
+                return HulaCliStatus::HULA_CLI_FAILURE;
+            }
         }
         else
         {
@@ -330,7 +351,15 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
     }
     else if (command == HL_PRINT_SHORT || command == HL_PRINT_LONG)
     {
-        printSettings();
+        // Copy the settings stored in InteractiveCLI
+        // This is a hack for now
+        HulaImmediateArgs localSettings;
+
+        localSettings.delay = std::to_string(this->delay);
+        localSettings.duration = std::to_string(this->duration);
+        localSettings.outputFilePath = this->outputFilePath;
+
+        printSettings(localSettings);
     }
     else if (command == HL_VERSION_SHORT || command == HL_VERSION_LONG)
     {
@@ -338,7 +367,27 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
     }
     else if (command == HL_HELP_SHORT || command == HL_HELP_LONG)
     {
-        printf(HL_HELP_TEXT);
+        printInteractiveHelp();
+    }
+    else if (command == HL_LANG_SHORT || command == HL_LANG_LONG)
+    {
+        if (args.size() < 1)
+        {
+            missingArg(HL_LANG_ARG1);
+            return HulaCliStatus::HULA_CLI_FAILURE;
+        }
+
+        success = settings->loadLanguage(this->app, args[0]);
+
+        if (success)
+        {
+            printf("%s\n", qPrintable(tr("Translation file successfully loaded.")));
+        }
+        else
+        {
+            fprintf(stderr, "%s\n", qPrintable(tr("Could not find translation file for %1.").arg(args[0].c_str())));
+            return HulaCliStatus::HULA_CLI_FAILURE;
+        }
     }
     else if (command == HL_SYSTEM_SHORT || command == HL_SYSTEM_LONG)
     {
@@ -356,12 +405,12 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
             if (sysCommand.size() > 0)
             {
                 int ret = system(sysCommand.c_str());
-                printf("\n%sSystem command returned: %d\n", HL_PRINT_PREFIX, ret);
+                printf("\n%s%s", HL_PRINT_PREFIX, qPrintable(tr("System command returned: %1").arg(ret)));
             }
         }
         else
         {
-            fprintf(stderr, "%sNo system command processor is available is available.\n", HL_ERROR_PREFIX);
+            fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, qPrintable(tr("No system command processor is available.")));
             return HulaCliStatus::HULA_CLI_FAILURE;
         }
     }
@@ -371,14 +420,14 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
     }
     else
     {
-        fprintf(stderr, "%sUnrecognized command '%s'\n", HL_ERROR_PREFIX, command.c_str());
+        fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, qPrintable(tr("Unrecognized command '%1'").arg(command.c_str())));
         return HulaCliStatus::HULA_CLI_FAILURE;
     }
 
     // Make sure transport commands succeeded
     if (!success)
     {
-        fprintf(stderr, "Command failed with value of 'false'.\n");
+        fprintf(stderr, "%s\n", qPrintable(tr("Command failed with value of 'false'.")));
         return HulaCliStatus::HULA_CLI_FAILURE;
     }
 
@@ -386,7 +435,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
 }
 
 /**
- * Destroy the Hula Interactive Cli:: Hula Interactive Cli object
+ * Fetch the state of the internal Transport.
  *
  * @return State of the transport
  */
@@ -396,11 +445,21 @@ TransportState HulaInteractiveCli::getState()
 }
 
 /**
+ * Set the default output file path used by the CLI.
+ * This is used primarily so that the CLI --ouput-file
+ * flag can affect the export path.
+ */
+void HulaInteractiveCli::setOutputFilePath(const std::string &path)
+{
+    this->outputFilePath = path;
+}
+
+/**
  * Destructor for HulaInteractiveCli.
  */
 HulaInteractiveCli::~HulaInteractiveCli()
 {
-    fprintf(stderr, "%sHulaInteractiveCli destructor called.\n", HL_ERROR_PREFIX);
+    hlDebugf("HulaInteractiveCLI destructor called.\n");
 
     delete this->t;
 }
