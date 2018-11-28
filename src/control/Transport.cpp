@@ -153,7 +153,6 @@ TransportState Transport::getState() const
  */
 std::string Transport::stateToStr(const TransportState state) const
 {
-    std::cerr << state << std::endl;
     switch (state)
     {
         case READY:
