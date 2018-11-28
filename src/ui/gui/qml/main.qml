@@ -3,14 +3,16 @@ import QtQuick.Window 2.10
 
 import QtQuick.Controls 2.3
 import QtQuick.Controls.Material 2.3
-
+import QtQuick.Layouts 1.1
 import hulaloop.qmlbridge 1.0
 import hulaloop.systrayicon 1.0
 
 ApplicationWindow {
-
     id: window
+
     title: "HulaLoop"
+    minimumHeight: 500
+    minimumWidth: 800
 
     visible: true
     width: 1024
@@ -18,6 +20,34 @@ ApplicationWindow {
 
     Material.theme: Material.Grey
     Material.accent: Material.Orange
+    DynamicLine{
+        id: canvas
+    }
+
+    Visualizer{
+        id:visualize
+    }
+
+    Rectangle {
+        id: bluerect
+        width: window.width
+        height: parent.height
+        color: "lightsteelblue"
+        y: 98
+
+        Row {
+
+            y: parent.height-150
+            x: -40
+            //Rectangle { id: testrec2; color: "orange"; width: 10;height:200; border.width: 1; border.color: "black"; transform: Rotation { origin.x: 25; origin.y: 25; angle: 180} }
+
+            Repeater{
+                id:rectgen
+                model: Math.round(visualize.width / 10)
+                Rectangle { id: testrec; color: "grey"; width: window.width/64; border.width: 1; border.color: "black"; transform: Rotation { origin.x: 25; origin.y: 25; angle: 180} }
+            }
+        }
+    }
 
     QMLBridge {
         id: qmlbridge
@@ -35,6 +65,16 @@ ApplicationWindow {
             systrayicon.setToolTip("HulaLoop - " + qmlbridge.getTransportState())
             transportState.text = qmlbridge.getTransportState()
         }
+        onVisData: {
+            for(var i =0;i<dataIn.length;i++){
+                rectgen.itemAt(i).height=dataIn[i]*100
+                //rectgen.itemAt(i).color=Qt.rgba(dataIn[i]*100,dataIn[i]*100,0)
+            }
+            canvas.readValues(dataIn)
+            canvas.clear()
+            //canvas.requestPaint()
+        }
+
     }
 
     SystemTrayIcon {
@@ -47,10 +87,6 @@ ApplicationWindow {
         id: btnPanel
     }
 
-    Visualizer {
-        id: visualize
-    }
-
     Label {
         id: transportState
         objectName: "transportState"
@@ -58,5 +94,4 @@ ApplicationWindow {
         anchors.top: btnPanel.bottom
         text: qmlbridge.getTransportState()
     }
-
 }

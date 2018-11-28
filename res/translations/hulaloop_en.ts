@@ -558,12 +558,12 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="28"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="58"/>
         <source>HulaLoop Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="28"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="58"/>
         <source>HulaLoop has started recording audio!</source>
         <translation></translation>
     </message>

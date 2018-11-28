@@ -1,4 +1,6 @@
 #include "QMLBridge.h"
+//#include "FftRealPair.h"
+#include "FftRealPair.cpp"
 
 #include <QCoreApplication>
 #include <QProcess>
@@ -7,6 +9,20 @@
 
 #include <iostream>
 #include <string>
+#include <thread>
+#include <algorithm>
+#include <cmath>
+#include <cstdlib>
+#include <iomanip>
+#include <iostream>
+#include <random>
+#include <vector>
+#include <stdlib.h>
+#include <thread>
+#include <chrono>
+#include <math.h>
+#include <stdio.h>
+
 
 using namespace hula;
 
@@ -18,6 +34,7 @@ using namespace hula;
 QMLBridge::QMLBridge(QObject *parent) : QObject(parent)
 {
     transport = new Transport;
+    rb=transport->getController()->createBuffer(1);
 }
 
 /**
@@ -37,6 +54,10 @@ bool QMLBridge::record()
 {
     bool success = transport->record();
     emit stateChanged();
+
+    pauseNotPressed = true;
+    getData();
+
     return success;
 }
 
@@ -47,6 +68,7 @@ bool QMLBridge::stop()
 {
     bool success = transport->stop();
     emit stateChanged();
+
     return success;
 }
 
@@ -57,6 +79,9 @@ bool QMLBridge::play()
 {
     bool success = transport->play();
     emit stateChanged();
+
+    pauseNotPressed = true;
+
     return success;
 }
 
@@ -67,6 +92,9 @@ bool QMLBridge::pause()
 {
     bool success = transport->pause();
     emit stateChanged();
+
+    pauseNotPressed = false;
+
     return success;
 }
 
@@ -77,6 +105,8 @@ void QMLBridge::discard()
 {
     transport->discard();
 }
+
+
 
 /**
  * Match a string that the user chose to the input device list
@@ -183,6 +213,67 @@ void QMLBridge::saveFile(QString dir)
     transport->exportFile(directory);
 
     discard();
+}
+
+/**
+ * Start the thread that reads the ring buffer and updates
+ * the visualizer.
+ */
+void QMLBridge::getData()
+{
+    std::thread visThread(&updateVisualizer,this);
+    visThread.detach();
+}
+
+/**
+ * Perform FFT and update the visualizer.
+ */
+void QMLBridge::updateVisualizer(QMLBridge *_this)
+{
+    _this->transport->getController()->addBuffer(_this->rb);
+    int maxSize = 512;
+    float * temp = new float[maxSize];
+    while(1){
+        vector<double> actualoutreal;
+        vector<double> actualoutimag;
+        size_t bytesRead;
+        while(actualoutreal.size()<maxSize){
+            bytesRead=_this->rb->read(temp, maxSize);
+            for(int i=0;i<bytesRead;i++){
+                actualoutimag.push_back(temp[i]);
+                actualoutreal.push_back(temp[i]);
+            }
+        }
+	    Fft::transform(actualoutreal, actualoutimag);
+        std::vector<double> heights;
+        double sum=0;
+        for(int i=0;i<bytesRead;i++){
+                if(i%8==0){
+                    sum=fabs(sum);
+                    heights.push_back(sum);
+                    sum=0;
+                }
+                else{
+                    sum+=actualoutreal[i];
+                }
+        }
+        if(_this->pauseNotPressed){
+        _this->emit visData(heights);
+        }
+    }
+    _this->transport->getController()->removeBuffer(_this->rb);
+}
+
+/**
+ * Fetch whether or not the state is paused.
+ *
+ * TODO: Perhaps this should be replaced with transport->getState().
+ *
+ * @return bool Pause state
+ */
+bool QMLBridge::getPauseState()
+{
+    return this->pauseNotPressed;
 }
 
 /**

@@ -14,6 +14,7 @@
 #ifndef ALSA_PCM_NEW_HW_PARAMS_API
     #define ALSA_PCM_NEW_HW_PARAMS_API
 #endif
+
 #define FRAME_TIME 512
 
 namespace hula

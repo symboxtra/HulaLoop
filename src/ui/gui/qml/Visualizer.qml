@@ -12,6 +12,7 @@ Rectangle {
     height: parent.height * 0.6
     color: "lightsteelblue"
     y: 98
+  
 
     Row {
         y: parent.height-50
