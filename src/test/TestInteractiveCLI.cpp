@@ -10,8 +10,8 @@ using namespace hula;
 
 // Single instance since Transport has to be created
 int num = 0;
-QCoreApplication app(num, nullptr);
-HulaInteractiveCli cli(&app);
+QCoreApplication globalApp(num, nullptr);
+InteractiveCLI cli(&globalApp);
 
 #define MOCK_CONTROL_TIME 200
 
@@ -19,7 +19,23 @@ HulaInteractiveCli cli(&app);
     std::vector<std::string> args{__VA_ARGS__};        \
                                                        \
     HulaCliStatus r = cli.processCommand(name, args);  \
-    HulaSettings *s = HulaSettings::getInstance();     \
+    HulaSettings *s = HulaSettings::getInstance();
+
+class TestInteractiveCLI : public InteractiveCLI, public ::testing::Test {
+    public:
+
+        TestInteractiveCLI() : InteractiveCLI(&globalApp)
+        {
+        }
+
+        virtual void SetUp()
+        {
+        }
+
+        virtual void TearDown()
+        {
+        }
+};
 
 /**
  * Utility function for restoring state of CLI.

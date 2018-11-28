@@ -41,7 +41,7 @@ int main(int argc, char **argv)
         printf("\n");
     }
 
-    HulaInteractiveCli cli(&app);
+    InteractiveCLI cli(&app);
 
     // Use the flag values and interactive CLI commands to setup state
     cli.processCommand(HL_DELAY_TIMER_LONG, { extraArgs.delay });
