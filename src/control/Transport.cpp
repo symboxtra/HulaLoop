@@ -1,5 +1,6 @@
 #include "hlcontrol/internal/Export.h"
 #include "hlcontrol/internal/HulaControlError.h"
+#include "hlcontrol/internal/HulaSettings.h"
 #include "hlcontrol/internal/Transport.h"
 
 using namespace hula;
