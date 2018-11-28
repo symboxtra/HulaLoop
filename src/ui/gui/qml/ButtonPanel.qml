@@ -445,6 +445,26 @@ Rectangle {
                 samples: 3
                 source: exportBtn
             }
+
+            DropShadow {
+                visible: (checkUpdateBtn.enabled && !checkUpdateBtn.pressed) ? true : false
+                color: "#606060"
+                anchors.fill: checkUpdateBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: checkUpdateBtn
+            }
+
+            InnerShadow {
+                visible: checkUpdateBtn.pressed ? true : false
+                color: "#606060"
+                anchors.fill: checkUpdateBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: checkUpdateBtn
+            }
         }
 
         FileDialog {
