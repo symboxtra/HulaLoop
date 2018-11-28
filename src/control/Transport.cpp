@@ -1,3 +1,5 @@
+#include <chrono>
+
 #include "hlcontrol/internal/Export.h"
 #include "hlcontrol/internal/HulaControlError.h"
 #include "hlcontrol/internal/HulaSettings.h"
@@ -43,6 +45,8 @@ bool Transport::record(double delay, double duration)
 
         return true;
     }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
     return false;
 }
 
@@ -74,6 +78,8 @@ bool Transport::stop()
 
         return true;
     }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
     return false;
 }
 
@@ -92,6 +98,8 @@ bool Transport::play()
 
         return true;
     }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
     return false;
 }
 
@@ -121,6 +129,8 @@ bool Transport::pause()
 
         return true;
     }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
     return false;
 }
 

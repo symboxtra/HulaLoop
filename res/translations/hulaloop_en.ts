@@ -444,31 +444,31 @@
 <context>
     <name>Transport</name>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="149"/>
+        <location filename="../../src/control/Transport.cpp" line="159"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="151"/>
+        <location filename="../../src/control/Transport.cpp" line="161"/>
         <source>Stopped</source>
         <comment>state</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="153"/>
+        <location filename="../../src/control/Transport.cpp" line="163"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="155"/>
+        <location filename="../../src/control/Transport.cpp" line="165"/>
         <source>Paused</source>
         <comment>state</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="157"/>
+        <location filename="../../src/control/Transport.cpp" line="167"/>
         <source>Unknown</source>
         <comment>state</comment>
         <translation></translation>

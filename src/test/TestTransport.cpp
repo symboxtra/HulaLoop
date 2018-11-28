@@ -5,43 +5,36 @@
 
 using namespace hula;
 
-#define MOCK_CONTROL_TIME 200
-
-class TestCTInterface : public Transport, public ::testing::Test {
+class TestTransport : public Transport, public ::testing::Test {
 
     public:
-        TestCTInterface() : Transport()
+        TestTransport() : Transport()
         { }
 
 };
 
-TEST_F(TestCTInterface, verifyController)
+TEST_F(TestTransport, verifyController)
 {
     ASSERT_FALSE(getController() == nullptr);
 }
 
 /**
  * Test transport control functions (happy paths)
- *
- * There is a race condition when controls are switched too quickly
- * MOCK_CONTROL_TIME ms is used after a record call to pause the thread to simulate a human performing these actions
  */
 
-TEST_F(TestCTInterface, checkRecord)
+TEST_F(TestTransport, checkRecord)
 {
     ASSERT_TRUE(record());
     ASSERT_EQ(stateToStr(getState()), "Recording");
-    std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CONTROL_TIME));
 
     ASSERT_TRUE(stop());
     ASSERT_EQ(stateToStr(getState()), "Stopped");
 }
 
-TEST_F(TestCTInterface, checkPausePlay)
+TEST_F(TestTransport, checkPausePlay)
 {
     ASSERT_TRUE(record());
     ASSERT_EQ(stateToStr(getState()), "Recording");
-    std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CONTROL_TIME));
 
     ASSERT_TRUE(pause());
     ASSERT_EQ(stateToStr(getState()), "Paused");
@@ -60,7 +53,7 @@ TEST_F(TestCTInterface, checkPausePlay)
  * Test invalid transport control calls and make sure that
  */
 
-TEST_F(TestCTInterface, invalid_controls)
+TEST_F(TestTransport, invalid_controls)
 {
     ASSERT_FALSE(stop());
     ASSERT_FALSE(pause());
@@ -68,13 +61,12 @@ TEST_F(TestCTInterface, invalid_controls)
 
     // Test invalid record
     ASSERT_TRUE(record());
-    std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CONTROL_TIME));
     ASSERT_TRUE(stop());
     ASSERT_FALSE(record());
 
 }
 
-TEST_F(TestCTInterface, verify_tempfile_deletion)
+TEST_F(TestTransport, verify_tempfile_deletion)
 {
     for(int i = 0;i < 4;i++)
     {

@@ -26,10 +26,10 @@ Record::Record(Controller *control)
  */
 void Record::start()
 {
-    this->controller->addBuffer(this->rb);
-
     this->endRecord.store(false);
     recordThread = std::thread(&Record::recorder, this);
+
+    this->controller->addBuffer(this->rb);
 }
 
 void Record::recorder()
@@ -75,6 +75,7 @@ void Record::recorder()
             }
         }
     }
+
 
     sf_close(file);
     this->controller->removeBuffer(this->rb);

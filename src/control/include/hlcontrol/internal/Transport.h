@@ -9,6 +9,7 @@
 #include "Record.h"
 
 #define HL_INFINITE_RECORD -1
+#define HL_TRANSPORT_LOCKOUT_MS 200
 
 namespace hula
 {

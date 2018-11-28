@@ -36,6 +36,7 @@ void OSAudio::addBuffer(HulaRingBuffer *rb)
         joinAndKillThreads(inThreads);
 
         // Start up the capture thread
+        this->endCapture.store(false);
         inThreads.emplace_back(std::thread(&backgroundCapture, this));
     }
 }
@@ -116,8 +117,8 @@ void OSAudio::backgroundCapture(OSAudio *_this)
         Device::deleteDevices(devices);
     }
 
-    // Reset the thread interrupt flag
-    _this->endCapture.store(false);
+    // Start the capture
+    // Don't reset the endCapture flag here as it can cause a race condition
     _this->capture();
 }
 
@@ -158,6 +159,7 @@ bool OSAudio::setActiveInputDevice(Device *device)
     joinAndKillThreads(inThreads);
 
     // Startup a new thread
+    this->endCapture.store(false);
     inThreads.emplace_back(std::thread(&backgroundCapture, this));
 
     return true;
