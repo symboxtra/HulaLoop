@@ -231,6 +231,15 @@ bool QMLBridge::getPauseState()
     return(this->pauseNotPressed);
 }
 
+bool s1TurnedOn=false;
+bool QMLBridge::getS1State(){
+    return(this->s1TurnedOn);
+}
+
+void QMLBridge::setS1State(bool state){
+    this->s1TurnedOn=state;
+}
+
 /**
  * Launch the updater process.
  */

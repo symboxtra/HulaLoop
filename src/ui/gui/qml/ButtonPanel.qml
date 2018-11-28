@@ -295,6 +295,32 @@ Rectangle {
 
                 onClicked: qmlbridge.launchUpdateProcess()
             }
+            RoundButton {
+                id: settingsBtn
+                objectName: "settingsBtn"
+
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                display: AbstractButton.TextOnly
+
+                contentItem: Text {
+                    font.family: "Material Design Icons"
+                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                    text: MDFont.Icon.settings
+                    color: "white"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                background: Rectangle {
+                    opacity: enabled ? 1 : 0.15
+                    color: timerBtn.pressed ? "grey" : "darkgrey"
+                    radius: timerBtn.width / 2
+                }
+
+                onClicked: settingsPopup.open()
+            }
+
 
         }
         FileDialog {
@@ -437,7 +463,212 @@ Rectangle {
             Layout.preferredWidth: 10
         }
     }
+    Popup {
+        id: settingsPopup
+        objectName: "settingsPopup"
 
+        x: Math.round((window.width - width) / 2)
+        y: Math.round((window.height - height) / 2)
+
+        modal: true
+        focus: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+
+        ColumnLayout {
+            spacing: Math.round(buttonPanel.height * 0.15)
+
+            GridLayout {
+                id: gridLayout2
+                Layout.alignment: Qt.AlignTop
+                rows: 3
+                columns: 2
+
+                Label {
+                    font.family: "Roboto"
+                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                    text: "Setting#1"
+                    color: "white"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                ComboBox {
+                    id: settings1
+                    Layout.preferredWidth: Math.max(Math.round(window.width * 0.2),
+                                                    320)
+                    model: ListModel {
+                        id: settings1options
+                        Component.onCompleted: {
+                            var options = ["on","off"]
+                            var i
+                            for (i = 0; i < options.length; i++) {
+                                append({
+                                           "text": options[i]
+                                       })
+                            }
+                        }
+                    }
+                    onActivated: {
+                        //add behavior for which setting it was just changed to
+                    }
+
+                    onPressedChanged: {
+
+                    }
+                    currentIndex: 0
+                }
+
+
+                Label {
+                    font.family: "Roboto"
+                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                    text: "Setting#2"
+                    color: "white"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+                ComboBox {
+                    id: settings2
+                    Layout.preferredWidth: Math.max(Math.round(window.width * 0.2),
+                                                    320)
+                    model: ListModel {
+                        id: settings2options
+                        Component.onCompleted: {
+                            var options = ["on","off"]
+                            var i
+                            for (i = 0; i < options.length; i++) {
+                                append({
+                                           "text": options[i]
+                                       })
+                            }
+                        }
+                    }
+                    onActivated: {
+                        //add behavior for which setting it was just changed to
+                    }
+
+                    onPressedChanged: {
+
+                    }
+                    currentIndex: 0
+                }
+                Label {
+                    font.family: "Roboto"
+                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                    text: "Setting#3"
+                    color: "white"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+                ComboBox {
+                    id: settings3
+                    Layout.preferredWidth: Math.max(Math.round(window.width * 0.2),
+                                                    320)
+                    model: ListModel {
+                        id: settings3options
+                        Component.onCompleted: {
+                            var options = ["on","off"]
+                            var i
+                            for (i = 0; i < options.length; i++) {
+                                append({
+                                           "text": options[i]
+                                       })
+                            }
+                        }
+                    }
+                    onActivated: {
+                        //add behavior for which setting it was just changed to
+                    }
+
+                    onPressedChanged: {
+
+                    }
+                    currentIndex: 0
+                }
+                Label {
+                    font.family: "Roboto"
+                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                    text: "Setting#4"
+                    color: "white"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+                ComboBox {
+                    id: settings4
+                    Layout.preferredWidth: Math.max(Math.round(window.width * 0.2),
+                                                    320)
+                    model: ListModel {
+                        id: settings4options
+                        Component.onCompleted: {
+                            var options = ["on","off"]
+                            var i
+                            for (i = 0; i < options.length; i++) {
+                                append({
+                                           "text": options[i]
+                                       })
+                            }
+                        }
+                    }
+                    onActivated: {
+                        //add behavior for which setting it was just changed to
+                    }
+
+                    onPressedChanged: {
+
+                    }
+                    currentIndex: 0
+                }
+            }
+
+            RowLayout {
+                Layout.alignment: Qt.AlignCenter
+                spacing: Math.round(buttonPanel.width * 0.05)
+                width: gridLayout.width / 2
+
+                Button {
+                    Layout.alignment: Qt.AlignLeft
+                    id: cancelBtn2
+                    onClicked: {
+                        settingsPopup.close()
+                    }
+                    Layout.preferredWidth: Math.round(buttonPanel.width * 0.15)
+                    contentItem: Text {
+                        font.family: "Roboto"
+                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                        text: "CANCEL"
+                        color: "white"
+
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
+
+                Button {
+                    Layout.alignment: Qt.AlignRight
+                    id: okBtn2
+                    onClicked: {
+                        countDownTimer.start()
+                        settingsPopup.close()
+                    }
+
+                    Layout.preferredWidth: Math.round(buttonPanel.width * 0.15)
+                    contentItem: Text {
+                        font.family: "Roboto"
+                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                        text: "OK"
+                        color: "white"
+
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
+            }
+        }
+    }
     Popup {
         id: timerPopup
         objectName: "timerPopup"

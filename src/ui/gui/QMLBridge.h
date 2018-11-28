@@ -43,6 +43,10 @@ class QMLBridge : public QObject {
         bool pauseNotPressed;
         bool getPauseState();
 
+        Q_INVOKABLE bool s1TurnedOn=false;
+        Q_INVOKABLE bool getS1State();
+        Q_INVOKABLE void setS1State(bool state);
+
         Q_INVOKABLE void launchUpdateProcess();
 
     signals:
