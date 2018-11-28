@@ -201,7 +201,4 @@ Transport::~Transport()
     {
         delete recorder;
     }
-
-    HulaSettings *s = HulaSettings::getInstance();
-    delete s;
 }

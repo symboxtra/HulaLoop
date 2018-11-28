@@ -164,7 +164,4 @@ Controller::~Controller()
     {
         delete audio;
     }
-
-    HulaAudioSettings *s = HulaAudioSettings::getInstance();
-    delete s;
 }

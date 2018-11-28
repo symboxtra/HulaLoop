@@ -119,9 +119,4 @@ HulaSettings::~HulaSettings()
     {
         delete trans;
     }
-
-    if (hlcontrol_instance)
-    {
-        delete hlcontrol_instance;
-    }
 }

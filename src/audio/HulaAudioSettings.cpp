@@ -141,8 +141,4 @@ void HulaAudioSettings::setSampleSize(int val)
  */
 HulaAudioSettings::~HulaAudioSettings()
 {
-    if (hlaudio_instance)
-    {
-        delete hlaudio_instance;
-    }
 }
