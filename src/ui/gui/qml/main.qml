@@ -65,8 +65,7 @@ ApplicationWindow {
         }
         onVisData: {
             for(var i =0;i<dataIn.length;i++){
-                rectgen.itemAt(i).height=dataIn[i]*100
-                //rectgen.itemAt(i).color=Qt.rgba(dataIn[i]*100,dataIn[i]*100,0)
+                //rectgen.itemAt(i).height=dataIn[i]*100
             }
             canvas.readValues(dataIn)
             canvas.clear()
