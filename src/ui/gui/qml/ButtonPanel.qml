@@ -587,6 +587,8 @@ Rectangle {
 
         x: Math.round((window.width - width) / 2)
         y: Math.round((window.height - height) / 2)
+        width: 255
+        height: 100
 
         modal: true
         focus: true
@@ -599,7 +601,6 @@ Rectangle {
                     Text {
                         id: textbot
                         color: "white"
-                        font.pointSize: Math.round((window.height + window.width) / 96)
                         text: qsTr("Are you sure you want to discard?")
                     }
                 }
@@ -609,7 +610,6 @@ Rectangle {
                     width: gridLayout.width / 2
                     Button {
                         text: "No"
-                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                         onClicked: {
                             discardPopup.close()
                         }
@@ -617,7 +617,6 @@ Rectangle {
 
                     Button {
                         text: "Yes"
-                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                         onClicked: {
                             // Discard files
                             qmlbridge.discard()
