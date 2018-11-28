@@ -1,12 +1,13 @@
 #ifndef HL_OSX_AUDIO_H
 #define HL_OSX_AUDIO_H
 
+#include <sys/types.h>
+
 #include <thread>
 #include <vector>
 
 #include "hlaudio/internal/Device.h"
 #include "hlaudio/internal/OSAudio.h"
-#include "OSXDaemon/OSXDaemon.h"
 
 namespace hula
 {
@@ -14,12 +15,17 @@ namespace hula
      * A audio class that captures system wide audio on OSX.
      */
     class OSXAudio : public OSAudio {
+
         private:
-            OSXDaemon *osxDaemon;
+            int daemonPID = -1;
 
         public:
             OSXAudio();
             virtual ~OSXAudio();
+
+            pid_t isDaemonRunning();
+            pid_t startDaemon();
+            pid_t restartDaemon();
 
             void capture();
             bool checkDeviceParams(Device *device);

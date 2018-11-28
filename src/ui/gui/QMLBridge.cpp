@@ -5,6 +5,7 @@
 #include <QUrl>
 #include <QDir>
 
+#include <iostream>
 #include <string>
 
 using namespace hula;
@@ -70,12 +71,20 @@ bool QMLBridge::pause()
 }
 
 /**
+ * Deletes all the temp files that the program has created
+ */
+void QMLBridge::discard()
+{
+    transport->discard();
+}
+
+/**
  * Match a string that the user chose to the input device list
  * and notify the backend
  */
 void QMLBridge::setActiveInputDevice(QString QDeviceName)
 {
-    std::cout << "setActiveDevice() called" << std::endl;
+    hlDebug() << "setActiveDevice() called" << std::endl;
     std::string deviceName = QDeviceName.toStdString();
     std::vector<Device *> iDevices = transport->getController()->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
     for (auto const &device : iDevices)
@@ -88,7 +97,7 @@ void QMLBridge::setActiveInputDevice(QString QDeviceName)
         }
     }
     //Should not get here should have found the device
-    std::cerr << "Input device not found: " << deviceName << std::endl;
+    hlDebug() << "Input device not found: " << deviceName << std::endl;
 }
 
 /**
@@ -109,7 +118,7 @@ void QMLBridge::setActiveOutputDevice(QString QDeviceName)
         }
     }
     //Should not get here should have found the device
-    std::cerr << "Output device not found: " << deviceName << std::endl;
+    hlDebug() << "Output device not found: " << deviceName << std::endl;
 }
 
 /**
@@ -173,15 +182,7 @@ void QMLBridge::saveFile(QString dir)
     directory = directory.substr(substrLen);
     transport->exportFile(directory);
 
-    cleanTempFiles();
-}
-
-/**
- * Deletes all the temp files that the program has created
- */
-void QMLBridge::cleanTempFiles()
-{
-    transport->deleteTempFiles();
+    discard();
 }
 
 /**
@@ -189,7 +190,6 @@ void QMLBridge::cleanTempFiles()
  */
 void QMLBridge::launchUpdateProcess()
 {
-
     QProcess *proc = new QProcess(this);
 
     QString procName = QCoreApplication::applicationDirPath() + "/hulaloop-launcher";
@@ -201,5 +201,4 @@ void QMLBridge::launchUpdateProcess()
 
     proc->start(procName, args);
     proc->waitForFinished();
-
 }

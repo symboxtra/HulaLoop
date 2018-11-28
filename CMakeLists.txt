@@ -22,9 +22,8 @@ message (STATUS "Building ${PROJECT_NAME} v${HL_VERSION_STR}")
 message (STATUS "")
 
 # Set build type if not provided
-# Default to DEBUG
 if (NOT CMAKE_BUILD_TYPE)
-    set (CMAKE_BUILD_TYPE Debug)
+    set (CMAKE_BUILD_TYPE Debug CACHE STRING "Configuration of build." FORCE)
 endif ()
 
 set (OSX FALSE)
@@ -54,11 +53,18 @@ endif ()
 option (HL_BUILD_ONLY_AUDIO "Build only the audio library." OFF)
 option (HL_BUILD_CLI "Build the command line application." ON)
 option (HL_BUILD_GUI "Build the graphical application." ON)
-option (HL_ADD_COVERAGE_FLAGS "Add coverage options to compiler flags" OFF)
+option (HL_BUILD_EXAMPLES "Build example programs." OFF)
 
-# Disable coverage flags by default
+# Turn on coverage flags if needed
+set (HL_ADD_COVERAGE_FLAGS OFF)
 if (CMAKE_BUILD_TYPE MATCHES "Debug" AND (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
     set (HL_ADD_COVERAGE_FLAGS ON)
+endif ()
+
+# Control debug output
+set (HL_NO_DEBUG_OUTPUT 1)
+if (CMAKE_BUILD_TYPE MATCHES "Debug")
+    set (HL_NO_DEBUG_OUTPUT 0)
 endif ()
 
 # Set output for binaries
@@ -147,6 +153,12 @@ find_package (Qt5 REQUIRED
     Widgets
 )
 
+# Minimum set of libs required
+# for translation
+set (QT_TRANSLATION_LIBS
+    Qt5::Core
+)
+
 list (APPEND HL_LIBRARIES
     Qt5::Core
     Qt5::Gui
@@ -203,6 +215,13 @@ if (NOT HL_BUILD_ONLY_AUDIO)
         add_subdirectory (src/launcher)
         include_directories (${INCLUDE_DIRS})
     endif ()
+
+    add_subdirectory (${PROJECT_SOURCE_DIR}/res/translations)
+    include (cmake/Translation.cmake)
+
+    if (HL_BUILD_EXAMPLES)
+        add_subdirectory (examples)
+    endif ()
 endif ()
 
 
@@ -229,11 +248,10 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     endif ()
 
     if (NOT HL_BUILD_ONLY_AUDIO)
-        create_test ("src/test/TestTransport.cpp" "" -1 TRUE FALSE)
+        create_test ("src/test/TestTransport.cpp" "" -1 FALSE FALSE)
         create_test ("src/test/TestRecord.cpp" "" -1 FALSE FALSE)
-
-        create_test ("src/test/TestCLIArgs.cpp" "" -1 FALSE FALSE)
-        create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/InteractiveCLI.cpp" -1 FALSE FALSE)
+        create_test ("src/test/TestCLIArgs.cpp" "" -1 TRUE FALSE)
+        create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/InteractiveCLI.cpp" -1 TRUE FALSE)
     endif ()
 
 endif ()

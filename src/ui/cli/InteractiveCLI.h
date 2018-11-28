@@ -3,6 +3,8 @@
 
 #include <hlcontrol/hlcontrol.h>
 
+#include <QCoreApplication>
+
 namespace hula
 {
     /**
@@ -20,12 +22,20 @@ namespace hula
      * Class containing the interactive CLI.
      */
     class HulaInteractiveCli {
+
+        Q_DECLARE_TR_FUNCTIONS(CLI)
+
         private:
+            QCoreApplication *app;
             Transport *t;
             HulaSettings *settings;
 
+            double delay = 0;
+            double duration = HL_INFINITE_RECORD;
+            std::string outputFilePath;
+
         public:
-            HulaInteractiveCli();
+            HulaInteractiveCli(QCoreApplication *app);
 
             void unusedArgs(const std::vector<std::string> &args, int numUsed) const;
             void missingArg(const std::string &argName) const;
@@ -34,6 +44,7 @@ namespace hula
             void start();
             HulaCliStatus processCommand(const std::string &command, const std::vector<std::string> &args);
             TransportState getState();
+            void setOutputFilePath(const std::string &path);
 
             ~HulaInteractiveCli();
     };

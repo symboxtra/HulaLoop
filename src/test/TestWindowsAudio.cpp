@@ -31,7 +31,7 @@ class TestWindowsAudio : public ::testing::Test {
         }
 };
 
-WindowsAudio *TestWindowsAudio::audio = NULL;
+WindowsAudio *TestWindowsAudio::audio = nullptr;
 std::string path = "";
 
 /**

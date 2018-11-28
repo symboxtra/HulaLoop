@@ -55,7 +55,6 @@ void Device::deleteDevices(std::vector<Device *> devices)
 {
     for (auto const &device : devices)
     {
-        // cout << device->getName() << std::endl;
         delete device;
     }
     devices.clear();

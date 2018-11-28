@@ -20,6 +20,7 @@ flags:
       - src/
 
 ignore:
+    - "examples/"
     - "src/libs/"
     - "**/main.cpp"
     - "src/audio/OSXDriver"

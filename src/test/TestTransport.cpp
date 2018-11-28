@@ -10,10 +10,6 @@ using namespace hula;
 class TestCTInterface : public Transport, public ::testing::Test {
 
     public:
-        /**
-         * Create the Transport in "dry run" mode.
-         * No backend audio services or devices are initialized.
-         */
         TestCTInterface() : Transport()
         { }
 
@@ -21,7 +17,7 @@ class TestCTInterface : public Transport, public ::testing::Test {
 
 TEST_F(TestCTInterface, verifyController)
 {
-    ASSERT_FALSE(getController() == NULL);
+    ASSERT_FALSE(getController() == nullptr);
 }
 
 /**
@@ -92,7 +88,7 @@ TEST_F(TestCTInterface, verify_tempfile_deletion)
 
     // Delete temp files and check if vector is empty
     std::vector<std::string> dirs = recorder->getExportPaths();
-    deleteTempFiles();
+    discard();
     ASSERT_EQ(recorder->getExportPaths().size(), 0);
 
     struct stat buffer;
