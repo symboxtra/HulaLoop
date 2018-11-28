@@ -22,7 +22,7 @@ ApplicationWindow {
     Material.accent: Material.Orange
 
     property string textDisplayed: "Elapsed: 0"
-    property string currentState: "Unknown"
+    property string currentState: qmlbridge.getTransportState()
     property string barColor: "#888888"
     property bool updateAndTimerBtnEnabled: true
 
@@ -37,7 +37,7 @@ ApplicationWindow {
             currentState = qmlbridge.getTransportState()
 
             // enable/disable update button
-            if(currentState === "Unknown"){
+            if(currentState === "Ready"){
                 updateAndTimerBtnEnabled = true;
             }
             else{

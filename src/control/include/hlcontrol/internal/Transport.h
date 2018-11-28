@@ -18,6 +18,7 @@ namespace hula
      */
     enum TransportState
     {
+        READY,
         RECORDING,
         STOPPED,
         PLAYING,

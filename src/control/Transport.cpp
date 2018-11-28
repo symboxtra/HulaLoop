@@ -18,6 +18,7 @@ Transport::Transport()
     recordState = true;
     playbackState = false;
     initRecordClicked = false;
+    state = READY;
 }
 
 /**
@@ -152,10 +153,11 @@ TransportState Transport::getState() const
  */
 std::string Transport::stateToStr(const TransportState state) const
 {
-
+    std::cerr << state << std::endl;
     switch (state)
     {
-
+        case READY:
+            return std::string(qPrintable(tr("Ready", "state")));
         case RECORDING:
             return std::string(qPrintable(tr("Recording", "state")));
         case STOPPED:
@@ -197,7 +199,7 @@ void Transport::discard()
     // Reset states
     recordState = true;
     playbackState = false;
-    state = (TransportState)-1;
+    state = READY;
 
     // Delete audio files from system temp folder
     Export::deleteTempFiles(recorder->getExportPaths());
