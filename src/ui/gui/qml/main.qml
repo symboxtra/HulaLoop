@@ -21,6 +21,28 @@ ApplicationWindow {
     Material.theme: Material.Grey
     Material.accent: Material.Orange
 
+
+    Rectangle {
+        id: bluerect
+        width: window.width
+        height: parent.height
+        color: "lightsteelblue"
+        y: 98
+
+        Row {
+
+            y: parent.height-150
+            x: -40
+            //Rectangle { id: testrec2; color: "orange"; width: 10;height:200; border.width: 1; border.color: "black"; transform: Rotation { origin.x: 25; origin.y: 25; angle: 180} }
+
+            /*Repeater{
+                id:rectgen
+                model: Math.round(visualize.width / 10)
+                //Rectangle { id: testrec; color: "grey"; width: window.width/64; border.width: 1; border.color: "black"; transform: Rotation { origin.x: 25; origin.y: 25; angle: 180} }
+            }*/
+        }
+    }
+
     property string textDisplayed: "Elapsed: 0"
     property string currentState: "Unknown"
     property string barColor: "#888888"
@@ -73,6 +95,8 @@ ApplicationWindow {
                 canvas.binCount = dataIn.length - trimBack - trimFront
             }
         }
+
+
     }
 
     SystemTrayIcon {
@@ -144,5 +168,12 @@ ApplicationWindow {
                 }
             }
         }
+    }
+    Label {
+        id: transportState
+        objectName: "transportState"
+
+        anchors.top: btnPanel.bottom
+        text: qmlbridge.getTransportState()
     }
 }

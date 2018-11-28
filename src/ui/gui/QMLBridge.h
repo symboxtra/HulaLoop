@@ -42,6 +42,15 @@ namespace hula
             Q_INVOKABLE bool play();
             Q_INVOKABLE bool pause();
             Q_INVOKABLE void discard();
+            void getData();
+
+
+            bool pauseNotPressed;
+            bool getPauseState();
+
+            Q_INVOKABLE bool s1TurnedOn=false;
+            Q_INVOKABLE bool getS1State();
+            Q_INVOKABLE void setS1State(bool state);
 
             Q_INVOKABLE void saveFile(QString dir);
 

@@ -56,8 +56,10 @@ bool QMLBridge::record()
     emit stateChanged();
 
     startVisThread();
-
+    //pauseNotPressed=true;
+    //getData();
     return success;
+
 }
 
 /**
@@ -82,8 +84,10 @@ bool QMLBridge::play()
     emit stateChanged();
 
     startVisThread();
-
+    //pauseNotPressed=true;
+    //getData();
     return success;
+
 }
 
 /**
@@ -91,6 +95,7 @@ bool QMLBridge::play()
  */
 bool QMLBridge::pause()
 {
+    //pauseNotPressed=false;
     bool success = transport->pause();
     emit stateChanged();
 
@@ -105,7 +110,10 @@ bool QMLBridge::pause()
 void QMLBridge::discard()
 {
     transport->discard();
+
 }
+
+
 
 /**
  * Match a string that the user chose to the input device list
@@ -215,6 +223,27 @@ void QMLBridge::saveFile(QString dir)
     }
     directory = directory.substr(substrLen);
     transport->exportFile(directory);
+}
+void QMLBridge::getData(){
+    //rb=transport->getController()->createAndAddBuffer(.5);
+    std::thread visThread(&updateVisualizer,this);
+    visThread.detach();
+
+}
+
+
+bool QMLBridge::getPauseState()
+{
+    return(this->pauseNotPressed);
+}
+
+bool s1TurnedOn=false;
+bool QMLBridge::getS1State(){
+    return(this->s1TurnedOn);
+}
+
+void QMLBridge::setS1State(bool state){
+    this->s1TurnedOn=state;
 }
 
 /**
