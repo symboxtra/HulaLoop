@@ -200,13 +200,13 @@ Transport::~Transport()
 {
     hlDebugf("Transport destructor called\n");
 
-    if (controller)
-    {
-        delete controller;
-    }
-
     if (recorder)
     {
         delete recorder;
+    }
+
+    if (controller)
+    {
+        delete controller;
     }
 }

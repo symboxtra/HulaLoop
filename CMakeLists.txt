@@ -257,12 +257,12 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     endif ()
 
     if (NOT HL_BUILD_ONLY_AUDIO)
-        create_test ("src/test/TestTransport.cpp" "" -1 TRUE FALSE)
+        create_test ("src/test/TestTransport.cpp" "" -1 FALSE FALSE)
         create_test ("src/test/TestRecord.cpp" "" -1 FALSE FALSE)
 
         if (HL_BUILD_CLI)
             create_test ("src/test/TestCLIArgs.cpp" "" -1 TRUE FALSE)
-            create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/InteractiveCLI.cpp" -1 TRUE FALSE)
+            create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/InteractiveCLI.cpp" -1 FALSE FALSE)
         endif ()
     endif ()
 

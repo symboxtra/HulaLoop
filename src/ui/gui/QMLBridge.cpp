@@ -233,6 +233,9 @@ void QMLBridge::startVisThread()
     visThreads.emplace_back(std::thread(&updateVisualizer, this));
 }
 
+/**
+ * Stop the thread that updates the visualizer.
+ */
 void QMLBridge::stopVisThread()
 {
     endVis.store(true);
