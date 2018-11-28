@@ -4,6 +4,7 @@
 
 #include "hlaudio/internal/Controller.h"
 #include "hlaudio/internal/HulaAudioError.h"
+#include "hlaudio/internal/HulaAudioSettings.h"
 
 #if _WIN32
     #include "WindowsAudio.h"
@@ -163,4 +164,7 @@ Controller::~Controller()
     {
         delete audio;
     }
+
+    HulaAudioSettings *s = HulaAudioSettings::getInstance();
+    delete s;
 }

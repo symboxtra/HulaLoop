@@ -429,31 +429,31 @@
 <context>
     <name>Transport</name>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="156"/>
+        <location filename="../../src/control/Transport.cpp" line="157"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="158"/>
+        <location filename="../../src/control/Transport.cpp" line="159"/>
         <source>Stopped</source>
         <comment>state</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="160"/>
+        <location filename="../../src/control/Transport.cpp" line="161"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="162"/>
+        <location filename="../../src/control/Transport.cpp" line="163"/>
         <source>Paused</source>
         <comment>state</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="164"/>
+        <location filename="../../src/control/Transport.cpp" line="165"/>
         <source>Unknown</source>
         <comment>state</comment>
         <translation></translation>

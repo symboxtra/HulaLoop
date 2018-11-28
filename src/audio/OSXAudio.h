@@ -17,7 +17,6 @@ namespace hula
     class OSXAudio : public OSAudio {
 
         private:
-            int daemonPID = -1;
 
         public:
             OSXAudio();

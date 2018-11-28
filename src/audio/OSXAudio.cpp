@@ -125,7 +125,8 @@ int OSXAudio::isDaemonRunning()
             try
             {
                 pid = std::stoi(buffer);
-            } catch (std::invalid_argument &e)
+            }
+            catch (std::invalid_argument &e)
             {
                 (void)e;
                 hlDebugf("Failed to convert parsed PID.\n");
@@ -399,12 +400,10 @@ bool OSXAudio::checkDeviceParams(Device *device)
 
     if (err == paFormatIsSupported)
     {
-        // TODO: qOut()
         hlDebug() << HL_SAMPLE_RATE_VALID << std::endl;
     }
     else
     {
-        // TODO: qOut()
         hlDebug() << HL_SAMPLE_RATE_INVALID << std::endl;
     }
 
