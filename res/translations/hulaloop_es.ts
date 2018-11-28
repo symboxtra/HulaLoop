@@ -43,7 +43,7 @@
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="485"/>
         <source>Output Device:</source>
-        <translation>Dispositivo de Salida</translation>
+        <translation>Dispositivo de Salida:</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="558"/>
