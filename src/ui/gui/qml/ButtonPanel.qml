@@ -111,7 +111,7 @@ Rectangle {
                 contentItem: Text {
                     font.family: "Material Design Icons"
                     font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                    text: MDFont.Icon.record
+                    text:  MDFont.Icon.record
                     color: "red"
 
                     horizontalAlignment: Text.AlignHCenter
@@ -125,7 +125,7 @@ Rectangle {
                         return
                     }
 
-                    if(timeFuncs.time != 0)
+                    if(timeFuncs.time < 0)
                     {
                         countDownTimer.start()
                         return
@@ -208,9 +208,9 @@ Rectangle {
                 id: playpauseBtn
                 objectName: "playpauseBtn"
                 enabled: false
-
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 display: AbstractButton.TextOnly
+                property bool isRecording: false // Remove if we do not need for checking when not recording
 
                 contentItem: Text {
                     objectName: "play_icon"
@@ -232,7 +232,7 @@ Rectangle {
 
                     let success;
 
-                    if(contentItem.text == MDFont.Icon.pause)
+                    if(contentItem.text === MDFont.Icon.pause)
                     {
                         success = qmlbridge.pause();
 
@@ -317,7 +317,7 @@ Rectangle {
                     radius: exportBtn.width / 2
                 }
 
-                onClicked:saveDialog.open()
+                onClicked: saveDialog.open()
             }
 
             RoundButton {
@@ -605,8 +605,14 @@ Rectangle {
                             // Start recording again
                             stopBtn.isStopped = false
                             recordBtn.contentItem.text = MDFont.Icon.record
-                            recordBtn.onClicked()
+//                            recordBtn.onClicked()
                             discardPopup.close()
+                            exportBtn.enabled = false;
+                            timeFuncs.time = 0;
+                            timeFuncs.time = 0;
+                            delayInput.text = "00:00:00";
+                            recordTimeInput.text = "00:00:00";
+                            window.textDisplayed = "Elapsed: 0";
                         }
                     }
                 }
