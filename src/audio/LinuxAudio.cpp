@@ -105,7 +105,7 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
  */
 bool LinuxAudio::setActiveInputDevice(Device *device)
 {
-    if(device != nullptr && device->getName() == "Pulse Audio Volume Control")
+    if (device != nullptr && device->getName() == "Pulse Audio Volume Control")
     {
         std::thread(&LinuxAudio::startPAVUControl).detach();
     }

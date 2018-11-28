@@ -49,7 +49,7 @@ namespace hula
 
             void startVisThread();
             void stopVisThread();
-            static void updateVisualizer(QMLBridge* _this);
+            static void updateVisualizer(QMLBridge *_this);
             static void reverseBits(size_t x, int n);
 
             Q_INVOKABLE void launchUpdateProcess();

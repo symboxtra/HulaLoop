@@ -66,7 +66,8 @@ bool parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
     parser.addHelpOption();
     parser.addVersionOption();
 
-    parser.addOptions({
+    parser.addOptions(
+    {
         {{HL_OUT_FILE_SO, HL_OUT_FILE_LO}, CLI::tr("Path to audio output file."), CLI::tr("output filepath")},
         {{HL_DELAY_TIME_SO, HL_DELAY_TIME_LO}, CLI::tr("Duration, in seconds, of the countdown timer before record."), CLI::tr("delay")},
         {{HL_RECORD_TIME_SO, HL_RECORD_TIME_LO}, CLI::tr("Duration, in seconds, of the record."), CLI::tr("record duration")},

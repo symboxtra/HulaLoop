@@ -68,7 +68,7 @@ TEST_F(TestTransport, invalid_controls)
 
 TEST_F(TestTransport, verify_tempfile_deletion)
 {
-    for(int i = 0;i < 4;i++)
+    for (int i = 0; i < 4; i++)
     {
         ASSERT_TRUE(record());
 
@@ -84,7 +84,7 @@ TEST_F(TestTransport, verify_tempfile_deletion)
     ASSERT_EQ(recorder->getExportPaths().size(), 0);
 
     struct stat buffer;
-    for(int i = 0;i < dirs.size();i++)
+    for (int i = 0; i < dirs.size(); i++)
     {
         ASSERT_NE(stat(dirs[i].c_str(), &buffer), 0);
     }

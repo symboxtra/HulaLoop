@@ -112,32 +112,32 @@ ring_buffer_size_t HulaRingBuffer::directRead(ring_buffer_size_t maxSamples, voi
     *dataPtr2 = nullptr;
     *size2 = 0;
 
-/*
-    ring_buffer_size_t samplesInBuffer = PaUtil_GetRingBufferReadAvailable(&this->rb);
-    ring_buffer_size_t samplesToRead = std::min(samplesInBuffer, maxSamples);
+    /*
+        ring_buffer_size_t samplesInBuffer = PaUtil_GetRingBufferReadAvailable(&this->rb);
+        ring_buffer_size_t samplesToRead = std::min(samplesInBuffer, maxSamples);
 
-    // By using PaUtil_GetRingBufferReadRegions, we can read directly from the ring buffer
-    ring_buffer_size_t samplesRead = PaUtil_GetRingBufferReadRegions(&this->rb, samplesToRead, dataPtr1, size1, dataPtr2, size2);
-    if (samplesRead > 0)
-    {
-        // hlDebug() << "Direct read of " << samplesRead << " elements." << std::endl;
-
-        // Advance the index after successful read
-        PaUtil_AdvanceRingBufferReadIndex(&this->rb, samplesRead);
-    }
-*/
-     ring_buffer_size_t elementsInBuffer = PaUtil_GetRingBufferReadAvailable(&this->rb);
-        void* ptr[2] = {0};
-        ring_buffer_size_t sizes[2] = {0};
-
-        /* By using PaUtil_GetRingBufferReadRegions, we can read directly from the ring buffer */
-        ring_buffer_size_t elementsRead = PaUtil_GetRingBufferReadRegions(&this->rb, elementsInBuffer, dataPtr1, size1, dataPtr2, size2);
-        //ring_buffer_size_t elementsRead = PaUtil_ReadRingBuffer(&pData->ringBuffer, &buffer, 512);
-        if (elementsRead > 0)
+        // By using PaUtil_GetRingBufferReadRegions, we can read directly from the ring buffer
+        ring_buffer_size_t samplesRead = PaUtil_GetRingBufferReadRegions(&this->rb, samplesToRead, dataPtr1, size1, dataPtr2, size2);
+        if (samplesRead > 0)
         {
-            //fwrite(buffer, pData->ringBuffer.elementSizeBytes, elementsRead, pData->file);
-            PaUtil_AdvanceRingBufferReadIndex(&this->rb, elementsRead);
+            // hlDebug() << "Direct read of " << samplesRead << " elements." << std::endl;
+
+            // Advance the index after successful read
+            PaUtil_AdvanceRingBufferReadIndex(&this->rb, samplesRead);
         }
+    */
+    ring_buffer_size_t elementsInBuffer = PaUtil_GetRingBufferReadAvailable(&this->rb);
+    void *ptr[2] = {0};
+    ring_buffer_size_t sizes[2] = {0};
+
+    /* By using PaUtil_GetRingBufferReadRegions, we can read directly from the ring buffer */
+    ring_buffer_size_t elementsRead = PaUtil_GetRingBufferReadRegions(&this->rb, elementsInBuffer, dataPtr1, size1, dataPtr2, size2);
+    //ring_buffer_size_t elementsRead = PaUtil_ReadRingBuffer(&pData->ringBuffer, &buffer, 512);
+    if (elementsRead > 0)
+    {
+        //fwrite(buffer, pData->ringBuffer.elementSizeBytes, elementsRead, pData->file);
+        PaUtil_AdvanceRingBufferReadIndex(&this->rb, elementsRead);
+    }
     return elementsRead;
 }
 

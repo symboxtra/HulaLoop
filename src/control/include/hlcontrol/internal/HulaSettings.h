@@ -23,7 +23,7 @@ namespace hula
             Encoding outputFileEncoding;
 
         protected:
-            QTranslator * trans;
+            QTranslator *trans;
             HulaSettings();
 
         public:
@@ -32,7 +32,7 @@ namespace hula
             void setOutputFileEncoding(Encoding);
             Encoding getOutputFileEncoding();
 
-            QTranslator * getTranslator();
+            QTranslator *getTranslator();
             bool loadLanguage(QCoreApplication *app, const std::string &id);
 
             ~HulaSettings();

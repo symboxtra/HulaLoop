@@ -56,15 +56,15 @@ void Record::recorder()
     // Keep recording until recording is stopped
     while (!this->endRecord.load())
     {
-        void* ptr[2] = {0};
+        void *ptr[2] = {0};
         ring_buffer_size_t sizes[2] = {0};
         samplesRead = this->rb->directRead(512, ptr + 0, sizes + 0, ptr + 1, sizes + 1);
 
         if (samplesRead > 0)
         {
-            for(int i = 0;i < 2 && ptr[i] != nullptr;i++)
+            for (int i = 0; i < 2 && ptr[i] != nullptr; i++)
             {
-                sf_count_t samplesWritten = sf_write_float(file, (float*)ptr[i], sizes[i]);
+                sf_count_t samplesWritten = sf_write_float(file, (float *)ptr[i], sizes[i]);
                 if (samplesWritten != sizes[i])
                 {
                     char errstr[256];

@@ -5,7 +5,7 @@
 #include <QQuickStyle>
 
 #ifndef NDEBUG
-#include <QQmlDebuggingEnabler>
+    #include <QQmlDebuggingEnabler>
 #endif
 
 #include "QMLBridge.h"
