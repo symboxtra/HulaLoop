@@ -483,7 +483,7 @@ void HulaInteractiveCli::setOutputFilePath(const std::string &path)
  */
 HulaInteractiveCli::~HulaInteractiveCli()
 {
-    hlDebugf("HulaInteractiveCLI destructor called.\n");
+    hlDebugf("HulaInteractiveCLI destructor called\n");
 
     delete this->t;
 }

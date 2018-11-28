@@ -34,7 +34,7 @@ using namespace hula;
 QMLBridge::QMLBridge(QObject *parent) : QObject(parent)
 {
     transport = new Transport();
-    rb = transport->getController()->createBuffer(1);
+    rb = transport->getController()->createBuffer(0.5);
 }
 
 /**
@@ -313,4 +313,16 @@ void QMLBridge::launchUpdateProcess()
 
     proc->start(procName, args);
     proc->waitForFinished();
+}
+
+/**
+ * Destructor for QMLBridge
+ */
+QMLBridge::~QMLBridge()
+{
+    hlDebugf("QMLBridge destructor called\n");
+
+    stopVisThread();
+    delete transport;
+    delete rb;
 }

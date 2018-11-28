@@ -29,6 +29,7 @@ namespace hula
 
         public:
             explicit QMLBridge(QObject *parent = nullptr);
+            virtual ~QMLBridge();
 
             Q_INVOKABLE void setActiveInputDevice(QString QDeviceName);
             Q_INVOKABLE void setActiveOutputDevice(QString QDeviceName);

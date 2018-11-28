@@ -120,5 +120,7 @@ Record::~Record()
 {
     hlDebugf("Record destructor called\n");
 
+    stop();
+
     delete rb;
 }
