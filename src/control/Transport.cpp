@@ -43,10 +43,10 @@ bool Transport::record(double delay, double duration)
         initRecordClicked = true;
         recordState = false;
 
+        std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
     return false;
 }
 
@@ -76,10 +76,10 @@ bool Transport::stop()
         recordState = false;
         playbackState = true;
 
+        std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
     return false;
 }
 
@@ -96,10 +96,10 @@ bool Transport::play()
         // TODO: Add playback call
         playbackState = false;
 
+        std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
     return false;
 }
 
@@ -118,6 +118,7 @@ bool Transport::pause()
         recordState = true;
         playbackState = true;
 
+        std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
     // TODO: Currently a bool is used to check if record is successfully clicked atleast once
@@ -127,10 +128,10 @@ bool Transport::pause()
         // TODO: Add playback pause call
         playbackState = true;
 
+        std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
     return false;
 }
 

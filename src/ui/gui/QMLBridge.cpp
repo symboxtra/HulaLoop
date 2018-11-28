@@ -275,7 +275,7 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
         // Only process every @ref accuracy cycles
         int cycle = 1;
 
-        while (actualoutreal.size() < maxSize)
+        while (!_this->endVis.load() && actualoutreal.size() < maxSize)
         {
                 // Do directRead until Windows read is fixed
                 // bytesRead =_this->rb->read(temp, maxSize
