@@ -115,6 +115,7 @@ bool QMLBridge::pause()
 void QMLBridge::discard()
 {
     transport->discard();
+    emit stateChanged();
 }
 
 /**
