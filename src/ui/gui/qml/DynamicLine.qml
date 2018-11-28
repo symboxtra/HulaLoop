@@ -13,7 +13,7 @@ Canvas {
 
     // Determine the spacing between each point and the interval on which to select bins
     property int numPoints: 16
-    property int startPos: parent.height / 2 + 150
+    property int startPos: Math.round(parent.height / 1.17)
     property int sp: Math.round(parent.width / numPoints)
     property int intv: Math.floor(binCount / numPoints)
 

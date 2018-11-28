@@ -49,16 +49,25 @@ ApplicationWindow {
         }
 
         onVisData: {
-            // Update the number of bars
-            lastVisBarCount = dataIn.length - trimBack - trimFront
 
-            // Comment this out until we have the ability to switch between visualizers
-            //for (var i = trimFront; i < dataIn.length - trimBack; i++) {
-            //    rectgen.itemAt(i - trimFront).height = Math.round(Math.min(dataIn[i], 1) * visualize.height)
-            //}
+            // TODO: Update when we have the ability to switch visualizers
+            if (false)
+            {
+                // Update the number of bars
+                lastVisBarCount = dataIn.length - trimBack - trimFront
 
-            canvas.readValues(dataIn)
-            canvas.clear()
+                for (var i = trimFront; i < dataIn.length - trimBack; i++) {
+                    rectgen.itemAt(i - trimFront).height = Math.round(Math.min(dataIn[i], 1) * visualize.height)
+                }
+            }
+            else
+            {
+                canvas.readValues(dataIn)
+                canvas.clear()
+
+                // Update after values have been assigned
+                canvas.binCount = dataIn.length - trimBack - trimFront
+            }
         }
     }
 
@@ -93,9 +102,6 @@ ApplicationWindow {
             z: 100
 
             anchors.centerIn: parent
-
-            // Track the number of bins
-            binCount: lastVisBarCount
         }
 
         Row {

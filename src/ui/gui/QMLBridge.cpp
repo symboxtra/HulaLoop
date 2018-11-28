@@ -285,13 +285,13 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
                 // process the drained data every nth cycle
                 if (cycle % accuracy == 0)
                 {
-                    for (int i = 0; i < size1; i++)
+                    for (int i = 0; i < size1 && actualoutreal.size() < maxSize; i++)
                     {
                         actualoutimag.push_back(data1[i]);
                         actualoutreal.push_back(data1[i]);
                     }
 
-                    for (int i = 0; i < size2; i++)
+                    for (int i = 0; i < size2 && actualoutreal.size() < maxSize; i++)
                     {
                         actualoutimag.push_back(data2[i]);
                         actualoutreal.push_back(data2[i]);
@@ -316,7 +316,14 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
             if (i % 8 == 0)
             {
                 sum = fabs(sum);
+
+                #if _WIN32
+                // Adjust the values since WASAPI data comes in screaming loud
+                heights.push_back(sum * 0.2);
+                #else
                 heights.push_back(sum);
+                #endif
+
                 sum = 0;
             }
             else
