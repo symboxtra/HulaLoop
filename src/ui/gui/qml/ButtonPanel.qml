@@ -275,6 +275,7 @@ Rectangle {
 
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 display: AbstractButton.TextOnly
+                enabled: updateAndTimerBtnEnabled
 
                 contentItem: Text {
                     font.family: "Material Design Icons"
@@ -326,6 +327,7 @@ Rectangle {
 
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 display: AbstractButton.TextOnly
+                enabled: updateAndTimerBtnEnabled
 
                 contentItem: Text {
                     font.family: "Material Design Icons"
@@ -338,8 +340,7 @@ Rectangle {
                 }
 
                 background: Rectangle {
-                    opacity: enabled ? 1 : 0.15
-                    color: timerBtn.pressed ? "grey" : "darkgrey"
+                    color: (checkUpdateBtn.pressed || !checkUpdateBtn.enabled) ?  "grey" : "darkgrey"
                     radius: timerBtn.width / 2
                 }
 

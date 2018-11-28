@@ -24,6 +24,7 @@ ApplicationWindow {
     property string textDisplayed: "Elapsed: 0"
     property string currentState: "Unknown"
     property string barColor: "#888888"
+    property bool updateAndTimerBtnEnabled: true
 
     property int lastVisBarCount: 0
     property int trimFront: 3
@@ -34,6 +35,14 @@ ApplicationWindow {
 
         onStateChanged: {
             currentState = qmlbridge.getTransportState()
+
+            // enable/disable update button
+            if(currentState === "Unknown"){
+                updateAndTimerBtnEnabled = true;
+            }
+            else{
+                updateAndTimerBtnEnabled = false;
+            }
 
             if(qmlbridge.getTransportState() === "Recording")
             {
