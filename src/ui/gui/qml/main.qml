@@ -132,4 +132,19 @@ ApplicationWindow {
             }
         }
     }
+
+    onClosing: {
+        // This gets called when the user presses the exit btn
+        var wannaClose = qmlbridge.wannaClose();
+        if(wannaClose)
+        {
+            // user closed due to not saving files or they have no unsaved files
+            close.accepted = true;
+        }
+        else
+        {
+            // user cancelled and wants to save the files
+            close.accepted = false;
+        }
+    }
 }

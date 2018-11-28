@@ -90,7 +90,9 @@ void Record::stop()
     this->endRecord.store(true);
 
     if (recordThread.joinable())
+    {
         recordThread.join();
+    }
 }
 
 /**

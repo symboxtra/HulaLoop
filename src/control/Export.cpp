@@ -4,7 +4,6 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-
 #include <QDir>
 #include <sndfile.h>
 
@@ -114,7 +113,7 @@ std::string Export::getFileExtension(std::string file_path)
 void Export::deleteTempFiles(std::vector<std::string> dirs)
 {
     // loop throught all the files
-    for(std::string file : dirs)
+    for (std::string file : dirs)
     {
         // no good c++ function so we'll just use the C one
         remove((char *)file.c_str());

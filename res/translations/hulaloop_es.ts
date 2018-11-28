@@ -505,31 +505,31 @@
         <translation type="vanished">Desconocido</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="159"/>
+        <location filename="../../src/control/Transport.cpp" line="160"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation>Grabando</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="161"/>
+        <location filename="../../src/control/Transport.cpp" line="162"/>
         <source>Stopped</source>
         <comment>state</comment>
         <translation>Parado</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="163"/>
+        <location filename="../../src/control/Transport.cpp" line="164"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation>Sonando</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="165"/>
+        <location filename="../../src/control/Transport.cpp" line="166"/>
         <source>Paused</source>
         <comment>state</comment>
         <translation>Pausada</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="167"/>
+        <location filename="../../src/control/Transport.cpp" line="168"/>
         <source>Unknown</source>
         <comment>state</comment>
         <translation>Desconocido</translation>
@@ -575,22 +575,22 @@
 <context>
     <name>hula::Updater</name>
     <message>
-        <location filename="../../src/launcher/main.cpp" line="38"/>
+        <location filename="../../src/launcher/main.cpp" line="35"/>
         <source>HulaLoop Updater</source>
         <translation>Actualizador de HulaLoop</translation>
     </message>
     <message>
-        <location filename="../../src/launcher/main.cpp" line="44"/>
+        <location filename="../../src/launcher/main.cpp" line="41"/>
         <source>A newer version has been detected!</source>
         <translation>¡Se ha detectado una versión más reciente!</translation>
     </message>
     <message>
-        <location filename="../../src/launcher/main.cpp" line="44"/>
+        <location filename="../../src/launcher/main.cpp" line="41"/>
         <source>Click Ok to update!</source>
         <translation>¡Haga clic en Ok para actualizar!</translation>
     </message>
     <message>
-        <location filename="../../src/launcher/main.cpp" line="67"/>
+        <location filename="../../src/launcher/main.cpp" line="62"/>
         <source>All systems are up-to-date!</source>
         <translation>¡Todos los sistemas están actualizados!</translation>
     </message>
@@ -618,14 +618,12 @@
         <translation>No se encontraron actualizaciones.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="40"/>
         <source>HulaLoop Information</source>
-        <translation>Información de HulaLoop</translation>
+        <translation type="vanished">Información de HulaLoop</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="40"/>
         <source>HulaLoop has started recording audio!</source>
-        <translation>¡HulaLoop ha empezado a grabar!</translation>
+        <translation type="vanished">¡HulaLoop ha empezado a grabar!</translation>
     </message>
 </context>
 </TS>

@@ -14,7 +14,6 @@
 using namespace hula;
 
 class TestGUI : public ::testing::Test {
-
     protected:
         QApplication *app = nullptr;
         QQmlApplicationEngine *engine = nullptr;
@@ -46,7 +45,6 @@ class TestGUI : public ::testing::Test {
 
             if (label)
             {
-
                 QVariant property = QQmlProperty::read(label, QString::fromStdString("text"));
                 if (!property.isNull())
                 {
@@ -56,7 +54,6 @@ class TestGUI : public ::testing::Test {
                 {
                     ADD_FAILURE();
                 }
-
             }
             else
             {
@@ -136,29 +133,24 @@ class TestGUI : public ::testing::Test {
 
             if (timer && delayIn && recordIn)
             {
-
                 delayIn->setProperty("text", "00:00:01");
                 recordIn->setProperty("text", "00:00:01");
                 timer->setProperty("running", "true");
-
             }
             else
             {
                 ADD_FAILURE();
             }
         }
-
 };
 
 TEST_F(TestGUI, init)
 {
-
     ASSERT_TRUE(app != nullptr);
     ASSERT_TRUE(engine != nullptr);
 
     QTimer::singleShot(300, app, &QApplication::quit);
     ASSERT_EQ(app->exec(), 0);
-
 }
 
 TEST_F(TestGUI, timers)

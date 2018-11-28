@@ -444,31 +444,31 @@
 <context>
     <name>Transport</name>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="159"/>
+        <location filename="../../src/control/Transport.cpp" line="160"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="161"/>
+        <location filename="../../src/control/Transport.cpp" line="162"/>
         <source>Stopped</source>
         <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="163"/>
+        <location filename="../../src/control/Transport.cpp" line="164"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="165"/>
+        <location filename="../../src/control/Transport.cpp" line="166"/>
         <source>Paused</source>
         <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="167"/>
+        <location filename="../../src/control/Transport.cpp" line="168"/>
         <source>Unknown</source>
         <comment>state</comment>
         <translation type="unfinished"></translation>
@@ -510,22 +510,22 @@
 <context>
     <name>hula::Updater</name>
     <message>
-        <location filename="../../src/launcher/main.cpp" line="38"/>
+        <location filename="../../src/launcher/main.cpp" line="35"/>
         <source>HulaLoop Updater</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/launcher/main.cpp" line="44"/>
+        <location filename="../../src/launcher/main.cpp" line="41"/>
         <source>A newer version has been detected!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/launcher/main.cpp" line="44"/>
+        <location filename="../../src/launcher/main.cpp" line="41"/>
         <source>Click Ok to update!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/launcher/main.cpp" line="67"/>
+        <location filename="../../src/launcher/main.cpp" line="62"/>
         <source>All systems are up-to-date!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -550,16 +550,6 @@
     <message>
         <location filename="../../src/launcher/qml/main.qml" line="82"/>
         <source>No updates found.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="40"/>
-        <source>HulaLoop Information</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="40"/>
-        <source>HulaLoop has started recording audio!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

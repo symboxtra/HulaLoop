@@ -193,8 +193,10 @@ bool LinuxAudio::checkDeviceParams(Device *device)
 void LinuxAudio::startPAVUControl()
 {
     static bool pavuControlOpen = false;
-    if(pavuControlOpen)
+    if (pavuControlOpen)
+    {
         return;
+    }
     pavuControlOpen = true;
     system("/usr/bin/pavucontrol -t 2");
     pavuControlOpen = false;

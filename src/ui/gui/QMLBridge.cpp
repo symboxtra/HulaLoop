@@ -2,9 +2,19 @@
 //#include "FftRealPair.h"
 #include "FftRealPair.cpp"
 
+#include <QApplication>
 #include <QCoreApplication>
 #include <QProcess>
 #include <QUrl>
+#include <QDir>
+#include <QFontDatabase>
+#include <QIcon>
+#include <QQmlApplicationEngine>
+#include <QQmlDebuggingEnabler>
+#include <QQuickStyle>
+#include <QtDebug>
+#include <QMessageBox>
+#include <QtWidgets>
 #include <QDir>
 
 #include <iostream>
@@ -354,6 +364,54 @@ void QMLBridge::launchUpdateProcess()
 
     proc->start(procName, args);
     proc->waitForFinished();
+}
+
+/**
+ * Get if the user has unsaved files
+ *
+ * @return true if the user has unsaved files
+ */
+bool QMLBridge::wannaClose()
+{
+    // Check if user has unsaved audio
+    if (transport->hasExportPaths())
+    {
+        // user has unsaved audio prompt them
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Exit???");
+        QPixmap pix(":/res/hulaloop-logo-small.png");
+        msgBox.setIconPixmap(pix.scaled(100, 100, Qt::KeepAspectRatio));
+        msgBox.setText("You have unsaved audio.");
+        msgBox.setInformativeText("Would you like to save your audio?");
+        QAbstractButton *goBackAndSave = msgBox.addButton(tr("Go back and save"), QMessageBox::RejectRole);
+        QIcon ico = QApplication::style()->standardIcon(QStyle::SP_DialogYesButton);
+        goBackAndSave->setIcon(ico);
+        msgBox.addButton(QMessageBox::Discard);
+        if (msgBox.exec() == QMessageBox::AcceptRole)
+        {
+            // the user did not want to exit just go back
+            return false;
+        }
+        else
+        {
+            // the user wanted to exit, exit and delete files
+            transport->discard();
+            return true;
+        }
+    }
+    // user has no unsaved audio, just exit
+    else
+    {
+        return true;
+    }
+}
+
+/**
+ * Deletes all the temp files that the program has created
+ */
+void QMLBridge::cleanTempFiles()
+{
+    transport->discard();
 }
 
 /**

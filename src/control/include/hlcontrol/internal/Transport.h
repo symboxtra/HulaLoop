@@ -60,6 +60,8 @@ namespace hula
 
             void exportFile(std::string targetDirectory);
 
+            bool hasExportPaths();
+
             TransportState getState() const;
             std::string stateToStr(const TransportState state) const;
     };

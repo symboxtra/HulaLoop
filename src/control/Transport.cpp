@@ -205,6 +205,27 @@ void Transport::discard()
 }
 
 /**
+ * Checks if there are files in the export paths which means
+ * recording has happened and there are no files left to export
+ *
+ * @return true is the user has recorded files
+ */
+bool Transport::hasExportPaths()
+{
+    bool exportPaths = recorder->getExportPaths().empty();
+    if (exportPaths)
+    {
+        // there are no paths left
+        return false;
+    }
+    else
+    {
+        // there are paths left
+        return true;
+    }
+}
+
+/**
  * Delete the controller we created
  */
 Transport::~Transport()
