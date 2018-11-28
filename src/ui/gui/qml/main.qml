@@ -25,6 +25,10 @@ ApplicationWindow {
     property string currentState: "Unknown"
     property string barColor: "#888888"
 
+    property int lastVisBarCount: 64
+    property int trimFront: 3
+    property int trimBack: 3
+
     QMLBridge {
         id: qmlbridge
 
@@ -43,16 +47,19 @@ ApplicationWindow {
 
             systrayicon.setToolTip(qsTr("HulaLoop - " + qmlbridge.getTransportState()))
         }
+
         onVisData: {
-            for(var i =0;i<dataIn.length;i++){
-                rectgen.itemAt(i).height=dataIn[i]*100
-                //rectgen.itemAt(i).color=Qt.rgba(dataIn[i]*100,dataIn[i]*100,0)
+            // Update the number of bars
+            lastVisBarCount = dataIn.length - trimBack - trimFront
+
+            for (var i = trimFront; i < dataIn.length - trimBack; i++) {
+                rectgen.itemAt(i - trimFront).height = Math.round(Math.min(dataIn[i], 1) * visualize.height)
             }
+
             canvas.readValues(dataIn)
             canvas.clear()
-            //canvas.requestPaint()
+            canvas.requestPaint()
         }
-
     }
 
     SystemTrayIcon {
@@ -65,16 +72,54 @@ ApplicationWindow {
         id: btnPanel
     }
 
-    DynamicLine {
-        id: canvas
-    }
-
-    Visualizer {
-        id: visualize
-    }
-
     BottomRectangle {
         id: bottomRectangle
     }
 
+    Rectangle {
+        id: visualize
+        width: parent.width
+        height: parent.height - btnPanel.height - bottomRectangle.height
+        color: "#080808"
+
+        anchors.left: parent.left
+        anchors.bottom: bottomRectangle.top
+
+        DynamicLine {
+            id: canvas
+
+            width: parent.width
+            height: parent.height
+            z: 100
+
+            anchors.centerIn: parent
+        }
+
+        Row {
+            x: visualize.width / lastVisBarCount * -2
+            y: parent.height - 50
+            width: parent.width
+            height: parent.height
+
+            Repeater {
+                id: rectgen
+                model: lastVisBarCount
+
+                Rectangle {
+                    id: testrec
+                    color: "#005B9A"
+                    width: Math.ceil(visualize.width / lastVisBarCount)
+
+                    border.width: 1
+                    border.color: "#003366"
+
+                    transform: Rotation {
+                        origin.x: 25
+                        origin.y: 25
+                        angle: 180
+                    }
+                }
+            }
+        }
+    }
 }

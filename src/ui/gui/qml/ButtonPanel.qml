@@ -32,8 +32,9 @@ Rectangle {
 
                 recordBtn.onClicked()
 
-                if(textCountdown.time2 == 0)
+                if(timeFuncs.time2 === 0) {
                     recordingTimer.inf = true
+                }
             } else {
                 window.textDisplayed = "Countdown: " + timeFuncs.time
                 timeFuncs.time--
@@ -52,7 +53,7 @@ Rectangle {
         onTriggered: {
             // Since the timer starts at 0, go to endTime - 1
             if (!recordingTimer.inf && timeFuncs.time >= timeFuncs.time2 - 1) {
-                window.textDisplayed = "Elapsed: " + (timeFuncs.time + 1)
+                window.textDisplayed = "Elapsed: " + (++timeFuncs.time)
                 stopBtn.onClicked();
             } else {
                 window.textDisplayed = "Elapsed: " + (++timeFuncs.time)
@@ -124,13 +125,13 @@ Rectangle {
                         return
                     }
 
-                    if(textCountdown.time != 0)
+                    if(timeFuncs.time != 0)
                     {
                         countDownTimer.start()
                         return
                     }
 
-                    if(textCountdown.time2 == 0)
+                    if(timeFuncs.time2 == 0)
                     {
                         recordingTimer.inf = true
                     }
@@ -197,7 +198,7 @@ Rectangle {
 
                         exportBtn.enabled = true;
 
-                        textCountdown.time = 0
+                        timeFuncs.time = 0
                         recordingTimer.stop()
                     }
                 }
@@ -718,7 +719,7 @@ Rectangle {
         }
 
         onClosed: {
-            console.log("popup clsoed");
+            console.log("popup closed");
         }
     }
 }
