@@ -638,13 +638,6 @@ Rectangle {
                 ComboBox {
                     id: visSetting
 
-                    // model: ListModel {
-                    //     id: visOpt
-
-                    //     ListElement { text: qsTr("Bar") + qmlbridge.emptyStr }
-                    //     ListElement { text: qsTr("Circle") + qmlbridge.emptyStr }
-                    //     ListElement { text: qsTr("Line") + qmlbridge.emptyStr }
-                    // }
                     model: [qsTr("Bar") + qmlbridge.emptyStr, qsTr("Circle") + qmlbridge.emptyStr, qsTr("Line") + qmlbridge.emptyStr]
 
                     onActivated: {

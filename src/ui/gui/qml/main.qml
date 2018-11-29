@@ -94,6 +94,8 @@ ApplicationWindow {
                 for (var i = 0; i < lastVisBarCount; i++) {
                     rectgen.itemAt(i).height = 0
                 }
+                lv.binCount = Math.max(0, dataIn.length - trimBack - trimFront)
+                cv.binCount = Math.max(0, dataIn.length - trimBack - trimFront)
             }
 
             if (qmlbridge.visType === "Bar")
@@ -116,7 +118,7 @@ ApplicationWindow {
                 cv.readValues(dataIn)
                 cv.clear()
 
-                cv.binCount = dataIn.length - trimBack - trimFront
+                cv.binCount = Math.max(0, dataIn.length - trimBack - trimFront)
             }
             else if (qmlbridge.visType === "Line")
             {
@@ -126,7 +128,7 @@ ApplicationWindow {
                 lv.clear()
 
                 // Update after values have been assigned
-                lv.binCount = dataIn.length - trimBack - trimFront
+                lv.binCount = Math.max(0, dataIn.length - trimBack - trimFront)
             }
         }
 
