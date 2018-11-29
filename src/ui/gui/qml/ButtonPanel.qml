@@ -13,7 +13,7 @@ import "../fonts/Icon.js" as MDFont
 Rectangle {
 
     id: buttonPanel
-    z: bluerect.z+6
+    z: 6
     width: parent.width
     height: 115
     color: window.barColor

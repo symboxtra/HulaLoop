@@ -36,9 +36,9 @@ Canvas {
         id: dline
         startY: startPos
         startX: 0
-        PathCurve { x: sp * 1; y: startPos - (itemarr.items[intv * 1]*100)  }
-        PathCurve { x: sp * 2; y: startPos - (itemarr.items[intv * 2]*100)  }
-        PathCurve { x: sp * 3; y: startPos - (itemarr.items[intv * 3]*100)  }
+        PathCurve { x: sp * 1; y: startPos - (itemarr.items[intv * 1]*100) }
+        PathCurve { x: sp * 2; y: startPos - (itemarr.items[intv * 2]*100) }
+        PathCurve { x: sp * 3; y: startPos - (itemarr.items[intv * 3]*100) }
         PathCurve { x: sp * 4; y: startPos - (itemarr.items[intv * 4]*100) }
         PathCurve { x: sp * 5; y: startPos - (itemarr.items[intv * 5]*100) }
         PathCurve { x: sp * 6; y: startPos - (itemarr.items[intv * 6]*100) }

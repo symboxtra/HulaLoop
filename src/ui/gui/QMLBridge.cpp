@@ -56,8 +56,7 @@ bool QMLBridge::record()
     emit stateChanged();
 
     startVisThread();
-    //pauseNotPressed=true;
-    //getData();
+
     return success;
 
 }
@@ -84,8 +83,7 @@ bool QMLBridge::play()
     emit stateChanged();
 
     startVisThread();
-    //pauseNotPressed=true;
-    //getData();
+
     return success;
 
 }
@@ -95,7 +93,6 @@ bool QMLBridge::play()
  */
 bool QMLBridge::pause()
 {
-    //pauseNotPressed=false;
     bool success = transport->pause();
     emit stateChanged();
 
@@ -111,9 +108,8 @@ void QMLBridge::discard()
 {
     transport->discard();
 
+    emit discarded();
 }
-
-
 
 /**
  * Match a string that the user chose to the input device list
@@ -224,17 +220,12 @@ void QMLBridge::saveFile(QString dir)
     directory = directory.substr(substrLen);
     transport->exportFile(directory);
 }
+
 void QMLBridge::getData(){
     //rb=transport->getController()->createAndAddBuffer(.5);
     std::thread visThread(&updateVisualizer,this);
     visThread.detach();
 
-}
-
-
-bool QMLBridge::getPauseState()
-{
-    return(this->pauseNotPressed);
 }
 
 bool s1TurnedOn=false;
@@ -292,8 +283,9 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
 
     while (!_this->endVis.load())
     {
-        vector<double> actualoutreal;
-        vector<double> actualoutimag;
+        std::vector<double> actualoutreal;
+        std::vector<double> actualoutimag;
+        std::vector<double> realData;
 
         float *data1;
         float *data2;
@@ -318,12 +310,14 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
                     {
                         actualoutimag.push_back(data1[i]);
                         actualoutreal.push_back(data1[i]);
+                        realData.push_back(data1[i]);
                     }
 
                     for (int i = 0; i < size2 && actualoutreal.size() < maxSize; i++)
                     {
                         actualoutimag.push_back(data2[i]);
                         actualoutreal.push_back(data2[i]);
+                        realData.push_back(data2[i]);
                     }
                 }
                 else
@@ -361,7 +355,7 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
             }
         }
 
-        _this->emit visData(heights);
+        _this->emit visData(realData, heights);
     }
 
     _this->transport->getController()->removeBuffer(_this->rb);

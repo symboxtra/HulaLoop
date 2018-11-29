@@ -72,7 +72,12 @@ namespace hula
             /**
              * Signal emitted when the visualizer needs to update
              */
-            void visData(std::vector<qreal> dataIn);
+            void visData(const std::vector<qreal> &rawData, const std::vector<qreal> &dataIn);
+
+            /**
+             * Signal emmitted when the Transport successfully discards.
+             */
+            void discarded();
     };
 }
 

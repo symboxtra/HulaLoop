@@ -21,28 +21,6 @@ ApplicationWindow {
     Material.theme: Material.Grey
     Material.accent: Material.Orange
 
-
-    Rectangle {
-        id: bluerect
-        width: window.width
-        height: parent.height
-        color: "lightsteelblue"
-        y: 98
-
-        Row {
-
-            y: parent.height-150
-            x: -40
-            //Rectangle { id: testrec2; color: "orange"; width: 10;height:200; border.width: 1; border.color: "black"; transform: Rotation { origin.x: 25; origin.y: 25; angle: 180} }
-
-            /*Repeater{
-                id:rectgen
-                model: Math.round(visualize.width / 10)
-                //Rectangle { id: testrec; color: "grey"; width: window.width/64; border.width: 1; border.color: "black"; transform: Rotation { origin.x: 25; origin.y: 25; angle: 180} }
-            }*/
-        }
-    }
-
     property string textDisplayed: "Elapsed: 0"
     property string currentState: "Unknown"
     property string barColor: "#888888"
@@ -72,6 +50,40 @@ ApplicationWindow {
 
         onVisData: {
 
+            if (qmlbridge.getTransportState() === qsTr("Recording", "state"))
+            {
+                let channels = 2
+                let sampleRate = 44100
+                let interval = Math.min(rawData.length, 441); // Grab every 441st sample
+                let refsPerSec = channels * sampleRate / interval
+                let scale = 5 // Scale up
+
+                let sum = 0;
+                for (var i = 0; i < rawData.length; i++)
+                {
+                    if (i % interval == 0)
+                    {
+                        timeline.samples.append(timeline.nextSample, sum / interval * scale);
+                        sum = 0;
+
+                        // Move forward
+                        // The multiplied value is arbitrarily adjusted
+                        // to line up with the time markers. IDK man
+                        timeline.nextSample += 1 / refsPerSec * 5.73
+
+                        // Scale the plot
+                        if (timeline.nextSample >= timeline.maxTime)
+                        {
+                            timeline.maxTime += 5
+                        }
+                    }
+                    else
+                    {
+                        sum += rawData[i];
+                    }
+                }
+            }
+
             // TODO: Update when we have the ability to switch visualizers
             if (true)
             {
@@ -96,6 +108,9 @@ ApplicationWindow {
             }
         }
 
+        onDiscarded: {
+            timeline.reset()
+        }
 
     }
 
@@ -114,6 +129,23 @@ ApplicationWindow {
     }
 
     Rectangle {
+        id: timeline_container
+        width: parent.width
+        height: parent.height - btnPanel.height - bottomRectangle.height
+        color: "#080808"
+
+        anchors.top: btnPanel.bottom
+        anchors.left: parent.left
+        anchors.margins: 0
+
+        Timeline {
+            id: timeline
+        }
+    }
+
+    Rectangle {
+        visible: false
+
         id: visualize
         width: parent.width
         height: parent.height - btnPanel.height - bottomRectangle.height
@@ -131,6 +163,7 @@ ApplicationWindow {
 
             anchors.centerIn: parent
         }
+
         CircleVis {
             id: canvas2
 
@@ -168,12 +201,5 @@ ApplicationWindow {
                 }
             }
         }
-    }
-    Label {
-        id: transportState
-        objectName: "transportState"
-
-        anchors.top: btnPanel.bottom
-        text: qmlbridge.getTransportState()
     }
 }
