@@ -3,7 +3,8 @@ import QtQuick.Window 2.10
 
 import QtQuick.Controls 2.3
 import QtQuick.Controls.Material 2.3
-import QtQuick.Layouts 1.1
+import QtQuick.Layouts 1.3
+
 import hulaloop.qmlbridge 1.0
 import hulaloop.systrayicon 1.0
 

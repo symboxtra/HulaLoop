@@ -1,5 +1,4 @@
 import QtQuick 2.10
-import QtQuick.Window 2.0
 
 import QtQuick.Controls 2.3
 import QtQuick.Dialogs 1.0
@@ -622,7 +621,7 @@ Rectangle {
 
                 Switch {
                     id: displayRecordDev
-                    position: 1.0
+                    checked: true
 
                     onToggled: {
                         let val = true;

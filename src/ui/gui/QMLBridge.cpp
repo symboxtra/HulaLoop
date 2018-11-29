@@ -1,28 +1,17 @@
 #include "QMLBridge.h"
-//#include "FftRealPair.h"
-#include "FftRealPair.cpp"
 
+#include <algorithm>
+#include <chrono>
+#include <cmath>
+#include <cstdlib>
 #include <QCoreApplication>
 #include <QProcess>
 #include <QUrl>
 #include <QDir>
-
-#include <iostream>
-#include <string>
-#include <thread>
-#include <algorithm>
-#include <cmath>
-#include <cstdlib>
-#include <iomanip>
-#include <iostream>
 #include <random>
-#include <vector>
-#include <stdlib.h>
-#include <thread>
-#include <chrono>
-#include <math.h>
-#include <stdio.h>
+#include <string>
 
+#include "FFTRealPair.h"
 
 using namespace hula;
 
@@ -112,8 +101,6 @@ void QMLBridge::discard()
     transport->discard();
 
 }
-
-
 
 /**
  * Match a string that the user chose to the input device list
@@ -206,7 +193,9 @@ QString QMLBridge::getOutputDevices()
 }
 
 /**
- * Add comment
+ * Modifies settings to display record devices.
+ *
+ * @param bool - True to show record devices, false otherwise
  */
 void QMLBridge::setShowRecordDevices(bool val)
 {
@@ -231,27 +220,6 @@ void QMLBridge::saveFile(QString dir)
     }
     directory = directory.substr(substrLen);
     transport->exportFile(directory);
-}
-void QMLBridge::getData(){
-    //rb=transport->getController()->createAndAddBuffer(.5);
-    std::thread visThread(&updateVisualizer,this);
-    visThread.detach();
-
-}
-
-
-bool QMLBridge::getPauseState()
-{
-    return(this->pauseNotPressed);
-}
-
-bool s1TurnedOn=false;
-bool QMLBridge::getS1State(){
-    return(this->s1TurnedOn);
-}
-
-void QMLBridge::setS1State(bool state){
-    this->s1TurnedOn=state;
 }
 
 /**
@@ -300,8 +268,8 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
 
     while (!_this->endVis.load())
     {
-        vector<double> actualoutreal;
-        vector<double> actualoutimag;
+        std::vector<double> actualoutreal;
+        std::vector<double> actualoutimag;
 
         float *data1;
         float *data2;
