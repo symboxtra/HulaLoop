@@ -21,8 +21,10 @@ Rectangle {
         Text {
             id: switchText
             y: 5
-            text: "  Switch  "
-            color: "white"
+            text: window.anim ? "  Visualizer  " : "  Editor  "
+        }
+        onClicked: {
+            window.anim = !window.anim;
         }
     }
 
