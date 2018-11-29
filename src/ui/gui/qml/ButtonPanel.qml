@@ -189,7 +189,7 @@ Rectangle {
                         enabled = false;
 
                         recordBtn.enabled = true;
-                        recordBtn.contentItem.text = MDFont.Icon.deleteForever;
+                        recordBtn.contentItem.text = MDFont.Icon.delete;
                         isStopped = true;
 
                         playpauseBtn.enabled = true;

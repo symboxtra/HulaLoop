@@ -505,31 +505,31 @@
         <translation type="vanished">Desconocido</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="159"/>
+        <location filename="../../src/control/Transport.cpp" line="163"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation>Grabando</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="161"/>
+        <location filename="../../src/control/Transport.cpp" line="165"/>
         <source>Stopped</source>
         <comment>state</comment>
         <translation>Parado</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="163"/>
+        <location filename="../../src/control/Transport.cpp" line="167"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation>Sonando</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="165"/>
+        <location filename="../../src/control/Transport.cpp" line="169"/>
         <source>Paused</source>
         <comment>state</comment>
         <translation>Pausada</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="167"/>
+        <location filename="../../src/control/Transport.cpp" line="171"/>
         <source>Unknown</source>
         <comment>state</comment>
         <translation>Desconocido</translation>

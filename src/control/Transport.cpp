@@ -15,8 +15,8 @@ Transport::Transport()
     controller = new Controller();
     recorder = new Record(controller);
 
-    recordState = true;
-    playbackState = false;
+    canRecord = true;
+    canPlayback = false;
     initRecordClicked = false;
 }
 
@@ -33,16 +33,17 @@ bool Transport::record(double delay, double duration)
     hlDebug() << "Record triggered!" << std::endl;
     hlDebug() << "Delay set to: " << delay << std::endl;
     hlDebug() << "Duration set to: " << duration << std::endl;
-    state = RECORDING;
 
-    if (recordState)
+    if (canRecord)
     {
         hlDebug() << "STARTED RECORDING" << std::endl;
         recorder->start();
 
         initRecordClicked = true;
-        recordState = false;
+        canRecord = false;
+        canPlayback = false;
 
+        state = RECORDING;
         std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
@@ -67,15 +68,15 @@ bool Transport::record()
 bool Transport::stop()
 {
     hlDebug() << "Stop button clicked!" << std::endl;
-    state = STOPPED;
 
-    if (!recordState || playbackState)
+    if ((!canRecord && !canPlayback) || state == PAUSED)
     {
         recorder->stop();
 
-        recordState = false;
-        playbackState = true;
+        canRecord = false;
+        canPlayback = true;
 
+        state = STOPPED;
         std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
@@ -89,13 +90,15 @@ bool Transport::stop()
 bool Transport::play()
 {
     hlDebug() << "Play button clicked!" << std::endl;
-    state = PLAYING;
 
-    if (playbackState)
+    if (canPlayback)
     {
-        // TODO: Add playback call
-        playbackState = false;
+        // TODO: Add start playback call
 
+        canPlayback = false;
+        canRecord = false;
+
+        state = PLAYING;
         std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
@@ -109,25 +112,25 @@ bool Transport::play()
 bool Transport::pause()
 {
     hlDebug() << "Pause button clicked!" << std::endl;
-    state = PAUSED;
 
-    if (!recordState) // Pause record
+    if (state == RECORDING && !canRecord) // Pause record
     {
         recorder->stop();
 
-        recordState = true;
-        playbackState = true;
+        canRecord = true;
+        canPlayback = true;
 
+        state = PAUSED;
         std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
-    // TODO: Currently a bool is used to check if record is successfully clicked atleast once
-    // TODO: Find a better way to do it?
-    else if (!playbackState && initRecordClicked) // Pause playback
+    else if (!canPlayback && initRecordClicked) // Pause playback
     {
         // TODO: Add playback pause call
-        playbackState = true;
 
+        canPlayback = true;
+
+        state = PAUSED;
         std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
@@ -195,8 +198,9 @@ void Transport::exportFile(std::string targetDirectory)
 void Transport::discard()
 {
     // Reset states
-    recordState = true;
-    playbackState = false;
+    canRecord = true;
+    canPlayback = false;
+    initRecordClicked = false;
     state = (TransportState)-1;
 
     // Delete audio files from system temp folder
