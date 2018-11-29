@@ -22,11 +22,9 @@ ApplicationWindow {
     Material.theme: Material.Grey
     Material.accent: Material.Orange
 
-    property string textDisplayed: "Elapsed: 0"
+    property string textDisplayed: qsTr("Elapsed: 0")
     property string currentState: "Unknown"
     property string barColor: "#888888"
-
-    property string visType: "Line"
 
     property int lastVisBarCount: 0
     property int trimFront: 3
@@ -48,11 +46,11 @@ ApplicationWindow {
                 systrayicon.setDefaultIcon()
             }
 
-            systrayicon.setToolTip(qsTr("HulaLoop - " + qmlbridge.getTransportState()))
+            systrayicon.setToolTip("HulaLoop - " + qmlbridge.getTransportState())
         }
 
         onVisData: {
-            if (visType === "Bar")
+            if (qmlbridge.visType === "Bar")
             {
                 lv.visible = false
                 cv.visible = false
@@ -63,7 +61,7 @@ ApplicationWindow {
                     rectgen.itemAt(i - trimFront).height = Math.round(Math.min(dataIn[i], 1) * visualize.height)
                 }
             }
-            else if (visType === "Circle")
+            else if (qmlbridge.visType === "Circle")
             {
                 lv.visible = false
                 cv.visible = true
@@ -73,7 +71,7 @@ ApplicationWindow {
 
                 cv.binCount = dataIn.length - trimBack - trimFront
             }
-            else if (visType === "Line")
+            else if (qmlbridge.visType === "Line")
             {
                 lv.visible = true
                 cv.visible = false

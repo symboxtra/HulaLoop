@@ -494,7 +494,7 @@ Rectangle {
                 id: inputDeviceLabel
 
                 color: "black"
-                text: qsTr("Input Device:")
+                text: qsTr("Input Device:") + qmlbridge.emptyStr
             }
             ComboBox {
                 id: iDeviceInfoLabel
@@ -540,7 +540,7 @@ Rectangle {
                 id: outputDeviceLabel
 
                 color: "black"
-                text: qsTr("Output Device:")
+                text: qsTr("Output Device:") + qmlbridge.emptyStr
             }
             ComboBox {
                 id: oDeviceInfoLabel
@@ -612,7 +612,7 @@ Rectangle {
 
                 Label {
                     font.family: "Roboto"
-                    text: "Display record devices"
+                    text: qsTr("Display record devices") + qmlbridge.emptyStr
                     color: "white"
 
                     horizontalAlignment: Text.AlignHCenter
@@ -621,7 +621,7 @@ Rectangle {
 
                 Switch {
                     id: displayRecordDev
-                    checked: true
+                    checked: qmlbridge.getShowRecordDevices()
 
                     onToggled: {
                         let val = true;
@@ -632,7 +632,7 @@ Rectangle {
 
                 Label {
                     font.family: "Roboto"
-                    text: "Visualizer type"
+                    text: qsTr("Visualizer type") + qmlbridge.emptyStr
                     color: "white"
 
                     horizontalAlignment: Text.AlignHCenter
@@ -640,32 +640,41 @@ Rectangle {
                 }
 
                 ComboBox {
-                    id: settings2
+                    id: visSetting
 
-                    model: ListModel {
-                        id: settings2options
-                        Component.onCompleted: {
-                            var options = ["Bar", "Circle", "Line"]
-                            var i
-                            for (i = 0; i < options.length; i++) {
-                                append({
-                                           "text": options[i]
-                                       })
-                            }
-                        }
-                    }
+                    // model: ListModel {
+                    //     id: visOpt
+
+                    //     ListElement { text: qsTr("Bar") + qmlbridge.emptyStr }
+                    //     ListElement { text: qsTr("Circle") + qmlbridge.emptyStr }
+                    //     ListElement { text: qsTr("Line") + qmlbridge.emptyStr }
+                    // }
+                    model: [qsTr("Bar") + qmlbridge.emptyStr, qsTr("Circle") + qmlbridge.emptyStr, qsTr("Line") + qmlbridge.emptyStr]
 
                     onActivated: {
                         //add behavior for which setting it was just changed to
-                        window.visType = settings2.currentText
+                        qmlbridge.visType = visSetting.currentText
+                        qmlbridge.saveSettings()
                         qmlbridge.updateVisualizer(qmlbridge)
                     }
-                    currentIndex: 0
+
+                    Component.onCompleted: {
+                        for (var i = 0; i < visSetting.count; ++i)
+                        {
+                            if (visSetting.textAt(i) === qmlbridge.visType)
+                            {
+                                currentIndex = i;
+                                break;
+                            }
+                            else
+                                currentIndex = 0;
+                        }
+                    }
                 }
 
                 Label {
                     font.family: "Roboto"
-                    text: "Language"
+                    text: qsTr("Language") + qmlbridge.emptyStr
                     color: "white"
 
                     horizontalAlignment: Text.AlignHCenter
@@ -673,25 +682,39 @@ Rectangle {
                 }
 
                 ComboBox {
-                    id: settings3
+                    id: langSetting
 
+                    // Layout.preferredWidth: Math.min(Math.round(window.width * 0.2), 100)
+                    Layout.preferredWidth: visSetting.width + 20
+
+                    textRole: "key"
                     model: ListModel {
-                        id: settings3options
-                        Component.onCompleted: {
-                            var options = ["en", "es", "fr", "hi", "pl"]
-                            var i
-                            for (i = 0; i < options.length; i++) {
-                                append({
-                                           "text": options[i]
-                                       })
-                            }
-                        }
+                        id: langOpt
+
+                        ListElement { key: "English - en"; value: "en" }
+                        ListElement { key: "Español - es"; value: "es" }
+                        ListElement { key: "Français - fr"; value: "fr" }
+                        ListElement { key: "हिंदी - hi"; value: "hi" }
+                        ListElement { key: "Polskie - pl"; value: "pl" }
                     }
 
                     onActivated: {
-                        //add behavior for which setting it was just changed to
+                        qmlbridge.loadLanguage(langOpt.get(langSetting.currentIndex).value)
                     }
-                    currentIndex: 0
+
+                    Component.onCompleted: {
+                        for (var i = 0; i < langOpt.count; ++i)
+                        {
+                            if (langOpt.get(i).value === qmlbridge.getSelectedLanguage())
+                            {
+                                currentIndex = i;
+                                break;
+                            }
+                            else
+                                currentIndex = 0;
+                        }
+                    }
+
                 }
 
             }
@@ -710,6 +733,7 @@ Rectangle {
         modal: true
         focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+
         ColumnLayout {
             spacing: Math.round(window.height * 0.15)
             ColumnLayout {
@@ -718,7 +742,7 @@ Rectangle {
                     Text {
                         id: textbot
                         color: "white"
-                        text: qsTr("Are you sure you want to discard?")
+                        text: qsTr("Are you sure you want to discard?") + qmlbridge.emptyStr
                     }
                 }
                 RowLayout {
@@ -757,8 +781,6 @@ Rectangle {
         x: Math.round((window.width - width) / 2)
         y: Math.round((window.height - height) / 2)
 
-        width: 350
-        height: 170
         modal: true
         focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
@@ -774,7 +796,7 @@ Rectangle {
 
                 Label {
                     font.family: "Roboto"
-                    text: qsTr("Delay Recording (hh:mm:ss)")
+                    text: qsTr("Delay Recording (hh:mm:ss)") + qmlbridge.emptyStr
 
                     color: "white"
 
@@ -793,7 +815,7 @@ Rectangle {
 
                 Label {
                     font.family: "Roboto"
-                    text: qsTr("Record Duration (hh:mm:ss)")
+                    text: qsTr("Record Duration (hh:mm:ss)") + qmlbridge.emptyStr
 
                     color: "white"
 
@@ -825,7 +847,7 @@ Rectangle {
                     contentItem: Text {
                         font.family: "Roboto"
 
-                        text: qsTr("CANCEL")
+                        text: qsTr("CANCEL") + qmlbridge.emptyStr
                         color: "white"
 
                         horizontalAlignment: Text.AlignHCenter
@@ -843,7 +865,7 @@ Rectangle {
                     Layout.preferredWidth: 75
                     contentItem: Text {
                         font.family: "Roboto"
-                        text: qsTr("OK")
+                        text: qsTr("OK") + qmlbridge.emptyStr
 
                         color: "white"
 

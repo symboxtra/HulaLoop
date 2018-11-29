@@ -19,6 +19,8 @@ namespace hula
      */
     class QMLBridge : public QObject {
             Q_OBJECT
+            Q_PROPERTY(QString emptyStr READ getEmptyStr NOTIFY languageChanged)
+            Q_PROPERTY(QString visType READ getVisualizerType WRITE setVisualizerType)
 
         private:
             Transport *transport;
@@ -27,9 +29,18 @@ namespace hula
             std::vector<std::thread> visThreads;
             std::atomic<bool> endVis;
 
+            bool showRecDevices;
+            QString visType, language;
+
         public:
             explicit QMLBridge(QObject *parent = nullptr);
             virtual ~QMLBridge();
+
+            Q_INVOKABLE void saveSettings();
+            void loadSettings();
+
+            QString getVisualizerType();
+            void setVisualizerType(const QString &);
 
             Q_INVOKABLE void setActiveInputDevice(QString QDeviceName);
             Q_INVOKABLE void setActiveOutputDevice(QString QDeviceName);
@@ -37,6 +48,9 @@ namespace hula
             Q_INVOKABLE QString getOutputDevices();
 
             Q_INVOKABLE void setShowRecordDevices(bool);
+            Q_INVOKABLE bool getShowRecordDevices();
+            Q_INVOKABLE bool loadLanguage(const QString &);
+            Q_INVOKABLE QString getSelectedLanguage();
 
             Q_INVOKABLE QString getTransportState() const;
             Q_INVOKABLE bool record();
@@ -44,6 +58,8 @@ namespace hula
             Q_INVOKABLE bool play();
             Q_INVOKABLE bool pause();
             Q_INVOKABLE void discard();
+
+            QString getEmptyStr();
 
             Q_INVOKABLE void saveFile(QString dir);
 
@@ -55,12 +71,16 @@ namespace hula
             Q_INVOKABLE void launchUpdateProcess();
 
         signals:
-
             /**
              * Signal emmitted when the Transport changes states.
              * Keeps the UI's state machine on the same page.
              */
             void stateChanged();
+
+            /**
+             * Signal emmitted when the language changes.
+             */
+            void languageChanged();
 
             /**
              * Signal emitted when the visualizer needs to update

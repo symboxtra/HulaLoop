@@ -5,9 +5,14 @@
 #include <cmath>
 #include <cstdlib>
 #include <QCoreApplication>
+#include <QDir>
+#include <QFile>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QProcess>
 #include <QUrl>
-#include <QDir>
+#include <QQmlApplicationEngine>
 #include <random>
 #include <string>
 
@@ -24,6 +29,89 @@ QMLBridge::QMLBridge(QObject *parent) : QObject(parent)
 {
     transport = new Transport();
     rb = transport->getController()->createBuffer(0.5);
+
+    loadSettings();
+}
+
+/**
+ * Loads all settings stored in the JSON settings file.
+ */
+void QMLBridge::loadSettings()
+{
+
+    QFile file(QDir::homePath() + "/.hulaloop.json");
+    if(!file.open(QIODevice::ReadOnly))
+        return;
+
+    QString json = file.readAll();
+    QJsonDocument doc = QJsonDocument::fromJson(json.toUtf8());
+    if (doc.isNull() || !doc.isObject())
+        return;
+
+    QJsonObject rootObj = doc.object();
+    if (rootObj.isEmpty())
+        return;
+
+    QVariantMap map = rootObj.toVariantMap();
+
+    bool val = map["show_record_devices"].toBool();
+    QString defVisualizer = map["visualizer"].toString();
+    QString defLanguage = map["language"].toString();
+
+    setShowRecordDevices(val);
+    visType = defVisualizer;
+    loadLanguage(defLanguage);
+
+    file.close();
+
+}
+
+/**
+ * Saves all settings into a JSON settings file.
+ */
+void QMLBridge::saveSettings()
+{
+
+    QFile file(QDir::homePath() + "/.hulaloop.json");
+    if(!file.open(QIODevice::WriteOnly))
+        return;
+
+    QVariantMap map;
+    map.insert("show_record_devices", HulaAudioSettings::getInstance()->getShowRecordDevices());
+    map.insert("visualizer", (visType.isEmpty()) ? "Line" : visType);
+    map.insert("language", (language.isEmpty()) ? "en" : language);
+
+    QJsonObject obj = QJsonObject::fromVariantMap(map);
+
+    QJsonDocument doc;
+    doc.setObject(obj);
+
+    hlDebug() << "doc = " << QString(doc.toJson()).toStdString() << "\n";
+
+    file.write(doc.toJson());
+    file.flush();
+    file.close();
+
+}
+
+/**
+ * Return the current visualizer type.
+ *
+ * @return QString - The name of the visualizer
+ */
+QString QMLBridge::getVisualizerType()
+{
+    return visType;
+}
+
+/**
+ * Sets the current visualizer type.
+ *
+ * @param QString - The name of the visualizer
+ */
+void QMLBridge::setVisualizerType(const QString &type)
+{
+    visType = type;
 }
 
 /**
@@ -99,7 +187,16 @@ bool QMLBridge::pause()
 void QMLBridge::discard()
 {
     transport->discard();
+}
 
+/**
+ * Return an empty QString to force QML to update when a new language is loaded.
+ *
+ * @return QString - An empty QString
+ */
+QString QMLBridge::getEmptyStr()
+{
+    return "";
 }
 
 /**
@@ -200,6 +297,46 @@ QString QMLBridge::getOutputDevices()
 void QMLBridge::setShowRecordDevices(bool val)
 {
     HulaSettings::getInstance()->setShowRecordDevices(val);
+    showRecDevices = val;
+    saveSettings();
+}
+
+/**
+ * Returns the setting value for showing record devices.
+ *
+ * @return bool - True to show record devices, false otherwise
+ */
+bool QMLBridge::getShowRecordDevices()
+{
+    return showRecDevices;
+}
+
+/**
+ * Modifies settings to load the specified language.
+ *
+ * @return bool - True if loading the language was successful, false otherwise
+ */
+bool QMLBridge::loadLanguage(const QString &id)
+{
+    if (HulaSettings::getInstance()->loadLanguage(QCoreApplication::instance(), id.toStdString()))
+    {
+        language = id;
+        saveSettings();
+
+        emit languageChanged();
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Returns the setting value for showing record devices.
+ *
+ * @return bool - True to show record devices, false otherwise
+ */
+QString QMLBridge::getSelectedLanguage()
+{
+    return language;
 }
 
 /**
@@ -260,6 +397,7 @@ void QMLBridge::stopVisThread()
  */
 void QMLBridge::updateVisualizer(QMLBridge *_this)
 {
+
     _this->transport->getController()->addBuffer(_this->rb);
 
     int maxSize = 512;
@@ -336,7 +474,6 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
                 sum += actualoutreal[i];
             }
         }
-
         _this->emit visData(heights);
     }
 
@@ -369,6 +506,7 @@ QMLBridge::~QMLBridge()
     hlDebugf("QMLBridge destructor called\n");
 
     stopVisThread();
+    saveSettings();
     delete transport;
     delete rb;
 }
