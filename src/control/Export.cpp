@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <algorithm>
 
 #include <QDir>
 #include <sndfile.h>
@@ -114,7 +115,10 @@ std::string Export::getFileExtension(std::string file_path)
         return "";
     else
     {
-        return file_path.substr(found + 1);
+        file_path = file_path.substr(found + 1);
+        std::transform(file_path.begin(), file_path.end(), file_path.begin(), ::tolower);
+
+        return file_path;
     }
 }
 
