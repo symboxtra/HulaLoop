@@ -106,8 +106,10 @@ std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
         }
     }
 
+    HulaAudioSettings *s = HulaAudioSettings::getInstance();
+
     // Get devices from PortAudio if record devices are requested
-    if (isRecSet)
+    if (isRecSet && s->getShowRecordDevices())
     {
 
         // Initialize PortAudio and update audio devices

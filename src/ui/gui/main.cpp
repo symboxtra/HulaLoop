@@ -26,7 +26,6 @@ int main(int argc, char *argv[])
 
     HulaSettings *settings = HulaSettings::getInstance();
     QTranslator *trans = settings->getTranslator();
-
     app.installTranslator(trans);
 
     qmlRegisterType<QMLBridge>("hulaloop.qmlbridge", 1, 0, "QMLBridge");

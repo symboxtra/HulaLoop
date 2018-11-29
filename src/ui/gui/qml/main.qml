@@ -3,7 +3,8 @@ import QtQuick.Window 2.10
 
 import QtQuick.Controls 2.3
 import QtQuick.Controls.Material 2.3
-import QtQuick.Layouts 1.1
+import QtQuick.Layouts 1.3
+
 import hulaloop.qmlbridge 1.0
 import hulaloop.systrayicon 1.0
 
@@ -24,6 +25,8 @@ ApplicationWindow {
     property string textDisplayed: "Elapsed: 0"
     property string currentState: "Unknown"
     property string barColor: "#888888"
+
+    property string visType: "Line"
 
     property int lastVisBarCount: 0
     property int trimFront: 3
@@ -86,34 +89,42 @@ ApplicationWindow {
                 }
             }
 
-            // TODO: Update when we have the ability to switch visualizers
-            if (true)
+            if (visType === "Bar")
             {
+                lv.visible = false
+                cv.visible = false
                 // Update the number of bars
-                /*lastVisBarCount = dataIn.length - trimBack - trimFront
+                lastVisBarCount = dataIn.length - trimBack - trimFront
 
                 for (var i = trimFront; i < dataIn.length - trimBack; i++) {
                     rectgen.itemAt(i - trimFront).height = Math.round(Math.min(dataIn[i], 1) * visualize.height)
-                }*/
-
-                //circle visualizer instead of bars
-                canvas2.readValues(dataIn)
-                canvas2.clear()
+                }
             }
-            else
+            else if (visType === "Circle")
             {
-                canvas.readValues(dataIn)
-                canvas.clear()
+                lv.visible = false
+                cv.visible = true
+                //circle visualizer instead of bars
+                cv.readValues(dataIn)
+                cv.clear()
+
+                cv.binCount = dataIn.length - trimBack - trimFront
+            }
+            else if (visType === "Line")
+            {
+                lv.visible = true
+                cv.visible = false
+                lv.readValues(dataIn)
+                lv.clear()
 
                 // Update after values have been assigned
-                canvas.binCount = dataIn.length - trimBack - trimFront
+                lv.binCount = dataIn.length - trimBack - trimFront
             }
         }
 
         onDiscarded: {
             timeline.reset()
         }
-
     }
 
     SystemTrayIcon {
@@ -158,8 +169,8 @@ ApplicationWindow {
             }
         ]
 
-        DynamicLine {
-            id: canvas
+        LineVisualizer {
+            id: lv
 
             width: parent.width
             height: parent.height
@@ -168,8 +179,8 @@ ApplicationWindow {
             anchors.centerIn: parent
         }
 
-        CircleVis {
-            id: canvas2
+        CircleVisualizer {
+            id: cv
 
             width: parent.width
             height: parent.height
@@ -257,6 +268,4 @@ ApplicationWindow {
     BottomRectangle {
         id: bottomRectangle
     }
-
-
 }

@@ -1,9 +1,9 @@
-/* 
+/*
  * Free FFT and convolution (C++)
- * 
+ *
  * Copyright (c) 2018 Project Nayuki. (MIT License)
  * https://www.nayuki.io/page/free-small-fft-in-multiple-languages
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
@@ -28,7 +28,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <stdexcept>
-#include "FftRealPair.h" 
+#include "FFTRealPair.h"
 #ifndef M_PI
     #define M_PI 3.14159265358979323846
 #endif
@@ -68,7 +68,7 @@ void Fft::transformRadix2(vector<double> &real, vector<double> &imag) {
 		levels++;
 	if (static_cast<size_t>(1U) << levels != n)
 		throw std::domain_error("Length is not a power of 2");
-	
+
 	// Trignometric tables
 	vector<double> cosTable(n / 2);
 	vector<double> sinTable(n / 2);
@@ -76,7 +76,7 @@ void Fft::transformRadix2(vector<double> &real, vector<double> &imag) {
 		cosTable[i] = std::cos(2 * M_PI * i / n);
 		sinTable[i] = std::sin(2 * M_PI * i / n);
 	}
-	
+
 	// Bit-reversed addressing permutation
 	for (size_t i = 0; i < n; i++) {
 		size_t j = reverseBits(i, levels);
@@ -85,7 +85,7 @@ void Fft::transformRadix2(vector<double> &real, vector<double> &imag) {
 			std::swap(imag[i], imag[j]);
 		}
 	}
-	
+
 	// Cooley-Tukey decimation-in-time radix-2 FFT
 	for (size_t size = 2; size <= n; size *= 2) {
 		size_t halfsize = size / 2;
@@ -118,7 +118,7 @@ void Fft::transformBluestein(vector<double> &real, vector<double> &imag) {
 			throw std::length_error("Vector too large");
 		m *= 2;
 	}
-	
+
 	// Trignometric tables
 	vector<double> cosTable(n), sinTable(n);
 	for (size_t i = 0; i < n; i++) {
@@ -129,7 +129,7 @@ void Fft::transformBluestein(vector<double> &real, vector<double> &imag) {
 		cosTable[i] = std::cos(angle);
 		sinTable[i] = std::sin(angle);
 	}
-	
+
 	// Temporary vectors and preprocessing
 	vector<double> areal(m), aimag(m);
 	for (size_t i = 0; i < n; i++) {
@@ -143,11 +143,11 @@ void Fft::transformBluestein(vector<double> &real, vector<double> &imag) {
 		breal[i] = breal[m - i] = cosTable[i];
 		bimag[i] = bimag[m - i] = sinTable[i];
 	}
-	
+
 	// Convolution
 	vector<double> creal(m), cimag(m);
 	convolve(areal, aimag, breal, bimag, creal, cimag);
-	
+
 	// Postprocessing
 	for (size_t i = 0; i < n; i++) {
 		real[i] =  creal[i] * cosTable[i] + cimag[i] * sinTable[i];
@@ -169,26 +169,26 @@ void Fft::convolve(
 		const vector<double> &xreal, const vector<double> &ximag,
 		const vector<double> &yreal, const vector<double> &yimag,
 		vector<double> &outreal, vector<double> &outimag) {
-	
+
 	size_t n = xreal.size();
 	if (n != ximag.size() || n != yreal.size() || n != yimag.size()
 			|| n != outreal.size() || n != outimag.size())
 		throw std::invalid_argument("Mismatched lengths");
-	
+
 	vector<double> xr = xreal;
 	vector<double> xi = ximag;
 	vector<double> yr = yreal;
 	vector<double> yi = yimag;
 	transform(xr, xi);
 	transform(yr, yi);
-	
+
 	for (size_t i = 0; i < n; i++) {
 		double temp = xr[i] * yr[i] - xi[i] * yi[i];
 		xi[i] = xi[i] * yr[i] + xr[i] * yi[i];
 		xr[i] = temp;
 	}
 	inverseTransform(xr, xi);
-	
+
 	for (size_t i = 0; i < n; i++) {  // Scaling (because this FFT implementation omits it)
 		outreal[i] = xr[i] / n;
 		outimag[i] = xi[i] / n;

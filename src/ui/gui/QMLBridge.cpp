@@ -1,28 +1,17 @@
 #include "QMLBridge.h"
-//#include "FftRealPair.h"
-#include "FftRealPair.cpp"
 
+#include <algorithm>
+#include <chrono>
+#include <cmath>
+#include <cstdlib>
 #include <QCoreApplication>
 #include <QProcess>
 #include <QUrl>
 #include <QDir>
-
-#include <iostream>
-#include <string>
-#include <thread>
-#include <algorithm>
-#include <cmath>
-#include <cstdlib>
-#include <iomanip>
-#include <iostream>
 #include <random>
-#include <vector>
-#include <stdlib.h>
-#include <thread>
-#include <chrono>
-#include <math.h>
-#include <stdio.h>
+#include <string>
 
+#include "FFTRealPair.h"
 
 using namespace hula;
 
@@ -202,6 +191,16 @@ QString QMLBridge::getOutputDevices()
 }
 
 /**
+ * Modifies settings to display record devices.
+ *
+ * @param bool - True to show record devices, false otherwise
+ */
+void QMLBridge::setShowRecordDevices(bool val)
+{
+    HulaSettings::getInstance()->setShowRecordDevices(val);
+}
+
+/**
  * Get the directory the user wants to save to
  *
  * @param QString containing the directory
@@ -219,22 +218,6 @@ void QMLBridge::saveFile(QString dir)
     }
     directory = directory.substr(substrLen);
     transport->exportFile(directory);
-}
-
-void QMLBridge::getData(){
-    //rb=transport->getController()->createAndAddBuffer(.5);
-    std::thread visThread(&updateVisualizer,this);
-    visThread.detach();
-
-}
-
-bool s1TurnedOn=false;
-bool QMLBridge::getS1State(){
-    return(this->s1TurnedOn);
-}
-
-void QMLBridge::setS1State(bool state){
-    this->s1TurnedOn=state;
 }
 
 /**
