@@ -3,7 +3,7 @@ import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 
 Rectangle {
-    id: canvasRect
+    id: lineRect
 
     visible: false
     color: "transparent"

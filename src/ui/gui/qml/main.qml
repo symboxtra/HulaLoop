@@ -54,6 +54,7 @@ ApplicationWindow {
             if (visType === "Bar")
             {
                 dl.visible = false
+                cv.visible = false
                 // Update the number of bars
                 lastVisBarCount = dataIn.length - trimBack - trimFront
 
@@ -64,13 +65,17 @@ ApplicationWindow {
             else if (visType === "Circle")
             {
                 dl.visible = false
+                cv.visible = true
                 //circle visualizer instead of bars
-                canvas2.readValues(dataIn)
-                canvas2.clear()
+                cv.readValues(dataIn)
+                cv.clear()
+
+                cv.binCount = dataIn.length - trimBack - trimFront
             }
             else if (visType === "Line")
             {
                 dl.visible = true
+                cv.visible = false
                 dl.readValues(dataIn)
                 dl.clear()
 
@@ -114,7 +119,7 @@ ApplicationWindow {
         }
 
         CircleVis {
-            id: canvas2
+            id: cv
 
             width: parent.width
             height: parent.height
