@@ -44,10 +44,12 @@ namespace hula
             Q_INVOKABLE void discard();
 
             Q_INVOKABLE void saveFile(QString dir);
+            Q_INVOKABLE void cleanTempFiles();
+            Q_INVOKABLE bool wannaClose();
 
             void startVisThread();
             void stopVisThread();
-            static void updateVisualizer(QMLBridge* _this);
+            static void updateVisualizer(QMLBridge *_this);
             static void reverseBits(size_t x, int n);
 
             Q_INVOKABLE void launchUpdateProcess();

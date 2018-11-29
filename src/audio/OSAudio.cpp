@@ -143,7 +143,7 @@ bool OSAudio::setActiveInputDevice(Device *device)
         return false;
     }
 
-    if(!this->checkDeviceParams(device))
+    if (!this->checkDeviceParams(device))
     {
         return false;
     }

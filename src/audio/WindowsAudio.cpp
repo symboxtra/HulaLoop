@@ -290,7 +290,7 @@ void WindowsAudio::capture()
         HANDLE_ERROR(status);
 
         // goto label for exiting loop in-case of error
-    Exit:
+Exit:
         CoTaskMemFree(pwfx);
         SAFE_RELEASE(pEnumerator);
         SAFE_RELEASE(audioDevice);
@@ -326,15 +326,15 @@ void WindowsAudio::capture()
         inputParameters.hostApiSpecificStreamInfo = nullptr;
 
         err = Pa_OpenStream(
-            &stream,
-            &inputParameters,
-            nullptr, // &outputParameters
-            SAMPLE_RATE,
-            FRAMES_PER_BUFFER,
-            paClipOff, // We won't output out of range samples so don't bother clipping them
-            paRecordCallback,
-            this // Pass our instance in
-        );
+                  &stream,
+                  &inputParameters,
+                  nullptr, // &outputParameters
+                  SAMPLE_RATE,
+                  FRAMES_PER_BUFFER,
+                  paClipOff, // We won't output out of range samples so don't bother clipping them
+                  paRecordCallback,
+                  this // Pass our instance in
+              );
 
         if (err != paNoError)
         {

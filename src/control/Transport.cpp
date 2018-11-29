@@ -18,6 +18,7 @@ Transport::Transport()
     canRecord = true;
     canPlayback = false;
     initRecordClicked = false;
+    state = READY;
 }
 
 /**
@@ -155,10 +156,10 @@ TransportState Transport::getState() const
  */
 std::string Transport::stateToStr(const TransportState state) const
 {
-
     switch (state)
     {
-
+        case READY:
+            return std::string(qPrintable(tr("Ready", "state")));
         case RECORDING:
             return std::string(qPrintable(tr("Recording", "state")));
         case STOPPED:
@@ -169,9 +170,7 @@ std::string Transport::stateToStr(const TransportState state) const
             return std::string(qPrintable(tr("Paused", "state")));
         default:
             return std::string(qPrintable(tr("Unknown", "state")));
-
     }
-
 }
 
 /**
@@ -201,11 +200,32 @@ void Transport::discard()
     canRecord = true;
     canPlayback = false;
     initRecordClicked = false;
-    state = (TransportState)-1;
+    state = READY;
 
     // Delete audio files from system temp folder
     Export::deleteTempFiles(recorder->getExportPaths());
     recorder->clearExportPaths();
+}
+
+/**
+ * Checks if there are files in the export paths which means
+ * recording has happened and there are no files left to export
+ *
+ * @return true is the user has recorded files
+ */
+bool Transport::hasExportPaths()
+{
+    bool exportPaths = recorder->getExportPaths().empty();
+    if (exportPaths)
+    {
+        // there are no paths left
+        return false;
+    }
+    else
+    {
+        // there are paths left
+        return true;
+    }
 }
 
 /**

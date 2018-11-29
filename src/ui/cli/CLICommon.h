@@ -47,7 +47,7 @@ using namespace hula;
 namespace hula
 {
     class CLI {
-        Q_DECLARE_TR_FUNCTIONS(CLI)
+            Q_DECLARE_TR_FUNCTIONS(CLI)
     };
 
     /**
@@ -172,7 +172,7 @@ namespace hula
      * @return Pointer to newly allocated Device object if found
      * @return nullptr if not found
      */
-    inline Device * findDevice(Transport *t, const std::string &name, DeviceType type)
+    inline Device *findDevice(Transport *t, const std::string &name, DeviceType type)
     {
         Device *device = nullptr;
         std::vector<Device *> devices;

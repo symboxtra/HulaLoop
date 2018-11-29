@@ -23,7 +23,7 @@ namespace hula
      */
     class InteractiveCLI {
 
-        Q_DECLARE_TR_FUNCTIONS(CLI)
+            Q_DECLARE_TR_FUNCTIONS(CLI)
 
         private:
             QCoreApplication *app;

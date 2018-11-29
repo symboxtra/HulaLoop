@@ -105,7 +105,7 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
  */
 bool LinuxAudio::setActiveInputDevice(Device *device)
 {
-    if(device != nullptr && device->getName() == "Pulse Audio Volume Control")
+    if (device != nullptr && device->getName() == "Pulse Audio Volume Control")
     {
         std::thread(&LinuxAudio::startPAVUControl).detach();
     }
@@ -193,8 +193,10 @@ bool LinuxAudio::checkDeviceParams(Device *device)
 void LinuxAudio::startPAVUControl()
 {
     static bool pavuControlOpen = false;
-    if(pavuControlOpen)
+    if (pavuControlOpen)
+    {
         return;
+    }
     pavuControlOpen = true;
     system("/usr/bin/pavucontrol -t 2");
     pavuControlOpen = false;

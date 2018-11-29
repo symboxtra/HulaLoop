@@ -22,8 +22,9 @@ ApplicationWindow {
     Material.accent: Material.Orange
 
     property string textDisplayed: "Elapsed: 0"
-    property string currentState: "Unknown"
+    property string currentState: qmlbridge.getTransportState()
     property string barColor: "#888888"
+    property bool updateAndTimerBtnEnabled: true
 
     property int lastVisBarCount: 0
     property int trimFront: 3
@@ -34,6 +35,14 @@ ApplicationWindow {
 
         onStateChanged: {
             currentState = qmlbridge.getTransportState()
+
+            // enable/disable update button
+            if(currentState === "Ready"){
+                updateAndTimerBtnEnabled = true;
+            }
+            else{
+                updateAndTimerBtnEnabled = false;
+            }
 
             if(qmlbridge.getTransportState() === "Recording")
             {
@@ -85,6 +94,7 @@ ApplicationWindow {
         id: bottomRectangle
     }
 
+
     Rectangle {
         id: visualize
         width: parent.width
@@ -130,6 +140,21 @@ ApplicationWindow {
                     }
                 }
             }
+        }
+    }
+
+    onClosing: {
+        // This gets called when the user presses the exit btn
+        var wannaClose = qmlbridge.wannaClose();
+        if(wannaClose)
+        {
+            // user closed due to not saving files or they have no unsaved files
+            close.accepted = true;
+        }
+        else
+        {
+            // user cancelled and wants to save the files
+            close.accepted = false;
         }
     }
 }

@@ -7,6 +7,9 @@
 
 namespace hula
 {
+    /**
+     * Class for Recording audio and abstracting OS specific stuff
+     */
     class Record {
 
         private:

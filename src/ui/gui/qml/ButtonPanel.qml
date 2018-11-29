@@ -102,6 +102,13 @@ Rectangle {
 
                 display: AbstractButton.TextOnly
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                property string tttext:"Record Audio"
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr(recordBtn.tttext)
 
                 background: Rectangle {
                     color: (recordBtn.pressed || !recordBtn.enabled) ?  "grey" : "darkgrey"
@@ -111,7 +118,7 @@ Rectangle {
                 contentItem: Text {
                     font.family: "Material Design Icons"
                     font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                    text: MDFont.Icon.record
+                    text:  MDFont.Icon.record
                     color: "red"
 
                     horizontalAlignment: Text.AlignHCenter
@@ -119,13 +126,14 @@ Rectangle {
                 }
 
                 onClicked: {
+
                     if(stopBtn.isStopped)
                     {
                         discardPopup.open()
                         return
                     }
 
-                    if(timeFuncs.time != 0)
+                    if(timeFuncs.time < 0)
                     {
                         countDownTimer.start()
                         return
@@ -149,6 +157,7 @@ Rectangle {
                         playpauseBtn.enabled = true;
                         playpauseBtn.contentItem.text = MDFont.Icon.pause;
                         playpauseBtn.contentItem.color = "white";
+                        playpauseBtn.tttext = "Pause audio"
 
                         // Update self
                         enabled = false;
@@ -164,6 +173,12 @@ Rectangle {
 
                 display: AbstractButton.TextOnly
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Stop recording")
 
                 background: Rectangle {
                     color: (stopBtn.pressed || !stopBtn.enabled) ?  "grey" : "darkgrey"
@@ -183,7 +198,7 @@ Rectangle {
                 onClicked: {
                     let success = qmlbridge.stop()
                     console.log("Test: " + success)
-
+                    recordBtn.tttext = "Discard recording"
                     if(success && (qmlbridge.getTransportState() === qsTr("Stopped", "state")))
                     {
                         enabled = false;
@@ -202,15 +217,23 @@ Rectangle {
                         recordingTimer.stop()
                     }
                 }
+
             }
 
             RoundButton {
                 id: playpauseBtn
                 objectName: "playpauseBtn"
                 enabled: false
-
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 display: AbstractButton.TextOnly
+                property bool isRecording: false // Remove if we do not need for checking when not recording
+                property string tttext : ""
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr(playpauseBtn.tttext)
 
                 contentItem: Text {
                     objectName: "play_icon"
@@ -232,7 +255,7 @@ Rectangle {
 
                     let success;
 
-                    if(contentItem.text == MDFont.Icon.pause)
+                    if(contentItem.text === MDFont.Icon.pause)
                     {
                         success = qmlbridge.pause();
 
@@ -240,6 +263,7 @@ Rectangle {
                         {
                             contentItem.text = MDFont.Icon.play;
                             contentItem.color = "green";
+                            playpauseBtn.tttext = "Playback audio"
 
                             if(!stopBtn.isStopped)
                             {
@@ -275,6 +299,13 @@ Rectangle {
 
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 display: AbstractButton.TextOnly
+                enabled: updateAndTimerBtnEnabled
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Set recording delay and duration")
 
                 contentItem: Text {
                     font.family: "Material Design Icons"
@@ -302,6 +333,12 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 display: AbstractButton.TextOnly
 
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Export audio")
+
                 contentItem: Text {
                     font.family: "Material Design Icons"
                     font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
@@ -317,7 +354,7 @@ Rectangle {
                     radius: exportBtn.width / 2
                 }
 
-                onClicked:saveDialog.open()
+                onClicked: saveDialog.open()
             }
 
             RoundButton {
@@ -326,6 +363,13 @@ Rectangle {
 
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 display: AbstractButton.TextOnly
+                enabled: updateAndTimerBtnEnabled
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Check for updates")
 
                 contentItem: Text {
                     font.family: "Material Design Icons"
@@ -338,8 +382,7 @@ Rectangle {
                 }
 
                 background: Rectangle {
-                    opacity: enabled ? 1 : 0.15
-                    color: timerBtn.pressed ? "grey" : "darkgrey"
+                    color: (checkUpdateBtn.pressed || !checkUpdateBtn.enabled) ?  "grey" : "darkgrey"
                     radius: timerBtn.width / 2
                 }
 
@@ -445,6 +488,26 @@ Rectangle {
                 samples: 3
                 source: exportBtn
             }
+
+            DropShadow {
+                visible: (checkUpdateBtn.enabled && !checkUpdateBtn.pressed) ? true : false
+                color: "#606060"
+                anchors.fill: checkUpdateBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: checkUpdateBtn
+            }
+
+            InnerShadow {
+                visible: checkUpdateBtn.pressed ? true : false
+                color: "#606060"
+                anchors.fill: checkUpdateBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: checkUpdateBtn
+            }
         }
 
         FileDialog {
@@ -471,6 +534,13 @@ Rectangle {
             ComboBox {
                 id: iDeviceInfoLabel
                 Layout.preferredWidth: Math.max(Math.round(window.width * 0.2), 320)
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Change input device")
+
                 model: ListModel {
                     id: iDeviceItems
                     Component.onCompleted: {
@@ -491,7 +561,7 @@ Rectangle {
                 onPressedChanged: {
 
                     let selectedInd = 0;
-                    if(currentIndex != -1)
+                    if(currentIndex < 0)
                         selectedInd = currentIndex;
 
                     model.clear();
@@ -517,6 +587,13 @@ Rectangle {
             ComboBox {
                 id: oDeviceInfoLabel
                 Layout.preferredWidth: Math.max(Math.round(window.width * 0.2), 320)
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Change output device")
+
                 model: ListModel {
                     id: oDeviceItems
                     Component.onCompleted: {
@@ -567,6 +644,8 @@ Rectangle {
 
         x: Math.round((window.width - width) / 2)
         y: Math.round((window.height - height) / 2)
+        width: 255
+        height: 100
 
         modal: true
         focus: true
@@ -579,7 +658,6 @@ Rectangle {
                     Text {
                         id: textbot
                         color: "white"
-                        font.pointSize: Math.round((window.height + window.width) / 96)
                         text: qsTr("Are you sure you want to discard?")
                     }
                 }
@@ -589,7 +667,6 @@ Rectangle {
                     width: gridLayout.width / 2
                     Button {
                         text: "No"
-                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                         onClicked: {
                             discardPopup.close()
                         }
@@ -597,16 +674,22 @@ Rectangle {
 
                     Button {
                         text: "Yes"
-                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                         onClicked: {
                             // Discard files
                             qmlbridge.discard()
+                            recordBtn.tttext = "Record Audio"
 
                             // Start recording again
                             stopBtn.isStopped = false
                             recordBtn.contentItem.text = MDFont.Icon.record
-                            recordBtn.onClicked()
                             discardPopup.close()
+
+                            exportBtn.enabled = false;
+                            timeFuncs.time = 0;
+                            timeFuncs.time = 0;
+                            delayInput.text = "00:00:00";
+                            recordTimeInput.text = "00:00:00";
+                            window.textDisplayed = "Elapsed: 0";
                         }
                     }
                 }

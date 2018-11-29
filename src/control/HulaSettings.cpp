@@ -71,7 +71,7 @@ void HulaSettings::setOutputFileEncoding(Encoding val)
  *
  * @return QTranslator * Translator object with locale loaded.
  */
-QTranslator * HulaSettings::getTranslator()
+QTranslator *HulaSettings::getTranslator()
 {
     return trans;
 }
