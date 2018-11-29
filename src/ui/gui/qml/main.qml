@@ -29,6 +29,8 @@ ApplicationWindow {
     property int trimFront: 3
     property int trimBack: 3
 
+    property bool anim: false
+
     QMLBridge {
         id: qmlbridge
 
@@ -120,14 +122,6 @@ ApplicationWindow {
         Component.onCompleted: systrayicon.init()
     }
 
-    ButtonPanel {
-        id: btnPanel
-    }
-
-    BottomRectangle {
-        id: bottomRectangle
-    }
-
     Rectangle {
         id: timeline_container
         width: parent.width
@@ -150,9 +144,36 @@ ApplicationWindow {
         width: parent.width
         height: parent.height - btnPanel.height - bottomRectangle.height
         color: "#080808"
+        state: window.anim ? "hide" : "default"
 
         anchors.left: parent.left
         anchors.bottom: bottomRectangle.top
+
+        states: [
+            State {
+                name: "hide"
+                AnchorChanges {
+                    target: visualize
+                    anchors.bottom: btnPanel.bottom
+                }
+            },
+            State {
+                name: "default"
+                AnchorChanges {
+                    target: visualize
+                    anchors.bottom: bottomRectangle.top
+                }
+            }
+
+        ]
+
+        transitions: [
+            Transition {
+                AnchorAnimation {
+                    duration: 1000
+                }
+            }
+        ]
 
         DynamicLine {
             id: canvas
@@ -202,4 +223,51 @@ ApplicationWindow {
             }
         }
     }
+
+    Rectangle {
+        id: editor
+        width: parent.width
+        height: parent.height - btnPanel.height - bottomRectangle.height
+        color: "pink"
+
+        anchors.left: parent.left
+        anchors.top: bottomRectangle.top
+        state: window.anim ? "show" : "default"
+        states: [
+            State {
+                name: "default"
+                AnchorChanges {
+                    target: editor
+                    anchors.top: bottomRectangle.top
+                }
+            },
+            State {
+                name: "show"
+                AnchorChanges {
+                    target: editor
+                    anchors.top: btnPanel.bottom
+                }
+            }
+
+        ]
+
+        transitions: [
+            Transition {
+                AnchorAnimation {
+                    duration: 1000
+                }
+            }
+        ]
+
+    }
+
+    ButtonPanel {
+        id: btnPanel
+    }
+
+    BottomRectangle {
+        id: bottomRectangle
+    }
+
+
 }
