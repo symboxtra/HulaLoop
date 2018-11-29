@@ -123,23 +123,6 @@ ApplicationWindow {
     }
 
     Rectangle {
-        id: timeline_container
-        width: parent.width
-        height: parent.height - btnPanel.height - bottomRectangle.height
-        color: "#080808"
-
-        anchors.top: btnPanel.bottom
-        anchors.left: parent.left
-        anchors.margins: 0
-
-        Timeline {
-            id: timeline
-        }
-    }
-
-    Rectangle {
-        visible: false
-
         id: visualize
         width: parent.width
         height: parent.height - btnPanel.height - bottomRectangle.height
@@ -170,7 +153,7 @@ ApplicationWindow {
         transitions: [
             Transition {
                 AnchorAnimation {
-                    duration: 1000
+                    duration: 250
                 }
             }
         ]
@@ -228,7 +211,13 @@ ApplicationWindow {
         id: editor
         width: parent.width
         height: parent.height - btnPanel.height - bottomRectangle.height
-        color: "pink"
+        color: "#080808"
+
+        anchors.margins: 0
+
+        Timeline {
+            id: timeline
+        }
 
         anchors.left: parent.left
         anchors.top: bottomRectangle.top
@@ -254,7 +243,7 @@ ApplicationWindow {
         transitions: [
             Transition {
                 AnchorAnimation {
-                    duration: 1000
+                    duration: 250
                 }
             }
         ]

@@ -15,13 +15,13 @@ Rectangle {
     Button {
         height: parent.height * 1.3
         anchors.left: parent.left
-        anchors.leftMargin: 15
+        anchors.leftMargin: 10
         y: -3
         width: switchText.width
         Text {
             id: switchText
             y: 5
-            text: window.anim ? "  Visualizer  " : "  Editor  "
+            text: window.anim ? qsTr("  Visualizer  ") : qsTr("  Editor  ")
         }
         onClicked: {
             window.anim = !window.anim;
