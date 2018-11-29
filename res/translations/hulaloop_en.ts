@@ -48,47 +48,47 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="645"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="652"/>
         <source>Bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="645"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="652"/>
         <source>Circle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="645"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="652"/>
         <source>Line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="657"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="677"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="711"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="745"/>
         <source>Are you sure you want to discard?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="767"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="799"/>
         <source>Delay Recording (hh:mm:ss)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="786"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="818"/>
         <source>Record Duration (hh:mm:ss)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="818"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="850"/>
         <source>CANCEL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="836"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="868"/>
         <source>OK</source>
         <translation></translation>
     </message>
@@ -588,12 +588,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="43"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="41"/>
         <source>HulaLoop Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="43"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="41"/>
         <source>HulaLoop has started recording audio!</source>
         <translation></translation>
     </message>

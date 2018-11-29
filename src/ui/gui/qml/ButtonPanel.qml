@@ -655,7 +655,7 @@ Rectangle {
                         //add behavior for which setting it was just changed to
                         qmlbridge.visType = visSetting.currentText
                         qmlbridge.saveSettings()
-                        qmlbridge.updateVisualizer(qmlbridge)
+                        qmlbridge.onVisData([0])
                     }
 
                     Component.onCompleted: {
