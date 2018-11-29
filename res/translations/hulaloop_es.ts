@@ -59,17 +59,47 @@
         <translation>Dispositivo de Salida</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="721"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="615"/>
+        <source>Display record devices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="635"/>
+        <source>Visualizer type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="652"/>
+        <source>Bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="652"/>
+        <source>Circle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="652"/>
+        <source>Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="677"/>
+        <source>Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="745"/>
         <source>Are you sure you want to discard?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="777"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="799"/>
         <source>Delay Recording (hh:mm:ss)</source>
         <translation>Retraso antes de grabar (hh:mm:ss)</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="796"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="818"/>
         <source>Record Duration (hh:mm:ss)</source>
         <translatorcomment>Format for hours, minutes, seconds remains unchanged because of the way the response is parsed.</translatorcomment>
         <translation>Duración de la grabación (hh:mm:ss)</translation>
@@ -80,12 +110,12 @@
         <translation type="vanished">Duración de la grabación (hh:mm:ss)</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="828"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="850"/>
         <source>CANCEL</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="846"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="868"/>
         <source>OK</source>
         <translation>Aceptar</translation>
     </message>
@@ -631,17 +661,22 @@
         <translation>No se encontraron actualizaciones.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="45"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="25"/>
+        <source>Elapsed: 0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/main.qml" line="43"/>
         <source>HulaLoop Information</source>
         <translation>Información de HulaLoop</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="45"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="43"/>
         <source>HulaLoop has started recording audio!</source>
         <translation>¡HulaLoop ha empezado a grabar!</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="58"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="56"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation type="unfinished">Grabando</translation>

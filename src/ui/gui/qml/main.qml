@@ -22,11 +22,9 @@ ApplicationWindow {
     Material.theme: Material.Grey
     Material.accent: Material.Orange
 
-    property string textDisplayed: "Elapsed: 0"
+    property string textDisplayed: qsTr("Elapsed: 0")
     property string currentState: "Unknown"
     property string barColor: "#888888"
-
-    property string visType: "Line"
 
     property int lastVisBarCount: 0
     property int trimFront: 3
@@ -50,7 +48,7 @@ ApplicationWindow {
                 systrayicon.setDefaultIcon()
             }
 
-            systrayicon.setToolTip(qsTr("HulaLoop - " + qmlbridge.getTransportState()))
+            systrayicon.setToolTip("HulaLoop - " + qmlbridge.getTransportState())
         }
 
         onVisData: {
@@ -89,18 +87,28 @@ ApplicationWindow {
                 }
             }
 
-            if (visType === "Bar")
+            // If the array only contains [0], its the signal to clear the bars
+            // Use the previous bar count to write zeroes to everyone
+            if (dataIn.length == 0 || (dataIn.length == 1 && dataIn[0] == 0))
+            {
+                for (var i = 0; i < lastVisBarCount; i++) {
+                    rectgen.itemAt(i).height = 0
+                }
+            }
+
+            if (qmlbridge.visType === "Bar")
             {
                 lv.visible = false
                 cv.visible = false
+
                 // Update the number of bars
-                lastVisBarCount = dataIn.length - trimBack - trimFront
+                lastVisBarCount = Math.max(0, dataIn.length - trimBack - trimFront)
 
                 for (var i = trimFront; i < dataIn.length - trimBack; i++) {
                     rectgen.itemAt(i - trimFront).height = Math.round(Math.min(dataIn[i], 1) * visualize.height)
                 }
             }
-            else if (visType === "Circle")
+            else if (qmlbridge.visType === "Circle")
             {
                 lv.visible = false
                 cv.visible = true
@@ -110,7 +118,7 @@ ApplicationWindow {
 
                 cv.binCount = dataIn.length - trimBack - trimFront
             }
-            else if (visType === "Line")
+            else if (qmlbridge.visType === "Line")
             {
                 lv.visible = true
                 cv.visible = false
