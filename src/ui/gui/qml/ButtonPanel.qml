@@ -1,5 +1,4 @@
 import QtQuick 2.10
-import QtQuick.Window 2.0
 
 import QtQuick.Controls 2.3
 import QtQuick.Dialogs 1.0
@@ -13,7 +12,6 @@ import "../fonts/Icon.js" as MDFont
 Rectangle {
 
     id: buttonPanel
-
     width: parent.width
     height: 115
     color: window.barColor
@@ -151,7 +149,7 @@ Rectangle {
                     if(success && (qmlbridge.getTransportState() === qsTr("Recording", "state")))
                     {
                         // Update stop button
-                        stopBtn.enabled = true;
+                        stopBtn.enabled = true
 
                         // Update play/pause button
                         playpauseBtn.enabled = true;
@@ -388,6 +386,32 @@ Rectangle {
 
                 onClicked: qmlbridge.launchUpdateProcess()
             }
+            RoundButton {
+                id: settingsBtn
+                objectName: "settingsBtn"
+
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                display: AbstractButton.TextOnly
+
+                contentItem: Text {
+                    font.family: "Material Design Icons"
+                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                    text: MDFont.Icon.settings
+                    color: "white"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                background: Rectangle {
+                    opacity: enabled ? 1 : 0.15
+                    color: timerBtn.pressed ? "grey" : "darkgrey"
+                    radius: timerBtn.width / 2
+                }
+
+                onClicked: settingsPopup.open()
+            }
+
 
             DropShadow {
                 visible: (recordBtn.enabled && !recordBtn.pressed) ? true : false
@@ -529,7 +553,7 @@ Rectangle {
                 id: inputDeviceLabel
 
                 color: "black"
-                text: qsTr("Input Device:")
+                text: qsTr("Input Device:") + qmlbridge.emptyStr
             }
             ComboBox {
                 id: iDeviceInfoLabel
@@ -582,7 +606,7 @@ Rectangle {
                 id: outputDeviceLabel
 
                 color: "black"
-                text: qsTr("Output Device:")
+                text: qsTr("Output Device:") + qmlbridge.emptyStr
             }
             ComboBox {
                 id: oDeviceInfoLabel
@@ -639,6 +663,133 @@ Rectangle {
     }
 
     Popup {
+        id: settingsPopup
+        objectName: "settingsPopup"
+
+        x: Math.round((window.width - width) / 2)
+        y: Math.round((window.height - height) / 2)
+
+        modal: true
+        focus: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+
+        ColumnLayout {
+            id: colLayout
+            spacing: Math.round(buttonPanel.height * 0.15)
+
+            GridLayout {
+                id: gridLayout2
+                Layout.alignment: Qt.AlignTop
+                rows: 3
+                columns: 2
+
+                Label {
+                    font.family: "Roboto"
+                    text: qsTr("Display record devices") + qmlbridge.emptyStr
+                    color: "white"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                Switch {
+                    id: displayRecordDev
+                    checked: qmlbridge.getShowRecordDevices()
+
+                    onToggled: {
+                        let val = true;
+                        (position === 1.0) ? val = true : val = false;
+                        qmlbridge.setShowRecordDevices(val);
+                    }
+                }
+
+                Label {
+                    font.family: "Roboto"
+                    text: qsTr("Visualizer type") + qmlbridge.emptyStr
+                    color: "white"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                ComboBox {
+                    id: visSetting
+
+                    model: [qsTr("Bar") + qmlbridge.emptyStr, qsTr("Circle") + qmlbridge.emptyStr, qsTr("Line") + qmlbridge.emptyStr]
+
+                    onActivated: {
+                        //add behavior for which setting it was just changed to
+                        qmlbridge.visType = visSetting.currentText
+                        qmlbridge.saveSettings()
+                        qmlbridge.onVisData([], [0])
+                    }
+
+                    Component.onCompleted: {
+                        for (var i = 0; i < visSetting.count; ++i)
+                        {
+                            if (visSetting.textAt(i) === qmlbridge.visType)
+                            {
+                                currentIndex = i;
+                                break;
+                            }
+                            else
+                                currentIndex = 0;
+                        }
+                    }
+                }
+
+                Label {
+                    font.family: "Roboto"
+                    text: qsTr("Language") + qmlbridge.emptyStr
+                    color: "white"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                ComboBox {
+                    id: langSetting
+
+                    // Layout.preferredWidth: Math.min(Math.round(window.width * 0.2), 100)
+                    Layout.preferredWidth: visSetting.width + 20
+
+                    textRole: "key"
+                    model: ListModel {
+                        id: langOpt
+
+                        ListElement { key: "English - en"; value: "en" }
+                        ListElement { key: "Español - es"; value: "es" }
+                        ListElement { key: "Français - fr"; value: "fr" }
+                        ListElement { key: "हिंदी - hi"; value: "hi" }
+                        ListElement { key: "Polskie - pl"; value: "pl" }
+                    }
+
+                    onActivated: {
+                        qmlbridge.loadLanguage(langOpt.get(langSetting.currentIndex).value)
+                    }
+
+                    Component.onCompleted: {
+                        for (var i = 0; i < langOpt.count; ++i)
+                        {
+                            if (langOpt.get(i).value === qmlbridge.getSelectedLanguage())
+                            {
+                                currentIndex = i;
+                                break;
+                            }
+                            else
+                                currentIndex = 0;
+                        }
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+    Popup {
         id: discardPopup
         objectName: "discardPopup"
 
@@ -650,6 +801,7 @@ Rectangle {
         modal: true
         focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+
         ColumnLayout {
             spacing: Math.round(window.height * 0.15)
             ColumnLayout {
@@ -658,7 +810,7 @@ Rectangle {
                     Text {
                         id: textbot
                         color: "white"
-                        text: qsTr("Are you sure you want to discard?")
+                        text: qsTr("Are you sure you want to discard?") + qmlbridge.emptyStr
                     }
                 }
                 RowLayout {
@@ -704,8 +856,6 @@ Rectangle {
         x: Math.round((window.width - width) / 2)
         y: Math.round((window.height - height) / 2)
 
-        width: 350
-        height: 170
         modal: true
         focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
@@ -721,7 +871,7 @@ Rectangle {
 
                 Label {
                     font.family: "Roboto"
-                    text: qsTr("Delay Recording (hh:mm:ss)")
+                    text: qsTr("Delay Recording (hh:mm:ss)") + qmlbridge.emptyStr
 
                     color: "white"
 
@@ -740,7 +890,7 @@ Rectangle {
 
                 Label {
                     font.family: "Roboto"
-                    text: qsTr("Record Duration (hh:mm:ss)")
+                    text: qsTr("Record Duration (hh:mm:ss)") + qmlbridge.emptyStr
 
                     color: "white"
 
@@ -772,7 +922,7 @@ Rectangle {
                     contentItem: Text {
                         font.family: "Roboto"
 
-                        text: qsTr("CANCEL")
+                        text: qsTr("CANCEL") + qmlbridge.emptyStr
                         color: "white"
 
                         horizontalAlignment: Text.AlignHCenter
@@ -790,7 +940,7 @@ Rectangle {
                     Layout.preferredWidth: 75
                     contentItem: Text {
                         font.family: "Roboto"
-                        text: qsTr("OK")
+                        text: qsTr("OK") + qmlbridge.emptyStr
 
                         color: "white"
 
@@ -799,10 +949,6 @@ Rectangle {
                     }
                 }
             }
-        }
-
-        onClosed: {
-            console.log("popup closed");
         }
     }
 }

@@ -2,93 +2,136 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="fr_FR">
 <context>
+    <name>BottomRectangle</name>
+    <message>
+        <location filename="../../src/ui/gui/qml/BottomRectangle.qml" line="23"/>
+        <source>  Visualizer  </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/BottomRectangle.qml" line="23"/>
+        <source>  Editor  </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ButtonPanel</name>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="151"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="149"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="181"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="179"/>
         <source>Stop recording</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="202"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="200"/>
         <source>Stopped</source>
         <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="262"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="260"/>
         <source>Paused</source>
         <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="280"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="278"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="308"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="306"/>
         <source>Set recording delay and duration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="340"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="338"/>
         <source>Export audio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="372"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="370"/>
         <source>Check for updates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="532"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="556"/>
         <source>Input Device:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="542"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="566"/>
         <source>Change input device</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="585"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="609"/>
         <source>Output Device:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="595"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="619"/>
         <source>Change output device</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="661"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="688"/>
+        <source>Display record devices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="708"/>
+        <source>Visualizer type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="718"/>
+        <source>Bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="718"/>
+        <source>Circle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="718"/>
+        <source>Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="743"/>
+        <source>Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="813"/>
         <source>Are you sure you want to discard?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="723"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="874"/>
         <source>Delay Recording (hh:mm:ss)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="742"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="893"/>
         <source>Record Duration (hh:mm:ss)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="774"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="925"/>
         <source>CANCEL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="792"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="943"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
@@ -187,12 +230,12 @@
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="80"/>
-        <source>target language</source>
+        <source>Set the language of the application.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="80"/>
-        <source>Set the language of the application.</source>
+        <source>target language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -215,168 +258,6 @@
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="162"/>
         <source>Device List</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="255"/>
-        <source>Hz</source>
-        <comment>unit</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="243"/>
-        <source>Output file:</source>
-        <comment>setting</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="144"/>
-        <source>Device #%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="147"/>
-        <source>Record</source>
-        <comment>device capability</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="148"/>
-        <location filename="../../src/ui/cli/CLICommon.h" line="151"/>
-        <location filename="../../src/ui/cli/CLICommon.h" line="154"/>
-        <source>Yes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="148"/>
-        <location filename="../../src/ui/cli/CLICommon.h" line="151"/>
-        <location filename="../../src/ui/cli/CLICommon.h" line="154"/>
-        <source>No</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="150"/>
-        <source>Loopback</source>
-        <comment>device capability</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="153"/>
-        <source>Output</source>
-        <comment>device capability</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="220"/>
-        <source>Could not find device matching: %1</source>
-        <extracomment>The argument in this text is the name or id of the device that the user searched for</extracomment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="248"/>
-        <source>Delay:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="249"/>
-        <location filename="../../src/ui/cli/CLICommon.h" line="252"/>
-        <source>s</source>
-        <comment>abbreviation for seconds</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="251"/>
-        <source>Duration:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="254"/>
-        <source>Sample rate:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="258"/>
-        <source>Encoding:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="261"/>
-        <source>Input device:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="264"/>
-        <source>Output device:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="37"/>
-        <source>Warning: Unused argument &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="48"/>
-        <source>Missing argument &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="60"/>
-        <source>Malformed argument &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="61"/>
-        <source>&apos;%1&apos; is not a valid %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="279"/>
-        <source>Are you sure you want to discard? (y/N): </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="289"/>
-        <source>Discard cancelled.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="317"/>
-        <source>Input device set to: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="321"/>
-        <source>Failed to set input device.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="357"/>
-        <source>Output device set to: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="361"/>
-        <source>Failed to set output device.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="432"/>
-        <source>System command returned: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="437"/>
-        <source>No system command processor is available.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="447"/>
-        <source>Unrecognized command &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="454"/>
-        <source>Command failed with value of &apos;false&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -470,6 +351,168 @@
         <source>Run a system command from within HulaLoop.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="144"/>
+        <source>Device #%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="147"/>
+        <source>Record</source>
+        <comment>device capability</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="148"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="151"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="154"/>
+        <source>Yes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="148"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="151"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="154"/>
+        <source>No</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="150"/>
+        <source>Loopback</source>
+        <comment>device capability</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="153"/>
+        <source>Output</source>
+        <comment>device capability</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="220"/>
+        <source>Could not find device matching: %1</source>
+        <extracomment>The argument in this text is the name or id of the device that the user searched for</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="243"/>
+        <source>Output file:</source>
+        <comment>setting</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="248"/>
+        <source>Delay:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="249"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="252"/>
+        <source>s</source>
+        <comment>abbreviation for seconds</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="251"/>
+        <source>Duration:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="254"/>
+        <source>Sample rate:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="255"/>
+        <source>Hz</source>
+        <comment>unit</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="258"/>
+        <source>Encoding:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="261"/>
+        <source>Input device:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommon.h" line="264"/>
+        <source>Output device:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="37"/>
+        <source>Warning: Unused argument &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="48"/>
+        <source>Missing argument &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="60"/>
+        <source>Malformed argument &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="61"/>
+        <source>&apos;%1&apos; is not a valid %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="279"/>
+        <source>Are you sure you want to discard? (y/N): </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="289"/>
+        <source>Discard cancelled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="317"/>
+        <source>Input device set to: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="321"/>
+        <source>Failed to set input device.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="357"/>
+        <source>Output device set to: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="361"/>
+        <source>Failed to set output device.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="432"/>
+        <source>System command returned: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="437"/>
+        <source>No system command processor is available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="447"/>
+        <source>Unrecognized command &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="454"/>
+        <source>Command failed with value of &apos;false&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Transport</name>
@@ -513,7 +556,7 @@
 <context>
     <name>hula::QMLBridge</name>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="387"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="530"/>
         <source>Go back and save</source>
         <translation type="unfinished"></translation>
     </message>
@@ -597,13 +640,24 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="49"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="25"/>
+        <source>Elapsed: 0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/main.qml" line="52"/>
         <source>HulaLoop Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="49"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="52"/>
         <source>HulaLoop has started recording audio!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/main.qml" line="65"/>
+        <source>Recording</source>
+        <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>

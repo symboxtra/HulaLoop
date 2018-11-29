@@ -48,6 +48,8 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
         devices.push_back(new Device(id, temp, DeviceType::LOOPBACK));
     }
 
+    HulaAudioSettings *s = HulaAudioSettings::getInstance();
+
     // outer while gets all the sound cards
     while (snd_card_next(&cardNumber) >= 0 && cardNumber >= 0)
     {
@@ -65,7 +67,7 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
             snd_pcm_info_set_device(subInfo, subDevice);
             snd_pcm_info_set_subdevice(subInfo, 0);
             // check if the device is an input or output device
-            if (recSet)
+            if (recSet && s->getShowRecordDevices())
             {
                 snd_pcm_info_set_stream(subInfo, SND_PCM_STREAM_CAPTURE);
                 if (snd_ctl_pcm_info(handle, subInfo) >= 0)
