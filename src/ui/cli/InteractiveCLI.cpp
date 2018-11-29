@@ -12,11 +12,11 @@
 using namespace hula;
 
 /**
- * Constuct a new instance of HulaInteractiveCli.
+ * Constuct a new instance of InteractiveCLI.
  *
  * This will not start the command loop.
  */
-HulaInteractiveCli::HulaInteractiveCli(QCoreApplication *app)
+InteractiveCLI::InteractiveCLI(QCoreApplication *app)
 {
     this->app = app;
     this->t = new Transport();
@@ -30,7 +30,7 @@ HulaInteractiveCli::HulaInteractiveCli(QCoreApplication *app)
  * @param args Vector of all arguments provided to the command
  * @param numUsed Number of arguments actually used by the command
  */
-void HulaInteractiveCli::unusedArgs(const std::vector<std::string> &args, int numUsed) const
+void InteractiveCLI::unusedArgs(const std::vector<std::string> &args, int numUsed) const
 {
     for (size_t i = numUsed - 1; i < args.size(); i++)
     {
@@ -43,7 +43,7 @@ void HulaInteractiveCli::unusedArgs(const std::vector<std::string> &args, int nu
  *
  * @param argName Name of the missing argument
  */
-void HulaInteractiveCli::missingArg(const std::string &argName) const
+void InteractiveCLI::missingArg(const std::string &argName) const
 {
     fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, qPrintable(tr("Missing argument '%1'").arg(argName.c_str())));
 }
@@ -55,7 +55,7 @@ void HulaInteractiveCli::missingArg(const std::string &argName) const
  * @param val Value given by user
  * @param type Expected type of value
  */
-void HulaInteractiveCli::malformedArg(const std::string &argName, const std::string &val, const std::string &type) const
+void InteractiveCLI::malformedArg(const std::string &argName, const std::string &val, const std::string &type) const
 {
     fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, qPrintable(tr("Malformed argument '%1'").arg(argName.c_str())));
     fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, qPrintable(tr("'%1' is not a valid %2.").arg(val.c_str(), type.c_str())));
@@ -66,7 +66,7 @@ void HulaInteractiveCli::malformedArg(const std::string &argName, const std::str
  *
  * This is an infinite loop.
  */
-void HulaInteractiveCli::start()
+void InteractiveCLI::start()
 {
     std::string line;
     std::string command;
@@ -114,7 +114,7 @@ void HulaInteractiveCli::start()
  * @param args Vector of arguments that should be used with the command
  * @return HulaCliStatus Outcome of the command
  */
-HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, const std::vector<std::string> &args)
+HulaCliStatus InteractiveCLI::processCommand(const std::string &command, const std::vector<std::string> &args)
 {
     bool success = true;
     HulaCliStatus stat = HulaCliStatus::HULA_CLI_SUCCESS;
@@ -265,13 +265,37 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
             return HulaCliStatus::HULA_CLI_FAILURE;
         }
     }
+    else if (command == HL_DISCARD_SHORT || command == HL_DISCARD_LONG)
+    {
+        std::string resp = "N";
+
+        // Handle force option
+        if (args.size() >= 1 && args[0] == HL_DISCARD_ARG1)
+        {
+            resp = "Y";
+        }
+        else
+        {
+            printf("%s", qPrintable(CLI::tr("Are you sure you want to discard? (y/N): ")));
+            std::getline(std::cin, resp);
+        }
+
+        if (resp.size() > 0 && (resp[0] == 'Y' || resp[0] == 'y'))
+        {
+            t->discard();
+        }
+        else
+        {
+            printf("%s\n", qPrintable(CLI::tr("Discard cancelled.")));
+        }
+    }
     else if (command == HL_LIST_SHORT || command == HL_LIST_LONG)
     {
         printDeviceList(t);
     }
     else if (command == HL_INPUT_SHORT || command == HL_INPUT_LONG)
     {
-        Device *device = NULL;
+        Device *device = nullptr;
         // Make sure the arg exists
         if (args.size() != 0)
         {
@@ -284,7 +308,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
         }
 
         // Find device will already have printed a not-found error
-        if (device != NULL)
+        if (device != nullptr)
         {
             bool ret = t->getController()->setActiveInputDevice(device);
 
@@ -311,7 +335,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
     }
     else if (command == HL_OUTPUT_SHORT || command == HL_OUTPUT_LONG)
     {
-        Device *device = NULL;
+        Device *device = nullptr;
         // Make sure the arg exists
         if (args.size() != 0)
         {
@@ -324,7 +348,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
         }
 
         // Find device will already have printed a not-found error
-        if (device != NULL)
+        if (device != nullptr)
         {
             bool ret = t->getController()->setActiveOutputDevice(device);
 
@@ -392,7 +416,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
     else if (command == HL_SYSTEM_SHORT || command == HL_SYSTEM_LONG)
     {
         // Make sure there is a command processor available
-        if (system(NULL))
+        if (system(nullptr))
         {
             // Construct the sys command from args
             std::string sysCommand = "";
@@ -439,7 +463,7 @@ HulaCliStatus HulaInteractiveCli::processCommand(const std::string &command, con
  *
  * @return State of the transport
  */
-TransportState HulaInteractiveCli::getState()
+TransportState InteractiveCLI::getState()
 {
     return this->t->getState();
 }
@@ -449,17 +473,17 @@ TransportState HulaInteractiveCli::getState()
  * This is used primarily so that the CLI --ouput-file
  * flag can affect the export path.
  */
-void HulaInteractiveCli::setOutputFilePath(const std::string &path)
+void InteractiveCLI::setOutputFilePath(const std::string &path)
 {
     this->outputFilePath = path;
 }
 
 /**
- * Destructor for HulaInteractiveCli.
+ * Destructor for InteractiveCLI.
  */
-HulaInteractiveCli::~HulaInteractiveCli()
+InteractiveCLI::~InteractiveCLI()
 {
-    hlDebugf("HulaInteractiveCLI destructor called.\n");
+    hlDebugf("InteractiveCLI destructor called\n");
 
     delete this->t;
 }

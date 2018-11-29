@@ -14,8 +14,8 @@
 #ifndef ALSA_PCM_NEW_HW_PARAMS_API
     #define ALSA_PCM_NEW_HW_PARAMS_API
 #endif
-#define FRAME_TIME 8192
-using byte = uint8_t;
+
+#define FRAME_TIME 512
 
 namespace hula
 {
@@ -34,6 +34,7 @@ namespace hula
             ~LinuxAudio();
             void capture();
 
+            bool setActiveInputDevice(Device *device);
             static void startPAVUControl();
 
             std::vector<Device *> getDevices(DeviceType type);

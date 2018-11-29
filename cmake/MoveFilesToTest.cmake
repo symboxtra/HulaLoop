@@ -4,6 +4,7 @@
 
 set (PORTAUDIO_DLLS ${BINARY_DIR}/bin/portaudio.dll ${BINARY_DIR}/bin/portaudio_x64.dll ${BINARY_DIR}/bin/portaudio_x86.dll)
 set (QT_DLLS ${BINARY_DIR}/bin/Qt5Core.dll ${BINARY_DIR}/bin/Qt5Cored.dll)
+set (SNDFILE_DLLS ${BINARY_DIR}/bin/libsndfile-1.dll)
 
 # Copy OSXDaemon so that the tests can start it
 set (OSX_DAEMON ${BINARY_DIR}/bin/hulaloop-osx-daemon)
@@ -13,6 +14,7 @@ set (OSX_DAEMON ${BINARY_DIR}/bin/hulaloop-osx-daemon)
 execute_process (COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${PORTAUDIO_DLLS}
         ${QT_DLLS}
+        ${SNDFILE_DLLS}
         ${OSX_DAEMON}
         ${SOURCE_DIR}/src/test/test.wav
         ${BINARY_DIR}/bin/test/

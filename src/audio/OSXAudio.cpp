@@ -85,7 +85,7 @@ int OSXAudio::isDaemonRunning()
         close(procPipe[1]);
 
         std::string pgrep = "/usr/bin/pgrep";
-        ret = execlp(pgrep.c_str(), pgrep.c_str(), "hulaloop-osx-daemon", NULL);
+        ret = execlp(pgrep.c_str(), pgrep.c_str(), "hulaloop-osx-daemon", nullptr);
 
         hlDebugf("Failed to start pgrep process.\n");
         hlDebugf("Execution of %s failed with return code: %d\n", pgrep.c_str(), ret);
@@ -160,7 +160,7 @@ pid_t OSXAudio::startDaemon()
 
     // Get the directory
     char *installDir = dirname(path);
-    if (installDir == NULL)
+    if (installDir == nullptr)
     {
         hlDebugf("Could not trim executable name from install path. Error: %d\n", errno);
         exit(EXIT_FAILURE);
@@ -174,7 +174,7 @@ pid_t OSXAudio::startDaemon()
     // Child process
     if (ret == 0)
     {
-        ret = execlp(executable.c_str(), executable.c_str(), NULL);
+        ret = execlp(executable.c_str(), executable.c_str(), nullptr);
 
         hlDebugf("Failed to start hulaloop-osx-daemon process.\n");
         hlDebugf("Execution of %s failed with return code: %d\n", executable.c_str(), ret);
@@ -273,12 +273,12 @@ void OSXAudio::capture()
     inputParameters.channelCount = Pa_GetDeviceInfo(inputParameters.device)->maxInputChannels;
     inputParameters.sampleFormat = PA_SAMPLE_TYPE;
     inputParameters.suggestedLatency = Pa_GetDeviceInfo(inputParameters.device)->defaultLowInputLatency;
-    inputParameters.hostApiSpecificStreamInfo = NULL;
+    inputParameters.hostApiSpecificStreamInfo = nullptr;
 
     err = Pa_OpenStream(
               &stream,
               &inputParameters,
-              NULL,                  // &outputParameters
+              nullptr,                  // &outputParameters
               SAMPLE_RATE,
               FRAMES_PER_BUFFER,
               paClipOff,             // We won't output out of range samples so don't bother clipping them
@@ -396,7 +396,7 @@ bool OSXAudio::checkDeviceParams(Device *device)
     inputParameters.device = device->getID().portAudioID;
     inputParameters.sampleFormat = paFloat32;
 
-    PaError err = Pa_IsFormatSupported(&inputParameters, NULL, HulaAudioSettings::getInstance()->getSampleRate());
+    PaError err = Pa_IsFormatSupported(&inputParameters, nullptr, HulaAudioSettings::getInstance()->getSampleRate());
 
     if (err == paFormatIsSupported)
     {

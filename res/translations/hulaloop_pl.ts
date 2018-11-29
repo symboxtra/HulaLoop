@@ -4,25 +4,25 @@
 <context>
     <name>ButtonPanel</name>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="121"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="143"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation>Nagrywa</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="165"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="187"/>
         <source>Stopped</source>
         <comment>state</comment>
         <translation>Zatrzymany</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="213"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="239"/>
         <source>Paused</source>
         <comment>state</comment>
         <translation>Wstrzymane</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="229"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="256"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation>Gra</translation>
@@ -32,32 +32,37 @@
         <translation type="vanished">Regulator czasowy:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="439"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="469"/>
         <source>Input Device:</source>
         <translation>Urządzenia wejściowe:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="485"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="515"/>
         <source>Output Device:</source>
         <translation>Urządzenia zewnętrzne:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="558"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="583"/>
+        <source>Are you sure you want to discard?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="641"/>
         <source>Delay Recording (hh:mm:ss)</source>
         <translation>Opóźnione nagrywanie (gg:mm:ss)</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="577"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="660"/>
         <source>Record Duration (hh:mm:ss)</source>
         <translation>Czas trwania nagrywanie (gg:mm:ss)</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="609"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="692"/>
         <source>CANCEL</source>
         <translation>ANULUJ</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="628"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="710"/>
         <source>OK</source>
         <translation></translation>
     </message>
@@ -170,13 +175,13 @@
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="93"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="384"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="408"/>
         <source>Translation file successfully loaded.</source>
         <translation>Plik z tłumaczeniem został pomyślnie załadowany.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="97"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="388"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="412"/>
         <source>Could not find translation file for %1.</source>
         <translation>Nie można znaleźć pliku tłumaczącego dla &apos;%1&apos;.</translation>
     </message>
@@ -322,42 +327,52 @@
         <translation>&apos;%1&apos; nie jest prawidłowy &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="293"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="279"/>
+        <source>Are you sure you want to discard? (y/N): </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="289"/>
+        <source>Discard cancelled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="317"/>
         <source>Input device set to: %1</source>
         <translation>Urządzenie wejściowe ustawione do &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="297"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="321"/>
         <source>Failed to set input device.</source>
         <translation>Nie można ustawić urządzenia wejściowego.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="333"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="357"/>
         <source>Output device set to: %1</source>
         <translation>Urządzenie wyjściowe ustawione do &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="337"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="361"/>
         <source>Failed to set output device.</source>
         <translation>Nie można ustawić urządzenia wyjściowego.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="408"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="432"/>
         <source>System command returned: %1</source>
         <translation>Polecenie systemowe zostało zwrócone: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="413"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="437"/>
         <source>No system command processor is available.</source>
         <translation>Żaden procesor poleceń systemu nie jest dostępny.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="423"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="447"/>
         <source>Unrecognized command &apos;%1&apos;</source>
         <translation>Polecenie nierozpoznane &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="430"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="454"/>
         <source>Command failed with value of &apos;false&apos;.</source>
         <translation>Polecenie nie powiodło się z wartością &apos;false&apos;.</translation>
     </message>
@@ -456,31 +471,31 @@
 <context>
     <name>Transport</name>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="157"/>
+        <location filename="../../src/control/Transport.cpp" line="163"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation>Nagrywa</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="159"/>
+        <location filename="../../src/control/Transport.cpp" line="165"/>
         <source>Stopped</source>
         <comment>state</comment>
         <translation>Zatrzymany</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="161"/>
+        <location filename="../../src/control/Transport.cpp" line="167"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation>Gra</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="163"/>
+        <location filename="../../src/control/Transport.cpp" line="169"/>
         <source>Paused</source>
         <comment>state</comment>
         <translation>Wstrzymane</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="165"/>
+        <location filename="../../src/control/Transport.cpp" line="171"/>
         <source>Unknown</source>
         <comment>state</comment>
         <translation>Nieznany</translation>
@@ -565,12 +580,12 @@
         <translation>Nie znaleziono żadnych aktualizacji.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="33"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="40"/>
         <source>HulaLoop Information</source>
         <translation>Informacja HulaLoop</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="33"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="40"/>
         <source>HulaLoop has started recording audio!</source>
         <translation>HulaLoop zaczeło nagrywać dźwięk!</translation>
     </message>

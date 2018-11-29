@@ -9,6 +9,14 @@
 namespace hula
 {
     /**
+     * Specifiy the encoding type for the output file.
+     */
+    enum Encoding
+    {
+        WAV, FLAC, CAF, AIFF
+    };
+
+    /**
      * Singleton class containing all settings for the application.
      * This includes audio specific settings.
      */

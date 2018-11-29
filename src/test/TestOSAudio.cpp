@@ -73,7 +73,7 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
 };
 
 /**
- * NULL device does not cause a switch.
+ * nullptr device does not cause a switch.
  *
  * EXPECTED:
  *      Device does not switch.
@@ -81,7 +81,7 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
 TEST_F(TestOSAudio, null_does_not_switch)
 {
     setActiveInputDevice(this->testDevice);
-    setActiveInputDevice(NULL);
+    setActiveInputDevice(nullptr);
     EXPECT_EQ(this->activeInputDevice->getName(), this->testDevice->getName());
 
     waitForThreadDeathBeforeDestruction();
@@ -118,6 +118,7 @@ TEST_F(TestOSAudio, init_does_not_block)
     EXPECT_EQ(this->outThreads.size(), 0);
 
     // This should come back immediately
+    this->endCapture.store(false);
     TEST_TIMEOUT_BEGIN(backgroundCapture(this));
     TEST_TIMEOUT_FAIL_AFTER(2 * MOCK_CAPTURE_TIME);
 }
@@ -140,6 +141,7 @@ TEST_F(TestOSAudio, add_starts_thread)
 
     // This should be running infinitely
     // Succeed after ~two cycles
+    this->endCapture.store(false);
     TEST_TIMEOUT_BEGIN(backgroundCapture(this));
     TEST_TIMEOUT_SUCCESS_AFTER(2 * MOCK_CAPTURE_TIME);
 

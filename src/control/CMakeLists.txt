@@ -7,6 +7,6 @@ add_library_target (${HL_LIBRARY_NAME} "${CONTROL_SRC_FILES}")
 add_include_dir (${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Link external libraries to new generated library
-target_link_libraries (${HL_LIBRARY_NAME} hlaudio ${QT_TRANSLATION_LIBS})
+target_link_libraries (${HL_LIBRARY_NAME} ${HL_LIBRARIES} ${QT_TRANSLATION_LIBS})
 
 set (HL_LIBRARIES ${HL_LIBRARIES} ${HL_LIBRARY_NAME} PARENT_SCOPE)

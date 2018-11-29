@@ -33,8 +33,8 @@
 #define HANDLE_PA_ERROR(hres) \
             if (hres != paNoError) { goto Exit; }
 #define SAFE_RELEASE(punk) \
-            if ((punk) != NULL) \
-                { (punk)->Release(); (punk) = NULL; }
+            if ((punk) != nullptr) \
+                { (punk)->Release(); (punk) = nullptr; }
 
 namespace hula
 {
@@ -56,8 +56,8 @@ namespace hula
             REFERENCE_TIME requestDuration = REFTIMES_PER_SEC;
             REFERENCE_TIME bufferDuration;
 
-            IMMDeviceEnumerator *pEnumerator = NULL;
-            IMMDeviceCollection *deviceCollection = NULL;
+            IMMDeviceEnumerator *pEnumerator = nullptr;
+            IMMDeviceCollection *deviceCollection = nullptr;
 
             // Audio data
             uint8_t *pData;

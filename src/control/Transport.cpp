@@ -1,3 +1,5 @@
+#include <chrono>
+
 #include "hlcontrol/internal/Export.h"
 #include "hlcontrol/internal/HulaControlError.h"
 #include "hlcontrol/internal/HulaSettings.h"
@@ -12,6 +14,10 @@ Transport::Transport()
 {
     controller = new Controller();
     recorder = new Record(controller);
+
+    canRecord = true;
+    canPlayback = false;
+    initRecordClicked = false;
 }
 
 /**
@@ -27,16 +33,21 @@ bool Transport::record(double delay, double duration)
     hlDebug() << "Record triggered!" << std::endl;
     hlDebug() << "Delay set to: " << delay << std::endl;
     hlDebug() << "Duration set to: " << duration << std::endl;
-    state = RECORDING;
 
-    if (recordState)
+    if (canRecord)
     {
+        hlDebug() << "STARTED RECORDING" << std::endl;
         recorder->start();
 
-        recordState = false;
+        initRecordClicked = true;
+        canRecord = false;
+        canPlayback = false;
 
+        state = RECORDING;
+        std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
+
     return false;
 }
 
@@ -57,17 +68,19 @@ bool Transport::record()
 bool Transport::stop()
 {
     hlDebug() << "Stop button clicked!" << std::endl;
-    state = STOPPED;
 
-    if (!recordState || playbackState)
+    if ((!canRecord && !canPlayback) || state == PAUSED)
     {
         recorder->stop();
 
-        recordState = false;
-        playbackState = true;
+        canRecord = false;
+        canPlayback = true;
 
+        state = STOPPED;
+        std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
+
     return false;
 }
 
@@ -77,15 +90,19 @@ bool Transport::stop()
 bool Transport::play()
 {
     hlDebug() << "Play button clicked!" << std::endl;
-    state = PLAYING;
 
-    if (playbackState)
+    if (canPlayback)
     {
-        // TODO: Add playback call
-        playbackState = false;
+        // TODO: Add start playback call
 
+        canPlayback = false;
+        canRecord = false;
+
+        state = PLAYING;
+        std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
+
     return false;
 }
 
@@ -95,42 +112,31 @@ bool Transport::play()
 bool Transport::pause()
 {
     hlDebug() << "Pause button clicked!" << std::endl;
-    state = PAUSED;
 
-    if (!recordState) // Pause record
+    if (state == RECORDING && !canRecord) // Pause record
     {
         recorder->stop();
 
-        recordState = true;
-        playbackState = true;
+        canRecord = true;
+        canPlayback = true;
 
+        state = PAUSED;
+        std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
-    else if (!playbackState) // Pause playback
+    else if (!canPlayback && initRecordClicked) // Pause playback
     {
         // TODO: Add playback pause call
-        playbackState = true;
 
+        canPlayback = true;
+
+        state = PAUSED;
+        std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
+
     return false;
 }
-
-/**
- * Discard any recorded audio and reset the state.
- *
- * @return bool Success of command
- */
-/*
-bool Transport::Discard()
-{
-    state = INITIAL;
-    recordState = true;
-    playbackState = false;
-
-    return true;
-}
-*/
 
 /**
  * Return the current state of the Transport object.
@@ -181,8 +187,25 @@ Controller *Transport::getController() const
 void Transport::exportFile(std::string targetDirectory)
 {
     Export exp(targetDirectory);
-    // TODO: Make it an actual directory
-    exp.copyData("/tmp/temp.txt");
+    exp.copyData(recorder->getExportPaths());
+
+    recorder->clearExportPaths();
+}
+
+/**
+ * Reset transport states and delete captured audio files from system temp folder
+ */
+void Transport::discard()
+{
+    // Reset states
+    canRecord = true;
+    canPlayback = false;
+    initRecordClicked = false;
+    state = (TransportState)-1;
+
+    // Delete audio files from system temp folder
+    Export::deleteTempFiles(recorder->getExportPaths());
+    recorder->clearExportPaths();
 }
 
 /**
@@ -192,13 +215,13 @@ Transport::~Transport()
 {
     hlDebugf("Transport destructor called\n");
 
-    if (controller)
-    {
-        delete controller;
-    }
-
     if (recorder)
     {
         delete recorder;
+    }
+
+    if (controller)
+    {
+        delete controller;
     }
 }

@@ -6,16 +6,6 @@
 namespace hula
 {
     /**
-     * Specifiy the encoding type for the output file.
-     *
-     * Temporarily defined here until the Encoder class is built.
-     */
-    enum Encoding
-    {
-        WAV, MP3
-    };
-
-    /**
      * Class containing all settings pertinent to the audio module.
      */
     class HulaAudioSettings {
