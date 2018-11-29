@@ -64,7 +64,6 @@ TEST_F(TestUpdater, parseTag2)
     ASSERT_TRUE(versionParts.at(0) == 0);
     ASSERT_TRUE(versionParts.at(1) == 0);
     ASSERT_TRUE(versionParts.at(2) == 0);
-    ASSERT_TRUE(versionParts.at(3) == -1);
 }
 
 TEST_F(TestUpdater, parseTag3)
@@ -91,7 +90,6 @@ TEST_F(TestUpdater, parseTag5)
     ASSERT_TRUE(versionParts.at(0) == 0);
     ASSERT_TRUE(versionParts.at(1) == 0);
     ASSERT_TRUE(versionParts.at(2) == 0);
-    ASSERT_TRUE(versionParts.at(3) == -1);
 }
 
 TEST_F(TestUpdater, parseTag6)
@@ -110,4 +108,12 @@ TEST_F(TestUpdater, parseTag7)
     {
         ASSERT_TRUE(versionParts.at(i) == -1);
     }
+}
+
+TEST_F(TestUpdater, parseTag8)
+{
+    QList<int> versionParts = updater->parseTagName("0.1.0.123");
+    ASSERT_TRUE(versionParts.at(0) == 0);
+    ASSERT_TRUE(versionParts.at(1) == 1);
+    ASSERT_TRUE(versionParts.at(2) == 0);
 }

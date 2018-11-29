@@ -118,6 +118,7 @@ TEST_F(TestOSAudio, init_does_not_block)
     EXPECT_EQ(this->outThreads.size(), 0);
 
     // This should come back immediately
+    this->endCapture.store(false);
     TEST_TIMEOUT_BEGIN(backgroundCapture(this));
     TEST_TIMEOUT_FAIL_AFTER(2 * MOCK_CAPTURE_TIME);
 }
@@ -140,6 +141,7 @@ TEST_F(TestOSAudio, add_starts_thread)
 
     // This should be running infinitely
     // Succeed after ~two cycles
+    this->endCapture.store(false);
     TEST_TIMEOUT_BEGIN(backgroundCapture(this));
     TEST_TIMEOUT_SUCCESS_AFTER(2 * MOCK_CAPTURE_TIME);
 

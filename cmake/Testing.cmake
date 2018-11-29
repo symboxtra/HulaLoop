@@ -6,7 +6,14 @@ function (create_test _test_file _src_files _timeout _do_memcheck _only_master)
 
     # Make sure the real application builds first
     if (NOT HL_BUILD_ONLY_AUDIO)
-        add_dependencies (${_test_name} hulaloop hulaloop-cli hulaloop-launcher)
+        if (HL_BUILD_GUI)
+            add_dependencies (${_test_name} hulaloop hulaloop-launcher)
+        endif ()
+
+        if (HL_BUILD_CLI)
+            add_dependencies (${_test_name} hulaloop-cli)
+        endif ()
+
         if (OSX)
             add_dependencies (${_test_name} hulaloop-osx-daemon)
         endif ()

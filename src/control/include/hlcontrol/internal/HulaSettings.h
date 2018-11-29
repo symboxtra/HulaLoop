@@ -20,12 +20,17 @@ namespace hula
              */
             static HulaSettings *hlcontrol_instance;
 
+            Encoding outputFileEncoding;
+
         protected:
             QTranslator * trans;
             HulaSettings();
 
         public:
             static HulaSettings *getInstance();
+
+            void setOutputFileEncoding(Encoding);
+            Encoding getOutputFileEncoding();
 
             QTranslator * getTranslator();
             bool loadLanguage(QCoreApplication *app, const std::string &id);

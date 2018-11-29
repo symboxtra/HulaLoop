@@ -1,4 +1,6 @@
 #include "QMLBridge.h"
+//#include "FftRealPair.h"
+#include "FftRealPair.cpp"
 
 #include <QCoreApplication>
 #include <QProcess>
@@ -7,6 +9,20 @@
 
 #include <iostream>
 #include <string>
+#include <thread>
+#include <algorithm>
+#include <cmath>
+#include <cstdlib>
+#include <iomanip>
+#include <iostream>
+#include <random>
+#include <vector>
+#include <stdlib.h>
+#include <thread>
+#include <chrono>
+#include <math.h>
+#include <stdio.h>
+
 
 using namespace hula;
 
@@ -17,7 +33,8 @@ using namespace hula;
  */
 QMLBridge::QMLBridge(QObject *parent) : QObject(parent)
 {
-    transport = new Transport;
+    transport = new Transport();
+    rb = transport->getController()->createBuffer(0.5);
 }
 
 /**
@@ -37,6 +54,9 @@ bool QMLBridge::record()
 {
     bool success = transport->record();
     emit stateChanged();
+
+    startVisThread();
+
     return success;
 }
 
@@ -47,6 +67,9 @@ bool QMLBridge::stop()
 {
     bool success = transport->stop();
     emit stateChanged();
+
+    stopVisThread();
+
     return success;
 }
 
@@ -57,6 +80,9 @@ bool QMLBridge::play()
 {
     bool success = transport->play();
     emit stateChanged();
+
+    startVisThread();
+
     return success;
 }
 
@@ -67,6 +93,9 @@ bool QMLBridge::pause()
 {
     bool success = transport->pause();
     emit stateChanged();
+
+    stopVisThread();
+
     return success;
 }
 
@@ -85,6 +114,7 @@ void QMLBridge::discard()
 void QMLBridge::setActiveInputDevice(QString QDeviceName)
 {
     hlDebug() << "setActiveDevice() called" << std::endl;
+
     std::string deviceName = QDeviceName.toStdString();
     std::vector<Device *> iDevices = transport->getController()->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
     for (auto const &device : iDevices)
@@ -96,7 +126,8 @@ void QMLBridge::setActiveInputDevice(QString QDeviceName)
             return;
         }
     }
-    //Should not get here should have found the device
+
+    // Should not get here should have found the device
     hlDebug() << "Input device not found: " << deviceName << std::endl;
 }
 
@@ -117,7 +148,8 @@ void QMLBridge::setActiveOutputDevice(QString QDeviceName)
             return;
         }
     }
-    //Should not get here should have found the device
+
+    // Should not get here should have found the device
     hlDebug() << "Output device not found: " << deviceName << std::endl;
 }
 
@@ -138,6 +170,7 @@ QString QMLBridge::getInputDevices()
             devices += ",";
         }
     }
+
     Device::deleteDevices(vd);
     return QString::fromStdString(devices);
 }
@@ -159,6 +192,7 @@ QString QMLBridge::getOutputDevices()
             devices += ",";
         }
     }
+
     Device::deleteDevices(vd);
     return QString::fromStdString(devices);
 }
@@ -181,8 +215,127 @@ void QMLBridge::saveFile(QString dir)
     }
     directory = directory.substr(substrLen);
     transport->exportFile(directory);
+}
 
-    discard();
+/**
+ * Start the thread that reads the ring buffer and updates
+ * the visualizer.
+ */
+void QMLBridge::startVisThread()
+{
+    // Stop the previous thread if present
+    stopVisThread();
+
+    // Reset the state
+    endVis.store(false);
+
+    // Start the new thread
+    visThreads.emplace_back(std::thread(&updateVisualizer, this));
+}
+
+/**
+ * Stop the thread that updates the visualizer.
+ */
+void QMLBridge::stopVisThread()
+{
+    endVis.store(true);
+
+    for (auto &t : visThreads)
+    {
+        if (t.joinable())
+        {
+            t.join();
+        }
+    }
+    visThreads.clear();
+}
+
+/**
+ * Perform FFT and update the visualizer.
+ */
+void QMLBridge::updateVisualizer(QMLBridge *_this)
+{
+    _this->transport->getController()->addBuffer(_this->rb);
+
+    int maxSize = 512;
+    int accuracy = 5;
+    // float *temp = new float[maxSize];
+
+    while (!_this->endVis.load())
+    {
+        vector<double> actualoutreal;
+        vector<double> actualoutimag;
+
+        float *data1;
+        float *data2;
+        ring_buffer_size_t size1;
+        ring_buffer_size_t size2;
+        ring_buffer_size_t bytesRead;
+
+        // Only process every @ref accuracy cycles
+        int cycle = 1;
+
+        while (!_this->endVis.load() && actualoutreal.size() < maxSize)
+        {
+                // Do directRead until Windows read is fixed
+                // bytesRead =_this->rb->read(temp, maxSize
+                bytesRead = _this->rb->directRead(maxSize, (void **)&data1, &size1, (void **)&data2, &size2);
+
+                // Keep draining the buffer, but only actually
+                // process the drained data every nth cycle
+                if (cycle % accuracy == 0)
+                {
+                    for (int i = 0; i < size1 && actualoutreal.size() < maxSize; i++)
+                    {
+                        actualoutimag.push_back(data1[i]);
+                        actualoutreal.push_back(data1[i]);
+                    }
+
+                    for (int i = 0; i < size2 && actualoutreal.size() < maxSize; i++)
+                    {
+                        actualoutimag.push_back(data2[i]);
+                        actualoutreal.push_back(data2[i]);
+                    }
+                }
+                else
+                {
+                    // Only count cycles that actually have data
+                    if (bytesRead > 0)
+                    {
+                        cycle++;
+                    }
+                }
+        }
+
+        Fft::transform(actualoutreal, actualoutimag);
+
+        std::vector<double> heights;
+        double sum = 0;
+        for (int i = 0; i < actualoutreal.size(); i++)
+        {
+            if (i % 8 == 0)
+            {
+                sum = fabs(sum);
+
+                #if _WIN32
+                // Adjust the values since WASAPI data comes in screaming loud
+                heights.push_back(sum * 0.2);
+                #else
+                heights.push_back(sum);
+                #endif
+
+                sum = 0;
+            }
+            else
+            {
+                sum += actualoutreal[i];
+            }
+        }
+
+        _this->emit visData(heights);
+    }
+
+    _this->transport->getController()->removeBuffer(_this->rb);
 }
 
 /**
@@ -201,4 +354,16 @@ void QMLBridge::launchUpdateProcess()
 
     proc->start(procName, args);
     proc->waitForFinished();
+}
+
+/**
+ * Destructor for QMLBridge
+ */
+QMLBridge::~QMLBridge()
+{
+    hlDebugf("QMLBridge destructor called\n");
+
+    stopVisThread();
+    delete transport;
+    delete rb;
 }

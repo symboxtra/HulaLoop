@@ -26,7 +26,7 @@ git submodule update --remote --merge
 #### Debian-based Linux ####
 Required:
 ```bash
-sudo apt install g++ build-essential cmake libgl1-mesa-dev libasound2 libasound2-dev
+sudo apt install g++ build-essential cmake libgl1-mesa-dev libasound2-dev libsndfile-dev pavucontrol
 ```
 
 **IMPORTANT:** This application requires Qt 5.10+. This typically has to be installed using the Qt GUI installer since ```apt``` does not backport a recent enough version.
@@ -66,7 +66,7 @@ Install ```brew```:
 ```
 
 ```bash
-brew install g++ qt build-essential cmake portaudio
+brew install g++ qt build-essential cmake portaudio libsndfile
 ```
 
 **IMPORTANT:** JACK2 must be installed using the [GUI installer](http://jackaudio.org/downloads/) since ```brew``` only includes JACK1.

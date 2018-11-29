@@ -80,7 +80,7 @@ typedef float sample_t;
 #ifdef _ERROR_SYSLOG_
     #define ERROR(pri, str, code) syslog(pri, str"\n", code);
 #else
-    #define ERROR(pri, str, code) fprintf(stderr, str, code);
+    #define ERROR(pri, str, code) fprintf(stderr, str"\n", code);
 #endif
 
 namespace hula

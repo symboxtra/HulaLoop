@@ -265,8 +265,6 @@ void LinuxAudio::capture()
 
     while (!this->endCapture.load())
     {
-        // while (callbackList.size() > 0)
-        // {
         // read frames from the pcm
         framesRead = snd_pcm_readi(pcmHandle, audioBuffer, frame);
         if (framesRead == -EPIPE)
@@ -285,6 +283,7 @@ void LinuxAudio::capture()
         }
         copyToBuffers(audioBuffer, framesRead * NUM_CHANNELS * sizeof(SAMPLE));
     }
+
     // cleanup stuff
     err = snd_pcm_close(pcmHandle);
     if (err < 0)
@@ -300,7 +299,7 @@ void LinuxAudio::capture()
  */
 LinuxAudio::~LinuxAudio()
 {
-    hlDebugf("LinuxAudio destructor called.\n");
+    hlDebugf("LinuxAudio destructor called\n");
 
     system("pkill pavucontrol");
 }

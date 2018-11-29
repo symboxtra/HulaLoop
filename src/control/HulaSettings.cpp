@@ -17,13 +17,16 @@ HulaSettings::HulaSettings()
 {
     trans = new QTranslator();
     trans->load(QLocale(), "hulaloop", "_");
+
+    // Output file
+    this->outputFileEncoding = WAV;
 }
 
 /**
  * Retreive the singular instance of HulaSettings
  * or construct a new one if none exists.
  *
- * @return Pointer to the HulaAudioSettings instance.
+ * @return Pointer to the HulaSettings instance.
  */
 HulaSettings *HulaSettings::getInstance()
 {
@@ -33,6 +36,32 @@ HulaSettings *HulaSettings::getInstance()
     }
 
     return hlcontrol_instance;
+}
+
+/**
+ * Get the output encoding for the current global
+ * configuration. This is the configuration that buffers and
+ * output files have been setup for. Changing it mid-anything may
+ * break stuff.
+ *
+ * @return Encoding enum value indicating current encoding type
+ */
+Encoding HulaSettings::getOutputFileEncoding()
+{
+    return getInstance()->outputFileEncoding;
+}
+
+/**
+ * Set the output encoding for the current global
+ * configuration. This is the configuration that buffers and
+ * output files have been setup for. Changing it mid-anything may
+ * break stuff.
+ *
+ * @param val Encoding enum value indicating current encoding type
+ */
+void HulaSettings::setOutputFileEncoding(Encoding val)
+{
+    getInstance()->outputFileEncoding = val;
 }
 
 /**
@@ -86,8 +115,8 @@ bool HulaSettings::loadLanguage(QCoreApplication *app, const std::string &id)
  */
 HulaSettings::~HulaSettings()
 {
-    if (hlcontrol_instance)
+    if (trans)
     {
-        delete hlcontrol_instance;
+        delete trans;
     }
 }
