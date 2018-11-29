@@ -130,7 +130,7 @@ int OSXAudio::isDaemonRunning()
             }
             catch (std::invalid_argument &e)
             {
-                (void)e;
+                (void) e;
                 hlDebugf("Failed to convert parsed PID.\n");
             }
         }

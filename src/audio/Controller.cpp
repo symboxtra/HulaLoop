@@ -33,7 +33,7 @@ Controller::Controller()
 
     if (audio == nullptr)
     {
-        hlDebug() << HL_OS_INIT_FAILED_MSG << std::endl;
+        hlDebug() << HL_OS_INIT_MSG << std::endl;
         exit(1);
     } // TODO: Handle error
 
