@@ -65,7 +65,10 @@ bool QMLBridge::record()
     bool success = transport->record();
     emit stateChanged();
 
-    startVisThread();
+    if (success)
+    {
+        startVisThread();
+    }
 
     return success;
 }
@@ -91,7 +94,10 @@ bool QMLBridge::play()
     bool success = transport->play();
     emit stateChanged();
 
-    startVisThread();
+    if (success)
+    {
+        startVisThread();
+    }
 
     return success;
 }

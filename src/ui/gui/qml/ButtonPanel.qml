@@ -678,11 +678,12 @@ Rectangle {
                             // Discard files
                             qmlbridge.discard()
                             recordBtn.tttext = "Record Audio"
+
                             // Start recording again
                             stopBtn.isStopped = false
                             recordBtn.contentItem.text = MDFont.Icon.record
-//                            recordBtn.onClicked()
                             discardPopup.close()
+
                             exportBtn.enabled = false;
                             timeFuncs.time = 0;
                             timeFuncs.time = 0;

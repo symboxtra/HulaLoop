@@ -197,8 +197,8 @@ void Transport::exportFile(std::string targetDirectory)
 void Transport::discard()
 {
     // Reset states
-    canPlayback = true;
-    canRecord = false;
+    canRecord = true;
+    canPlayback = false;
     initRecordClicked = false;
     state = READY;
 
