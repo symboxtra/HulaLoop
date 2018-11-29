@@ -7,7 +7,12 @@ set (CMAKE_CXX_STANDARD 14)
 # Declare project
 project (HulaLoop-Examples LANGUAGES CXX C)
 
-include_directories (../src/audio/include ../src/libs/portaudio/include ../src/libs/portaudio/src/common)
-add_executable (hulaloop-simple-example Simple.cpp)
+include_directories (../src/audio/include ../src/libs/portaudio/include ../src/libs/portaudio/common)
 
-target_link_libraries (hulaloop-simple-example hlaudio)
+# Simple Record Example
+add_executable (hulaloop-simple-record SimpleRecord.cpp)
+target_link_libraries (hulaloop-simple-record hlaudio)
+
+# Simple Playback Example
+add_executable (hulaloop-simple-playback SimplePlayback.cpp)
+target_link_libraries (hulaloop-simple-record hlaudio)

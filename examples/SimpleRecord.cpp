@@ -1,5 +1,5 @@
 /**
- * @file Simple.cpp
+ * @file SimpleRecord.cpp
  * Simple, single-threaded example using the HulaLoop audio library.
  *
  * The program retrieves a device list, displays the devices,
@@ -20,7 +20,7 @@ int main()
     // This is the hub for all communication and control
     Controller c;
 
-    cout << endl << "-------- HulaLoop Simple Example --------" << endl << endl;
+    cout << endl << "-------- HulaLoop Simple Record Example --------" << endl << endl;
 
     // Fetch all loopback and recording devices
     // Loopback devices are output devices whose output stream can be "looped back" and recorded
