@@ -301,7 +301,7 @@ if (NOT BUILD_ONLY_AUDIO)
         set (CPACK_DEBIAN_PACKAGE_DESCRIPTION "Simple cross-platform audio loopback and recording.")
         set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Symboxtra Software")
         # !!!! Add contact email
-        set (CPACK_DEBIAN_PACKAGE_DEPENDS "g++, build-essential, cmake, libgl1-mesa-dev, libasound2, libasound2-dev")
+        set (CPACK_DEBIAN_PACKAGE_DEPENDS "g++, build-essential, cmake, libgl1-mesa-dev, libasound2, libasound2-dev, qt5-default, libqt5quick5, libqt5qml5, libqt5quickcontrols2-5")
         # install logo file and the desktop shortcut
         install (FILES ${PROJECT_SOURCE_DIR}/res/installer/hulaloop.desktop DESTINATION /usr/share/applications)
         install (FILES ${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.svg DESTINATION /usr/share/icons/hicolor/scalable/apps)
