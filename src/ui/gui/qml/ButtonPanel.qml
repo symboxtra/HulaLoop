@@ -102,6 +102,13 @@ Rectangle {
 
                 display: AbstractButton.TextOnly
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                property string tttext:"Record Audio"
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr(recordBtn.tttext)
 
                 background: Rectangle {
                     color: (recordBtn.pressed || !recordBtn.enabled) ?  "grey" : "darkgrey"
@@ -119,6 +126,7 @@ Rectangle {
                 }
 
                 onClicked: {
+
                     if(stopBtn.isStopped)
                     {
                         discardPopup.open()
@@ -149,6 +157,7 @@ Rectangle {
                         playpauseBtn.enabled = true;
                         playpauseBtn.contentItem.text = MDFont.Icon.pause;
                         playpauseBtn.contentItem.color = "white";
+                        playpauseBtn.tttext = "Pause audio"
 
                         // Update self
                         enabled = false;
@@ -164,6 +173,12 @@ Rectangle {
 
                 display: AbstractButton.TextOnly
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Stop recording")
 
                 background: Rectangle {
                     color: (stopBtn.pressed || !stopBtn.enabled) ?  "grey" : "darkgrey"
@@ -183,7 +198,7 @@ Rectangle {
                 onClicked: {
                     let success = qmlbridge.stop()
                     console.log("Test: " + success)
-
+                    recordBtn.tttext = "Discard recording"
                     if(success && (qmlbridge.getTransportState() === qsTr("Stopped", "state")))
                     {
                         enabled = false;
@@ -202,6 +217,7 @@ Rectangle {
                         recordingTimer.stop()
                     }
                 }
+
             }
 
             RoundButton {
@@ -211,6 +227,13 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 display: AbstractButton.TextOnly
                 property bool isRecording: false // Remove if we do not need for checking when not recording
+                property string tttext : ""
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr(playpauseBtn.tttext)
 
                 contentItem: Text {
                     objectName: "play_icon"
@@ -240,6 +263,7 @@ Rectangle {
                         {
                             contentItem.text = MDFont.Icon.play;
                             contentItem.color = "green";
+                            playpauseBtn.tttext = "Playback audio"
 
                             if(!stopBtn.isStopped)
                             {
@@ -277,6 +301,12 @@ Rectangle {
                 display: AbstractButton.TextOnly
                 enabled: updateAndTimerBtnEnabled
 
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Set recording delay and duration")
+
                 contentItem: Text {
                     font.family: "Material Design Icons"
                     font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
@@ -303,6 +333,12 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 display: AbstractButton.TextOnly
 
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Export audio")
+
                 contentItem: Text {
                     font.family: "Material Design Icons"
                     font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
@@ -328,6 +364,12 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 display: AbstractButton.TextOnly
                 enabled: updateAndTimerBtnEnabled
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Check for updates")
 
                 contentItem: Text {
                     font.family: "Material Design Icons"
@@ -492,6 +534,13 @@ Rectangle {
             ComboBox {
                 id: iDeviceInfoLabel
                 Layout.preferredWidth: Math.max(Math.round(window.width * 0.2), 320)
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Change input device")
+
                 model: ListModel {
                     id: iDeviceItems
                     Component.onCompleted: {
@@ -512,7 +561,7 @@ Rectangle {
                 onPressedChanged: {
 
                     let selectedInd = 0;
-                    if(currentIndex != -1)
+                    if(currentIndex < 0)
                         selectedInd = currentIndex;
 
                     model.clear();
@@ -538,6 +587,13 @@ Rectangle {
             ComboBox {
                 id: oDeviceInfoLabel
                 Layout.preferredWidth: Math.max(Math.round(window.width * 0.2), 320)
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Change output device")
+
                 model: ListModel {
                     id: oDeviceItems
                     Component.onCompleted: {
@@ -621,7 +677,7 @@ Rectangle {
                         onClicked: {
                             // Discard files
                             qmlbridge.discard()
-
+                            recordBtn.tttext = "Record Audio"
                             // Start recording again
                             stopBtn.isStopped = false
                             recordBtn.contentItem.text = MDFont.Icon.record

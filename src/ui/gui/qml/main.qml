@@ -94,6 +94,7 @@ ApplicationWindow {
         id: bottomRectangle
     }
 
+
     Rectangle {
         id: visualize
         width: parent.width

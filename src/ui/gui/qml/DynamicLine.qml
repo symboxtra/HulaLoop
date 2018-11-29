@@ -22,7 +22,10 @@ Canvas {
         ctx.reset();
         canvas.requestPaint();
     }
-
+    function resetCanvas(){
+        let ctx = getContext('2d');
+        ctx.reset();
+    }
     function readValues(anArray) {
         itemarr.items = anArray
     }
