@@ -1,5 +1,6 @@
 #include "hlcontrol/internal/Export.h"
 
+#include <algorithm>
 #include <cstdio>
 #include <fstream>
 #include <iostream>
@@ -44,43 +45,66 @@ void Export::copyData(std::vector<std::string> dirs)
     hlDebug() << "Extension: " << extension << std::endl;
 
     // Initialize libsndfile info.
-    SF_INFO sfinfo_in;
+    SF_INFO sfinfo_in = {0};
     sfinfo_in.samplerate = SAMPLE_RATE;
     sfinfo_in.channels = NUM_CHANNELS;
-    sfinfo_in.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
+    sfinfo_in.format = SF_FORMAT_FLAC | SF_FORMAT_PCM_24;
 
     // Initialize libsndfile info.
-    SF_INFO sfinfo_out;
+    SF_INFO sfinfo_out = {0};
     sfinfo_out.samplerate = SAMPLE_RATE;
     sfinfo_out.channels = NUM_CHANNELS;
     sfinfo_out.format = SF_FORMAT_FLOAT;
-    float* buffer = new float[512];
 
     // Set libsndfile settings based on extension
     // TODO: Compare against Encoding enum from HulaAudioSettings
     if (!extension.compare("wav"))
+    {
         sfinfo_out.format |= SF_FORMAT_WAV;
+    }
     else if (!extension.compare("flac"))
-        sfinfo_out.format |= SF_FORMAT_FLAC;
-    else if(!extension.compare("caf"))
+    {
+        sfinfo_out.format |= SF_FORMAT_FLAC | SF_FORMAT_PCM_24;;
+    }
+    else if (!extension.compare("caf"))
+    {
         sfinfo_out.format |= SF_FORMAT_CAF;
-    else if(!extension.compare("aiff"))
+    }
+    else if (!extension.compare("aiff"))
+    {
         sfinfo_out.format |= SF_FORMAT_AIFF;
+    }
+    else if(!extension.compare("raw"))
+    {
+        sfinfo_out.format |= SF_FORMAT_RAW;
+    }
+    else
+    {
+        sfinfo_out.format |= SF_FORMAT_WAV;
+    }
+    if(!sf_format_check(&sfinfo_out) || !sf_format_check(&sfinfo_in))
+    {
+        hlDebug() << "Invalid libsndfile format: " << sfinfo_out.format << std::endl;
+        return;
+    }
 
     SNDFILE *out_file = sf_open(this->targetFile.c_str(), SFM_WRITE, &sfinfo_out);
+    float buffer[512];
 
-    for(int i = 0;i < dirs.size();i++)
+    for (int i = 0; i < dirs.size(); i++)
     {
         // opens the files
-        SNDFILE* in_file = sf_open(dirs[i].c_str(), SFM_READ, &sfinfo_in);
+        SNDFILE *in_file = sf_open(dirs[i].c_str(), SFM_READ, &sfinfo_in);
 
-        while(true)
+        while (true)
         {
-            sf_count_t framesRead = sf_readf_float(in_file, buffer, 512 / NUM_CHANNELS);
-            sf_count_t framesWritten = sf_writef_float(out_file, buffer, framesRead);
+            sf_count_t framesRead = sf_readf_float(in_file, (float *)&buffer, 512 / NUM_CHANNELS);
+            sf_count_t framesWritten = sf_writef_float(out_file, (float *)&buffer, framesRead);
 
-            if(framesRead != 512 / NUM_CHANNELS)
+            if (framesRead != 512 / NUM_CHANNELS)
+            {
                 break;
+            }
         }
 
         // Close the file
@@ -100,11 +124,16 @@ std::string Export::getFileExtension(std::string file_path)
 {
     size_t found = file_path.find_last_of(".");
 
-    if(found == std::string::npos)
+    if (found == std::string::npos)
+    {
         return "";
+    }
     else
     {
-        return file_path.substr(found + 1);
+        file_path = file_path.substr(found + 1);
+        std::transform(file_path.begin(), file_path.end(), file_path.begin(), ::tolower);
+
+        return file_path;
     }
 }
 
@@ -114,7 +143,7 @@ std::string Export::getFileExtension(std::string file_path)
 void Export::deleteTempFiles(std::vector<std::string> dirs)
 {
     // loop throught all the files
-    for(std::string file : dirs)
+    for (std::string file : dirs)
     {
         // no good c++ function so we'll just use the C one
         remove((char *)file.c_str());

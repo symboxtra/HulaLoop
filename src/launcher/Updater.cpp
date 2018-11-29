@@ -196,7 +196,6 @@ bool Updater::checkForUpdate()
                 }
 
             }
-
         }
 
     });
@@ -278,7 +277,6 @@ bool Updater::downloadUpdate()
  */
 void Updater::startHulaLoopInstaller()
 {
-
     QProcess proc;
     QString procName = QDir::tempPath() + "/" + downloadFileName;
 
@@ -287,7 +285,6 @@ void Updater::startHulaLoopInstaller()
     {
         exit(0);
     }
-
 }
 
 /**
@@ -296,7 +293,6 @@ void Updater::startHulaLoopInstaller()
  */
 void Updater::startHulaLoopApp()
 {
-
     QProcess proc;
     QString procName = QCoreApplication::applicationDirPath() + "/hulaloop";
 
@@ -305,7 +301,6 @@ void Updater::startHulaLoopApp()
     {
         exit(0);
     }
-
 }
 
 /**

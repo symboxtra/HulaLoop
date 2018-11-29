@@ -40,10 +40,10 @@ OSXAudio::OSXAudio()
     // Shut it up unless this is a debug build
     // TODO: This should really be determined at runtime not compile-time
     #if HL_NO_DEBUG_OUTPUT
-        int out = dup(1);
-        int temp_null = open("/dev/null", O_WRONLY);
-        dup2(temp_null, 1);
-        close(temp_null);
+    int out = dup(1);
+    int temp_null = open("/dev/null", O_WRONLY);
+    dup2(temp_null, 1);
+    close(temp_null);
     #endif
 
     // Initialize PortAudio
@@ -56,8 +56,8 @@ OSXAudio::OSXAudio()
     }
 
     #if HL_NO_DEBUG_OUTPUT
-        dup2(out, 1);
-        close(out);
+    dup2(out, 1);
+    close(out);
     #endif
 }
 
@@ -111,7 +111,9 @@ int OSXAudio::isDaemonRunning()
         {
             // Only grab the first PID
             if (c == '\n')
+            {
                 break;
+            }
 
             buffer += c;
         }

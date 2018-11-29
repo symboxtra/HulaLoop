@@ -9,6 +9,14 @@
 namespace hula
 {
     /**
+     * Specifiy the encoding type for the output file.
+     */
+    enum Encoding
+    {
+        WAV, FLAC, CAF, AIFF
+    };
+
+    /**
      * Singleton class containing all settings for the application.
      * This includes audio specific settings.
      */
@@ -23,7 +31,7 @@ namespace hula
             Encoding outputFileEncoding;
 
         protected:
-            QTranslator * trans;
+            QTranslator *trans;
             HulaSettings();
 
         public:
@@ -32,7 +40,7 @@ namespace hula
             void setOutputFileEncoding(Encoding);
             Encoding getOutputFileEncoding();
 
-            QTranslator * getTranslator();
+            QTranslator *getTranslator();
             bool loadLanguage(QCoreApplication *app, const std::string &id);
 
             ~HulaSettings();
