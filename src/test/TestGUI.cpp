@@ -403,3 +403,27 @@ TEST_F(TestGUI, ui_state_machine_5)
 
     ASSERT_FALSE(isButtonPlay());
 }
+
+TEST_F(TestGUI, stress_test)
+{
+    clickButton("recordBtn");
+    ASSERT_EQ(getTransportState(), "Recording");
+    for(unsigned i = 0; i < 50; i++)
+    {
+        // click pause button
+        clickButton("playpauseBtn");
+        EXPECT_TRUE(isEnabled("recordBtn"));
+        EXPECT_TRUE(isEnabled("stopBtn"));
+        ASSERT_EQ(getTransportState(), "Paused");
+
+        // click play button
+        clickButton("playpauseBtn");
+        EXPECT_FALSE(isEnabled("recordBtn"));
+        EXPECT_FALSE(isEnabled("stopBtn"));
+        ASSERT_EQ(getTransportState(), "Playing");
+    }
+    clickButton("stopBtn");
+    EXPECT_FALSE(isEnabled("stopBtn"));
+    ASSERT_EQ(getTransportState(), "Stopped");
+
+}
