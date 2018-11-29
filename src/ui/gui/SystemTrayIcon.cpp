@@ -31,7 +31,7 @@ void SystemTrayIcon::init()
     QAction *checkUpdates = new QAction(tr("Check for Updates"), this);
     QAction *settings = new QAction(tr("Settings"), this);
 
-    QAction *quit = new QAction(tr("Quit HulaLoop"), this);
+    QAction *quit = new QAction(tr("Quit"), this);
     this->connect(quit, &QAction::triggered, this, &QApplication::quit);
 
     trayIconMenu->addAction(record);

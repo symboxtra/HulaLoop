@@ -6,7 +6,17 @@ function (create_test _test_file _src_files _timeout _do_memcheck _only_master)
 
     # Make sure the real application builds first
     if (NOT HL_BUILD_ONLY_AUDIO)
-        add_dependencies (${_test_name} hulaloop hulaloop-cli hulaloop-launcher)
+        if (HL_BUILD_GUI)
+            add_dependencies (${_test_name} hulaloop hulaloop-launcher)
+        endif ()
+
+        if (HL_BUILD_CLI)
+            add_dependencies (${_test_name} hulaloop-cli)
+        endif ()
+
+        if (OSX)
+            add_dependencies (${_test_name} hulaloop-osx-daemon)
+        endif ()
     endif ()
 
     if (_only_master)
@@ -24,14 +34,13 @@ function (create_test _test_file _src_files _timeout _do_memcheck _only_master)
     endif ()
 
     # Add memory test
-    # We don't currently have a solution for Windows
-    if (_do_memcheck AND NOT WIN32)
+    if (_do_memcheck AND NOT WIN32 AND NOT OSX)
         if (NOT VALGRIND_EXECUTABLE)
             message (STATUS "Valgrind could not be found. Skipping requested memcheck for ${_test_name}.")
         else ()
             add_test (
-                NAME memcheck_${_test_name}
-                COMMAND ${VALGRIND_EXECUTABLE} --leak-check=full --error-exitcode=1 --track-origins=yes ./test/${_test_name}
+                NAME only_master_memcheck_${_test_name}
+                COMMAND ${VALGRIND_EXECUTABLE} --leak-check=full --error-exitcode=1 --track-origins=yes $<TARGET_FILE:${_test_name}>
                 WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
             )
         endif ()
@@ -43,13 +52,11 @@ function (create_test _test_file _src_files _timeout _do_memcheck _only_master)
     endif ()
 
     # Copy PortAudio DLLs to bin/test for successful testing
-    if(WIN32)
-        add_custom_command (
-            TARGET ${_test_name}
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -DSOURCE_DIR="${PROJECT_SOURCE_DIR}" -DBINARY_DIR="${CMAKE_BINARY_DIR}" -P ${PROJECT_SOURCE_DIR}/cmake/MoveDLLsToTest.cmake
-        )
-    endif ()
+    add_custom_command (
+        TARGET ${_test_name}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -DSOURCE_DIR="${PROJECT_SOURCE_DIR}" -DBINARY_DIR="${CMAKE_BINARY_DIR}" -P ${PROJECT_SOURCE_DIR}/cmake/MoveFilesToTest.cmake
+    )
 
 endfunction ()
 
@@ -102,7 +109,7 @@ set (T_TEST_DIR "${PROJECT_SOURCE_DIR}/src/test")
 # Add the GUI tests to the bin directory instead of bin/test
 # GUI tests need the Qt DLLs in bin
 if (HL_BUILD_GUI AND HL_INCLUDE_GUI_TESTS AND NOT HL_BUILD_ONLY_AUDIO)
-    create_test ("src/test/TestGUI.cpp" "src/ui/gui/QMLBridge.cpp;src/ui/gui/SystemTrayIcon.cpp;src/ui/gui/qml.qrc" -1 FALSE FALSE)
+    create_test ("src/test/TestGUI.cpp" "src/ui/gui/FFTRealPair.cpp;src/ui/gui/QMLBridge.cpp;src/ui/gui/SystemTrayIcon.cpp;src/ui/gui/qml.qrc" -1 FALSE FALSE)
     create_test ("src/test/TestUpdater.cpp" "src/launcher/Updater.cpp;src/ui/gui/qml.qrc" -1 FALSE FALSE)
 else (NOT HL_INCLUDE_GUI_TESTS)
     message (STATUS "Ignoring GUI tests. Set HL_INCLUDE_GUI_TESTS=true to include.")

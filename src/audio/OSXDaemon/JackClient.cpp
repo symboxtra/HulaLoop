@@ -28,7 +28,7 @@ SOFTWARE.
 #include <cstdlib>
 #include <cstring>
 
-#include "JackClient.hpp"
+#include "JackClient.h"
 
 using namespace hula;
 

@@ -53,6 +53,7 @@ endif ()
 option (HL_BUILD_ONLY_AUDIO "Build only the audio library." OFF)
 option (HL_BUILD_CLI "Build the command line application." ON)
 option (HL_BUILD_GUI "Build the graphical application." ON)
+option (HL_BUILD_EXAMPLES "Build example programs." OFF)
 
 # Turn on coverage flags if needed
 set (HL_ADD_COVERAGE_FLAGS OFF)
@@ -61,9 +62,11 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug" AND (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR
 endif ()
 
 # Control debug output
-set (HL_NO_DEBUG_OUTPUT 1)
-if (CMAKE_BUILD_TYPE MATCHES "Debug")
-    set (HL_NO_DEBUG_OUTPUT 0)
+if (NOT DEFINED HL_NO_DEBUG_OUTPUT)
+    set (HL_NO_DEBUG_OUTPUT 1)
+    if (CMAKE_BUILD_TYPE MATCHES "Debug")
+        set (HL_NO_DEBUG_OUTPUT 0)
+    endif ()
 endif ()
 
 # Set output for binaries
@@ -93,8 +96,11 @@ set (HL_LIBRARIES)
 
 # Link Windows specific libraries
 if (WIN32)
-    set (HL_LIBRARIES ${HL_LIBRARIES} winmm.lib ) # TODO: Add required windows libraries
+    list (APPEND HL_LIBRARIES winmm.lib ) # TODO: Add required windows libraries
 endif ()
+
+# Make sure we can find our Find<package>.cmake files
+list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 
 
@@ -111,71 +117,77 @@ include_directories (${CMAKE_BINARY_DIR})
 
 ######## Qt ########
 
-# Prime for Qt
-set (CMAKE_INCLUDE_CURRENT_DIR ON)
-set (CMAKE_AUTOUIC ON)
-set (CMAKE_AUTOMOC ON)
-set (CMAKE_AUTORCC ON)
+if (NOT HL_BUILD_ONLY_AUDIO)
+    # Prime for Qt
+    set (CMAKE_INCLUDE_CURRENT_DIR ON)
+    set (CMAKE_AUTOUIC ON)
+    set (CMAKE_AUTOMOC ON)
+    set (CMAKE_AUTORCC ON)
 
-if (WIN32 AND NOT DEFINED QT_ROOT)
-    if (DEFINED ENV{QT_ROOT})
+    if (WIN32 AND NOT DEFINED QT_ROOT)
+        if (DEFINED ENV{QT_ROOT})
+            set (QT_ROOT $ENV{QT_ROOT} CACHE STRING "Path to Qt Installation")
+        else ()
+            message (FATAL_ERROR "QT_ROOT environment variable not set. Add the environment variable in Windows Environment Variables or cmake with -DQT_ROOT=C:\\path\\to\\qt\\5.XX.X")
+        endif ()
+    elseif (WIN32)
         set (QT_ROOT $ENV{QT_ROOT} CACHE STRING "Path to Qt Installation")
-    else ()
-        message (FATAL_ERROR "QT_ROOT environment variable not set. Add the environment variable in Windows Environment Variables or cmake with -DQT_ROOT=C:\\path\\to\\qt\\5.XX.X")
     endif ()
-elseif (WIN32)
-    set (QT_ROOT $ENV{QT_ROOT} CACHE STRING "Path to Qt Installation")
-endif ()
 
-message (STATUS "QT_ROOT: " ${QT_ROOT} "\n")
+    message (STATUS "QT_ROOT: " ${QT_ROOT} "\n")
 
-if (WIN32 AND NOT DEFINED Qt5_DIR)
-    if(64BIT)
-        set (Qt5_DIR "${QT_ROOT}\\msvc2017_64\\lib\\cmake\\Qt5")
-    else ()
-        set (Qt5_DIR "${QT_ROOT}\\msvc2015\\lib\\cmake\\Qt5")
+    if (WIN32 AND NOT DEFINED Qt5_DIR)
+        if(64BIT)
+            set (Qt5_DIR "${QT_ROOT}\\msvc2017_64\\lib\\cmake\\Qt5")
+        else ()
+            set (Qt5_DIR "${QT_ROOT}\\msvc2015\\lib\\cmake\\Qt5")
+        endif ()
+    endif ()
+
+    message (STATUS "Qt5_DIR: ${Qt5_DIR}")
+
+    # Required Qt packages
+    find_package (Qt5 REQUIRED
+        Core
+    )
+
+    # Minimum set of libs required
+    # for translation
+    set (QT_TRANSLATION_LIBS
+        Qt5::Core
+    )
+
+    if (HL_BUILD_GUI)
+        find_package (Qt5 REQUIRED
+            Gui
+            Qml
+            Quick
+            QuickControls2
+            Widgets
+        )
+
+        list (APPEND HL_LIBRARIES
+            Qt5::Core
+            Qt5::Gui
+            Qt5::Qml
+            Qt5::Quick
+            Qt5::QuickControls2
+            Qt5::Widgets
+        )
+    endif ()
+
+    # Required Sndfile packages
+    find_package (SndFile REQUIRED)
+
+    add_include_dir (${LIBSNDFILE_INCLUDE})
+    list (APPEND HL_LIBRARIES ${LIBSNDFILE_LIB})
+
+    # Copy DLL to application bin folder
+    if (WIN32)
+        MESSAGE (STATUS "Found SndFile DLL: ${LIBSNDFILE_DLL}")
+        file (COPY ${LIBSNDFILE_DLL} DESTINATION ${CMAKE_BINARY_DIR}/bin)
     endif ()
 endif ()
-
-message (STATUS "Qt5_DIR: ${Qt5_DIR}")
-
-# Required Qt packages
-find_package (Qt5 REQUIRED
-    Core
-    Gui
-    Qml
-    Quick
-    QuickControls2
-    Widgets
-)
-
-# Linguist tools for translation
-# This is not required
-find_package (Qt5LinguistTools)
-set (FOUND_QT_LINGUIST FALSE)
-if (Qt5_LUPDATE_EXECUTABLE AND Qt5_LRELEASE_EXECUTABLE)
-    message (STATUS "Qt5LinguistTools: Found")
-    set (FOUND_QT_LINGUIST TRUE)
-endif ()
-
-# Minimum set of libs required
-# for translation
-set (QT_TRANSLATION_LIBS
-    Qt5::Core
-)
-
-set (HL_LIBRARIES
-    ${HL_LIBRARIES}
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Qml
-    Qt5::Quick
-    Qt5::QuickControls2
-    Qt5::Widgets
-)
-
-
-
 
 ######## Libraries ########
 
@@ -186,9 +198,6 @@ endif ()
 
 # Build and install portaudio to our build/lib folder
 add_subdirectory (src/libs/portaudio)
-
-# Make sure we can find our Find<package>.cmake files
-list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 # Add coverage flags for GCC after 3rd party libs are built
 set (CXX_FLAGS_NOCOV "${CMAKE_CXX_FLAGS}")
@@ -216,43 +225,11 @@ if (NOT HL_BUILD_ONLY_AUDIO)
         include_directories (${INCLUDE_DIRS})
     endif ()
 
-    # Generate translations
-    # Based on code from https://gist.github.com/02JanDal/70a39f2cc3d2002b3588
-    if (FOUND_QT_LINGUIST)
+    add_subdirectory (${PROJECT_SOURCE_DIR}/res/translations)
+    include (cmake/Translation.cmake)
 
-        # Glob all the translation files
-        # To add a language, create an empty ts file named hulaloop_XX.ts in the res/translations folder
-        # See the ISO language codes for the XX (https://www.andiamo.co.uk/resources/iso-language-codes)
-        # This glob will pick it up and fill it with the English entries for translation
-        file (GLOB TRANSLATIONS_FILES ${PROJECT_SOURCE_DIR}/res/translations/*.ts)
-
-        # Update the .ts files with strings from the application source
-        qt5_create_translation (QM_FILES
-            ${PROJECT_SOURCE_DIR}/src/control ${PROJECT_SOURCE_DIR}/src/launcher ${PROJECT_SOURCE_DIR}/src/ui
-            ${TRANSLATIONS_FILES}
-            OPTIONS -recursive
-        )
-
-        # Convert the XML-based .ts files to binary .qm files
-        qt5_add_translation (TRANSLATION_QM ${TRANSLATIONS_FILES})
-
-        # Add the generated commands as targets
-        add_custom_target (TranslationUpdate ALL DEPENDS ${QM_FILES})
-        add_custom_target (Translation ALL DEPENDS ${TRANSLATION_QM})
-        add_dependencies (Translation TranslationUpdate)
-
-        # Add the targets as dependencies to the main application
-        add_dependencies (hulaloop TranslationUpdate)
-        add_dependencies (hulaloop-cli TranslationUpdate)
-        add_dependencies (hulaloop-launcher TranslationUpdate)
-
-        # Install information for the translation files
-        if (OSX)
-            # This should eventually be the OSX bundle
-            install (FILES ${TRANSLATION_QM} DESTINATION translations)
-        else ()
-            install (FILES ${TRANSLATION_QM} DESTINATION translations)
-        endif ()
+    if (HL_BUILD_EXAMPLES)
+        add_subdirectory (examples)
     endif ()
 endif ()
 
@@ -280,9 +257,13 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     endif ()
 
     if (NOT HL_BUILD_ONLY_AUDIO)
-        create_test ("src/test/TestTransport.cpp" "" -1 TRUE FALSE)
-        create_test ("src/test/TestCLIArgs.cpp" "" -1 FALSE FALSE) # TODO: memcheck can be turned on once Device::id is fixed
-        create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/InteractiveCLI.cpp" -1 FALSE FALSE)
+        create_test ("src/test/TestTransport.cpp" "" -1 FALSE FALSE)
+        create_test ("src/test/TestRecord.cpp" "" -1 FALSE FALSE)
+
+        if (HL_BUILD_CLI)
+            create_test ("src/test/TestCLIArgs.cpp" "" -1 TRUE FALSE)
+            create_test("src/test/TestInteractiveCLI.cpp" "src/ui/cli/InteractiveCLI.cpp" -1 TRUE FALSE)
+        endif ()
     endif ()
 
 endif ()

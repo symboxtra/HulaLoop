@@ -215,7 +215,6 @@ int Updater::checkForUpdate()
                 }
 
             }
-
         }
 
     });
@@ -249,6 +248,7 @@ int Updater::downloadUpdate()
 
     connect(reply, &QNetworkReply::sslErrors, [&](QList<QSslError> sslErr)
     {
+        // throw exception
         file.close();
         reply->deleteLater();
         finishedDownload = -1;
@@ -258,6 +258,7 @@ int Updater::downloadUpdate()
 
     connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [&](QNetworkReply::NetworkError code)
     {
+        // throw exception
         file.close();
         reply->deleteLater();
         finishedDownload = -1;
@@ -304,7 +305,6 @@ int Updater::downloadUpdate()
  */
 void Updater::startHulaLoopInstaller()
 {
-
     QProcess proc;
     QString procName = QDir::tempPath() + "/" + downloadFileName;
 
@@ -313,7 +313,6 @@ void Updater::startHulaLoopInstaller()
     {
         exit(0);
     }
-
 }
 
 /**
@@ -322,7 +321,6 @@ void Updater::startHulaLoopInstaller()
  */
 void Updater::startHulaLoopApp()
 {
-
     QProcess proc;
     QString procName = QCoreApplication::applicationDirPath() + "/hulaloop";
 
@@ -331,7 +329,6 @@ void Updater::startHulaLoopApp()
     {
         exit(0);
     }
-
 }
 
 /**

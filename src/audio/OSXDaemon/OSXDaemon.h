@@ -1,7 +1,7 @@
 #ifndef HL_OSX_DAEMON_H
 #define HL_OSX_DAEMON_H
 
-#include "JackClient.hpp"
+#include "JackClient.h"
 #include "JackBridge.h"
 
 namespace hula

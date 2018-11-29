@@ -5,6 +5,10 @@
 #include <string>
 #include <vector>
 
+#ifdef _WIN32
+    #include <windows.h>
+#endif
+
 namespace hula
 {
     /**
@@ -19,24 +23,30 @@ namespace hula
     };
 
     /**
-     * Union for the three types of device ID.
+     * Struct for the three types of device ID.
+     *
+     * PortAudio devices should use @ref portAudioID.
+     * Linux ALSA devices should use @ref linuxID.
+     * Windows WASAPI devices should use @ref windowsID.
      */
-    union DeviceID
+    struct DeviceID
     {
         /**
-         * Device ID used by @ref LinuxAudio.
+         * ID used by ALSA devices.
          */
-        std::string linuxID;
+        std::string linuxID = "";
 
         /**
-         * Device ID used by @ref WindowsAudio.
+         * ID used by PortAudio devices.
          */
-        uint32_t *windowsID;
+        int portAudioID = -1;
 
+        #ifdef _WIN32
         /**
-         * Device ID used by @ref OSXAudio.
+         * ID used by Windows WASAPI devices.
          */
-        int osxID;
+        LPWSTR windowsID = nullptr;
+        #endif
     };
 
     /**
@@ -44,16 +54,16 @@ namespace hula
      */
     class Device {
         private:
-            uint32_t *deviceID;
+            DeviceID deviceID;
             std::string deviceName;
 
             DeviceType type;
 
         public:
-            Device(uint32_t *id, std::string name, DeviceType t);
+            Device(DeviceID id, std::string name, DeviceType t);
             ~Device();
 
-            uint32_t *getID();
+            DeviceID getID();
 
             std::string getName();
 

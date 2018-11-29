@@ -5,6 +5,7 @@
 #include <Audioclient.h>
 #include <comdef.h>
 #include <endpointvolume.h>
+#include <initguid.h>
 #include <mmdeviceapi.h>
 #include <windows.h>
 
@@ -32,8 +33,8 @@
 #define HANDLE_PA_ERROR(hres) \
             if (hres != paNoError) { goto Exit; }
 #define SAFE_RELEASE(punk) \
-            if ((punk) != NULL) \
-                { (punk)->Release(); (punk) = NULL; }
+            if ((punk) != nullptr) \
+                { (punk)->Release(); (punk) = nullptr; }
 
 namespace hula
 {
@@ -55,8 +56,8 @@ namespace hula
             REFERENCE_TIME requestDuration = REFTIMES_PER_SEC;
             REFERENCE_TIME bufferDuration;
 
-            IMMDeviceEnumerator *pEnumerator = NULL;
-            IMMDeviceCollection *deviceCollection = NULL;
+            IMMDeviceEnumerator *pEnumerator = nullptr;
+            IMMDeviceCollection *deviceCollection = nullptr;
 
             // Audio data
             uint8_t *pData;
@@ -65,12 +66,10 @@ namespace hula
             WindowsAudio();
             ~WindowsAudio();
 
-            bool checkRates(Device *device);
+            bool checkDeviceParams(Device *device);
             std::vector<Device *> getDevices(DeviceType type);
 
             void capture();
-
-            void setActiveOutputDevice(Device *device);
     };
 }
 

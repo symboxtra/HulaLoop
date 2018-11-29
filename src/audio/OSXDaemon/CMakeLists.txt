@@ -26,10 +26,6 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
         list (APPEND CMAKE_MODULE_PATH ${HL_MODULE_PATH})
     endif ()
 
-    find_package (Qt5 REQUIRED
-        Core
-    )
-
     find_package (JACK REQUIRED)
 
     file (GLOB OSX_DAEMON_SRC_FILES *.cpp)

@@ -17,7 +17,6 @@ namespace hula
     class OSXAudio : public OSAudio {
 
         private:
-            int daemonPID = -1;
 
         public:
             OSXAudio();
@@ -28,12 +27,9 @@ namespace hula
             pid_t restartDaemon();
 
             void capture();
-            bool checkRates(Device *device);
+            bool checkDeviceParams(Device *device);
 
             std::vector<Device *> getDevices(DeviceType type);
-
-            static void test_capture(OSAudio *_this);
-            void setActiveOutputDevice(Device *device);
     };
 }
 

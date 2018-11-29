@@ -31,7 +31,7 @@ SOFTWARE.
 #include <sstream>
 #include <string>
 
-#include "JackClient.hpp"
+#include "JackClient.h"
 #include "JackBridge.h"
 #include "OSXDaemon.h"
 
@@ -111,7 +111,7 @@ int OSXDaemon::process_callback(jack_nframes_t nframes)
 
         isActive = true;
         fprintf(stderr, "HulaLoop #%d: Activated with SyncMode = %s, ZeroHostTime = %llx\n",
-               instance, isSyncMode ? "Yes" : "No", *shmZeroHostTime);
+                instance, isSyncMode ? "Yes" : "No", *shmZeroHostTime);
     }
 
     if ((FrameNumber % FramesPerBuffer) == 0)
@@ -127,8 +127,8 @@ int OSXDaemon::process_callback(jack_nframes_t nframes)
         if ((!isSyncMode) && isVerbose && ((ncalls++) % 100) == 0)
         {
             fprintf(stderr, "HulaLoop #%d: ZeroHostTime: %llx, %lld, diff:%d\n",
-                   instance,  *shmZeroHostTime, *shmNumberTimeStamps,
-                   ((int)(mach_absolute_time() + 1000000 - (*shmZeroHostTime))) - 1000000);
+                    instance,  *shmZeroHostTime, *shmNumberTimeStamps,
+                    ((int)(mach_absolute_time() + 1000000 - (*shmZeroHostTime))) - 1000000);
         }
     }
 
@@ -208,9 +208,9 @@ void OSXDaemon::check_progress()
     if (isVerbose && ((ncalls++) % 500) == 0)
     {
         fprintf(stderr, "HulaLoop #%d: FRAME %llu : Write0: %llu Read0: %llu Write1: %llu Read0: %llu\n",
-               instance, FrameNumber,
-               *shmWriteFrameNumber[0], *shmReadFrameNumber[0],
-               *shmWriteFrameNumber[1], *shmReadFrameNumber[1]);
+                instance, FrameNumber,
+                *shmWriteFrameNumber[0], *shmReadFrameNumber[0],
+                *shmWriteFrameNumber[1], *shmReadFrameNumber[1]);
     }
     #endif
 
@@ -223,7 +223,7 @@ void OSXDaemon::check_progress()
             if (isVerbose)
             {
                 fprintf(stderr, "WARNING: miss synchronization detected at FRAME %llu (diff=%d, interval=%d)\n",
-                       FrameNumber, diff, interval);
+                        FrameNumber, diff, interval);
             }
             showmsg = false;
         }

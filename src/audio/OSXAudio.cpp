@@ -3,8 +3,8 @@
 #include <fcntl.h>
 #include <libgen.h>
 #include <libproc.h>
-#include <unistd.h>
 #include <signal.h>
+#include <unistd.h>
 
 #include <cstdint>
 #include <cstdlib>
@@ -40,10 +40,10 @@ OSXAudio::OSXAudio()
     // Shut it up unless this is a debug build
     // TODO: This should really be determined at runtime not compile-time
     #if HL_NO_DEBUG_OUTPUT
-        int out = dup(1);
-        int temp_null = open("/dev/null", O_WRONLY);
-        dup2(temp_null, 1);
-        close(temp_null);
+    int out = dup(1);
+    int temp_null = open("/dev/null", O_WRONLY);
+    dup2(temp_null, 1);
+    close(temp_null);
     #endif
 
     // Initialize PortAudio
@@ -56,8 +56,8 @@ OSXAudio::OSXAudio()
     }
 
     #if HL_NO_DEBUG_OUTPUT
-        dup2(out, 1);
-        close(out);
+    dup2(out, 1);
+    close(out);
     #endif
 }
 
@@ -85,7 +85,7 @@ int OSXAudio::isDaemonRunning()
         close(procPipe[1]);
 
         std::string pgrep = "/usr/bin/pgrep";
-        ret = execlp(pgrep.c_str(), pgrep.c_str(), "hulaloop-osx-daemon", NULL);
+        ret = execlp(pgrep.c_str(), pgrep.c_str(), "hulaloop-osx-daemon", nullptr);
 
         hlDebugf("Failed to start pgrep process.\n");
         hlDebugf("Execution of %s failed with return code: %d\n", pgrep.c_str(), ret);
@@ -111,7 +111,9 @@ int OSXAudio::isDaemonRunning()
         {
             // Only grab the first PID
             if (c == '\n')
+            {
                 break;
+            }
 
             buffer += c;
         }
@@ -125,7 +127,8 @@ int OSXAudio::isDaemonRunning()
             try
             {
                 pid = std::stoi(buffer);
-            } catch (std::invalid_argument &e)
+            }
+            catch (std::invalid_argument &e)
             {
                 (void)e;
                 hlDebugf("Failed to convert parsed PID.\n");
@@ -159,7 +162,7 @@ pid_t OSXAudio::startDaemon()
 
     // Get the directory
     char *installDir = dirname(path);
-    if (installDir == NULL)
+    if (installDir == nullptr)
     {
         hlDebugf("Could not trim executable name from install path. Error: %d\n", errno);
         exit(EXIT_FAILURE);
@@ -173,7 +176,7 @@ pid_t OSXAudio::startDaemon()
     // Child process
     if (ret == 0)
     {
-        ret = execlp(executable.c_str(), executable.c_str(), NULL);
+        ret = execlp(executable.c_str(), executable.c_str(), nullptr);
 
         hlDebugf("Failed to start hulaloop-osx-daemon process.\n");
         hlDebugf("Execution of %s failed with return code: %d\n", executable.c_str(), ret);
@@ -261,7 +264,7 @@ void OSXAudio::capture()
     PaStream           *stream;
     PaError             err = paNoError;
 
-    inputParameters.device = *(this->activeInputDevice->getID());
+    inputParameters.device = this->activeInputDevice->getID().portAudioID;
     if (inputParameters.device == paNoDevice)
     {
         hlDebug() << "Device %s not found." << this->activeInputDevice->getName() << std::endl;
@@ -272,12 +275,12 @@ void OSXAudio::capture()
     inputParameters.channelCount = Pa_GetDeviceInfo(inputParameters.device)->maxInputChannels;
     inputParameters.sampleFormat = PA_SAMPLE_TYPE;
     inputParameters.suggestedLatency = Pa_GetDeviceInfo(inputParameters.device)->defaultLowInputLatency;
-    inputParameters.hostApiSpecificStreamInfo = NULL;
+    inputParameters.hostApiSpecificStreamInfo = nullptr;
 
     err = Pa_OpenStream(
               &stream,
               &inputParameters,
-              NULL,                  // &outputParameters
+              nullptr,                  // &outputParameters
               SAMPLE_RATE,
               FRAMES_PER_BUFFER,
               paClipOff,             // We won't output out of range samples so don't bother clipping them
@@ -301,17 +304,13 @@ void OSXAudio::capture()
         exit(1); // TODO: Handle error
     }
 
+    hlDebugf("Capture thread keep-alive started...\n");
     while (!this->endCapture)
     {
         // Keep this thread alive
         // The second half of this function could be moved to a separate
         // function like endCapture() so that we don't have to keep this thread alive.
-
-        hlDebugf("Capture keep-alive\n");
-
-        // This value can be adjusted
-        // 100 msec is decent precision for now
-        Pa_Sleep(1000);
+        std::this_thread::yield();
     }
 
     hlDebugf("Capture thread ended keep-alive.\n");
@@ -353,31 +352,40 @@ std::vector<Device *> OSXAudio::getDevices(DeviceType type)
         exit(1); // TODO: Handle error
     }
 
+    HulaAudioSettings *s = HulaAudioSettings::getInstance();
+
     std::vector<Device *> devices;
     for (uint32_t i = 0; i < deviceCount; i++)
     {
         const PaDeviceInfo *paDevice = Pa_GetDeviceInfo(i);
-        DeviceType checkType = (DeviceType)0;
+        DeviceType checkType = (DeviceType) 0;
 
         // We can only support OSX loopback on our own driver
         if (strcmp(paDevice->name, "HulaLoop") == 0)
         {
-            checkType = (DeviceType)(checkType | LOOPBACK);
+            checkType = (DeviceType)(checkType | DeviceType::LOOPBACK);
         }
         if (paDevice->maxOutputChannels > 0)
         {
-            checkType = (DeviceType)(checkType | PLAYBACK);
+            checkType = (DeviceType)(checkType | DeviceType::PLAYBACK);
         }
         if (paDevice->maxInputChannels > 0)
         {
-            checkType = (DeviceType)(checkType | RECORD);
+            checkType = (DeviceType)(checkType | DeviceType::RECORD);
         }
 
         // Create HulaLoop style device and add to vector
         // This needs to be freed elsewhere
         if (type & checkType)
         {
-            Device *hlDevice = new Device(new uint32_t(i), std::string(paDevice->name), checkType);
+            if (checkType == DeviceType::RECORD && !s->getShowRecordDevices())
+            {
+                continue;
+            }
+
+            DeviceID id;
+            id.portAudioID = i;
+            Device *hlDevice = new Device(id, std::string(paDevice->name), checkType);
             devices.push_back(hlDevice);
         }
     }
@@ -386,52 +394,25 @@ std::vector<Device *> OSXAudio::getDevices(DeviceType type)
 }
 
 /**
- * Static function in the current instance of the class
- * to allow thread execution
- *
- * @param _this Instance of the current object
- */
-void OSXAudio::test_capture(OSAudio *_this)
-{
-    // Sleep for a few seconds just to keep the logs clean
-    Pa_Sleep(2000);
-
-    _this->capture();
-}
-
-/**
- * Set the selected output device and restart capture threads with
- * new device
- *
- * @param device Instance of Device that corresponds to the desired system device
- */
-void OSXAudio::setActiveOutputDevice(Device *device)
-{
-
-}
-
-/**
  * Checks the sampling rate and bit depth of the device
  *
  * @param device Instance of Device that corresponds to the desired system device
  */
-bool OSXAudio::checkRates(Device *device)
+bool OSXAudio::checkDeviceParams(Device *device)
 {
     PaStreamParameters inputParameters = {0};
     inputParameters.channelCount = NUM_CHANNELS;
-    inputParameters.device = *device->getID();
+    inputParameters.device = device->getID().portAudioID;
     inputParameters.sampleFormat = paFloat32;
 
-    PaError err = Pa_IsFormatSupported(&inputParameters, NULL, HulaAudioSettings::getInstance()->getSampleRate());
+    PaError err = Pa_IsFormatSupported(&inputParameters, nullptr, HulaAudioSettings::getInstance()->getSampleRate());
 
     if (err == paFormatIsSupported)
     {
-        // TODO: qOut()
         hlDebug() << HL_SAMPLE_RATE_VALID << std::endl;
     }
     else
     {
-        // TODO: qOut()
         hlDebug() << HL_SAMPLE_RATE_INVALID << std::endl;
     }
 
