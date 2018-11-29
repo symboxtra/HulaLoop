@@ -44,30 +44,40 @@ void Export::copyData(std::vector<std::string> dirs)
     hlDebug() << "Extension: " << extension << std::endl;
 
     // Initialize libsndfile info.
-    SF_INFO sfinfo_in;
+    SF_INFO sfinfo_in = {0};
     sfinfo_in.samplerate = SAMPLE_RATE;
     sfinfo_in.channels = NUM_CHANNELS;
-    sfinfo_in.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
+    sfinfo_in.format = SF_FORMAT_FLAC | SF_FORMAT_PCM_24;
 
     // Initialize libsndfile info.
-    SF_INFO sfinfo_out;
+    SF_INFO sfinfo_out = {0};
     sfinfo_out.samplerate = SAMPLE_RATE;
     sfinfo_out.channels = NUM_CHANNELS;
     sfinfo_out.format = SF_FORMAT_FLOAT;
-    float* buffer = new float[512];
 
     // Set libsndfile settings based on extension
     // TODO: Compare against Encoding enum from HulaAudioSettings
     if (!extension.compare("wav"))
         sfinfo_out.format |= SF_FORMAT_WAV;
     else if (!extension.compare("flac"))
-        sfinfo_out.format |= SF_FORMAT_FLAC;
+        sfinfo_out.format = SF_FORMAT_FLAC | SF_FORMAT_PCM_24;
     else if(!extension.compare("caf"))
         sfinfo_out.format |= SF_FORMAT_CAF;
     else if(!extension.compare("aiff"))
         sfinfo_out.format |= SF_FORMAT_AIFF;
+    else if(!extension.compare("raw"))
+        sfinfo_out.format |= SF_FORMAT_RAW;
+    else
+        sfinfo_out.format |= SF_FORMAT_WAV;
+
+    if(!sf_format_check(&sfinfo_out) || !sf_format_check(&sfinfo_in))
+    {
+        hlDebug() << "Invalid libsndfile format: " << sfinfo_out.format << std::endl;
+        return;
+    }
 
     SNDFILE *out_file = sf_open(this->targetFile.c_str(), SFM_WRITE, &sfinfo_out);
+    float* buffer = new float[512];
 
     for(int i = 0;i < dirs.size();i++)
     {

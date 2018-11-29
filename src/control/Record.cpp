@@ -37,16 +37,16 @@ void Record::recorder()
     ring_buffer_size_t samplesRead;
 
     // Initialize libsndfile info.
-    SF_INFO sfinfo;
+    SF_INFO sfinfo = {0};
     sfinfo.samplerate = SAMPLE_RATE;
     sfinfo.channels = NUM_CHANNELS;
-    sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
+    sfinfo.format = SF_FORMAT_FLAC | SF_FORMAT_PCM_24;
 
     // Create a timestamped file name
     char timestamp[20];
     time_t now = time(0);
     strftime(timestamp, 20, "%Y-%m-%d_%H-%M-%S", localtime(&now));
-    std::string file_path = Export::getTempPath() + "/hulaloop_" + std::string(timestamp) + ".wav";
+    std::string file_path = Export::getTempPath() + "/hulaloop_" + std::string(timestamp) + ".flac";
     SNDFILE *file = sf_open(file_path.c_str(), SFM_WRITE, &sfinfo);
 
     // Add file_path to vector of files
