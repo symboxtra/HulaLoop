@@ -53,7 +53,7 @@ ApplicationWindow {
         onVisData: {
             if (visType === "Bar")
             {
-                dl.visible = false
+                lv.visible = false
                 cv.visible = false
                 // Update the number of bars
                 lastVisBarCount = dataIn.length - trimBack - trimFront
@@ -64,7 +64,7 @@ ApplicationWindow {
             }
             else if (visType === "Circle")
             {
-                dl.visible = false
+                lv.visible = false
                 cv.visible = true
                 //circle visualizer instead of bars
                 cv.readValues(dataIn)
@@ -74,13 +74,13 @@ ApplicationWindow {
             }
             else if (visType === "Line")
             {
-                dl.visible = true
+                lv.visible = true
                 cv.visible = false
-                dl.readValues(dataIn)
-                dl.clear()
+                lv.readValues(dataIn)
+                lv.clear()
 
                 // Update after values have been assigned
-                dl.binCount = dataIn.length - trimBack - trimFront
+                lv.binCount = dataIn.length - trimBack - trimFront
             }
         }
     }
@@ -108,8 +108,8 @@ ApplicationWindow {
         anchors.left: parent.left
         anchors.bottom: bottomRectangle.top
 
-        DynamicLine {
-            id: dl
+        LineVisualizer {
+            id: lv
 
             width: parent.width
             height: parent.height
@@ -118,7 +118,7 @@ ApplicationWindow {
             anchors.centerIn: parent
         }
 
-        CircleVis {
+        CircleVisualizer {
             id: cv
 
             width: parent.width
