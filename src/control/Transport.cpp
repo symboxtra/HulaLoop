@@ -12,7 +12,14 @@ using namespace hula;
  */
 Transport::Transport()
 {
-    controller = new Controller();
+    try {
+        controller = new Controller();
+    }
+    catch (const AudioException &ae)
+    {
+        throw ControlException(HL_OS_INIT_CODE);
+    }
+
     recorder = new Record(controller);
 
     canRecord = true;

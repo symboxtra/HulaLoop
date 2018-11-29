@@ -31,10 +31,13 @@ Controller::Controller()
     audio = new WindowsAudio();
     #endif
 
+    audio = nullptr;
+
     if (audio == nullptr)
     {
+        throw AudioException(HL_OS_INIT_CODE, HL_OS_INIT_MSG);
         hlDebug() << HL_OS_INIT_MSG << std::endl;
-        exit(1);
+        // exit(1);
     } // TODO: Handle error
 
 }

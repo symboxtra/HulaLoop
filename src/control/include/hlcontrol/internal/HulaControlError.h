@@ -6,6 +6,7 @@
 #include <hlaudio/internal/HulaAudioError.h>
 
 #include <QCoreApplication>
+#include <QMessageBox>
 #include <QString>
 
 /**
@@ -61,6 +62,21 @@ namespace hula
             const std::string getMessage() const
             {
                 return std::string(qPrintable(getTranslatedErrorMessage(errorCode)));
+            }
+
+            void displayErrorMsg() const
+            {
+
+                QMessageBox msgBox;
+                msgBox.setWindowTitle("HulaLoop Error");
+                msgBox.setText(getTranslatedErrorMessage(errorCode));
+                msgBox.setStandardButtons(QMessageBox::Ok);
+
+                if (msgBox.exec() == QMessageBox::Ok)
+                {
+                    exit(1);
+                }
+
             }
 
             /**

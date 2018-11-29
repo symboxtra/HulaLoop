@@ -31,7 +31,13 @@ using namespace hula;
  */
 QMLBridge::QMLBridge(QObject *parent) : QObject(parent)
 {
-    transport = new Transport();
+    try {
+        transport = new Transport();
+    }
+    catch (const ControlException &ce)
+    {
+        ce.displayErrorMsg();
+    }
     rb = transport->getController()->createBuffer(0.5);
 
     loadSettings();

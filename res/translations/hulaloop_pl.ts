@@ -542,6 +542,14 @@
     </message>
 </context>
 <context>
+    <name>Exception</name>
+    <message>
+        <location filename="../../src/control/include/hlcontrol/internal/HulaControlError.h" line="148"/>
+        <source>Unknown error code: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Transport</name>
     <message>
         <location filename="../../src/control/Transport.cpp" line="162"/>
@@ -583,7 +591,7 @@
 <context>
     <name>hula::QMLBridge</name>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="530"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="532"/>
         <source>Go back and save</source>
         <translation type="unfinished"></translation>
     </message>
@@ -629,17 +637,17 @@
         <translation>Aktualizator HulaLoop</translation>
     </message>
     <message>
-        <location filename="../../src/launcher/main.cpp" line="41"/>
+        <location filename="../../src/launcher/main.cpp" line="43"/>
         <source>A newer version has been detected!</source>
         <translation>Nowsza wersja była znaleziona!</translation>
     </message>
     <message>
-        <location filename="../../src/launcher/main.cpp" line="41"/>
+        <location filename="../../src/launcher/main.cpp" line="43"/>
         <source>Click Ok to update!</source>
         <translation>Kliknij Ok aby rozpocząć aktualizację!</translation>
     </message>
     <message>
-        <location filename="../../src/launcher/main.cpp" line="62"/>
+        <location filename="../../src/launcher/main.cpp" line="63"/>
         <source>All systems are up-to-date!</source>
         <translation>Wszystkie systemy są aktualne!</translation>
     </message>
@@ -652,19 +660,24 @@
         <translation>Trwa aktualizacja HulaLoop</translation>
     </message>
     <message>
-        <location filename="../../src/launcher/qml/main.qml" line="67"/>
+        <location filename="../../src/launcher/qml/main.qml" line="76"/>
         <source>Checking for updates...</source>
         <translation>Sprawdzanie aktualizacji...</translation>
     </message>
     <message>
-        <location filename="../../src/launcher/qml/main.qml" line="75"/>
+        <location filename="../../src/launcher/qml/main.qml" line="85"/>
         <source>Downloading updates...</source>
         <translation>Pobieranie aktualizacji...</translation>
     </message>
     <message>
-        <location filename="../../src/launcher/qml/main.qml" line="82"/>
+        <location filename="../../src/launcher/qml/main.qml" line="100"/>
         <source>No updates found.</source>
         <translation>Nie znaleziono żadnych aktualizacji.</translation>
+    </message>
+    <message>
+        <location filename="../../src/launcher/qml/main.qml" line="121"/>
+        <source>Click here to dismiss</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="25"/>
