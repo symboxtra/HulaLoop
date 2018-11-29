@@ -99,6 +99,31 @@ void Controller::removeBuffer(HulaRingBuffer *rb)
 }
 
 /**
+ * Notify OSAudio to start reading from the list of buffers
+ * that will be played back on the selected device.
+ *
+ */
+void Controller::startPlayback()
+{
+    audio->startPlayback();
+}
+
+/**
+ * Notify OSAudio to stop reading from the list of buffers
+ * and reset back to recording audio
+ *
+ */
+void Controller::endPlayback()
+{
+    audio->endPlayback();
+}
+
+void Controller::copyToBuffers(const void *data, uint32_t bytes)
+{
+    audio->copyToBuffers(data, bytes);
+}
+
+/**
  * @ingroup memory_management
  *
  * Fetch a list of devices for the given DeviceType.

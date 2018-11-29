@@ -14,6 +14,7 @@ Transport::Transport()
 {
     controller = new Controller();
     recorder = new Record(controller);
+    player = new Playback(controller);
 
     canRecord = true;
     canPlayback = false;
@@ -44,6 +45,7 @@ bool Transport::record(double delay, double duration)
         canPlayback = false;
 
         state = RECORDING;
+
         std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
@@ -77,6 +79,7 @@ bool Transport::stop()
         canPlayback = true;
 
         state = STOPPED;
+
         std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
@@ -93,12 +96,13 @@ bool Transport::play()
 
     if (canPlayback)
     {
-        // TODO: Add start playback call
+        player->start(0);
 
         canPlayback = false;
         canRecord = false;
 
         state = PLAYING;
+
         std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
@@ -121,16 +125,18 @@ bool Transport::pause()
         canPlayback = true;
 
         state = PAUSED;
+
         std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
     else if (!canPlayback && initRecordClicked) // Pause playback
     {
-        // TODO: Add playback pause call
+        player->stop();
 
         canPlayback = true;
 
         state = PAUSED;
+
         std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
@@ -155,10 +161,8 @@ TransportState Transport::getState() const
  */
 std::string Transport::stateToStr(const TransportState state) const
 {
-
     switch (state)
     {
-
         case RECORDING:
             return std::string(qPrintable(tr("Recording", "state")));
         case STOPPED:
@@ -169,9 +173,7 @@ std::string Transport::stateToStr(const TransportState state) const
             return std::string(qPrintable(tr("Paused", "state")));
         default:
             return std::string(qPrintable(tr("Unknown", "state")));
-
     }
-
 }
 
 /**
@@ -223,5 +225,10 @@ Transport::~Transport()
     if (controller)
     {
         delete controller;
+    }
+
+    if (player)
+    {
+        delete player;
     }
 }

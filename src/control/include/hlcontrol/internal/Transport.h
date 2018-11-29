@@ -7,6 +7,7 @@
 #include <QCoreApplication>
 
 #include "Record.h"
+#include "Playback.h"
 
 #define HL_INFINITE_RECORD -1
 #define HL_TRANSPORT_LOCKOUT_MS 200
@@ -41,6 +42,7 @@ namespace hula
 
         protected:
             Record *recorder;
+            Playback *player;
 
         public:
             Controller *controller;

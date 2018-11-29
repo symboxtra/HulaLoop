@@ -36,9 +36,39 @@ void OSAudio::addBuffer(HulaRingBuffer *rb)
         joinAndKillThreads(inThreads);
 
         // Start up the capture thread
+        // TODO: Figure out how to manage this with playback
         this->endCapture.store(false);
         inThreads.emplace_back(std::thread(&backgroundCapture, this));
     }
+}
+
+/**
+ * Signal the start of the playback thread. Add playback buffer to the
+ * HulaRingBuffer vector and start the playback thread. This signal is to notify
+ * the backend to start reading data that will be played to the selected audio device.
+ *
+ */
+void OSAudio::startPlayback()
+{
+    if (find(rbs.begin(), rbs.end(), playbackBuffer) == rbs.end())
+    {
+        this->rbs.push_back(this->playbackBuffer);
+    }
+    outThreads.emplace_back(std::thread(&backgroundPlayback, this));
+}
+
+/**
+ * Signal the end of the playback thread. Kill all playback threads and remove the
+ * buffer from the HulaRingBuffer list. This signal is to notify the backend to stop reading
+ * data to playback to the selected audio device.
+ *
+ */
+void OSAudio::endPlayback()
+{
+    this->endPlay.store(true);
+    joinAndKillThreads(outThreads);
+
+    removeBuffer(playbackBuffer);
 }
 
 /**
@@ -61,6 +91,9 @@ void OSAudio::removeBuffer(HulaRingBuffer *rb)
             // Signal death and join all threads
             this->endCapture.store(true);
             joinAndKillThreads(inThreads);
+
+            // this->endPlay.store(true);
+            // joinAndKillThreads(outThreads);
         }
 
         // Prevent invalid iterator for copyToBuffers
@@ -88,7 +121,7 @@ void OSAudio::copyToBuffers(const void *data, uint32_t bytes)
 * This will block, so it should be called in a new thread.
 *
 * Calling this directly outside of this class is dangerous.
-* Any thread not in the inThreads vector cannot be guarenteed a valid endCapture
+* Any thread not in the inThreads vector cannot be guaranteed a valid endCapture
 * signal since it won't be joined after a device switch or 0 buffer state.
 * Sync flags might be reset before the independent thread sees them.
 *
@@ -118,8 +151,51 @@ void OSAudio::backgroundCapture(OSAudio *_this)
     }
 
     // Start the capture
+    // Kill any live playback threads before starting audio capture
+    // _this->endPlay.store(true);
+    // _this->joinAndKillThreads(_this->outThreads);
+
     // Don't reset the endCapture flag here as it can cause a race condition
     _this->capture();
+}
+
+/**
+* Static function to allow starting a thread with an instance's playback method.
+* This will block, so it should be called in a new thread.
+*
+* Calling this directly outside of this class is dangerous.
+* Any thread not in the inThreads vector cannot be guaranteed a valid endCapture
+* signal since it won't be joined after a device switch or 0 buffer state.
+* Sync flags might be reset before the independent thread sees them.
+*
+* @param _this Instance of OSAudio subclass which capture should be called on.
+*/
+void OSAudio::backgroundPlayback(OSAudio *_this)
+{
+
+    if (_this->activeOutputDevice == NULL)
+    {
+        std::vector<Device *> devices = _this->getDevices((DeviceType)(DeviceType::PLAYBACK));
+        if (devices.empty())
+        {
+            return;
+        }
+
+        if (_this->activeOutputDevice)
+        {
+            delete _this->activeOutputDevice;
+        }
+        _this->activeOutputDevice = new Device(*devices[0]);
+        Device::deleteDevices(devices);
+    }
+
+    // Kill any live playback threads before starting audio capture
+    _this->endCapture.store(true);
+    _this->joinAndKillThreads(_this->inThreads);
+
+    // Reset the thread interrupt flag
+    _this->endPlay.store(false);
+    _this->playback();
 }
 
 /**
@@ -215,6 +291,12 @@ bool OSAudio::setActiveOutputDevice(Device *device)
     }
     this->activeOutputDevice = new Device(*device);
 
+    this->endPlay.store(true);
+    joinAndKillThreads(outThreads);
+
+    // Startup a new thread
+    outThreads.emplace_back(std::thread(&backgroundPlayback, this));
+
     return true;
 }
 
@@ -238,5 +320,10 @@ OSAudio::~OSAudio()
     if (activeOutputDevice)
     {
         delete activeOutputDevice;
+    }
+
+    if(playbackBuffer)
+    {
+        delete playbackBuffer;
     }
 }
