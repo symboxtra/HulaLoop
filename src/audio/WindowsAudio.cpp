@@ -4,9 +4,6 @@
 
 using namespace hula;
 
-//#include <sndfile.h>
-//#include <fstream>
-
 WindowsAudio::WindowsAudio()
 {
     // Initialize PortAudio

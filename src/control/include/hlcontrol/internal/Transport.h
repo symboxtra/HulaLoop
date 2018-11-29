@@ -36,8 +36,8 @@ namespace hula
 
         private:
             TransportState state;
-            bool recordState;
-            bool playbackState;
+            bool canRecord;
+            bool canPlayback;
             bool initRecordClicked;
 
         protected:

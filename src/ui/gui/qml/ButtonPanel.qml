@@ -204,7 +204,7 @@ Rectangle {
                         enabled = false;
 
                         recordBtn.enabled = true;
-                        recordBtn.contentItem.text = MDFont.Icon.deleteForever;
+                        recordBtn.contentItem.text = MDFont.Icon.delete;
                         isStopped = true;
 
                         playpauseBtn.enabled = true;
@@ -514,7 +514,7 @@ Rectangle {
             id: saveDialog
             objectName: "saveDialog"
             fileMode: FileDialog.SaveFile
-            nameFilters: ["WAVE Sound (*.wav)", "FLAC (*.flac)", "Core Audio Format (*.caf)", "Audio Interchange File Format (*.aiff)", "All files (*)"]
+            nameFilters: ["WAVE Sound (*.wav)", "FLAC (*.flac)", "Core Audio Format (*.caf)", "Audio Interchange File Format (*.aiff)", "RAW Format (*.raw)", "All files (*)"]
             folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
             onAccepted: {
                 qmlbridge.saveFile(saveDialog.currentFile);

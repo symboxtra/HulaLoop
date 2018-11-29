@@ -4,61 +4,91 @@
 <context>
     <name>ButtonPanel</name>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="143"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="151"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="187"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="181"/>
+        <source>Stop recording</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="202"/>
         <source>Stopped</source>
         <comment>state</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="239"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="262"/>
         <source>Paused</source>
         <comment>state</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="256"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="280"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="469"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="308"/>
+        <source>Set recording delay and duration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="340"/>
+        <source>Export audio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="372"/>
+        <source>Check for updates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="532"/>
         <source>Input Device:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="515"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="542"/>
+        <source>Change input device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="585"/>
         <source>Output Device:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="583"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="595"/>
+        <source>Change output device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="661"/>
         <source>Are you sure you want to discard?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="641"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="723"/>
         <source>Delay Recording (hh:mm:ss)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="660"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="742"/>
         <source>Record Duration (hh:mm:ss)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="692"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="774"/>
         <source>CANCEL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="710"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="792"/>
         <source>OK</source>
         <translation></translation>
     </message>
@@ -76,114 +106,114 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="70"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="71"/>
         <source>Path to audio output file.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="70"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="71"/>
         <source>output filepath</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="71"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="72"/>
         <source>Duration, in seconds, of the countdown timer before record.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="71"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="72"/>
         <source>delay</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="72"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="73"/>
         <source>Duration, in seconds, of the record.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="72"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="73"/>
         <source>record duration</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="73"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="74"/>
         <source>Start the countdown/record immediately.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="74"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="75"/>
         <source>Desired sample rate of the output file.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="74"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="75"/>
         <source>sample rate</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="75"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="76"/>
         <source>Encoding format for the output file. Valid options are WAV and MP3. This will default to WAV.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="75"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="76"/>
         <source>encoding</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="76"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="77"/>
         <source>System name of the input device. This will default if not provided.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="76"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="77"/>
         <source>input device name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="77"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="78"/>
         <source>System name of the output device. This will default if not provided.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="77"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="78"/>
         <source>output device name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="78"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
         <source>List available input and output devices.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="80"/>
         <source>target language</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="80"/>
         <source>Set the language of the application.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="93"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="94"/>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="408"/>
         <source>Translation file successfully loaded.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="97"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="98"/>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="412"/>
         <source>Could not find translation file for %1.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="142"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="143"/>
         <source>Only WAV format is supported at this time.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="161"/>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="162"/>
         <source>Device List</source>
         <translation></translation>
     </message>
@@ -444,34 +474,48 @@
 <context>
     <name>Transport</name>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="160"/>
+        <location filename="../../src/control/Transport.cpp" line="162"/>
+        <source>Ready</source>
+        <comment>state</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/control/Transport.cpp" line="164"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="162"/>
+        <location filename="../../src/control/Transport.cpp" line="166"/>
         <source>Stopped</source>
         <comment>state</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="164"/>
+        <location filename="../../src/control/Transport.cpp" line="168"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="166"/>
+        <location filename="../../src/control/Transport.cpp" line="170"/>
         <source>Paused</source>
         <comment>state</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="168"/>
+        <location filename="../../src/control/Transport.cpp" line="172"/>
         <source>Unknown</source>
         <comment>state</comment>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>hula::QMLBridge</name>
+    <message>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="387"/>
+        <source>Go back and save</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -551,6 +595,16 @@
         <location filename="../../src/launcher/qml/main.qml" line="82"/>
         <source>No updates found.</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/main.qml" line="49"/>
+        <source>HulaLoop Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/main.qml" line="49"/>
+        <source>HulaLoop has started recording audio!</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

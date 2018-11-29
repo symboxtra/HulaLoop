@@ -175,18 +175,18 @@ if (NOT HL_BUILD_ONLY_AUDIO)
             Qt5::Widgets
         )
     endif ()
-endif ()
 
-# Required Sndfile packages
-find_package (SndFile REQUIRED)
+    # Required Sndfile packages
+    find_package (SndFile REQUIRED)
 
-add_include_dir (${LIBSNDFILE_INCLUDE})
-list (APPEND HL_LIBRARIES ${LIBSNDFILE_LIB})
+    add_include_dir (${LIBSNDFILE_INCLUDE})
+    list (APPEND HL_LIBRARIES ${LIBSNDFILE_LIB})
 
-# Copy DLL to application bin folder
-if (WIN32)
-    MESSAGE (STATUS "Found SndFile DLL: ${LIBSNDFILE_DLL}")
-    file (COPY ${LIBSNDFILE_DLL} DESTINATION ${CMAKE_BINARY_DIR}/bin)
+    # Copy DLL to application bin folder
+    if (WIN32)
+        MESSAGE (STATUS "Found SndFile DLL: ${LIBSNDFILE_DLL}")
+        file (COPY ${LIBSNDFILE_DLL} DESTINATION ${CMAKE_BINARY_DIR}/bin)
+    endif ()
 endif ()
 
 ######## Libraries ########
