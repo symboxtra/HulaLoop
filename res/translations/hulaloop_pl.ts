@@ -42,27 +42,27 @@
         <translation>Urządzenia zewnętrzne:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="814"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="718"/>
         <source>Are you sure you want to discard?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="872"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="774"/>
         <source>Delay Recording (hh:mm:ss)</source>
         <translation>Opóźnione nagrywanie (gg:mm:ss)</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="891"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="793"/>
         <source>Record Duration (hh:mm:ss)</source>
         <translation>Czas trwania nagrywanie (gg:mm:ss)</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="923"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="825"/>
         <source>CANCEL</source>
         <translation>ANULUJ</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="941"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="843"/>
         <source>OK</source>
         <translation></translation>
     </message>

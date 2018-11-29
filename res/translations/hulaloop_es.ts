@@ -46,17 +46,17 @@
         <translation>Dispositivo de Salida</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="814"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="718"/>
         <source>Are you sure you want to discard?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="872"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="774"/>
         <source>Delay Recording (hh:mm:ss)</source>
         <translation>Retraso antes de grabar (hh:mm:ss)</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="891"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="793"/>
         <source>Record Duration (hh:mm:ss)</source>
         <translatorcomment>Format for hours, minutes, seconds remains unchanged because of the way the response is parsed.</translatorcomment>
         <translation>Duración de la grabación (hh:mm:ss)</translation>
@@ -67,12 +67,12 @@
         <translation type="vanished">Duración de la grabación (hh:mm:ss)</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="923"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="825"/>
         <source>CANCEL</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="941"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="843"/>
         <source>OK</source>
         <translation>Aceptar</translation>
     </message>

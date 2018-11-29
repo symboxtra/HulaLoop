@@ -206,6 +206,14 @@ QString QMLBridge::getOutputDevices()
 }
 
 /**
+ * Add comment
+ */
+void QMLBridge::setShowRecordDevices(bool val)
+{
+    HulaSettings::getInstance()->setShowRecordDevices(val);
+}
+
+/**
  * Get the directory the user wants to save to
  *
  * @param QString containing the directory

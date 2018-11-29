@@ -13,7 +13,6 @@ import "../fonts/Icon.js" as MDFont
 Rectangle {
 
     id: buttonPanel
-    z: bluerect.z+6
     width: parent.width
     height: 115
     color: window.barColor
@@ -145,6 +144,8 @@ Rectangle {
                         // Update stop button
                         stopBtn.enabled = true;
 
+                        settingsBtn.enabled = false;
+
                         // Update play/pause button
                         playpauseBtn.enabled = true;
                         playpauseBtn.contentItem.text = MDFont.Icon.pause;
@@ -191,6 +192,8 @@ Rectangle {
                         recordBtn.enabled = true;
                         recordBtn.contentItem.text = MDFont.Icon.deleteForever;
                         isStopped = true;
+
+                        settingsBtn.enabled = true;
 
                         playpauseBtn.enabled = true;
                         playpauseBtn.contentItem.text = MDFont.Icon.play;
@@ -619,6 +622,13 @@ Rectangle {
 
                 Switch {
                     id: displayRecordDev
+                    position: 1.0
+
+                    onToggled: {
+                        let val = true;
+                        (position === 1.0) ? val = true : val = false;
+                        qmlbridge.setShowRecordDevices(val);
+                    }
                 }
 
                 Label {
@@ -645,12 +655,11 @@ Rectangle {
                             }
                         }
                     }
+
                     onActivated: {
                         //add behavior for which setting it was just changed to
-                    }
-
-                    onPressedChanged: {
-
+                        window.visType = settings2.currentText
+                        qmlbridge.updateVisualizer(qmlbridge)
                     }
                     currentIndex: 0
                 }
@@ -679,12 +688,9 @@ Rectangle {
                             }
                         }
                     }
+
                     onActivated: {
                         //add behavior for which setting it was just changed to
-                    }
-
-                    onPressedChanged: {
-
                     }
                     currentIndex: 0
                 }
@@ -847,10 +853,6 @@ Rectangle {
                     }
                 }
             }
-        }
-
-        onClosed: {
-            console.log("popup closed");
         }
     }
 }

@@ -36,6 +36,8 @@ namespace hula
             Q_INVOKABLE QString getInputDevices();
             Q_INVOKABLE QString getOutputDevices();
 
+            Q_INVOKABLE void setShowRecordDevices(bool);
+
             Q_INVOKABLE QString getTransportState() const;
             Q_INVOKABLE bool record();
             Q_INVOKABLE bool stop();
@@ -43,7 +45,6 @@ namespace hula
             Q_INVOKABLE bool pause();
             Q_INVOKABLE void discard();
             void getData();
-
 
             bool pauseNotPressed;
             bool getPauseState();
@@ -56,7 +57,7 @@ namespace hula
 
             void startVisThread();
             void stopVisThread();
-            static void updateVisualizer(QMLBridge* _this);
+            Q_INVOKABLE static void updateVisualizer(QMLBridge* _this);
             static void reverseBits(size_t x, int n);
 
             Q_INVOKABLE void launchUpdateProcess();

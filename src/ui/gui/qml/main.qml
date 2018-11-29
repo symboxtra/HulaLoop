@@ -21,31 +21,11 @@ ApplicationWindow {
     Material.theme: Material.Grey
     Material.accent: Material.Orange
 
-
-    Rectangle {
-        id: bluerect
-        width: window.width
-        height: parent.height
-        color: "lightsteelblue"
-        y: 98
-
-        Row {
-
-            y: parent.height-150
-            x: -40
-            //Rectangle { id: testrec2; color: "orange"; width: 10;height:200; border.width: 1; border.color: "black"; transform: Rotation { origin.x: 25; origin.y: 25; angle: 180} }
-
-            /*Repeater{
-                id:rectgen
-                model: Math.round(visualize.width / 10)
-                //Rectangle { id: testrec; color: "grey"; width: window.width/64; border.width: 1; border.color: "black"; transform: Rotation { origin.x: 25; origin.y: 25; angle: 180} }
-            }*/
-        }
-    }
-
     property string textDisplayed: "Elapsed: 0"
     property string currentState: "Unknown"
     property string barColor: "#888888"
+
+    property string visType: "Line"
 
     property int lastVisBarCount: 0
     property int trimFront: 3
@@ -71,32 +51,33 @@ ApplicationWindow {
         }
 
         onVisData: {
-
-            // TODO: Update when we have the ability to switch visualizers
-            if (true)
+            if (visType === "Bar")
             {
+                dl.visible = false
                 // Update the number of bars
-                /*lastVisBarCount = dataIn.length - trimBack - trimFront
+                lastVisBarCount = dataIn.length - trimBack - trimFront
 
                 for (var i = trimFront; i < dataIn.length - trimBack; i++) {
                     rectgen.itemAt(i - trimFront).height = Math.round(Math.min(dataIn[i], 1) * visualize.height)
-                }*/
-
+                }
+            }
+            else if (visType === "Circle")
+            {
+                dl.visible = false
                 //circle visualizer instead of bars
                 canvas2.readValues(dataIn)
                 canvas2.clear()
             }
-            else
+            else if (visType === "Line")
             {
-                canvas.readValues(dataIn)
-                canvas.clear()
+                dl.visible = true
+                dl.readValues(dataIn)
+                dl.clear()
 
                 // Update after values have been assigned
-                canvas.binCount = dataIn.length - trimBack - trimFront
+                dl.binCount = dataIn.length - trimBack - trimFront
             }
         }
-
-
     }
 
     SystemTrayIcon {
@@ -123,7 +104,7 @@ ApplicationWindow {
         anchors.bottom: bottomRectangle.top
 
         DynamicLine {
-            id: canvas
+            id: dl
 
             width: parent.width
             height: parent.height
@@ -131,6 +112,7 @@ ApplicationWindow {
 
             anchors.centerIn: parent
         }
+
         CircleVis {
             id: canvas2
 
