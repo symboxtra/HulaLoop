@@ -35,7 +35,6 @@ void Record::start()
 void Record::recorder()
 {
     ring_buffer_size_t samplesRead;
-    float buffer[44100];
 
     // Initialize libsndfile info.
     SF_INFO sfinfo;
