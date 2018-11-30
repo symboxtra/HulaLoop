@@ -27,8 +27,8 @@ namespace hula
              */
             OSAudio()
             {
-                this->activeInputDevice = NULL;
-                this->activeOutputDevice = NULL;
+                this->activeInputDevice = nullptr;
+                this->activeOutputDevice = nullptr;
             };
 
             /**
@@ -103,8 +103,8 @@ namespace hula
              */
             virtual bool checkDeviceParams(Device *device) = 0;
 
-            bool setActiveInputDevice(Device *device);
-            bool setActiveOutputDevice(Device *device);
+            virtual bool setActiveInputDevice(Device *device);
+            virtual bool setActiveOutputDevice(Device *device);
     };
 }
 

@@ -21,9 +21,9 @@ namespace hula
     /**
      * Class containing the interactive CLI.
      */
-    class HulaInteractiveCli {
+    class InteractiveCLI {
 
-        Q_DECLARE_TR_FUNCTIONS(CLI)
+            Q_DECLARE_TR_FUNCTIONS(CLI)
 
         private:
             QCoreApplication *app;
@@ -35,7 +35,7 @@ namespace hula
             std::string outputFilePath;
 
         public:
-            HulaInteractiveCli(QCoreApplication *app);
+            InteractiveCLI(QCoreApplication *app);
 
             void unusedArgs(const std::vector<std::string> &args, int numUsed) const;
             void missingArg(const std::string &argName) const;
@@ -46,7 +46,7 @@ namespace hula
             TransportState getState();
             void setOutputFilePath(const std::string &path);
 
-            ~HulaInteractiveCli();
+            ~InteractiveCLI();
     };
 }
 

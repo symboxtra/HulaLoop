@@ -31,7 +31,7 @@ Controller::Controller()
     audio = new WindowsAudio();
     #endif
 
-    if (audio == NULL)
+    if (audio == nullptr)
     {
         hlDebug() << "Error initializing OS audio module!" << std::endl;
         exit(1);

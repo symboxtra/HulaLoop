@@ -36,6 +36,7 @@ void OSAudio::addBuffer(HulaRingBuffer *rb)
         joinAndKillThreads(inThreads);
 
         // Start up the capture thread
+        this->endCapture.store(false);
         inThreads.emplace_back(std::thread(&backgroundCapture, this));
     }
 }
@@ -100,7 +101,7 @@ void OSAudio::backgroundCapture(OSAudio *_this)
         return;
     }
 
-    if (_this->activeInputDevice == NULL)
+    if (_this->activeInputDevice == nullptr)
     {
         std::vector<Device *> devices = _this->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
         if (devices.empty())
@@ -116,8 +117,8 @@ void OSAudio::backgroundCapture(OSAudio *_this)
         Device::deleteDevices(devices);
     }
 
-    // Reset the thread interrupt flag
-    _this->endCapture.store(false);
+    // Start the capture
+    // Don't reset the endCapture flag here as it can cause a race condition
     _this->capture();
 }
 
@@ -131,7 +132,7 @@ void OSAudio::backgroundCapture(OSAudio *_this)
 bool OSAudio::setActiveInputDevice(Device *device)
 {
     // TODO: Handle error
-    if (device == NULL)
+    if (device == nullptr)
     {
         return false;
     }
@@ -142,7 +143,7 @@ bool OSAudio::setActiveInputDevice(Device *device)
         return false;
     }
 
-    if(!this->checkDeviceParams(device))
+    if (!this->checkDeviceParams(device))
     {
         return false;
     }
@@ -158,6 +159,7 @@ bool OSAudio::setActiveInputDevice(Device *device)
     joinAndKillThreads(inThreads);
 
     // Startup a new thread
+    this->endCapture.store(false);
     inThreads.emplace_back(std::thread(&backgroundCapture, this));
 
     return true;
@@ -191,7 +193,7 @@ void OSAudio::joinAndKillThreads(std::vector<std::thread> &threads)
 bool OSAudio::setActiveOutputDevice(Device *device)
 {
     // TODO: Handle error
-    if (device == NULL)
+    if (device == nullptr)
     {
         return false;
     }
