@@ -4,8 +4,11 @@ cmake_minimum_required (VERSION 3.5)
 
 set (CMAKE_CXX_STANDARD 14)
 
-include (cmake/Qt5.cmake)
-include (cmake/Utility.cmake)
+# Make sure we can find our Find<package>.cmake files
+list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
+include (${CMAKE_CURRENT_LIST_DIR}/cmake/Qt5.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/cmake/Utility.cmake)
 
 # Version
 set (HL_VERSION_MAJOR 0)
@@ -36,18 +39,8 @@ if (WIN32 AND CMAKE_GENERATOR_PLATFORM MATCHES "x64")
     set (64BIT TRUE)
 endif ()
 
-set (HL_PACKAGE_TYPE ".tar.gz")
-if (WIN32 AND 64BIT)
-    set (HL_PACKAGE_TYPE "win64.exe")
-elseif (WIN32 AND NOT 64BIT)
-    set (HL_PACKAGE_TYPE "win32.exe")
-elseif (OSX)
-    set (HL_PACKAGE_TYPE ".dmg")
-elseif (EXISTS "/etc/debian_version")
-    set (HL_PACKAGE_TYPE ".deb")
-elseif (EXISTS "/etc/redhat-release")
-    set (HL_PACKAGE_TYPE ".rpm")
-endif ()
+# Configuration code for installers
+include (${CMAKE_CURRENT_LIST_DIR}/cmake/HulaInstall.cmake)
 
 # Global build options
 option (HL_BUILD_ONLY_AUDIO "Build only the audio library." OFF)
@@ -98,9 +91,6 @@ set (HL_LIBRARIES)
 if (WIN32)
     list (APPEND HL_LIBRARIES winmm.lib ) # TODO: Add required windows libraries
 endif ()
-
-# Make sure we can find our Find<package>.cmake files
-list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 
 
@@ -226,7 +216,7 @@ if (NOT HL_BUILD_ONLY_AUDIO)
     endif ()
 
     add_subdirectory (${PROJECT_SOURCE_DIR}/res/translations)
-    include (cmake/Translation.cmake)
+    include (${CMAKE_CURRENT_LIST_DIR}/cmake/Translation.cmake)
 
     if (HL_BUILD_EXAMPLES)
         add_subdirectory (examples)
@@ -251,7 +241,7 @@ install (
 # Build settings for DEBUG builds only
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
-    include (cmake/Testing.cmake)
+    include (${CMAKE_CURRENT_LIST_DIR}/cmake/Testing.cmake)
 
     # Test that only rely on the audio library
     create_test ("src/test/TestOSAudio.cpp" "" 3 FALSE FALSE)
@@ -276,73 +266,4 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
 endif ()
 
-
-
-
-######## CPack ########
-if (NOT BUILD_ONLY_AUDIO)
-
-    set (CPACK_PACKAGE_NAME "HulaLoop Installer")
-    set (CPACK_PACKAGE_VENDOR "Symboxtra Software")
-    set (CPACK_PACKAGE_VERSION "0.0.0")
-
-    if (64BIT) # Windows x64
-
-        set (CPACK_GENERATOR "NSIS64")
-
-        set (CPACK_NSIS_MUI_ICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
-        set (CPACK_NSIS_MUI_UNIICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
-#        set (CPACK_PACKAGE_ICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.bmp")
-        set (CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
-        set (CPACK_PACKAGE_INSTALL_DIRECTORY "Test CPack")
-        set (CPACK_NSIS_MODIFY_PATH ON)
-        set (CPACK_COMPONENTS_ALL app)
-
-        if (PACK)
-            set (INSTALL_DIR bin)
-            set (LIB_DIR bin/lib)
-        endif ()
-
-
-        # Configuration file with custom definitions for NSIS
-        # configure_file (
-            # /res/nsis/NSIS.definitions.nsh.in
-            # ${CMAKE_CURRENT_BINARY_DIR}/res/nsis/NSIS.definitions.nsh
-        # )
-
-    elseif (WIN32) # Windows x86
-        set (CPACK_GENERATOR "NSIS")
-
-        set (CPACK_NSIS_MUI_ICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
-        set (CPACK_NSIS_MUI_UNIICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
-#        set (CPACK_PACKAGE_ICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.bmp")
-        set (CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
-        set (CPACK_PACKAGE_INSTALL_DIRECTORY "Test CPack")
-        set (CPACK_NSIS_MODIFY_PATH ON)
-        set (CPACK_COMPONENTS_ALL app)
-
-        if (PACK)
-            set (INSTALL_DIR bin)
-            set (LIB_DIR bin/lib)
-        endif ()
-
-    elseif (OSX) # Mac OS X
-        set (CPACK_GENERATOR "DMG")
-
-    else  () # Debian Linux
-        set (CPACK_GENERATOR "DEB")
-        set (CPACK_PACKAGE_FILE_NAME "HulaLoop")
-        set (CPACK_DEBIAN_PACKAGE_NAME "HulaLoop")
-        set (CPACK_DEBIAN_PACKAGE_DESCRIPTION "Simple cross-platform audio loopback and recording.")
-        set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Symboxtra Software")
-        # !!!! Add contact email
-        set (CPACK_DEBIAN_PACKAGE_DEPENDS "g++, build-essential, cmake, libgl1-mesa-dev, libasound2, libasound2-dev, qt5-default, libqt5quick5, libqt5qml5, libqt5quickcontrols2-5")
-        # install logo file and the desktop shortcut
-        install (FILES ${PROJECT_SOURCE_DIR}/res/installer/hulaloop.desktop DESTINATION /usr/share/applications)
-        install (FILES ${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.svg DESTINATION /usr/share/icons/hicolor/scalable/apps)
-    endif  ()
-
-    include (CPack)
-
-endif ()
 message (STATUS "")

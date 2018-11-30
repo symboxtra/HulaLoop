@@ -24,12 +24,21 @@ git submodule update --remote --merge
 
 
 #### Debian-based Linux ####
-Required:
+Check which version of Debian you have by running
 ```bash
-sudo apt install g++ build-essential cmake libgl1-mesa-dev libasound2-dev libsndfile-dev pavucontrol
+cat /etc/debian_version
 ```
 
-**IMPORTANT:** This application requires Qt 5.10+. This typically has to be installed using the Qt GUI installer since ```apt``` does not backport a recent enough version. Be sure to install the extra **Qt Charts** package as the GUI relies on it.
+If running Debian Stretch:
+```bash
+sudo apt install build-essential cmake libgl1-mesa-dev libasound2-dev libsndfile-dev pavucontrol
+```
+**IMPORTANT:** This application requires Qt 5.9.5+. This typically has to be installed using the Qt GUI installer since ```apt``` on Debian Stretch does not backport an up-to-date version. Be sure to install the extra **Qt Charts** package as the GUI relies on it.
+
+If running Debian Buster:
+```bash
+sudo apt install build-essential cmake libgl1-mesa-dev libasound2 libasound2-dev pavucontrol qt5-default libqt5charts5 libqt5quickcontrols2-5
+```
 
 If using GNOME (fixes system tray icons and notifications):
 ```bash
@@ -42,10 +51,10 @@ sudo apt install python-sphinx doxygen graphviz help2man
 python -m pip install --user recommonmark
 ```
 
-#### RPM-based Linux ####
+#### Redhat-based Linux ####
 Required:
 ```bash
-sudo dnf install gcc-c++ make cmake qt5-devel qt5-qtquickcontrols2-devel alsa-lib alsa-lib-devel
+sudo dnf install gcc-c++ make cmake qt5-devel qt5-qtcharts qt5-qtquickcontrols2-devel alsa-lib alsa-lib-devel
 ```
 
 To enable the system tray icon and notifications the ```Topicons plus``` extension must be installed via ```dnf``` and enabled under *Tweaks->Extensions*.

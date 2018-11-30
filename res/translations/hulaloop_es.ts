@@ -617,7 +617,7 @@
 <context>
     <name>hula::QMLBridge</name>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="530"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="532"/>
         <source>Go back and save</source>
         <translation type="unfinished"></translation>
     </message>
