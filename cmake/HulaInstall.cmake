@@ -30,7 +30,7 @@ elseif (EXISTS "/etc/debian_version")
 
     # Install logo file and the desktop shortcut
     configure_file (
-        "${PROJECT_SOURCE_DIR}/res/installers/hulaloop.desktop.in"
+        "${PROJECT_SOURCE_DIR}/res/installer/hulaloop.desktop.in"
         "${CMAKE_BINARY_DIR}/hulaloop.desktop"
     )
     install (FILES ${CMAKE_BINARY_DIR}/hulaloop.desktop DESTINATION /usr/share/applications)
@@ -45,7 +45,7 @@ elseif (EXISTS "/etc/redhat-release")
 
     # Install logo file and the desktop shortcut
     configure_file (
-        "${PROJECT_SOURCE_DIR}/res/installers/hulaloop.desktop.in"
+        "${PROJECT_SOURCE_DIR}/res/installer/hulaloop.desktop.in"
         "${CMAKE_BINARY_DIR}/hulaloop.desktop"
     )
     install (FILES ${CMAKE_BINARY_DIR}/hulaloop.desktop DESTINATION /usr/share/applications)
