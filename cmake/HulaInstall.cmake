@@ -3,8 +3,8 @@ set (CPACK_PACKAGE_VENDOR "Symboxtra Software")
 set (CPACK_PACKAGE_CONTACT "dev.symboxtra@gmail.com")
 set (CPACK_PACKAGE_HOMEPAGE_URL "https://hulaloop.readthedocs.io/")
 
-set (CPACK_PACKAGE_VERSION HL_VERSION_STR)
-set (CPACK_PACKAGE_FILE_NAME "HulaLoop Installer")
+set (CPACK_PACKAGE_VERSION ${HL_VERSION_STR})
+set (CPACK_PACKAGE_FILE_NAME "hulaloop")
 set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Simple cross-platform audio loopback and recording.")
 set (CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/res/eula.txt)
 
