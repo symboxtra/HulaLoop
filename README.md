@@ -68,6 +68,11 @@ sudo dnf install python-sphinx doxygen graphviz help2man
 python -m pip install --user recommonmark
 ```
 
+If you want to generate RPM packages:
+```bash
+sudo dnf install rpm-build
+```
+
 #### OSX ####
 Install ```brew```:
 ```bash
