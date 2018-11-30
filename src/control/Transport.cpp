@@ -1,7 +1,8 @@
-#include <iostream>
+#include <chrono>
 
 #include "hlcontrol/internal/Export.h"
 #include "hlcontrol/internal/HulaControlError.h"
+#include "hlcontrol/internal/HulaSettings.h"
 #include "hlcontrol/internal/Transport.h"
 
 using namespace hula;
@@ -13,24 +14,12 @@ Transport::Transport()
 {
     controller = new Controller();
     recorder = new Record(controller);
-}
 
-#ifndef NDEBUG
-/**
- * ---------------- FOR TESTING/DEBUG BUILDS ONLY -----------------
- *
- * A "dry run" is a run in which full application functionality is not
- * required. This is usually used by unit tests targeting upper-level
- * modules that don't require the initialization of lower-level modules.
- *
- * This constructor is designed for testing purposes and exists only in debug builds.
- */
-Transport::Transport(bool dryRun)
-{
-    controller = new Controller(dryRun);
-    recorder = nullptr;
+    canRecord = true;
+    canPlayback = false;
+    initRecordClicked = false;
+    state = READY;
 }
-#endif
 
 /**
  * Start and handle the process of recording.
@@ -42,19 +31,24 @@ Transport::Transport(bool dryRun)
  */
 bool Transport::record(double delay, double duration)
 {
-    std::cout << "Record triggered!" << std::endl;
-    std::cout << "Delay set to: " << delay << std::endl;
-    std::cout << "Duration set to: " << duration << std::endl;
-    state = RECORDING;
+    hlDebug() << "Record triggered!" << std::endl;
+    hlDebug() << "Delay set to: " << delay << std::endl;
+    hlDebug() << "Duration set to: " << duration << std::endl;
 
-    if (recordState)
+    if (canRecord)
     {
+        hlDebug() << "STARTED RECORDING" << std::endl;
         recorder->start();
 
-        recordState = false;
+        initRecordClicked = true;
+        canRecord = false;
+        canPlayback = false;
 
+        state = RECORDING;
+        std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
+
     return false;
 }
 
@@ -74,18 +68,20 @@ bool Transport::record()
  */
 bool Transport::stop()
 {
-    std::cout << "Stop button clicked!" << std::endl;
-    state = STOPPED;
+    hlDebug() << "Stop button clicked!" << std::endl;
 
-    if (!recordState || playbackState)
+    if ((!canRecord && !canPlayback) || state == PAUSED)
     {
         recorder->stop();
 
-        recordState = false;
-        playbackState = true;
+        canRecord = false;
+        canPlayback = true;
 
+        state = STOPPED;
+        std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
+
     return false;
 }
 
@@ -94,16 +90,20 @@ bool Transport::stop()
  */
 bool Transport::play()
 {
-    std::cout << "Play button clicked!" << std::endl;
-    state = PLAYING;
+    hlDebug() << "Play button clicked!" << std::endl;
 
-    if (playbackState)
+    if (canPlayback)
     {
-        // TODO: Add playback call
-        playbackState = false;
+        // TODO: Add start playback call
 
+        canPlayback = false;
+        canRecord = false;
+
+        state = PLAYING;
+        std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
+
     return false;
 }
 
@@ -112,43 +112,32 @@ bool Transport::play()
  */
 bool Transport::pause()
 {
-    std::cout << "Pause button clicked!" << std::endl;
-    state = PAUSED;
+    hlDebug() << "Pause button clicked!" << std::endl;
 
-    if (!recordState) // Pause record
+    if (state == RECORDING && !canRecord) // Pause record
     {
         recorder->stop();
 
-        recordState = true;
-        playbackState = true;
+        canRecord = true;
+        canPlayback = true;
 
+        state = PAUSED;
+        std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
-    else if (!playbackState) // Pause playback
+    else if (!canPlayback && initRecordClicked) // Pause playback
     {
         // TODO: Add playback pause call
-        playbackState = true;
 
+        canPlayback = true;
+
+        state = PAUSED;
+        std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
+
     return false;
 }
-
-/**
- * Discard any recorded audio and reset the state.
- *
- * @return bool Success of command
- */
-/*
-bool Transport::Discard()
-{
-    state = INITIAL;
-    recordState = true;
-    playbackState = false;
-
-    return true;
-}
-*/
 
 /**
  * Return the current state of the Transport object.
@@ -167,23 +156,21 @@ TransportState Transport::getState() const
  */
 std::string Transport::stateToStr(const TransportState state) const
 {
-
     switch (state)
     {
-
+        case READY:
+            return std::string(qPrintable(tr("Ready", "state")));
         case RECORDING:
-            return "Recording";
+            return std::string(qPrintable(tr("Recording", "state")));
         case STOPPED:
-            return "Stopped";
+            return std::string(qPrintable(tr("Stopped", "state")));
         case PLAYING:
-            return "Playing";
+            return std::string(qPrintable(tr("Playing", "state")));
         case PAUSED:
-            return "Paused";
+            return std::string(qPrintable(tr("Paused", "state")));
         default:
-            return "Unknown";
-
+            return std::string(qPrintable(tr("Unknown", "state")));
     }
-
 }
 
 /**
@@ -199,8 +186,46 @@ Controller *Transport::getController() const
 void Transport::exportFile(std::string targetDirectory)
 {
     Export exp(targetDirectory);
-    // TODO: Make it an actual directory
-    exp.copyData("/tmp/temp.txt");
+    exp.copyData(recorder->getExportPaths());
+
+    recorder->clearExportPaths();
+}
+
+/**
+ * Reset transport states and delete captured audio files from system temp folder
+ */
+void Transport::discard()
+{
+    // Reset states
+    canRecord = true;
+    canPlayback = false;
+    initRecordClicked = false;
+    state = READY;
+
+    // Delete audio files from system temp folder
+    Export::deleteTempFiles(recorder->getExportPaths());
+    recorder->clearExportPaths();
+}
+
+/**
+ * Checks if there are files in the export paths which means
+ * recording has happened and there are no files left to export
+ *
+ * @return true is the user has recorded files
+ */
+bool Transport::hasExportPaths()
+{
+    bool exportPaths = recorder->getExportPaths().empty();
+    if (exportPaths)
+    {
+        // there are no paths left
+        return false;
+    }
+    else
+    {
+        // there are paths left
+        return true;
+    }
 }
 
 /**
@@ -208,15 +233,15 @@ void Transport::exportFile(std::string targetDirectory)
  */
 Transport::~Transport()
 {
-    printf("%sTransport destructor called\n", HL_PRINT_PREFIX);
-
-    if (controller)
-    {
-        delete controller;
-    }
+    hlDebugf("Transport destructor called\n");
 
     if (recorder)
     {
         delete recorder;
+    }
+
+    if (controller)
+    {
+        delete controller;
     }
 }

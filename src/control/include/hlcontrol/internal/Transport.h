@@ -4,9 +4,12 @@
 #include <hlaudio/hlaudio.h>
 #include <string>
 
+#include <QCoreApplication>
+
 #include "Record.h"
 
 #define HL_INFINITE_RECORD -1
+#define HL_TRANSPORT_LOCKOUT_MS 200
 
 namespace hula
 {
@@ -15,6 +18,7 @@ namespace hula
      */
     enum TransportState
     {
+        READY,
         RECORDING,
         STOPPED,
         PLAYING,
@@ -27,10 +31,14 @@ namespace hula
      * Extra class for managing the state of the application and all audio related processes.
      */
     class Transport {
+
+            Q_DECLARE_TR_FUNCTIONS(Transport)
+
         private:
             TransportState state;
-            bool recordState = true;
-            bool playbackState = false;
+            bool canRecord;
+            bool canPlayback;
+            bool initRecordClicked;
 
         protected:
             Record *recorder;
@@ -39,11 +47,6 @@ namespace hula
             Controller *controller;
 
         public:
-
-            #ifndef NDEBUG
-            Transport(bool dryRun);
-            #endif // END NDEBUG
-
             Transport();
             virtual ~Transport();
 
@@ -52,10 +55,13 @@ namespace hula
             bool stop();
             bool play();
             bool pause();
+            void discard();
 
             Controller *getController() const;
 
             void exportFile(std::string targetDirectory);
+
+            bool hasExportPaths();
 
             TransportState getState() const;
             std::string stateToStr(const TransportState state) const;

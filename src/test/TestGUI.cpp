@@ -14,7 +14,6 @@
 using namespace hula;
 
 class TestGUI : public ::testing::Test {
-
     protected:
         QApplication *app = nullptr;
         QQmlApplicationEngine *engine = nullptr;
@@ -46,7 +45,6 @@ class TestGUI : public ::testing::Test {
 
             if (label)
             {
-
                 QVariant property = QQmlProperty::read(label, QString::fromStdString("text"));
                 if (!property.isNull())
                 {
@@ -56,7 +54,6 @@ class TestGUI : public ::testing::Test {
                 {
                     ADD_FAILURE();
                 }
-
             }
             else
             {
@@ -136,29 +133,24 @@ class TestGUI : public ::testing::Test {
 
             if (timer && delayIn && recordIn)
             {
-
                 delayIn->setProperty("text", "00:00:01");
                 recordIn->setProperty("text", "00:00:01");
                 timer->setProperty("running", "true");
-
             }
             else
             {
                 ADD_FAILURE();
             }
         }
-
 };
 
 TEST_F(TestGUI, init)
 {
-
     ASSERT_TRUE(app != nullptr);
     ASSERT_TRUE(engine != nullptr);
 
     QTimer::singleShot(300, app, &QApplication::quit);
     ASSERT_EQ(app->exec(), 0);
-
 }
 
 TEST_F(TestGUI, timers)
@@ -253,7 +245,7 @@ TEST_F(TestGUI, ui_state_machine_2)
     clickButton("stopBtn");
     ASSERT_EQ(getTransportState(), "Stopped");
 
-    EXPECT_FALSE(isEnabled("recordBtn"));
+    EXPECT_TRUE(isEnabled("recordBtn"));
     EXPECT_FALSE(isEnabled("stopBtn"));
     EXPECT_TRUE(isEnabled("playpauseBtn"));
     EXPECT_TRUE(isEnabled("exportBtn"));
@@ -264,7 +256,7 @@ TEST_F(TestGUI, ui_state_machine_2)
     clickButton("playpauseBtn");
     ASSERT_EQ(getTransportState(), "Playing");
 
-    EXPECT_FALSE(isEnabled("recordBtn"));
+    EXPECT_TRUE(isEnabled("recordBtn"));
     EXPECT_FALSE(isEnabled("stopBtn"));
     EXPECT_TRUE(isEnabled("playpauseBtn"));
     EXPECT_TRUE(isEnabled("exportBtn"));
@@ -275,7 +267,7 @@ TEST_F(TestGUI, ui_state_machine_2)
     clickButton("playpauseBtn");
     ASSERT_EQ(getTransportState(), "Paused");
 
-    EXPECT_FALSE(isEnabled("recordBtn"));
+    EXPECT_TRUE(isEnabled("recordBtn"));
     EXPECT_FALSE(isEnabled("stopBtn"));
     EXPECT_TRUE(isEnabled("playpauseBtn"));
     EXPECT_TRUE(isEnabled("exportBtn"));
@@ -318,7 +310,7 @@ TEST_F(TestGUI, ui_state_machine_3)
     clickButton("stopBtn");
     ASSERT_EQ(getTransportState(), "Stopped");
 
-    EXPECT_FALSE(isEnabled("recordBtn"));
+    EXPECT_TRUE(isEnabled("recordBtn"));
     EXPECT_FALSE(isEnabled("stopBtn"));
     EXPECT_TRUE(isEnabled("playpauseBtn"));
     EXPECT_TRUE(isEnabled("exportBtn"));
@@ -410,4 +402,28 @@ TEST_F(TestGUI, ui_state_machine_5)
     EXPECT_FALSE(isEnabled("exportBtn"));
 
     ASSERT_FALSE(isButtonPlay());
+}
+
+TEST_F(TestGUI, stress_test)
+{
+    clickButton("recordBtn");
+    ASSERT_EQ(getTransportState(), "Recording");
+    for(unsigned i = 0; i < 50; i++)
+    {
+        // click pause button
+        clickButton("playpauseBtn");
+        EXPECT_TRUE(isEnabled("recordBtn"));
+        EXPECT_TRUE(isEnabled("stopBtn"));
+        ASSERT_EQ(getTransportState(), "Paused");
+
+        // click play button
+        clickButton("playpauseBtn");
+        EXPECT_FALSE(isEnabled("recordBtn"));
+        EXPECT_FALSE(isEnabled("stopBtn"));
+        ASSERT_EQ(getTransportState(), "Playing");
+    }
+    clickButton("stopBtn");
+    EXPECT_FALSE(isEnabled("stopBtn"));
+    ASSERT_EQ(getTransportState(), "Stopped");
+
 }

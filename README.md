@@ -26,10 +26,10 @@ git submodule update --remote --merge
 #### Debian-based Linux ####
 Required:
 ```bash
-sudo apt install g++ build-essential cmake libgl1-mesa-dev libasound2 libasound2-dev
+sudo apt install g++ build-essential cmake libgl1-mesa-dev libasound2-dev libsndfile-dev pavucontrol
 ```
 
-**IMPORTANT:** This application requires Qt 5.10+. This typically has to be installed using the Qt GUI installer since ```apt``` does not backport a recent enough version.
+**IMPORTANT:** This application requires Qt 5.10+. This typically has to be installed using the Qt GUI installer since ```apt``` does not backport a recent enough version. Be sure to install the extra **Qt Charts** package as the GUI relies on it.
 
 If using GNOME (fixes system tray icons and notifications):
 ```bash
@@ -66,7 +66,7 @@ Install ```brew```:
 ```
 
 ```bash
-brew install g++ qt build-essential cmake portaudio
+brew install g++ qt build-essential cmake portaudio libsndfile
 ```
 
 **IMPORTANT:** JACK2 must be installed using the [GUI installer](http://jackaudio.org/downloads/) since ```brew``` only includes JACK1.
@@ -78,7 +78,7 @@ python -m pip install recommonmark
 ```
 
 #### Windows ####
-- Install [Qt](https://www.qt.io/download)
+- Install [Qt](https://www.qt.io/download) (including Charts)
 - Install [Visual Studio](https://visualstudio.microsoft.com/downloads/) or the MSVC build tools
 - Install [Chocolatey](https://chocolatey.org/docs/installation) (package manager for Windows)
 - Install Chocolatey packages

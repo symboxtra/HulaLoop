@@ -34,24 +34,20 @@ using namespace hula;
 #define HL_OUTPUT_DEVICE_LO   "output-device"
 #define HL_LIST_DEVICES_SO    "l"
 #define HL_LIST_DEVICES_LO    "list"
-
-typedef struct HulaImmediateArgs
-{
-    bool startRecord = false;
-    bool exit = false;
-} HulaImmediateArgs;
+#define HL_LANG_SO            "g"
+#define HL_LANG_LO            "lang"
 
 /**
  * Print an error message about the invalid argument and exit.
  *
  * @param name Name of the option to which an invalid argument was supplied
  */
-void invalidArg(std::string name, QString arg, std::string message = "")
+void invalidArg(QString name, QString arg, QString message = "")
 {
-    fprintf(stderr, "Invalid argument '%s' provided to option '%s'.\n", arg.toStdString().c_str(), name.c_str());
-    if (message.size() > 0)
+    fprintf(stderr, "%s\n", qPrintable(CLI::tr("Invalid argument '%1' provided to option '%2'.").arg(arg, name)));
+    if (!message.isEmpty())
     {
-        fprintf(stderr, "%s\n", message.c_str());
+        fprintf(stderr, "%s\n", qPrintable(message));
     }
 }
 
@@ -65,31 +61,23 @@ void invalidArg(std::string name, QString arg, std::string message = "")
 bool parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
 {
     QCommandLineParser parser;
-    parser.setApplicationDescription("Simple cross-platform audio loopback and recording.");
+    parser.setApplicationDescription(CLI::tr("Simple cross-platform audio loopback and recording."));
 
     parser.addHelpOption();
     parser.addVersionOption();
 
     parser.addOptions(
     {
-        {{HL_OUT_FILE_SO, HL_OUT_FILE_LO}, QCoreApplication::translate("main", "Path to audio output file."), QCoreApplication::translate("main", "out-file-path")},
-        {{HL_DELAY_TIME_SO, HL_DELAY_TIME_LO}, QCoreApplication::translate("main", "Duration, in seconds, of the countdown timer before record."), QCoreApplication::translate("main", "delay")},
-        {{HL_RECORD_TIME_SO, HL_RECORD_TIME_LO}, QCoreApplication::translate("main", "Duration, in seconds, of the record."), QCoreApplication::translate("main", "record duration")},
-        {{HL_TRIGGER_RECORD_SO, HL_TRIGGER_RECORD_LO}, QCoreApplication::translate("main", "Start the countdown/record immediately.")},
-        {{HL_SAMPLE_RATE_SO, HL_SAMPLE_RATE_LO}, QCoreApplication::translate("main", "Desired sample rate of the output file."), QCoreApplication::translate("main", "sample rate")},
-        //{{"b", "bit-depth"}, QCoreApplication::translate("main", "Sample format for the output file. Valid options are 8, 8u, 16, 16u, 32, 32u, 32f. This will default to 32f.")},
-        {{HL_ENCODING_SO, HL_ENCODING_LO}, QCoreApplication::translate("main", "Encoding format for the output file. Valid options are WAV and MP3. This will default to WAV."), QCoreApplication::translate("main", "encoding")},
-        {{HL_INPUT_DEVICE_SO, HL_INPUT_DEVICE_LO}, QCoreApplication::translate("main", "System name of the input device. This will default if not provided."), QCoreApplication::translate("main", "input-device-name")},
-        {{HL_OUTPUT_DEVICE_SO, HL_OUTPUT_DEVICE_LO}, QCoreApplication::translate("main", "System name of the output device. This will default if not provided."), QCoreApplication::translate("main", "output-device-name")},
-        {{HL_LIST_DEVICES_SO, HL_LIST_DEVICES_LO}, QCoreApplication::translate("main", "List available input and output devices.")}
-
-        // -d --delay  Countdown timer before record.
-        // -l --length Record duration.
-        // -r --record Start recording/countdown timer immediately
-        // -s --sample-rate Sample rate
-        // -e --encoding Encoding format: valid formats WAV, MP3, guess from file, default to WAV
-        // -i --input-device System name of input device, will default
-        // -o --output-device System name of output device, will default
+        {{HL_OUT_FILE_SO, HL_OUT_FILE_LO}, CLI::tr("Path to audio output file."), CLI::tr("output filepath")},
+        {{HL_DELAY_TIME_SO, HL_DELAY_TIME_LO}, CLI::tr("Duration, in seconds, of the countdown timer before record."), CLI::tr("delay")},
+        {{HL_RECORD_TIME_SO, HL_RECORD_TIME_LO}, CLI::tr("Duration, in seconds, of the record."), CLI::tr("record duration")},
+        {{HL_TRIGGER_RECORD_SO, HL_TRIGGER_RECORD_LO}, CLI::tr("Start the countdown/record immediately.")},
+        {{HL_SAMPLE_RATE_SO, HL_SAMPLE_RATE_LO}, CLI::tr("Desired sample rate of the output file."), CLI::tr("sample rate")},
+        {{HL_ENCODING_SO, HL_ENCODING_LO}, CLI::tr("Encoding format for the output file. Valid options are WAV and MP3. This will default to WAV."), CLI::tr("encoding")},
+        {{HL_INPUT_DEVICE_SO, HL_INPUT_DEVICE_LO}, CLI::tr("System name of the input device. This will default if not provided."), CLI::tr("input device name")},
+        {{HL_OUTPUT_DEVICE_SO, HL_OUTPUT_DEVICE_LO}, CLI::tr("System name of the output device. This will default if not provided."), CLI::tr("output device name")},
+        {{HL_LIST_DEVICES_SO, HL_LIST_DEVICES_LO}, CLI::tr("List available input and output devices.")},
+        {{HL_LANG_SO, HL_LANG_LO}, CLI::tr("Set the language of the application."), CLI::tr("target language")}
     });
 
     // This will exit if any of the args are incorrect
@@ -98,33 +86,32 @@ bool parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
     // Setup the settings module
     HulaSettings *settings = HulaSettings::getInstance();
 
+    if (parser.isSet(HL_LANG_LO))
+    {
+        bool success = settings->loadLanguage(&app, parser.value(HL_LANG_LO).toStdString());
+        if (success)
+        {
+            printf("%s\n", qPrintable(CLI::tr("Translation file successfully loaded.")));
+        }
+        else
+        {
+            fprintf(stderr, "%s\n", qPrintable(CLI::tr("Could not find translation file for %1.").arg(parser.value(HL_LANG_LO))));
+        }
+    }
+
     if (parser.isSet(HL_OUT_FILE_LO))
     {
-        settings->setOutputFilePath(parser.value(HL_OUT_FILE_LO).toStdString());
+        extraArgs.outputFilePath = parser.value(HL_OUT_FILE_LO).toStdString();
     }
 
     if (parser.isSet(HL_DELAY_TIME_LO))
     {
-        bool ok = false;
-        double delay = parser.value(HL_DELAY_TIME_LO).toDouble(&ok);
-        if (!ok)
-        {
-            invalidArg(HL_DELAY_TIME_LO, parser.value(HL_DELAY_TIME_LO));
-            return false;
-        }
-        settings->setDelayTimer(delay);
+        extraArgs.delay = parser.value(HL_DELAY_TIME_LO).toStdString();
     }
 
     if (parser.isSet(HL_RECORD_TIME_LO))
     {
-        bool ok = false;
-        double duration = parser.value(HL_RECORD_TIME_LO).toDouble(&ok);
-        if (!ok)
-        {
-            invalidArg(HL_RECORD_TIME_LO, parser.value(HL_RECORD_TIME_LO));
-            return false;
-        }
-        settings->setRecordDuration(duration);
+        extraArgs.duration = parser.value(HL_RECORD_TIME_LO).toStdString();
     }
 
     if (parser.isSet(HL_TRIGGER_RECORD_LO))
@@ -153,30 +140,26 @@ bool parseArgsQt(QCoreApplication &app, HulaImmediateArgs &extraArgs)
         }
         else
         {
-            invalidArg(HL_ENCODING_LO, parser.value(HL_ENCODING_LO), "Only WAV format is supported at this time.");
+            invalidArg(HL_ENCODING_LO, parser.value(HL_ENCODING_LO), CLI::tr("Only WAV format is supported at this time."));
             return false;
         }
     }
 
     if (parser.isSet(HL_INPUT_DEVICE_LO))
     {
-        std::string device = parser.value(HL_INPUT_DEVICE_LO).toStdString();
-        // TODO: See if we can check device list here
-        settings->setDefaultInputDeviceName(device);
+        extraArgs.inputDevice = parser.value(HL_INPUT_DEVICE_LO).toStdString();
     }
 
     if (parser.isSet(HL_OUTPUT_DEVICE_LO))
     {
-        std::string device = parser.value(HL_OUTPUT_DEVICE_LO).toStdString();
-        // TODO: See if we can check device list here
-        settings->setDefaultOutputDeviceName(device);
+        extraArgs.outputDevice = parser.value(HL_OUTPUT_DEVICE_LO).toStdString();
     }
 
     if (parser.isSet(HL_LIST_DEVICES_LO))
     {
         Transport t;
 
-        printf("\n-------- Device List --------\n");
+        printf("\n-------- %s --------\n", qPrintable(CLI::tr("Device List")));
         printDeviceList(&t);
 
         extraArgs.exit = true;

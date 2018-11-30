@@ -6,7 +6,7 @@
 #include <vector>
 
 #ifdef _WIN32
-#include <windows.h>
+    #include <windows.h>
 #endif
 
 namespace hula
@@ -31,9 +31,20 @@ namespace hula
      */
     struct DeviceID
     {
+        /**
+         * ID used by ALSA devices.
+         */
         std::string linuxID = "";
+
+        /**
+         * ID used by PortAudio devices.
+         */
         int portAudioID = -1;
+
         #ifdef _WIN32
+        /**
+         * ID used by Windows WASAPI devices.
+         */
         LPWSTR windowsID = nullptr;
         #endif
     };

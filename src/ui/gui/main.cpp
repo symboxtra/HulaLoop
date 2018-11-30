@@ -2,10 +2,11 @@
 #include <QFontDatabase>
 #include <QIcon>
 #include <QQmlApplicationEngine>
-#include <QQmlDebuggingEnabler>
 #include <QQuickStyle>
 
-#include <QtDebug>
+#ifndef NDEBUG
+    #include <QQmlDebuggingEnabler>
+#endif
 
 #include "QMLBridge.h"
 #include "SystemTrayIcon.h"
@@ -14,13 +15,18 @@ using namespace hula;
 
 int main(int argc, char *argv[])
 {
-
+    #ifndef NDEBUG
     QQmlDebuggingEnabler debug;
+    #endif
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QApplication app(argc, argv);
     app.setWindowIcon(QIcon(":/res/hulaloop-logo.png"));
+
+    HulaSettings *settings = HulaSettings::getInstance();
+    QTranslator *trans = settings->getTranslator();
+    app.installTranslator(trans);
 
     qmlRegisterType<QMLBridge>("hulaloop.qmlbridge", 1, 0, "QMLBridge");
     qmlRegisterType<SystemTrayIcon>("hulaloop.systrayicon", 1, 0, "SystemTrayIcon");

@@ -57,16 +57,16 @@ HulaRingBuffer::HulaRingBuffer(float maxDuration)
     this->rbMemory = new SAMPLE[numSamples];
 
     // Make sure ring buffer was allocated
-    if (this->rbMemory == NULL)
+    if (this->rbMemory == nullptr)
     {
-        fprintf(stderr, "%sCould not allocate ring buffer of size %zu.\n", HL_ERROR_PREFIX, numSamples * sizeof(SAMPLE));
+        hlDebugf("Could not allocate ring buffer of size %zu.\n", numSamples * sizeof(SAMPLE));
         exit(1);
         // TODO: Handle error
     }
 
     if (PaUtil_InitializeRingBuffer(&this->rb, sizeof(SAMPLE), numSamples, this->rbMemory) < 0)
     {
-        fprintf(stderr, "%sFailed to initialize ring buffer. Perhaps size is not power of 2?\nSize: %d\n", HL_ERROR_PREFIX, numSamples);
+        hlDebugf("Failed to initialize ring buffer. Perhaps the size is not power of 2?\nSize: %d\n", numSamples);
         exit(1);
         // TODO: Handle error
     }
@@ -81,13 +81,7 @@ HulaRingBuffer::HulaRingBuffer(float maxDuration)
  */
 ring_buffer_size_t HulaRingBuffer::read(SAMPLE *data, ring_buffer_size_t maxSamples)
 {
-    ring_buffer_size_t samplesRead = PaUtil_ReadRingBuffer(&this->rb, (void *)data, (ring_buffer_size_t)maxSamples);
-    if (samplesRead > 0)
-    {
-        // printf("%sRead of %d elements.\n", HL_PRINT_PREFIX, samplesRead);
-
-        // Do not call Advance here... It's called by PaUtil_ReadRingBuffer.
-    }
+    ring_buffer_size_t samplesRead = PaUtil_ReadRingBuffer(&this->rb, (void *)data, maxSamples);
 
     return samplesRead;
 }
@@ -100,7 +94,7 @@ ring_buffer_size_t HulaRingBuffer::read(SAMPLE *data, ring_buffer_size_t maxSamp
  * @param maxSamples Desired number of samples.
  * @param dataPtr1 The address where the first pointer should be stored.
  * @param size1 Number of elements available from dataPtr1.
- * @param dataPtr2 The address where the second pointer (if required) will be stored. NULL if not used.
+ * @param dataPtr2 The address where the second pointer (if required) will be stored. nullptr if not used.
  * @param size2 Number of elements available from dataPtr2.
  * @return Number of samples read.
  */
@@ -119,8 +113,6 @@ ring_buffer_size_t HulaRingBuffer::directRead(ring_buffer_size_t maxSamples, voi
     ring_buffer_size_t samplesRead = PaUtil_GetRingBufferReadRegions(&this->rb, samplesToWrite, dataPtr1, (ring_buffer_size_t *)size1, dataPtr2, (ring_buffer_size_t *)size2);
     if (samplesRead > 0)
     {
-        // printf("%sDirect read of %d elements.\n", HL_PRINT_PREFIX, samplesRead);
-
         // Advance the index after successful read
         PaUtil_AdvanceRingBufferReadIndex(&this->rb, samplesRead);
     }
@@ -144,7 +136,7 @@ ring_buffer_size_t HulaRingBuffer::write(const SAMPLE *data, ring_buffer_size_t 
 
     if (elementsWritten < maxSamples)
     {
-        printf("%sOverrun: %d of %d samples written\n", HL_PRINT_PREFIX, elementsWritten, maxSamples);
+        hlDebug() << "Overrun: " << elementsWritten << " of " << maxSamples << " written." << std::endl;
     }
 
     return elementsWritten;
@@ -161,7 +153,7 @@ ring_buffer_size_t HulaRingBuffer::write(const SAMPLE *data, ring_buffer_size_t 
  */
 HulaRingBuffer::~HulaRingBuffer()
 {
-    if (this->rbMemory != NULL)
+    if (this->rbMemory != nullptr)
     {
         PaUtil_FlushRingBuffer(&this->rb);
         delete [] this->rbMemory;

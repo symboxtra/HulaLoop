@@ -5,7 +5,6 @@
 
 #include <stdlib.h>
 #include <cstdint>
-#include <iostream>
 #include <thread>
 #include <vector>
 
@@ -15,12 +14,16 @@
 #ifndef ALSA_PCM_NEW_HW_PARAMS_API
     #define ALSA_PCM_NEW_HW_PARAMS_API
 #endif
-#define FRAME_TIME 8192
-using byte = uint8_t;
+
+#define FRAME_TIME 512
 
 namespace hula
 {
+    /**
+     * An audio class that captures system wide audio on Linux.
+     */
     class LinuxAudio : public OSAudio {
+
         private:
             int bitrate;
             std::vector<Device *> iDevices;
@@ -31,6 +34,7 @@ namespace hula
             ~LinuxAudio();
             void capture();
 
+            bool setActiveInputDevice(Device *device);
             static void startPAVUControl();
 
             std::vector<Device *> getDevices(DeviceType type);

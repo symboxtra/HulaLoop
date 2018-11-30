@@ -91,12 +91,12 @@ qint64 Updater::getDownloadSize()
 QList<int> Updater::parseTagName(const QString &tagName)
 {
 
-    QList<int> versionParts({-1, -1, -1, -1});
+    QList<int> versionParts;
     QStringList tagSegments = tagName.split('.', QString::SkipEmptyParts);
 
     if (tagSegments.size() < 3)
     {
-        return versionParts;
+        return QList<int>({-1, -1, -1});
     }
 
     for (int i = 0; i < tagSegments.size(); i++)
@@ -108,7 +108,7 @@ QList<int> Updater::parseTagName(const QString &tagName)
         bool ok = false;
         int ver = segment.toInt(&ok);
 
-        (ok) ? versionParts[i] = ver : versionParts[i] = -1;
+        (ok) ? versionParts.append(ver) : versionParts.append(-1);
 
     }
     return versionParts;
@@ -126,18 +126,18 @@ bool Updater::checkForUpdate()
     bool updateAvailable = false;
     reply = manager->get(QNetworkRequest(QUrl(updateHostUrl)));
 
-    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [ = ](QNetworkReply::NetworkError code)
+    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [&](QNetworkReply::NetworkError code)
     {
         // throw exception
         reply->deleteLater();
-        return false;
+        updateAvailable = false;
     });
 
-    connect(reply, &QNetworkReply::sslErrors, [ = ]
+    connect(reply, &QNetworkReply::sslErrors, [&]
     {
         // throw exception
         reply->deleteLater();
-        return false;
+        updateAvailable = false;
     });
 
     connect(reply, &QNetworkReply::finished, [&]
@@ -145,37 +145,24 @@ bool Updater::checkForUpdate()
 
         QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
         if (doc.isNull())
-            return false;
+            updateAvailable = false;
 
         QJsonObject rootObj = doc.object();
         if (rootObj.isEmpty())
-            return false;
+            updateAvailable = false;
 
         QList<int> versionParts = parseTagName(rootObj["tag_name"].toString());
-        if (versionParts.size() == 4)
+        if (versionParts.at(0) > HL_VERSION_MAJOR)
         {
-
-            if (versionParts.at(0) > HL_VERSION_MAJOR)
-            {
-                updateAvailable = true;
-            }
-            else if (versionParts.at(1) > HL_VERSION_MINOR)
-            {
-                updateAvailable = true;
-            }
-            else if (versionParts.at(2) > HL_VERSION_REV)
-            {
-                updateAvailable = true;
-            }
-            else if (versionParts.at(3) > HL_VERSION_BUILD)
-            {
-                updateAvailable = true;
-            }
-
+            updateAvailable = true;
         }
-        else
+        else if (versionParts.at(1) > HL_VERSION_MINOR)
         {
-            return false;
+            updateAvailable = true;
+        }
+        else if (versionParts.at(2) > HL_VERSION_REV)
+        {
+            updateAvailable = true;
         }
 
         // Found an update, check the assets of the release
@@ -203,13 +190,12 @@ bool Updater::checkForUpdate()
                         downloadHostUrl = "";
                         downloadFileName = "";
                         downloadSize = 0L;
-                        return false;
+                        updateAvailable = false;
                     }
                     break;
                 }
 
             }
-
         }
 
     });
@@ -246,7 +232,7 @@ bool Updater::downloadUpdate()
         // throw exception
         file.close();
         reply->deleteLater();
-        return false;
+        finishedDownload = false;
     });
 
     connect(reply, &QNetworkReply::sslErrors, [&]
@@ -254,7 +240,7 @@ bool Updater::downloadUpdate()
         // throw exception
         file.close();
         reply->deleteLater();
-        return false;
+        finishedDownload = false;
     });
 
     connect(reply, &QNetworkReply::readyRead, [&]
@@ -291,7 +277,6 @@ bool Updater::downloadUpdate()
  */
 void Updater::startHulaLoopInstaller()
 {
-
     QProcess proc;
     QString procName = QDir::tempPath() + "/" + downloadFileName;
 
@@ -300,7 +285,6 @@ void Updater::startHulaLoopInstaller()
     {
         exit(0);
     }
-
 }
 
 /**
@@ -309,7 +293,6 @@ void Updater::startHulaLoopInstaller()
  */
 void Updater::startHulaLoopApp()
 {
-
     QProcess proc;
     QString procName = QCoreApplication::applicationDirPath() + "/hulaloop";
 
@@ -318,7 +301,6 @@ void Updater::startHulaLoopApp()
     {
         exit(0);
     }
-
 }
 
 /**

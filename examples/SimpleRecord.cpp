@@ -67,6 +67,8 @@ int main()
 
         // Print the number of samples read
         if (samplesRead > 0)
+        {
             cout << "Read: " << samplesRead << " samples." << endl;
+        }
     }
 }

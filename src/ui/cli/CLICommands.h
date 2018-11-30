@@ -1,6 +1,11 @@
 #ifndef HL_CLI_COMMANDS_H
 #define HL_CLI_COMMANDS_H
 
+#include <iomanip>
+#include <iostream>
+
+#include "CLICommon.h"
+
 #define HL_ORANGE "\033[48;2;255;165;0m"
 #define HL_NC     "\033[0m"
 
@@ -32,7 +37,7 @@
 #define HL_EXPORT_LONG   "export"
 #define HL_EXPORT_ARG1   "filepath"
 
-#define HL_DISCARD_SHORT "di"
+#define HL_DISCARD_SHORT "d"
 #define HL_DISCARD_LONG  "discard"
 #define HL_DISCARD_ARG1  "-f"
 
@@ -56,43 +61,60 @@
 #define HL_HELP_SHORT    "h"
 #define HL_HELP_LONG     "help"
 
-#define HL_SYSTEM_SHORT   "sys"
-#define HL_SYSTEM_LONG    "system"
+#define HL_LANG_SHORT    "lang"
+#define HL_LANG_LONG     "language"
+#define HL_LANG_ARG1     "target language"
+
+#define HL_SYSTEM_SHORT  "sys"
+#define HL_SYSTEM_LONG   "system"
 
 #define HL_EXIT_LONG     "exit"
 
-#define HL_HELP_TEXT     "\n"\
-"Commands: \n" \
-"\n" \
-"  " HL_HELP_SHORT    ", " HL_HELP_LONG    "\t\t\t\t Displays this help.\n" \
-"  " HL_VERSION_SHORT ", " HL_VERSION_LONG "\t\t\t\t Displays version information.\n" \
-"  " HL_LIST_SHORT    ", " HL_LIST_LONG    "\t\t\t\t List all devices.\n" \
-"  " HL_PRINT_SHORT   ", " HL_PRINT_LONG   "\t\t\t\t Print the current configuration.\n" \
-"  " HL_EXIT_LONG                          "\t\t\t\t\t Exit HulaLoop.\n" \
-"\n" \
-"  " HL_RECORD_SHORT  ", " HL_RECORD_LONG " [" HL_RECORD_ARG1 "] [" HL_RECORD_ARG2 "]" \
-"\t\t Start the record.\n" \
-"  " HL_STOP_SHORT    ", " HL_STOP_LONG   "\t\t\t\t Stop the record or playback.\n" \
-"  " HL_PLAY_SHORT    ", " HL_PLAY_LONG   "\t\t\t\t Playback captured audio.\n" \
-"  " HL_PAUSE_SHORT   ", " HL_PAUSE_LONG  "\t\t\t\t Pause playback or recording.\n" \
-"  " HL_EXPORT_SHORT  ", " HL_EXPORT_LONG " <" HL_EXPORT_ARG1 ">\t\t\t Export captured audio to the specified file.\n" \
-"  " HL_DISCARD_SHORT ", " HL_DISCARD_SHORT " [" HL_DISCARD_ARG1 "]"\
-"\t\t\t Discard the current recording\n" \
-"\n" \
-"  " HL_INPUT_SHORT   ", " HL_INPUT_LONG  " <" HL_INPUT_ARG1 ">\t\t\t Set the input device.\n" \
-"  " HL_OUTPUT_SHORT  ", " HL_OUTPUT_LONG " <" HL_OUTPUT_ARG1 ">\t\t\t Set the output device.\n" \
-"\n" \
-"  " HL_DELAY_TIMER_SHORT  ", " HL_DELAY_TIMER_LONG  " <" HL_DELAY_TIMER_ARG1  ">" \
-"\t\t\t Set the duration, in seconds, of the\n" \
-"\t\t\t\t\t countdown timer before record. This will\n" \
-"\t\t\t\t\t be overridden by an argument to the record\n" \
-"\t\t\t\t\t command.\n" \
-"  " HL_RECORD_TIMER_SHORT ", " HL_RECORD_TIMER_LONG " <" HL_RECORD_TIMER_ARG1 ">" \
-"\t\t Set the duration, in seconds, of the\n" \
-"\t\t\t\t\t record. This will be overridden by an argument\n" \
-"\t\t\t\t\t to the record command.\n" \
-"\n" \
-"  " HL_SYSTEM_SHORT  ", " HL_SYSTEM_LONG "\t\t\t\t Run a system command from within HulaLoop.\n" \
-"\n"
+#define C1 "  " << left << setw(5)
+#define C2 setw(34)
+
+inline void printInteractiveHelp()
+{
+    using std::cout;
+    using std::endl;
+    using std::left;
+    using std::setw;
+
+    cout << endl << "Commands:" << endl;
+    cout << C1 << HL_HELP_SHORT     ", " << C2 << HL_HELP_LONG    << qPrintable(CLI::tr("Display this help.")) << endl;
+    cout << C1 << HL_VERSION_SHORT  ", " << C2 << HL_VERSION_LONG << qPrintable(CLI::tr("Display version information.")) << endl;
+    cout << C1 << HL_LIST_SHORT     ", " << C2 << HL_LIST_LONG    << qPrintable(CLI::tr("List all devices.")) << endl;
+    cout << C1 << HL_PRINT_SHORT    ", " << C2 << HL_PRINT_LONG   << qPrintable(CLI::tr("Print the current configuration.")) << endl;
+    cout << C1 << HL_LANG_SHORT << C2 << "<" HL_LANG_ARG1 "> "    << qPrintable(CLI::tr("Switch the application language.")) << endl;
+    cout << C1 << HL_EXIT_LONG  << C2 << " " << qPrintable(CLI::tr("Quit the application.")) << endl;
+    cout << endl;
+
+    cout << C1 << HL_RECORD_SHORT  ", " << C2 << HL_RECORD_LONG " [" HL_RECORD_ARG1 "] [" HL_RECORD_ARG2 "]";
+    cout << qPrintable(CLI::tr("Start recording.")) << endl;
+    cout << C1 << HL_STOP_SHORT    ", " << C2 << HL_STOP_LONG    << qPrintable(CLI::tr("Stop playback or recording.")) << endl;
+    cout << C1 << HL_PLAY_SHORT    ", " << C2 << HL_PLAY_LONG    << qPrintable(CLI::tr("Playback captured audio.")) << endl;
+    cout << C1 << HL_PAUSE_SHORT   ", " << C2 << HL_PAUSE_LONG   << qPrintable(CLI::tr("Pause playback or recording.")) << endl;
+    cout << C1 << HL_EXPORT_SHORT  ", " << C2 << HL_EXPORT_LONG  " <" HL_EXPORT_ARG1  "> " << qPrintable(CLI::tr("Export captured audio to the specified file.")) << endl;
+    cout << C1 << HL_DISCARD_SHORT ", " << C2 << HL_DISCARD_LONG " [" HL_DISCARD_ARG1 "] " << qPrintable(CLI::tr("Discard the current recording.")) << endl;
+    cout << endl;
+
+    cout << C1 << HL_INPUT_SHORT   ", " << C2 << HL_INPUT_LONG   " <" HL_INPUT_ARG1  "> ";
+    cout << qPrintable(CLI::tr("Set the input device.")) << endl;
+    cout << C1 << HL_OUTPUT_SHORT  ", " << C2 << HL_OUTPUT_LONG  " <" HL_OUTPUT_ARG1 "> ";
+    cout << qPrintable(CLI::tr("Set the output device.")) << endl;
+    cout << endl;
+
+    cout << C1 << HL_DELAY_TIMER_SHORT ", " << C2 << HL_DELAY_TIMER_LONG " <" HL_DELAY_TIMER_ARG1 "> ";
+    cout << qPrintable(CLI::tr("Set the delay, in seconds, of the countdown timer before record.")) << endl;
+    cout << C1 << " " << C2 << " " << qPrintable(CLI::tr("The timer will be overridden by an argument to the record command.")) << endl;
+
+    cout << C1 << HL_RECORD_TIMER_SHORT ", " << C2 << HL_RECORD_TIMER_LONG " <" HL_RECORD_TIMER_ARG1 "> ";
+    cout << qPrintable(CLI::tr("Set the duration, in seconds, of the record.")) << endl;
+    cout << C1 << " " << C2 << " " << qPrintable(CLI::tr("The timer will be overridden by an argument to the record command.")) << endl;
+    cout << endl;
+
+    cout << C1 << HL_SYSTEM_SHORT  ", " << C2 << HL_SYSTEM_LONG  << qPrintable(CLI::tr("Run a system command from within HulaLoop.")) << endl;
+    cout << endl;
+}
 
 #endif // END HL_CLI_COMMANDS_H

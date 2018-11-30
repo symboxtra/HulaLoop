@@ -16,9 +16,7 @@
 #include <portaudio.h>
 
 // System
-#include <cstdio>
 #include <cstdlib>
-#include <iostream>
 #include <string>
 #include <thread>
 #include <vector>
@@ -35,8 +33,8 @@
 #define HANDLE_PA_ERROR(hres) \
             if (hres != paNoError) { goto Exit; }
 #define SAFE_RELEASE(punk) \
-            if ((punk) != NULL) \
-                { (punk)->Release(); (punk) = NULL; }
+            if ((punk) != nullptr) \
+                { (punk)->Release(); (punk) = nullptr; }
 
 namespace hula
 {
@@ -44,6 +42,7 @@ namespace hula
      * A audio class that captures system wide audio on Windows
      */
     class WindowsAudio : public OSAudio {
+
         private:
             const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
             const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
@@ -57,8 +56,8 @@ namespace hula
             REFERENCE_TIME requestDuration = REFTIMES_PER_SEC;
             REFERENCE_TIME bufferDuration;
 
-            IMMDeviceEnumerator *pEnumerator = NULL;
-            IMMDeviceCollection *deviceCollection = NULL;
+            IMMDeviceEnumerator *pEnumerator = nullptr;
+            IMMDeviceCollection *deviceCollection = nullptr;
 
             // Audio data
             uint8_t *pData;

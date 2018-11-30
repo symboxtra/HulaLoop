@@ -99,8 +99,7 @@ pipeline {
 
                                     # These will run on PRs and master and should also be run locally if you think you are leaking.
                                     cd ./build-linux
-
-                                    (export DISPLAY=:0 && ctest -V -E ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER})
+                                    (export DISPLAY=:0 && ctest -V -E ${HL_ONLY_MASTER})
                                     cd ..
 
                                     lcov -c -d build-linux -o build-linux/coverage.actual
@@ -125,7 +124,7 @@ pipeline {
 
                                 sh '''
                                     cd ./build-linux
-                                    (export DISPLAY=:0 && ctest -V -R ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER})
+                                    (export DISPLAY=:0 && ctest -V -R ${HL_ONLY_MASTER})
                                 '''
                             }
                         }
@@ -233,7 +232,8 @@ pipeline {
                                     # These will run on PRs and master and should also be run locally if you think you are leaking
                                     cd ./build-osx
 
-                                    ctest -V -E ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER}
+                                    ctest -V -E ${HL_ONLY_MASTER}
+                                    pkill hulaloop-osx-daemon || true
                                     cd ..
 
                                     lcov -c -d build-osx -o build-osx/coverage.actual
@@ -270,7 +270,12 @@ pipeline {
 
                                 sh '''
                                     cd ./build-osx
-                                    ctest -V -R ${HL_MEMCHECK_PREFIX} ${HL_ONLY_MASTER}
+
+                                    # Start the daemon so that the memcheck tests don't slow down
+                                    ./bin/hulaloop-osx-daemon
+
+                                    ctest -V -R ${HL_ONLY_MASTER}
+                                    pkill hulaloop-osx-daemon || true
                                 '''
                             }
                         }
@@ -358,7 +363,7 @@ pipeline {
                                     echo "Running test suite on ${ENV:HL_OS}..."
 
                                     # cd build-win
-                                    # ctest -C Debug -V -E ${ENV:HL_MEMCHECK_PREFIX} ${ENV:HL_ONLY_MASTER}
+                                    # ctest -C Debug -V -E ${ENV:HL_ONLY_MASTER}
                                     # if ($LastExitCode -ne 0) {$host.SetShouldExit($LastExitCode)} # Exit with test error code
 
                                     # cd ..
