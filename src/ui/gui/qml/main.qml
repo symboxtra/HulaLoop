@@ -22,7 +22,7 @@ ApplicationWindow {
     Material.theme: Material.Grey
     Material.accent: Material.Orange
 
-    property string textDisplayed: qsTr("Elapsed: 0")
+    property string textDisplayed: qsTr("Elapsed: %1").arg(0)
     property string currentState: qmlbridge.getTransportState()
     property string barColor: "#888888"
     property bool updateAndTimerBtnEnabled: true

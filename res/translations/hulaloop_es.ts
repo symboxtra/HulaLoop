@@ -6,12 +6,12 @@
     <message>
         <location filename="../../src/ui/gui/qml/BottomRectangle.qml" line="23"/>
         <source>  Visualizer  </source>
-        <translation type="unfinished"></translation>
+        <translation>  Visualizador  </translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/BottomRectangle.qml" line="23"/>
         <source>  Editor  </source>
-        <translation type="unfinished"></translation>
+        <translation>  Editor  </translation>
     </message>
 </context>
 <context>
@@ -29,7 +29,7 @@
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="179"/>
         <source>Stop recording</source>
-        <translation type="unfinished"></translation>
+        <translation>Detener grabación</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="200"/>
@@ -52,17 +52,17 @@
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="306"/>
         <source>Set recording delay and duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar el retraso y la duración</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="338"/>
         <source>Export audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar audio</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="370"/>
         <source>Check for updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Buscar actualizaciones</translation>
     </message>
     <message>
         <source>Timer:</source>
@@ -76,7 +76,7 @@
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="566"/>
         <source>Change input device</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar el dispositivo de entrada</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="609"/>
@@ -86,42 +86,49 @@
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="688"/>
         <source>Display record devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar dispositivos de grabar</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="708"/>
         <source>Visualizer type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de visualizador</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="718"/>
         <source>Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Histograma</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="718"/>
         <source>Circle</source>
-        <translation type="unfinished"></translation>
+        <translation>Círculo</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="718"/>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Línea</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="743"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Lengua</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="619"/>
         <source>Change output device</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar el dispositivo de salida</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="54"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="57"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="844"/>
+        <source>Elapsed: %1</source>
+        <translation>Transcurrido: %1</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="813"/>
         <source>Are you sure you want to discard?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Seguro que quieres descartar?</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="874"/>
@@ -412,12 +419,12 @@
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="279"/>
         <source>Are you sure you want to discard? (y/N): </source>
-        <translation type="unfinished"></translation>
+        <translation>¿Seguro que quieres descartar? (s/N): </translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="289"/>
         <source>Discard cancelled.</source>
-        <translation type="unfinished"></translation>
+        <translation>El descarte fue cancelado.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="317"/>
@@ -581,7 +588,7 @@
         <location filename="../../src/control/Transport.cpp" line="162"/>
         <source>Ready</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation>Listo</translation>
     </message>
     <message>
         <location filename="../../src/control/Transport.cpp" line="164"/>
@@ -617,9 +624,24 @@
 <context>
     <name>hula::QMLBridge</name>
     <message>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="527"/>
+        <source>Unsaved Changes</source>
+        <translation>Cambios sin Guardar</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="530"/>
+        <source>You have unsaved audio.</source>
+        <translation>Hay audio sin guardar.</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="531"/>
+        <source>Would you like to save your audio?</source>
+        <translation>¿Le gustaría guardar el audio?</translation>
+    </message>
+    <message>
         <location filename="../../src/ui/gui/QMLBridge.cpp" line="532"/>
         <source>Go back and save</source>
-        <translation type="unfinished"></translation>
+        <translation>Volver atrás y guardar</translation>
     </message>
 </context>
 <context>
@@ -706,8 +728,8 @@
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="25"/>
-        <source>Elapsed: 0</source>
-        <translation type="unfinished"></translation>
+        <source>Elapsed: %1</source>
+        <translation>Transcurrido: %1</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="52"/>
@@ -723,7 +745,7 @@
         <location filename="../../src/ui/gui/qml/main.qml" line="65"/>
         <source>Recording</source>
         <comment>state</comment>
-        <translation type="unfinished">Grabando</translation>
+        <translation>Grabando</translation>
     </message>
 </context>
 </TS>

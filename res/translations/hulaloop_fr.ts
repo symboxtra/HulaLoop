@@ -17,6 +17,13 @@
 <context>
     <name>ButtonPanel</name>
     <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="54"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="57"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="844"/>
+        <source>Elapsed: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="149"/>
         <source>Recording</source>
         <comment>state</comment>
@@ -556,6 +563,21 @@
 <context>
     <name>hula::QMLBridge</name>
     <message>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="527"/>
+        <source>Unsaved Changes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="530"/>
+        <source>You have unsaved audio.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="531"/>
+        <source>Would you like to save your audio?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/ui/gui/QMLBridge.cpp" line="532"/>
         <source>Go back and save</source>
         <translation type="unfinished"></translation>
@@ -641,7 +663,7 @@
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="25"/>
-        <source>Elapsed: 0</source>
+        <source>Elapsed: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
