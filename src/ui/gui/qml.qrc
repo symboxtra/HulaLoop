@@ -3,11 +3,14 @@
         <file>qml/main.qml</file>
         <file>qml/ButtonPanel.qml</file>
         <file>qml/BottomRectangle.qml</file>
+        <file>qml/LineVisualizer.qml</file>
+        <file>qml/CircleVisualizer.qml</file>
+        <file>qml/Timeline.qml</file>
         <file>fonts/Icon.js</file>
         <file>fonts/materialdesignicons-webfont.ttf</file>
-        <file>qml/DynamicLine.qml</file>
         <file>res/hulaloop-logo.png</file>
         <file>res/hulaloop-logo.svg</file>
         <file>res/hulaloop-logo-recording.svg</file>
+        <file>res/hulaloop-logo-small.png</file>
     </qresource>
 </RCC>

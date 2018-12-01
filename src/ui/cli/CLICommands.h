@@ -61,12 +61,12 @@
 #define HL_HELP_SHORT    "h"
 #define HL_HELP_LONG     "help"
 
-#define HL_LANG_SHORT     "lang"
-#define HL_LANG_LONG      "language"
-#define HL_LANG_ARG1      "target language"
+#define HL_LANG_SHORT    "lang"
+#define HL_LANG_LONG     "language"
+#define HL_LANG_ARG1     "target language"
 
-#define HL_SYSTEM_SHORT   "sys"
-#define HL_SYSTEM_LONG    "system"
+#define HL_SYSTEM_SHORT  "sys"
+#define HL_SYSTEM_LONG   "system"
 
 #define HL_EXIT_LONG     "exit"
 

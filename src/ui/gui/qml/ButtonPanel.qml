@@ -1,5 +1,4 @@
 import QtQuick 2.10
-import QtQuick.Window 2.0
 
 import QtQuick.Controls 2.3
 import QtQuick.Dialogs 1.0
@@ -13,7 +12,6 @@ import "../fonts/Icon.js" as MDFont
 Rectangle {
 
     id: buttonPanel
-
     width: parent.width
     height: 115
     color: window.barColor
@@ -102,6 +100,13 @@ Rectangle {
 
                 display: AbstractButton.TextOnly
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                property string tttext:"Record Audio"
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr(recordBtn.tttext)
 
                 background: Rectangle {
                     color: (recordBtn.pressed || !recordBtn.enabled) ?  "grey" : "darkgrey"
@@ -111,7 +116,7 @@ Rectangle {
                 contentItem: Text {
                     font.family: "Material Design Icons"
                     font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
-                    text: MDFont.Icon.record
+                    text:  MDFont.Icon.record
                     color: "red"
 
                     horizontalAlignment: Text.AlignHCenter
@@ -119,13 +124,14 @@ Rectangle {
                 }
 
                 onClicked: {
+
                     if(stopBtn.isStopped)
                     {
                         discardPopup.open()
                         return
                     }
 
-                    if(timeFuncs.time != 0)
+                    if(timeFuncs.time < 0)
                     {
                         countDownTimer.start()
                         return
@@ -143,12 +149,13 @@ Rectangle {
                     if(success && (qmlbridge.getTransportState() === qsTr("Recording", "state")))
                     {
                         // Update stop button
-                        stopBtn.enabled = true;
+                        stopBtn.enabled = true
 
                         // Update play/pause button
                         playpauseBtn.enabled = true;
                         playpauseBtn.contentItem.text = MDFont.Icon.pause;
                         playpauseBtn.contentItem.color = "white";
+                        playpauseBtn.tttext = "Pause audio"
 
                         // Update self
                         enabled = false;
@@ -164,6 +171,12 @@ Rectangle {
 
                 display: AbstractButton.TextOnly
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Stop recording")
 
                 background: Rectangle {
                     color: (stopBtn.pressed || !stopBtn.enabled) ?  "grey" : "darkgrey"
@@ -183,7 +196,7 @@ Rectangle {
                 onClicked: {
                     let success = qmlbridge.stop()
                     console.log("Test: " + success)
-
+                    recordBtn.tttext = "Discard recording"
                     if(success && (qmlbridge.getTransportState() === qsTr("Stopped", "state")))
                     {
                         enabled = false;
@@ -202,15 +215,23 @@ Rectangle {
                         recordingTimer.stop()
                     }
                 }
+
             }
 
             RoundButton {
                 id: playpauseBtn
                 objectName: "playpauseBtn"
                 enabled: false
-
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 display: AbstractButton.TextOnly
+                property bool isRecording: false // Remove if we do not need for checking when not recording
+                property string tttext : ""
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr(playpauseBtn.tttext)
 
                 contentItem: Text {
                     objectName: "play_icon"
@@ -232,7 +253,7 @@ Rectangle {
 
                     let success;
 
-                    if(contentItem.text == MDFont.Icon.pause)
+                    if(contentItem.text === MDFont.Icon.pause)
                     {
                         success = qmlbridge.pause();
 
@@ -240,6 +261,7 @@ Rectangle {
                         {
                             contentItem.text = MDFont.Icon.play;
                             contentItem.color = "green";
+                            playpauseBtn.tttext = "Playback audio"
 
                             if(!stopBtn.isStopped)
                             {
@@ -275,6 +297,13 @@ Rectangle {
 
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 display: AbstractButton.TextOnly
+                enabled: updateAndTimerBtnEnabled
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Set recording delay and duration")
 
                 contentItem: Text {
                     font.family: "Material Design Icons"
@@ -302,6 +331,12 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 display: AbstractButton.TextOnly
 
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Export audio")
+
                 contentItem: Text {
                     font.family: "Material Design Icons"
                     font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
@@ -317,7 +352,7 @@ Rectangle {
                     radius: exportBtn.width / 2
                 }
 
-                onClicked:saveDialog.open()
+                onClicked: saveDialog.open()
             }
 
             RoundButton {
@@ -326,6 +361,13 @@ Rectangle {
 
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 display: AbstractButton.TextOnly
+                enabled: updateAndTimerBtnEnabled
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Check for updates")
 
                 contentItem: Text {
                     font.family: "Material Design Icons"
@@ -338,13 +380,38 @@ Rectangle {
                 }
 
                 background: Rectangle {
-                    opacity: enabled ? 1 : 0.15
-                    color: timerBtn.pressed ? "grey" : "darkgrey"
+                    color: (checkUpdateBtn.pressed || !checkUpdateBtn.enabled) ?  "grey" : "darkgrey"
                     radius: timerBtn.width / 2
                 }
 
                 onClicked: qmlbridge.launchUpdateProcess()
             }
+            RoundButton {
+                id: settingsBtn
+                objectName: "settingsBtn"
+
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                display: AbstractButton.TextOnly
+
+                contentItem: Text {
+                    font.family: "Material Design Icons"
+                    font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
+                    text: MDFont.Icon.settings
+                    color: "white"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                background: Rectangle {
+                    opacity: enabled ? 1 : 0.15
+                    color: timerBtn.pressed ? "grey" : "darkgrey"
+                    radius: timerBtn.width / 2
+                }
+
+                onClicked: settingsPopup.open()
+            }
+
 
             DropShadow {
                 visible: (recordBtn.enabled && !recordBtn.pressed) ? true : false
@@ -445,13 +512,33 @@ Rectangle {
                 samples: 3
                 source: exportBtn
             }
+
+            DropShadow {
+                visible: (checkUpdateBtn.enabled && !checkUpdateBtn.pressed) ? true : false
+                color: "#606060"
+                anchors.fill: checkUpdateBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: checkUpdateBtn
+            }
+
+            InnerShadow {
+                visible: checkUpdateBtn.pressed ? true : false
+                color: "#606060"
+                anchors.fill: checkUpdateBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: checkUpdateBtn
+            }
         }
 
         FileDialog {
             id: saveDialog
             objectName: "saveDialog"
             fileMode: FileDialog.SaveFile
-            nameFilters: ["WAVE Sound (*.wav)", "FLAC (*.flac)", "Core Audio Format (*.caf)", "Audio Interchange File Format (*.aiff)", "All files (*)"]
+            nameFilters: ["WAVE Sound (*.wav)", "FLAC (*.flac)", "Core Audio Format (*.caf)", "Audio Interchange File Format (*.aiff)", "RAW Format (*.raw)", "All files (*)"]
             folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
             onAccepted: {
                 qmlbridge.saveFile(saveDialog.currentFile);
@@ -466,11 +553,18 @@ Rectangle {
                 id: inputDeviceLabel
 
                 color: "black"
-                text: qsTr("Input Device:")
+                text: qsTr("Input Device:") + qmlbridge.emptyStr
             }
             ComboBox {
                 id: iDeviceInfoLabel
                 Layout.preferredWidth: Math.max(Math.round(window.width * 0.2), 320)
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Change input device")
+
                 model: ListModel {
                     id: iDeviceItems
                     Component.onCompleted: {
@@ -491,7 +585,7 @@ Rectangle {
                 onPressedChanged: {
 
                     let selectedInd = 0;
-                    if(currentIndex != -1)
+                    if(currentIndex < 0)
                         selectedInd = currentIndex;
 
                     model.clear();
@@ -512,11 +606,18 @@ Rectangle {
                 id: outputDeviceLabel
 
                 color: "black"
-                text: qsTr("Output Device:")
+                text: qsTr("Output Device:") + qmlbridge.emptyStr
             }
             ComboBox {
                 id: oDeviceInfoLabel
                 Layout.preferredWidth: Math.max(Math.round(window.width * 0.2), 320)
+
+                hoverEnabled: true
+                ToolTip.delay: 500
+                ToolTip.timeout: 5000
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Change output device")
+
                 model: ListModel {
                     id: oDeviceItems
                     Component.onCompleted: {
@@ -562,8 +663,8 @@ Rectangle {
     }
 
     Popup {
-        id: discardPopup
-        objectName: "discardPopup"
+        id: settingsPopup
+        objectName: "settingsPopup"
 
         x: Math.round((window.width - width) / 2)
         y: Math.round((window.height - height) / 2)
@@ -571,6 +672,136 @@ Rectangle {
         modal: true
         focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+
+        ColumnLayout {
+            id: colLayout
+            spacing: Math.round(buttonPanel.height * 0.15)
+
+            GridLayout {
+                id: gridLayout2
+                Layout.alignment: Qt.AlignTop
+                rows: 3
+                columns: 2
+
+                Label {
+                    font.family: "Roboto"
+                    text: qsTr("Display record devices") + qmlbridge.emptyStr
+                    color: "white"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                Switch {
+                    id: displayRecordDev
+                    checked: qmlbridge.getShowRecordDevices()
+
+                    onToggled: {
+                        let val = true;
+                        (position === 1.0) ? val = true : val = false;
+                        qmlbridge.setShowRecordDevices(val);
+                    }
+                }
+
+                Label {
+                    font.family: "Roboto"
+                    text: qsTr("Visualizer type") + qmlbridge.emptyStr
+                    color: "white"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                ComboBox {
+                    id: visSetting
+
+                    model: [qsTr("Bar") + qmlbridge.emptyStr, qsTr("Circle") + qmlbridge.emptyStr, qsTr("Line") + qmlbridge.emptyStr]
+
+                    onActivated: {
+                        //add behavior for which setting it was just changed to
+                        qmlbridge.visType = visSetting.currentText
+                        qmlbridge.saveSettings()
+                        qmlbridge.onVisData([], [0])
+                    }
+
+                    Component.onCompleted: {
+                        for (var i = 0; i < visSetting.count; ++i)
+                        {
+                            if (visSetting.textAt(i) === qmlbridge.visType)
+                            {
+                                currentIndex = i;
+                                break;
+                            }
+                            else
+                                currentIndex = 0;
+                        }
+                    }
+                }
+
+                Label {
+                    font.family: "Roboto"
+                    text: qsTr("Language") + qmlbridge.emptyStr
+                    color: "white"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                ComboBox {
+                    id: langSetting
+
+                    // Layout.preferredWidth: Math.min(Math.round(window.width * 0.2), 100)
+                    Layout.preferredWidth: visSetting.width + 20
+
+                    textRole: "key"
+                    model: ListModel {
+                        id: langOpt
+
+                        ListElement { key: "English - en"; value: "en" }
+                        ListElement { key: "Español - es"; value: "es" }
+                        ListElement { key: "Français - fr"; value: "fr" }
+                        ListElement { key: "हिंदी - hi"; value: "hi" }
+                        ListElement { key: "Polskie - pl"; value: "pl" }
+                    }
+
+                    onActivated: {
+                        qmlbridge.loadLanguage(langOpt.get(langSetting.currentIndex).value)
+                    }
+
+                    Component.onCompleted: {
+                        for (var i = 0; i < langOpt.count; ++i)
+                        {
+                            if (langOpt.get(i).value === qmlbridge.getSelectedLanguage())
+                            {
+                                currentIndex = i;
+                                break;
+                            }
+                            else
+                                currentIndex = 0;
+                        }
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+    Popup {
+        id: discardPopup
+        objectName: "discardPopup"
+
+        x: Math.round((window.width - width) / 2)
+        y: Math.round((window.height - height) / 2)
+        width: 255
+        height: 100
+
+        modal: true
+        focus: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+
         ColumnLayout {
             spacing: Math.round(window.height * 0.15)
             ColumnLayout {
@@ -579,8 +810,7 @@ Rectangle {
                     Text {
                         id: textbot
                         color: "white"
-                        font.pointSize: Math.round((window.height + window.width) / 96)
-                        text: qsTr("Are you sure you want to discard?")
+                        text: qsTr("Are you sure you want to discard?") + qmlbridge.emptyStr
                     }
                 }
                 RowLayout {
@@ -589,7 +819,6 @@ Rectangle {
                     width: gridLayout.width / 2
                     Button {
                         text: "No"
-                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                         onClicked: {
                             discardPopup.close()
                         }
@@ -597,16 +826,22 @@ Rectangle {
 
                     Button {
                         text: "Yes"
-                        font.pixelSize: Math.ceil(buttonPanel.width * 0.02)
                         onClicked: {
                             // Discard files
                             qmlbridge.discard()
+                            recordBtn.tttext = "Record Audio"
 
                             // Start recording again
                             stopBtn.isStopped = false
                             recordBtn.contentItem.text = MDFont.Icon.record
-                            recordBtn.onClicked()
                             discardPopup.close()
+
+                            exportBtn.enabled = false;
+                            timeFuncs.time = 0;
+                            timeFuncs.time = 0;
+                            delayInput.text = "00:00:00";
+                            recordTimeInput.text = "00:00:00";
+                            window.textDisplayed = "Elapsed: 0";
                         }
                     }
                 }
@@ -621,8 +856,6 @@ Rectangle {
         x: Math.round((window.width - width) / 2)
         y: Math.round((window.height - height) / 2)
 
-        width: 350
-        height: 170
         modal: true
         focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
@@ -638,7 +871,7 @@ Rectangle {
 
                 Label {
                     font.family: "Roboto"
-                    text: qsTr("Delay Recording (hh:mm:ss)")
+                    text: qsTr("Delay Recording (hh:mm:ss)") + qmlbridge.emptyStr
 
                     color: "white"
 
@@ -657,7 +890,7 @@ Rectangle {
 
                 Label {
                     font.family: "Roboto"
-                    text: qsTr("Record Duration (hh:mm:ss)")
+                    text: qsTr("Record Duration (hh:mm:ss)") + qmlbridge.emptyStr
 
                     color: "white"
 
@@ -689,7 +922,7 @@ Rectangle {
                     contentItem: Text {
                         font.family: "Roboto"
 
-                        text: qsTr("CANCEL")
+                        text: qsTr("CANCEL") + qmlbridge.emptyStr
                         color: "white"
 
                         horizontalAlignment: Text.AlignHCenter
@@ -707,7 +940,7 @@ Rectangle {
                     Layout.preferredWidth: 75
                     contentItem: Text {
                         font.family: "Roboto"
-                        text: qsTr("OK")
+                        text: qsTr("OK") + qmlbridge.emptyStr
 
                         color: "white"
 
@@ -716,10 +949,6 @@ Rectangle {
                     }
                 }
             }
-        }
-
-        onClosed: {
-            console.log("popup closed");
         }
     }
 }

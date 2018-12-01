@@ -40,10 +40,10 @@ OSXAudio::OSXAudio()
     // Shut it up unless this is a debug build
     // TODO: This should really be determined at runtime not compile-time
     #if HL_NO_DEBUG_OUTPUT
-        int out = dup(1);
-        int temp_null = open("/dev/null", O_WRONLY);
-        dup2(temp_null, 1);
-        close(temp_null);
+    int out = dup(1);
+    int temp_null = open("/dev/null", O_WRONLY);
+    dup2(temp_null, 1);
+    close(temp_null);
     #endif
 
     // Initialize PortAudio
@@ -56,8 +56,8 @@ OSXAudio::OSXAudio()
     }
 
     #if HL_NO_DEBUG_OUTPUT
-        dup2(out, 1);
-        close(out);
+    dup2(out, 1);
+    close(out);
     #endif
 }
 
@@ -111,7 +111,9 @@ int OSXAudio::isDaemonRunning()
         {
             // Only grab the first PID
             if (c == '\n')
+            {
                 break;
+            }
 
             buffer += c;
         }
@@ -351,30 +353,37 @@ std::vector<Device *> OSXAudio::getDevices(DeviceType type)
         exit(1); // TODO: Handle error
     }
 
+    HulaAudioSettings *s = HulaAudioSettings::getInstance();
+
     std::vector<Device *> devices;
     for (uint32_t i = 0; i < deviceCount; i++)
     {
         const PaDeviceInfo *paDevice = Pa_GetDeviceInfo(i);
-        DeviceType checkType = (DeviceType)0;
+        DeviceType checkType = (DeviceType) 0;
 
         // We can only support OSX loopback on our own driver
         if (strcmp(paDevice->name, "HulaLoop") == 0)
         {
-            checkType = (DeviceType)(checkType | LOOPBACK);
+            checkType = (DeviceType)(checkType | DeviceType::LOOPBACK);
         }
         if (paDevice->maxOutputChannels > 0)
         {
-            checkType = (DeviceType)(checkType | PLAYBACK);
+            checkType = (DeviceType)(checkType | DeviceType::PLAYBACK);
         }
         if (paDevice->maxInputChannels > 0)
         {
-            checkType = (DeviceType)(checkType | RECORD);
+            checkType = (DeviceType)(checkType | DeviceType::RECORD);
         }
 
         // Create HulaLoop style device and add to vector
         // This needs to be freed elsewhere
         if (type & checkType)
         {
+            if (checkType == DeviceType::RECORD && !s->getShowRecordDevices())
+            {
+                continue;
+            }
+
             DeviceID id;
             id.portAudioID = i;
             Device *hlDevice = new Device(id, std::string(paDevice->name), checkType);

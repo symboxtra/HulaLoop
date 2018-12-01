@@ -1,28 +1,26 @@
 #include "QMLBridge.h"
-//#include "FftRealPair.h"
-#include "FftRealPair.cpp"
 
-#include <QCoreApplication>
-#include <QProcess>
-#include <QUrl>
-#include <QDir>
-
-#include <iostream>
-#include <string>
-#include <thread>
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <cstdlib>
-#include <iomanip>
-#include <iostream>
+#include <QCoreApplication>
+#include <QDir>
+#include <QFile>
+#include <QFontDatabase>
+#include <QIcon>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QMessageBox>
+#include <QProcess>
+#include <QQuickStyle>
+#include <QUrl>
+#include <QtWidgets>
 #include <random>
-#include <vector>
-#include <stdlib.h>
-#include <thread>
-#include <chrono>
-#include <math.h>
-#include <stdio.h>
+#include <string>
 
+#include "FFTRealPair.h"
 
 using namespace hula;
 
@@ -35,6 +33,89 @@ QMLBridge::QMLBridge(QObject *parent) : QObject(parent)
 {
     transport = new Transport();
     rb = transport->getController()->createBuffer(0.5);
+
+    loadSettings();
+}
+
+/**
+ * Loads all settings stored in the JSON settings file.
+ */
+void QMLBridge::loadSettings()
+{
+
+    QFile file(QDir::homePath() + "/.hulaloop.json");
+    if(!file.open(QIODevice::ReadOnly))
+        return;
+
+    QString json = file.readAll();
+    QJsonDocument doc = QJsonDocument::fromJson(json.toUtf8());
+    if (doc.isNull() || !doc.isObject())
+        return;
+
+    QJsonObject rootObj = doc.object();
+    if (rootObj.isEmpty())
+        return;
+
+    QVariantMap map = rootObj.toVariantMap();
+
+    bool val = map["show_record_devices"].toBool();
+    QString defVisualizer = map["visualizer"].toString();
+    QString defLanguage = map["language"].toString();
+
+    setShowRecordDevices(val);
+    visType = defVisualizer;
+    loadLanguage(defLanguage);
+
+    file.close();
+
+}
+
+/**
+ * Saves all settings into a JSON settings file.
+ */
+void QMLBridge::saveSettings()
+{
+
+    QFile file(QDir::homePath() + "/.hulaloop.json");
+    if(!file.open(QIODevice::WriteOnly))
+        return;
+
+    QVariantMap map;
+    map.insert("show_record_devices", HulaAudioSettings::getInstance()->getShowRecordDevices());
+    map.insert("visualizer", (visType.isEmpty()) ? "Line" : visType);
+    map.insert("language", (language.isEmpty()) ? "en" : language);
+
+    QJsonObject obj = QJsonObject::fromVariantMap(map);
+
+    QJsonDocument doc;
+    doc.setObject(obj);
+
+    hlDebug() << "doc = " << QString(doc.toJson()).toStdString() << "\n";
+
+    file.write(doc.toJson());
+    file.flush();
+    file.close();
+
+}
+
+/**
+ * Return the current visualizer type.
+ *
+ * @return QString - The name of the visualizer
+ */
+QString QMLBridge::getVisualizerType()
+{
+    return visType;
+}
+
+/**
+ * Sets the current visualizer type.
+ *
+ * @param QString - The name of the visualizer
+ */
+void QMLBridge::setVisualizerType(const QString &type)
+{
+    visType = type;
 }
 
 /**
@@ -55,9 +136,13 @@ bool QMLBridge::record()
     bool success = transport->record();
     emit stateChanged();
 
-    startVisThread();
+    if (success)
+    {
+        startVisThread();
+    }
 
     return success;
+
 }
 
 /**
@@ -81,9 +166,13 @@ bool QMLBridge::play()
     bool success = transport->play();
     emit stateChanged();
 
-    startVisThread();
+    if (success)
+    {
+        startVisThread();
+    }
 
     return success;
+
 }
 
 /**
@@ -105,6 +194,19 @@ bool QMLBridge::pause()
 void QMLBridge::discard()
 {
     transport->discard();
+
+    emit stateChanged();
+    emit discarded();
+}
+
+/**
+ * Return an empty QString to force QML to update when a new language is loaded.
+ *
+ * @return QString - An empty QString
+ */
+QString QMLBridge::getEmptyStr()
+{
+    return "";
 }
 
 /**
@@ -198,6 +300,56 @@ QString QMLBridge::getOutputDevices()
 }
 
 /**
+ * Modifies settings to display record devices.
+ *
+ * @param bool - True to show record devices, false otherwise
+ */
+void QMLBridge::setShowRecordDevices(bool val)
+{
+    HulaSettings::getInstance()->setShowRecordDevices(val);
+    showRecDevices = val;
+    saveSettings();
+}
+
+/**
+ * Returns the setting value for showing record devices.
+ *
+ * @return bool - True to show record devices, false otherwise
+ */
+bool QMLBridge::getShowRecordDevices()
+{
+    return showRecDevices;
+}
+
+/**
+ * Modifies settings to load the specified language.
+ *
+ * @return bool - True if loading the language was successful, false otherwise
+ */
+bool QMLBridge::loadLanguage(const QString &id)
+{
+    if (HulaSettings::getInstance()->loadLanguage(QCoreApplication::instance(), id.toStdString()))
+    {
+        language = id;
+        saveSettings();
+
+        emit languageChanged();
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Returns the setting value for showing record devices.
+ *
+ * @return bool - True to show record devices, false otherwise
+ */
+QString QMLBridge::getSelectedLanguage()
+{
+    return language;
+}
+
+/**
  * Get the directory the user wants to save to
  *
  * @param QString containing the directory
@@ -255,6 +407,7 @@ void QMLBridge::stopVisThread()
  */
 void QMLBridge::updateVisualizer(QMLBridge *_this)
 {
+
     _this->transport->getController()->addBuffer(_this->rb);
 
     int maxSize = 512;
@@ -263,8 +416,9 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
 
     while (!_this->endVis.load())
     {
-        vector<double> actualoutreal;
-        vector<double> actualoutimag;
+        std::vector<double> actualoutreal;
+        std::vector<double> actualoutimag;
+        std::vector<double> realData;
 
         float *data1;
         float *data2;
@@ -277,34 +431,36 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
 
         while (!_this->endVis.load() && actualoutreal.size() < maxSize)
         {
-                // Do directRead until Windows read is fixed
-                // bytesRead =_this->rb->read(temp, maxSize
-                bytesRead = _this->rb->directRead(maxSize, (void **)&data1, &size1, (void **)&data2, &size2);
+            // Do directRead until Windows read is fixed
+            // bytesRead =_this->rb->read(temp, maxSize
+            bytesRead = _this->rb->directRead(maxSize, (void **)&data1, &size1, (void **)&data2, &size2);
 
-                // Keep draining the buffer, but only actually
-                // process the drained data every nth cycle
-                if (cycle % accuracy == 0)
+            // Keep draining the buffer, but only actually
+            // process the drained data every nth cycle
+            if (cycle % accuracy == 0)
+            {
+                for (int i = 0; i < size1 && actualoutreal.size() < maxSize; i++)
                 {
-                    for (int i = 0; i < size1 && actualoutreal.size() < maxSize; i++)
-                    {
-                        actualoutimag.push_back(data1[i]);
-                        actualoutreal.push_back(data1[i]);
-                    }
+                    actualoutimag.push_back(data1[i]);
+                    actualoutreal.push_back(data1[i]);
+                    realData.push_back(data1[i]);
+                }
 
-                    for (int i = 0; i < size2 && actualoutreal.size() < maxSize; i++)
-                    {
-                        actualoutimag.push_back(data2[i]);
-                        actualoutreal.push_back(data2[i]);
-                    }
-                }
-                else
+                for (int i = 0; i < size2 && actualoutreal.size() < maxSize; i++)
                 {
-                    // Only count cycles that actually have data
-                    if (bytesRead > 0)
-                    {
-                        cycle++;
-                    }
+                    actualoutimag.push_back(data2[i]);
+                    actualoutreal.push_back(data2[i]);
+                    realData.push_back(data2[i]);
                 }
+            }
+            else
+            {
+                // Only count cycles that actually have data
+                if (bytesRead > 0)
+                {
+                    cycle++;
+                }
+            }
         }
 
         Fft::transform(actualoutreal, actualoutimag);
@@ -332,7 +488,7 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
             }
         }
 
-        _this->emit visData(heights);
+        _this->emit visData(realData, heights);
     }
 
     _this->transport->getController()->removeBuffer(_this->rb);
@@ -357,6 +513,54 @@ void QMLBridge::launchUpdateProcess()
 }
 
 /**
+ * Get if the user has unsaved files
+ *
+ * @return true if the user has unsaved files
+ */
+bool QMLBridge::wannaClose()
+{
+    // Check if user has unsaved audio
+    if (transport->hasExportPaths())
+    {
+        // user has unsaved audio prompt them
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Exit???");
+        QPixmap pix(":/res/hulaloop-logo-small.png");
+        msgBox.setIconPixmap(pix.scaled(100, 100, Qt::KeepAspectRatio));
+        msgBox.setText("You have unsaved audio.");
+        msgBox.setInformativeText("Would you like to save your audio?");
+        QAbstractButton *goBackAndSave = msgBox.addButton(tr("Go back and save"), QMessageBox::RejectRole);
+        QIcon ico = QApplication::style()->standardIcon(QStyle::SP_DialogYesButton);
+        goBackAndSave->setIcon(ico);
+        msgBox.addButton(QMessageBox::Discard);
+        if (msgBox.exec() == QMessageBox::AcceptRole)
+        {
+            // the user did not want to exit just go back
+            return false;
+        }
+        else
+        {
+            // the user wanted to exit, exit and delete files
+            transport->discard();
+            return true;
+        }
+    }
+    // user has no unsaved audio, just exit
+    else
+    {
+        return true;
+    }
+}
+
+/**
+ * Deletes all the temp files that the program has created
+ */
+void QMLBridge::cleanTempFiles()
+{
+    transport->discard();
+}
+
+/**
  * Destructor for QMLBridge
  */
 QMLBridge::~QMLBridge()
@@ -364,6 +568,7 @@ QMLBridge::~QMLBridge()
     hlDebugf("QMLBridge destructor called\n");
 
     stopVisThread();
+    saveSettings();
     delete transport;
     delete rb;
 }

@@ -19,6 +19,7 @@ namespace hula
      */
     enum TransportState
     {
+        READY,
         RECORDING,
         STOPPED,
         PLAYING,
@@ -32,7 +33,7 @@ namespace hula
      */
     class Transport {
 
-        Q_DECLARE_TR_FUNCTIONS(Transport)
+            Q_DECLARE_TR_FUNCTIONS(Transport)
 
         private:
             TransportState state;
@@ -61,6 +62,8 @@ namespace hula
             Controller *getController() const;
 
             void exportFile(std::string targetDirectory);
+
+            bool hasExportPaths();
 
             TransportState getState() const;
             std::string stateToStr(const TransportState state) const;

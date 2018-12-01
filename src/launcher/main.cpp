@@ -11,7 +11,6 @@ using namespace hula;
 
 int main(int argc, char *argv[])
 {
-
     QQmlDebuggingEnabler debug;
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -26,11 +25,9 @@ int main(int argc, char *argv[])
 
     if (argc > 1)
     {
-
         QString arg(argv[1]);
         if (arg == "silent")
         {
-
             Updater updater;
             updater.setUpdateHost("https://api.github.com/repos/jmcker/HulaLoop/releases/latest");
 
@@ -47,7 +44,6 @@ int main(int argc, char *argv[])
 
                 if (msgBox.exec() == QMessageBox::Ok)
                 {
-
                     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
                     if (engine.rootObjects().isEmpty())
                     {
@@ -59,7 +55,6 @@ int main(int argc, char *argv[])
                 {
                     QApplication::quit();
                 }
-
             }
             else
             {
@@ -70,13 +65,10 @@ int main(int argc, char *argv[])
                 msgBox.exec();
 
             }
-
         }
-
     }
     else
     {
-
         engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
         if (engine.rootObjects().isEmpty())
         {

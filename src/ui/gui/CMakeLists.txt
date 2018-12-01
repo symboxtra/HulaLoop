@@ -1,6 +1,6 @@
 add_include_dir(.)
 
-set (GUI_SRC_FILES main.cpp QMLBridge.cpp SystemTrayIcon.cpp qml.qrc)
+set (GUI_SRC_FILES FFTRealPair.cpp main.cpp QMLBridge.cpp SystemTrayIcon.cpp qml.qrc)
 
 # Turn the console off if this is a non-debug build
 if (CMAKE_BUILD_TYPE MATCHES Debug)

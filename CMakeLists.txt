@@ -247,7 +247,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
     # Test that only rely on the audio library
     create_test ("src/test/TestOSAudio.cpp" "" 3 FALSE FALSE)
-    create_test ("src/test/TestHulaRingBuffer.cpp" "" 0.5 TRUE FALSE)
+    create_test ("src/test/TestHulaRingBuffer.cpp" "" 1 TRUE FALSE)
     create_test ("src/test/TestController.cpp" "" -1 TRUE FALSE)
 
     if (OSX)
