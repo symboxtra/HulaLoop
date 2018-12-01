@@ -31,12 +31,22 @@ using namespace hula;
  */
 QMLBridge::QMLBridge(QObject *parent) : QObject(parent)
 {
-    try {
+    try
+    {
         transport = new Transport();
     }
     catch (const ControlException &ce)
     {
-        ce.displayErrorMsg();
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("HulaLoop Error");
+        msgBox.setText(QString::fromStdString(ce.getErrorMessage()));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+
+        if (msgBox.exec() == QMessageBox::Ok)
+        {
+            exit(1);
+        }
+
     }
     rb = transport->getController()->createBuffer(0.5);
 
@@ -139,7 +149,24 @@ QString QMLBridge::getTransportState() const
  */
 bool QMLBridge::record()
 {
-    bool success = transport->record();
+    bool success = false;
+    try
+    {
+        success = transport->record();
+    }
+    catch (const ControlException &ce)
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("HulaLoop Error");
+        msgBox.setText(QString::fromStdString(ce.getErrorMessage()));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+
+        if (msgBox.exec() == QMessageBox::Ok)
+        {
+            exit(1);
+        }
+
+    }
     emit stateChanged();
 
     if (success)
@@ -156,7 +183,24 @@ bool QMLBridge::record()
  */
 bool QMLBridge::stop()
 {
-    bool success = transport->stop();
+    bool success = false;
+    try
+    {
+        success = transport->stop();
+    }
+    catch (const ControlException &ce)
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("HulaLoop Error");
+        msgBox.setText(QString::fromStdString(ce.getErrorMessage()));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+
+        if (msgBox.exec() == QMessageBox::Ok)
+        {
+            exit(1);
+        }
+
+    }
     emit stateChanged();
 
     stopVisThread();
@@ -169,7 +213,24 @@ bool QMLBridge::stop()
  */
 bool QMLBridge::play()
 {
-    bool success = transport->play();
+    bool success = false;
+    try
+    {
+        success = transport->play();
+    }
+    catch (const ControlException &ce)
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("HulaLoop Error");
+        msgBox.setText(QString::fromStdString(ce.getErrorMessage()));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+
+        if (msgBox.exec() == QMessageBox::Ok)
+        {
+            exit(1);
+        }
+
+    }
     emit stateChanged();
 
     if (success)
@@ -186,7 +247,24 @@ bool QMLBridge::play()
  */
 bool QMLBridge::pause()
 {
-    bool success = transport->pause();
+    bool success = false;
+    try
+    {
+        success = transport->pause();
+    }
+    catch (const ControlException &ce)
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("HulaLoop Error");
+        msgBox.setText(QString::fromStdString(ce.getErrorMessage()));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+
+        if (msgBox.exec() == QMessageBox::Ok)
+        {
+            exit(1);
+        }
+
+    }
     emit stateChanged();
 
     stopVisThread();

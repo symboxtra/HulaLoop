@@ -59,7 +59,7 @@ namespace hula
              *
              * @return std::string - The translated error message
              */
-            const std::string getMessage() const
+            const std::string getErrorMessage() const
             {
                 return std::string(qPrintable(getTranslatedErrorMessage(errorCode)));
             }
@@ -109,8 +109,8 @@ namespace hula
             case HL_OS_INIT_CODE:
                 return ControlException::tr(HL_OS_INIT_MSG);
                 break;
-            case HL_OSX_PA_INIT_CODE:
-                return ControlException::tr(HL_OSX_PA_INIT_MSG);
+            case HL_PA_INIT_CODE:
+                return ControlException::tr(HL_PA_INIT_MSG);
                 break;
             case HL_OSX_DAEMON_INIT_CODE:
                 return ControlException::tr(HL_OSX_DAEMON_INIT_MSG);
@@ -127,26 +127,23 @@ namespace hula
             case HL_OSX_EXEPATH_TRIM_CODE:
                 return ControlException::tr(HL_OSX_EXEPATH_TRIM_MSG);
                 break;
-            case HL_OSX_DEVICE_NOT_FOUND_CODE:
-                return ControlException::tr(HL_OSX_DEVICE_NOT_FOUND_MSG);
+            case HL_DEVICE_NOT_FOUND_CODE:
+                return ControlException::tr(HL_DEVICE_NOT_FOUND_MSG);
                 break;
-            case HL_OSX_PA_OPEN_STREAM_CODE:
-                return ControlException::tr(HL_OSX_PA_OPEN_STREAM_MSG);
+            case HL_PA_OPEN_STREAM_CODE:
+                return ControlException::tr(HL_PA_OPEN_STREAM_MSG);
                 break;
-            case HL_OSX_PA_CLOSE_STREAM_CODE:
-                return ControlException::tr(HL_OSX_PA_CLOSE_STREAM_MSG);
+            case HL_PA_CLOSE_STREAM_CODE:
+                return ControlException::tr(HL_PA_CLOSE_STREAM_MSG);
                 break;
-            case HL_OSX_DEVICE_READ_STREAM_CODE:
-                return ControlException::tr(HL_OSX_DEVICE_READ_STREAM_MSG);
+            case HL_PA_DEVICE_READ_STREAM_CODE:
+                return ControlException::tr(HL_PA_DEVICE_READ_STREAM_MSG);
                 break;
-            case HL_OSX_PA_GET_DEVICES_CODE:
-                return ControlException::tr(HL_OSX_PA_GET_DEVICES_MSG);
+            case HL_PA_GET_DEVICES_CODE:
+                return ControlException::tr(HL_PA_GET_DEVICES_MSG);
                 break;
-            case HL_OSX_CHECK_PARAMS_CODE:
-                return ControlException::tr(HL_OSX_CHECK_PARAMS_MSG);
-                break;
-            case HL_LINUX_CHECK_PARAMS_CODE:
-                return ControlException::tr(HL_LINUX_CHECK_PARAMS_MSG);
+            case HL_CHECK_PARAMS_CODE:
+                return ControlException::tr(HL_CHECK_PARAMS_MSG);
                 break;
             case HL_LINUX_OPEN_DEVICE_CODE:
                 return ControlException::tr(HL_LINUX_OPEN_DEVICE_MSG);

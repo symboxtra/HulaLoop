@@ -12,7 +12,7 @@ WindowsAudio::WindowsAudio()
     {
         hlDebugf("PortAudio failed to initialize.\n");
         hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
-        exit(1); // TODO: Handle error
+        throw AudioException(HL_PA_INIT_CODE, HL_PA_INIT_MSG);
     }
 
     pa_status = paNoError;
@@ -146,18 +146,20 @@ std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
 Exit:
     SAFE_RELEASE(pEnumerator)
 
-    // Output error to stdout
-    // TODO: Handle error accordingly
     if (FAILED(status))
     {
         _com_error err(status);
         LPCTSTR errMsg = err.ErrorMessage();
         hlDebug() << "WASAPI_Error: " << errMsg << std::endl;
+        throw AudioException(HL_WIN_GET_DEVICES_CODE, HL_WIN_GET_DEVICES_MSG);
+
         return {};
     }
     else if (pa_status != paNoError)
     {
         hlDebug() << "PORTAUDIO_Error: " << Pa_GetErrorText(pa_status) << std::endl;
+        throw AudioException(HL_PA_GET_DEVICES_CODE, HL_PA_GET_DEVICES_MSG);
+
         return {};
     }
     else
@@ -185,7 +187,6 @@ static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
     (void)statusFlags;
     (void)userData;
 
-    // TODO: Make sure this calculation is right
     obj->copyToBuffers(inputBuffer, framesPerBuffer * NUM_CHANNELS * sizeof(SAMPLE));
 
     return paContinue;
@@ -304,8 +305,7 @@ Exit:
             _com_error err(status);
             LPCTSTR errMsg = err.ErrorMessage();
             hlDebug() << "\nError: " << errMsg << std::endl;
-            exit(1);
-            // TODO: Handle error accordingly
+            throw AudioException(HL_WIN_OPEN_STREAM_CODE, HL_WIN_OPEN_STREAM_MSG);
         }
     }
     else if (isRecSet)
@@ -318,7 +318,7 @@ Exit:
         if (inputParameters.device == paNoDevice)
         {
             hlDebugf("No device found.\n");
-            exit(1); // TODO: Handle error
+            throw AudioException(HL_DEVICE_NOT_FOUND_CODE, HL_DEVICE_NOT_FOUND_MSG);
         }
 
         // Setup the stream for the selected device
@@ -342,7 +342,7 @@ Exit:
         {
             hlDebugf("Could not open Port Audio device stream.\n");
             hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
-            exit(1); // TODO: Handle error
+            throw AudioException(HL_PA_OPEN_STREAM_CODE, HL_PA_OPEN_STREAM_MSG);
         }
 
         // Start the stream
@@ -351,7 +351,7 @@ Exit:
         {
             hlDebugf("Could not start Port Audio device stream.\n");
             hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
-            exit(1); // TODO: Handle error
+            throw AudioException(HL_PA_DEVICE_READ_STREAM_CODE, HL_PA_DEVICE_READ_STREAM_MSG);
         }
 
         hlDebugf("Capture keep-alive\n");
@@ -373,7 +373,7 @@ Exit:
         {
             hlDebugf("Error during read from device stream.\n");
             hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
-            exit(1); // TODO: Handle error
+            throw AudioException(HL_PA_DEVICE_READ_STREAM_CODE, HL_PA_DEVICE_READ_STREAM_MSG);
         }
 
         err = Pa_CloseStream(stream);
@@ -381,7 +381,7 @@ Exit:
         {
             hlDebugf("Could not close Port Audio device stream.\n");
             hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
-            exit(1); // TODO: Handle error
+            throw AudioException(HL_PA_DEVICE_READ_STREAM_CODE, HL_PA_DEVICE_READ_STREAM_MSG);
         }
     }
 }
@@ -418,12 +418,14 @@ bool WindowsAudio::checkDeviceParams(Device *activeDevice)
     if (deviceProperties->nChannels != HulaAudioSettings::getInstance()->getNumberOfChannels())
     {
         hlDebug() << "Invalid number of channels" << std::endl;
+        throw AudioException(HL_CHECK_PARAMS_CODE, HL_CHECK_PARAMS_MSG);
         return false;
     }
     // Check sample rate
     if (deviceProperties->nSamplesPerSec != HulaAudioSettings::getInstance()->getSampleRate())
     {
         hlDebug() << "Invalid sample rate" << std::endl;
+        throw AudioException(HL_CHECK_PARAMS_CODE, HL_CHECK_PARAMS_MSG);
         return false;
     }
 
@@ -431,6 +433,7 @@ bool WindowsAudio::checkDeviceParams(Device *activeDevice)
 
 Exit:
     hlDebug() << "WASAPI Init Error" << std::endl;
+    throw AudioException(HL_WIN_OPEN_STREAM_CODE, HL_WIN_OPEN_STREAM_MSG);
     return false;
 }
 
