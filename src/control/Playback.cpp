@@ -123,5 +123,5 @@ void Playback::stop()
 
 Playback::~Playback()
 {
-
+    stop();
 }
