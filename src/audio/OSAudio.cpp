@@ -274,7 +274,13 @@ void OSAudio::playback()
     PaError err = paNoError;
     PaStreamParameters outputParameters = {0};
 
-    outputParameters.device = Pa_GetDefaultOutputDevice(); /* default output device */
+    if (this->activeOutputDevice->getID().portAudioID == -1)
+    {
+        hlDebug() << "Device did not have a PortAudio ID." << std::endl;
+        return;
+    }
+
+    outputParameters.device = this->activeOutputDevice->getID().portAudioID;
     if (outputParameters.device == paNoDevice)
     {
         hlDebugf("Error: No default output device.\n");

@@ -400,10 +400,7 @@ void WindowsAudio::capture()
             // Keep this thread alive
             // The second half of this function could be moved to a separate
             // function like endCapture() so that we don't have to keep this thread alive.
-
-            // This value can be adjusted
-            // 100 msec is decent precision for now
-            std::this_thread::yield();
+            Pa_Sleep(10);
         }
 
         hlDebugf("Capture thread ended keep-alive.\n\n");

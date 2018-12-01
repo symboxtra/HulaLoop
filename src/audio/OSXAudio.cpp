@@ -309,7 +309,7 @@ void OSXAudio::capture()
         // Keep this thread alive
         // The second half of this function could be moved to a separate
         // function like endCapture() so that we don't have to keep this thread alive.
-        std::this_thread::yield();
+        Pa_Sleep(10);
     }
 
     hlDebugf("Capture thread ended keep-alive.\n");
