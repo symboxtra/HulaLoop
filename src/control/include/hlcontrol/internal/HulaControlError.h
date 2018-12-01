@@ -64,27 +64,12 @@ namespace hula
                 return std::string(qPrintable(getTranslatedErrorMessage(errorCode)));
             }
 
-            void displayErrorMsg() const
-            {
-
-                QMessageBox msgBox;
-                msgBox.setWindowTitle("HulaLoop Error");
-                msgBox.setText(getTranslatedErrorMessage(errorCode));
-                msgBox.setStandardButtons(QMessageBox::Ok);
-
-                if (msgBox.exec() == QMessageBox::Ok)
-                {
-                    exit(1);
-                }
-
-            }
-
             /**
              * This method returns the error code.
              *
              * @return int - The error code
              */
-            int getErrorCode()
+            int getErrorCode() const
             {
                 return errorCode;
             }

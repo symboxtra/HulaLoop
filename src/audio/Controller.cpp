@@ -31,12 +31,10 @@ Controller::Controller()
     audio = new WindowsAudio();
     #endif
 
-    audio = nullptr;
-
     if (audio == nullptr)
     {
-        throw AudioException(HL_OS_INIT_CODE, HL_OS_INIT_MSG);
         hlDebug() << HL_OS_INIT_MSG << std::endl;
+        throw AudioException(HL_OS_INIT_CODE, HL_OS_INIT_MSG);
     }
 
 }
@@ -66,7 +64,14 @@ void Controller::addBuffer(HulaRingBuffer *rb)
  */
 HulaRingBuffer *Controller::createBuffer(float duration)
 {
-    return new HulaRingBuffer(duration);
+    try
+    {
+        return new HulaRingBuffer(duration);
+    }
+    catch(const AudioException &ae)
+    {
+        throw;
+    }
 }
 
 /**
@@ -77,7 +82,15 @@ HulaRingBuffer *Controller::createBuffer(float duration)
  */
 HulaRingBuffer *Controller::createAndAddBuffer(float duration)
 {
-    HulaRingBuffer *rb = new HulaRingBuffer(duration);
+    HulaRingBuffer *rb = nullptr;
+    try
+    {
+        rb = new HulaRingBuffer(duration);
+    }
+    catch(const AudioException &ae)
+    {
+        throw;
+    }
     addBuffer(rb);
     return rb;
 }
@@ -117,7 +130,14 @@ void Controller::removeBuffer(HulaRingBuffer *rb)
  */
 std::vector<Device *> Controller::getDevices(DeviceType type) const
 {
-    return audio->getDevices(type);
+    try
+    {
+        return audio->getDevices(type);
+    }
+    catch(const AudioException &ae)
+    {
+        throw;
+    }
 }
 
 /**
@@ -134,7 +154,14 @@ std::vector<Device *> Controller::getDevices(DeviceType type) const
  */
 bool Controller::setActiveInputDevice(Device *device) const
 {
-    return audio->setActiveInputDevice(device);
+    try
+    {
+        return audio->setActiveInputDevice(device);
+    }
+    catch(const AudioException &ae)
+    {
+        throw;
+    }
 }
 
 /**

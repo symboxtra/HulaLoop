@@ -300,7 +300,7 @@ void OSXAudio::capture()
     {
         hlDebugf("Could not start Port Audio device stream.\n");
         hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
-        throw AudioException(HL_PA_DEVICE_READ_STREAM_CODE, HL_PA_DEVICE_READ_STREAM_M);
+        throw AudioException(HL_PA_DEVICE_READ_STREAM_CODE, HL_PA_DEVICE_READ_STREAM_MSG);
     }
 
     hlDebugf("Capture thread keep-alive started...\n");
@@ -406,13 +406,9 @@ bool OSXAudio::checkDeviceParams(Device *device)
 
     PaError err = Pa_IsFormatSupported(&inputParameters, nullptr, HulaAudioSettings::getInstance()->getSampleRate());
 
-    if (err == paFormatIsSupported)
+    if (err != paFormatIsSupported)
     {
-        hlDebug() << HL_SAMPLE_RATE_VALID << std::endl;
-    }
-    else
-    {
-        hlDebug() << HL_SAMPLE_RATE_INVALID << std::endl;
+        throw AudioException(HL_CHECK_PARAMS_CODE, HL_CHECK_PARAMS_MSG);
     }
 
     return err == paFormatIsSupported;

@@ -258,13 +258,13 @@
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="94"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="408"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="481"/>
         <source>Translation file successfully loaded.</source>
         <translation>Archivo de traducción cargado.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="98"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="412"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="485"/>
         <source>Could not find translation file for %1.</source>
         <translation>No se pudo encontrar el archivo de traducción para %1.</translation>
     </message>
@@ -279,19 +279,19 @@
         <translation>Lista de dispositivos</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="147"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="167"/>
         <source>Record</source>
         <comment>device capability</comment>
         <translation>Grabar</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="255"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="285"/>
         <source>Hz</source>
         <comment>unit</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="243"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="273"/>
         <source>Output file:</source>
         <comment>setting</comment>
         <translation>Archivo de salida:</translation>
@@ -316,146 +316,146 @@
         <translation type="vanished">Reproducción:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="144"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="164"/>
         <source>Device #%1</source>
         <translation>Dispositivo #%1</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="148"/>
-        <location filename="../../src/ui/cli/CLICommon.h" line="151"/>
-        <location filename="../../src/ui/cli/CLICommon.h" line="154"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="168"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="171"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="174"/>
         <source>Yes</source>
         <translation>Sí</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="148"/>
-        <location filename="../../src/ui/cli/CLICommon.h" line="151"/>
-        <location filename="../../src/ui/cli/CLICommon.h" line="154"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="168"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="171"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="174"/>
         <source>No</source>
         <translation>No</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="150"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="170"/>
         <source>Loopback</source>
         <comment>device capability</comment>
         <translation>Bucle invertido</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="153"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="173"/>
         <source>Output</source>
         <comment>device capability</comment>
         <translation>Sonar</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="220"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="250"/>
         <source>Could not find device matching: %1</source>
         <extracomment>The argument in this text is the name or id of the device that the user searched for</extracomment>
         <translation>No se pudo encontrar un dispositivo: %1</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="248"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="278"/>
         <source>Delay:</source>
         <translation>Retraso:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="249"/>
-        <location filename="../../src/ui/cli/CLICommon.h" line="252"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="279"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="282"/>
         <source>s</source>
         <comment>abbreviation for seconds</comment>
         <translation>s</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="251"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="281"/>
         <source>Duration:</source>
         <translation>Duración:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="254"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="284"/>
         <source>Sample rate:</source>
         <translation>Velocidad de muestra:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="258"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="288"/>
         <source>Encoding:</source>
         <translation>Codificación:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="261"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="291"/>
         <source>Input device:</source>
         <translation>Dispositivo de entrada:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="264"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="294"/>
         <source>Output device:</source>
         <translation>Dispositivo de salida:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="37"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="38"/>
         <source>Warning: Unused argument &apos;%1&apos;.</source>
         <translation>Advertencia: Argumento no utilizado &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="48"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="49"/>
         <source>Missing argument &apos;%1&apos;</source>
         <translation>Argumento faltante &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="60"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="61"/>
         <source>Malformed argument &apos;%1&apos;</source>
         <translation>Mal argumento &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="61"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="62"/>
         <source>&apos;%1&apos; is not a valid %2.</source>
         <translation>&apos;%1&apos; no es %2.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="279"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="329"/>
         <source>Are you sure you want to discard? (y/N): </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="289"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="339"/>
         <source>Discard cancelled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="317"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="379"/>
         <source>Input device set to: %1</source>
         <translation>Dispositivo de entrada cambiado a: %1</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="321"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="383"/>
         <source>Failed to set input device.</source>
         <translation>Error al cambiar el dispositivo de entrada.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="357"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="430"/>
         <source>Output device set to: %1</source>
         <translation>Error al cambiar el dispositivo de entrada: %1</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="361"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="434"/>
         <source>Failed to set output device.</source>
         <translation>Error al cambiar el dispositivo de salida.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="432"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="505"/>
         <source>System command returned: %1</source>
         <translation>Comando del sistema devuelto: %1</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="437"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="510"/>
         <source>No system command processor is available.</source>
         <translation>No hay procesador de comandos del sistema.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="447"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="520"/>
         <source>Unrecognized command &apos;%1&apos;</source>
         <translation>Comando no reconocido: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="454"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="527"/>
         <source>Command failed with value of &apos;false&apos;.</source>
         <translation>El comando falló con el valor &apos;falso&apos;.</translation>
     </message>
@@ -586,37 +586,37 @@
         <translation type="vanished">Desconocido</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="178"/>
+        <location filename="../../src/control/Transport.cpp" line="202"/>
         <source>Ready</source>
         <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="180"/>
+        <location filename="../../src/control/Transport.cpp" line="204"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation>Grabando</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="182"/>
+        <location filename="../../src/control/Transport.cpp" line="206"/>
         <source>Stopped</source>
         <comment>state</comment>
         <translation>Parado</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="184"/>
+        <location filename="../../src/control/Transport.cpp" line="208"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation>Sonando</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="186"/>
+        <location filename="../../src/control/Transport.cpp" line="210"/>
         <source>Paused</source>
         <comment>state</comment>
         <translation>Pausada</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="188"/>
+        <location filename="../../src/control/Transport.cpp" line="212"/>
         <source>Unknown</source>
         <comment>state</comment>
         <translation>Desconocido</translation>
@@ -625,7 +625,7 @@
 <context>
     <name>hula::QMLBridge</name>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="612"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="745"/>
         <source>Go back and save</source>
         <translation type="unfinished"></translation>
     </message>

@@ -100,27 +100,27 @@
 #define HL_OSX_EXEPATH_TRIM_MSG  "Could not trim executable name from install path!"
 
 // LinuxAudio error messages
-#define HL_LINUX_OPEN_DEVICE_CODE -15
+#define HL_LINUX_OPEN_DEVICE_CODE -14
 #define HL_LINUX_OPEN_DEVICE_MSG  "Could not open ALSA audio device!"
 
-#define HL_LINUX_ALSA_CLOSE_STREAM_CODE -16
+#define HL_LINUX_ALSA_CLOSE_STREAM_CODE -15
 #define HL_LINUX_ALSA_CLOSE_STREAM_MSG  "Could not close ALSA device stream!"
 
-#define HL_LINUX_SET_PARAMS_CODE -17
+#define HL_LINUX_SET_PARAMS_CODE -16
 #define HL_LINUX_SET_PARAMS_MSG "Could not set ALSA device params!"
 
 // WindowsAudio error messages
-#define HL_WIN_GET_DEVICES_CODE -18
+#define HL_WIN_GET_DEVICES_CODE -17
 #define HL_WIN_GET_DEVICES_MSG "Could not fetch WASAPI audio devices!"
 
-#define HL_WIN_OPEN_STREAM_CODE -19
+#define HL_WIN_OPEN_STREAM_CODE -18
 #define HL_WIN_OPEN_STREAM_MSG  "Could not open WASAPI device stream!"
 
 // HulaRingBuffer error messages
-#define HL_RB_ALLOC_BUFFER_CODE -20
+#define HL_RB_ALLOC_BUFFER_CODE -19
 #define HL_RB_ALLOC_BUFFER_MSG  "Could not allocate ring buffer!"
 
-#define HL_RB_INIT_BUFFER_CODE -21
+#define HL_RB_INIT_BUFFER_CODE -20
 #define HL_RB_INIT_BUFFER_MSG  "Could not initialize ring buffer! Perhaps the size is not power of 2?"
 
 namespace hula
@@ -159,9 +159,9 @@ namespace hula
              *
              * @return int - The error code
              */
-            int getErrorCode()
+            int getErrorCode() const
             {
-                return errno;
+                return errorCode;
             }
     };
 }

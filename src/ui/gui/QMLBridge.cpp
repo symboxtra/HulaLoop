@@ -46,10 +46,26 @@ QMLBridge::QMLBridge(QObject *parent) : QObject(parent)
         {
             exit(1);
         }
-
     }
-    rb = transport->getController()->createBuffer(0.5);
 
+    try
+    {
+        rb = transport->getController()->createBuffer(0.5);
+    }
+    catch(const AudioException &ae)
+    {
+        ControlException ce(ae.getErrorCode());
+
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("HulaLoop Error");
+        msgBox.setText(QString::fromStdString(ce.getErrorMessage()));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+
+        if (msgBox.exec() == QMessageBox::Ok)
+        {
+            exit(1);
+        }
+    }
     loadSettings();
 }
 
@@ -302,12 +318,49 @@ void QMLBridge::setActiveInputDevice(QString QDeviceName)
     hlDebug() << "setActiveDevice() called" << std::endl;
 
     std::string deviceName = QDeviceName.toStdString();
-    std::vector<Device *> iDevices = transport->getController()->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
+    std::vector<Device *> iDevices;
+    try
+    {
+        iDevices = transport->getController()->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
+    }
+    catch(const AudioException &ae)
+    {
+        ControlException ce(ae.getErrorCode());
+
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("HulaLoop Error");
+        msgBox.setText(QString::fromStdString(ce.getErrorMessage()));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+
+        if (msgBox.exec() == QMessageBox::Ok)
+        {
+            exit(1);
+        }
+    }
+
     for (auto const &device : iDevices)
     {
         if (device->getName() == deviceName)
         {
-            transport->getController()->setActiveInputDevice(device);
+            try
+            {
+                transport->getController()->setActiveInputDevice(device);
+            }
+            catch(const AudioException &ae)
+            {
+                ControlException ce(ae.getErrorCode());
+
+                QMessageBox msgBox;
+                msgBox.setWindowTitle("HulaLoop Error");
+                msgBox.setText(QString::fromStdString(ce.getErrorMessage()));
+                msgBox.setStandardButtons(QMessageBox::Ok);
+
+                if (msgBox.exec() == QMessageBox::Ok)
+                {
+                    exit(1);
+                }
+            }
+
             Device::deleteDevices(iDevices);
             return;
         }
@@ -324,12 +377,50 @@ void QMLBridge::setActiveInputDevice(QString QDeviceName)
 void QMLBridge::setActiveOutputDevice(QString QDeviceName)
 {
     std::string deviceName = QDeviceName.toStdString();
-    std::vector<Device *> oDevices = transport->getController()->getDevices(DeviceType::PLAYBACK);
+
+    std::vector<Device *> oDevices;
+    try
+    {
+        oDevices = transport->getController()->getDevices(DeviceType::PLAYBACK);
+    }
+    catch(const AudioException &ae)
+    {
+        ControlException ce(ae.getErrorCode());
+
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("HulaLoop Error");
+        msgBox.setText(QString::fromStdString(ce.getErrorMessage()));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+
+        if (msgBox.exec() == QMessageBox::Ok)
+        {
+            exit(1);
+        }
+    }
+
     for (auto const &device : oDevices)
     {
         if (device->getName() == deviceName)
         {
-            transport->getController()->setActiveOutputDevice(device);
+            try
+            {
+                transport->getController()->setActiveOutputDevice(device);
+            }
+            catch(const AudioException &ae)
+            {
+                ControlException ce(ae.getErrorCode());
+
+                QMessageBox msgBox;
+                msgBox.setWindowTitle("HulaLoop Error");
+                msgBox.setText(QString::fromStdString(ce.getErrorMessage()));
+                msgBox.setStandardButtons(QMessageBox::Ok);
+
+                if (msgBox.exec() == QMessageBox::Ok)
+                {
+                    exit(1);
+                }
+            }
+
             Device::deleteDevices(oDevices);
             return;
         }
@@ -347,7 +438,26 @@ void QMLBridge::setActiveOutputDevice(QString QDeviceName)
 QString QMLBridge::getInputDevices()
 {
     std::string devices;
-    std::vector<Device *> vd = transport->getController()->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
+    std::vector<Device *> vd;
+    try
+    {
+        vd = transport->getController()->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
+    }
+    catch(const AudioException &ae)
+    {
+        ControlException ce(ae.getErrorCode());
+
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("HulaLoop Error");
+        msgBox.setText(QString::fromStdString(ce.getErrorMessage()));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+
+        if (msgBox.exec() == QMessageBox::Ok)
+        {
+            exit(1);
+        }
+    }
+
     for (int i = 0; i < vd.size(); i++)
     {
         devices += vd[i]->getName();
@@ -369,7 +479,26 @@ QString QMLBridge::getInputDevices()
 QString QMLBridge::getOutputDevices()
 {
     std::string devices;
-    std::vector<Device *> vd = transport->getController()->getDevices(DeviceType::PLAYBACK);
+    std::vector<Device *> vd;
+    try
+    {
+        vd = transport->getController()->getDevices(DeviceType::PLAYBACK);
+    }
+    catch(const AudioException &ae)
+    {
+        ControlException ce(ae.getErrorCode());
+
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("HulaLoop Error");
+        msgBox.setText(QString::fromStdString(ce.getErrorMessage()));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+
+        if (msgBox.exec() == QMessageBox::Ok)
+        {
+            exit(1);
+        }
+    }
+
     for (int i = 0; i < vd.size(); i++)
     {
         devices += vd[i]->getName();

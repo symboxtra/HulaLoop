@@ -12,16 +12,26 @@ using namespace hula;
  */
 Transport::Transport()
 {
+    controller = nullptr;
+    recorder = nullptr;
+
     try
     {
         controller = new Controller();
     }
     catch (const AudioException &ae)
     {
-        throw ControlException(HL_OS_INIT_CODE);
+        throw ControlException(ae.getErrorCode());
     }
 
-    recorder = new Record(controller);
+    try
+    {
+        recorder = new Record(controller);
+    }
+    catch (const AudioException &ae)
+    {
+        throw ControlException(ae.getErrorCode());
+    }
 
     canRecord = true;
     canPlayback = false;

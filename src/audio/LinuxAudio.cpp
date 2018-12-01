@@ -170,7 +170,6 @@ bool LinuxAudio::checkDeviceParams(Device *device)
     snd_config_update_free_global();
     if (samplingRateValid && formatValid)
     {
-        hlDebug() << HL_SAMPLE_RATE_VALID << std::endl;
         return true;
     }
 
@@ -183,7 +182,6 @@ bool LinuxAudio::checkDeviceParams(Device *device)
         hlDebug() << "Format was invalid." << std::endl;
     }
 
-    hlDebug() << HL_SAMPLE_RATE_INVALID << std::endl;
     throw AudioException(HL_CHECK_PARAMS_CODE, HL_CHECK_PARAMS_MSG);
     return false;
 }
