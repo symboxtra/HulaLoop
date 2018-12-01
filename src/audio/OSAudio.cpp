@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "hlaudio/internal/HulaAudioError.h"
+#include "hlaudio/internal/HulaAudioSettings.h"
 #include "hlaudio/internal/OSAudio.h"
 
 using namespace hula;
@@ -46,29 +47,22 @@ void OSAudio::addBuffer(HulaRingBuffer *rb)
  * Signal the start of the playback thread. Add playback buffer to the
  * HulaRingBuffer vector and start the playback thread. This signal is to notify
  * the backend to start reading data that will be played to the selected audio device.
- *
  */
 void OSAudio::startPlayback()
 {
-    if (find(rbs.begin(), rbs.end(), playbackBuffer) == rbs.end())
-    {
-        this->rbs.push_back(this->playbackBuffer);
-    }
+    this->endPlay.store(false);
     outThreads.emplace_back(std::thread(&backgroundPlayback, this));
 }
 
 /**
- * Signal the end of the playback thread. Kill all playback threads and remove the
- * buffer from the HulaRingBuffer list. This signal is to notify the backend to stop reading
+ * Signal the end of the playback thread. Kill all playback threads.
+ * This signal is to notify the backend to stop reading
  * data to playback to the selected audio device.
- *
  */
 void OSAudio::endPlayback()
 {
     this->endPlay.store(true);
     joinAndKillThreads(outThreads);
-
-    removeBuffer(playbackBuffer);
 }
 
 /**
@@ -91,9 +85,6 @@ void OSAudio::removeBuffer(HulaRingBuffer *rb)
             // Signal death and join all threads
             this->endCapture.store(true);
             joinAndKillThreads(inThreads);
-
-            // this->endPlay.store(true);
-            // joinAndKillThreads(outThreads);
         }
 
         // Prevent invalid iterator for copyToBuffers
@@ -103,17 +94,34 @@ void OSAudio::removeBuffer(HulaRingBuffer *rb)
 
 /**
  * Write to each of the buffers contained in rbs.
+ *
+ * @param samples Buffer of interleaved float samples
+ * @param sampleCount Number of samples in the buffer
  */
-void OSAudio::copyToBuffers(const void *data, uint32_t bytes)
+void OSAudio::copyToBuffers(const float *samples, ring_buffer_size_t sampleCount)
 {
-    SAMPLE *samples = (SAMPLE *)data;
-    uint32_t sampleCount = BYTES_TO_SAMPLES(bytes);
-
     std::vector<HulaRingBuffer *>::iterator it;
     for (it = rbs.begin(); it != rbs.end(); it++)
     {
         (*it)->write(samples, sampleCount);
     }
+}
+
+/**
+ * Write to the playback buffer plus all ring buffers.
+ *
+ * @param samples Buffer of interleaved float samples
+ * @param sampleCount Number of samples in the buffer
+ * @return Number of samples written to the playback buffer
+ */
+ring_buffer_size_t OSAudio::playbackCopyToBuffers(const float *samples, ring_buffer_size_t sampleCount)
+{
+    ring_buffer_size_t samplesWritten = this->playbackBuffer->write(samples, sampleCount);
+
+    // Copy to the rest of the buffers
+    copyToBuffers(samples, sampleCount);
+
+    return samplesWritten;
 }
 
 /**
@@ -160,11 +168,66 @@ void OSAudio::backgroundCapture(OSAudio *_this)
 }
 
 /**
+ * This routine will be called by the PortAudio engine when audio is needed.
+ * It may be called at interrupt level on some machines so don't do anything
+ * that could mess up the system like calling malloc() or free().
+*/
+static int paPlayCallback(const void *inputBuffer, void *outputBuffer,
+                         unsigned long framesPerBuffer,
+                         const PaStreamCallbackTimeInfo* timeInfo,
+                         PaStreamCallbackFlags statusFlags,
+                         void *userData)
+{
+    OSAudio *obj = (OSAudio *)userData;
+    SAMPLE *wptr = (SAMPLE *)outputBuffer;
+
+    // Prevent unused variable warnings.
+    (void) inputBuffer;
+    (void) timeInfo;
+    (void) statusFlags;
+    (void) userData;
+
+    ring_buffer_size_t elementsToRead = (ring_buffer_size_t)(framesPerBuffer * hula::HulaAudioSettings::getInstance()->getNumberOfChannels());
+
+    SAMPLE *data1;
+    SAMPLE *data2;
+    ring_buffer_size_t size1;
+    ring_buffer_size_t size2;
+    ring_buffer_size_t samplesRead;
+
+    samplesRead = obj->playbackBuffer->directRead(elementsToRead, (void **)&data1, &size1, (void **)&data2, &size2);
+
+    // Do this by hand since we don't trust Windows memcpy
+    for (ring_buffer_size_t i = 0; i < size1; i++)
+    {
+        wptr[i] = data1[i];
+    }
+
+    for (ring_buffer_size_t i = 0; i < size2; i++)
+    {
+        wptr[i + size1] = data2[i];
+    }
+
+    // Write silence if we couldn't get enough data
+    if (samplesRead < elementsToRead)
+    {
+        hlDebug() << "Playback: Ring buffer underrun. Received " << samplesRead << " of " << elementsToRead << std::endl;
+        hlDebug() << "Writing " << elementsToRead - samplesRead << " samples of silence." << std::endl;
+        for (int i = 0; i < elementsToRead; i++)
+        {
+            wptr[i + size1 + size2] = 0;
+        }
+    }
+
+    return paContinue;
+}
+
+/**
 * Static function to allow starting a thread with an instance's playback method.
 * This will block, so it should be called in a new thread.
 *
 * Calling this directly outside of this class is dangerous.
-* Any thread not in the inThreads vector cannot be guaranteed a valid endCapture
+* Any thread not in the outThreads vector cannot be guaranteed a valid endPlayback
 * signal since it won't be joined after a device switch or 0 buffer state.
 * Sync flags might be reset before the independent thread sees them.
 *
@@ -193,9 +256,73 @@ void OSAudio::backgroundPlayback(OSAudio *_this)
     _this->endCapture.store(true);
     _this->joinAndKillThreads(_this->inThreads);
 
-    // Reset the thread interrupt flag
-    _this->endPlay.store(false);
+    // Start the playback loop
+    // DO NOT reset the interrupt flag here as it can cause a race condition
     _this->playback();
+}
+
+/**
+ * Generic playback function for all operating systems using PortAudio.
+ *
+ * If an OS needs a more specifc implementation, this can be overridden.
+ */
+void OSAudio::playback()
+{
+    PaStream *stream = {0};
+    PaError err = paNoError;
+    PaStreamParameters outputParameters = {0};
+
+    outputParameters.device = Pa_GetDefaultOutputDevice(); /* default output device */
+    if (outputParameters.device == paNoDevice)
+    {
+        hlDebugf("Error: No default output device.\n");
+        return;
+    }
+
+    outputParameters.channelCount = 2;                     /* stereo output */
+    outputParameters.sampleFormat =  PA_SAMPLE_TYPE;
+    outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
+    outputParameters.hostApiSpecificStreamInfo = NULL;
+
+    std::cout << "Opening PortAudio playback stream...\n";
+
+    err = Pa_OpenStream(
+              &stream,
+              NULL, /* no input */
+              &outputParameters,
+              SAMPLE_RATE,
+              FRAMES_PER_BUFFER,
+              paClipOff,      /* we won't output out of range samples so don't bother clipping them */
+              //paPlayCallback,
+              paPlayCallback,
+              this
+    );
+
+    if (err != paNoError)
+    {
+        std::cout << "Could not start stream" << std::endl;
+        exit(1);
+    }
+
+    err = Pa_StartStream( stream );
+
+    if (err != paNoError)
+    {
+        std::cout << "Could not start stream" << std::endl;
+        exit(1);
+    }
+
+    while (!this->endPlay.load())
+    {
+        Pa_Sleep(100);
+    }
+
+    err = Pa_CloseStream(stream);
+
+    if (err != paNoError)
+    {
+        std::cout << "Failed to close playback stream." << std::endl;
+    }
 }
 
 /**

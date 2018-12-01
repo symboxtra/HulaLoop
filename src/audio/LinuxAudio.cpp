@@ -281,7 +281,7 @@ void LinuxAudio::capture()
         {
             hlDebug() << "Underrun: Exepected " << frame << " frames but got " << framesRead << std::endl;
         }
-        copyToBuffers(audioBuffer, framesRead * NUM_CHANNELS * sizeof(SAMPLE));
+        copyToBuffers((float *)audioBuffer, framesRead * NUM_CHANNELS);
     }
 
     // cleanup stuff

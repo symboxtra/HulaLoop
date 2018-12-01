@@ -28,30 +28,53 @@ void Playback::start(uint32_t startTime)
 
 void Playback::player()
 {
+    this->controller->startPlayback();
+
     // Initialize libsndfile info.
     SF_INFO sfinfo;
     sfinfo.samplerate = SAMPLE_RATE;
     sfinfo.channels = NUM_CHANNELS;
     sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
 
-    float* buffer = new float[1024];
+    ring_buffer_size_t maxSize = 1024;
+    float *buffer = new float[maxSize];
 
     // TODO: Math to determine which temp file and location in temp file
-    std::string file_path = "C:\\Users\\patel\\Desktop\\test.wav";
+    std::string file_path = "/Users/symboxtra/rain-dance.wav";
     SNDFILE *file = sf_open(file_path.c_str(), SFM_READ, &sfinfo);
 
-    this->controller->startPlayback();
     sf_count_t samplesRead = 0;
     while(!this->endPlay.load())
     {
-        samplesRead = sf_read_float(file, buffer, 1024);
-        this->controller->copyToBuffers(buffer, samplesRead * sizeof(float));
-        std::cout << "Samples from file: " << samplesRead << std::endl;
+        samplesRead = sf_read_float(file, buffer, maxSize);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        ring_buffer_size_t lastWrite = 0;
+        ring_buffer_size_t totalWrite = 0;
+        while (totalWrite < samplesRead)
+        {
+            ring_buffer_size_t samplesWritten = this->controller->playbackCopyToBuffers(buffer + lastWrite, samplesRead - totalWrite * sizeof(float));
+            lastWrite = samplesWritten;
+            totalWrite += samplesWritten;
+
+            // If the buffer was too full, wait a little bit
+            if (totalWrite != samplesRead)
+            {
+                std::cout << "Triggered the bitch" << std::endl;
+                std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            }
+        }
+
+        // Calculate the length of the audio that we just wrote
+        // With a buffer of 1024 samples, 2 channels, and 44,100 Hz sample rate
+        // this is approximately 11ms
+        // We trim this by 2ms to accomodate for execution
+        std::this_thread::sleep_for(std::chrono::milliseconds(maxSize / NUM_CHANNELS * 1000 / SAMPLE_RATE - 3));
     }
+
     sf_close(file);
     this->controller->endPlayback();
+
+    delete [] buffer;
 }
 
 /**

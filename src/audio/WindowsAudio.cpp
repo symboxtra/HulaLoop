@@ -178,6 +178,7 @@ static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
                             void *userData)
 {
     WindowsAudio *obj = (WindowsAudio *)userData;
+    float *samples = (float *)inputBuffer;
 
     // Prevent unused variable warnings.
     (void)outputBuffer;
@@ -186,7 +187,7 @@ static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
     (void)userData;
 
     // TODO: Make sure this calculation is right
-    obj->copyToBuffers(inputBuffer, framesPerBuffer * NUM_CHANNELS * sizeof(SAMPLE));
+    obj->copyToBuffers(samples, framesPerBuffer * NUM_CHANNELS);
 
     return paContinue;
 }
@@ -313,7 +314,7 @@ void WindowsAudio::capture()
                 status = captureClient->GetBuffer(&pData, &numFramesAvailable, &flags, nullptr, nullptr);
                 HANDLE_ERROR(status);
 
-                this->copyToBuffers((float *)pData, numFramesAvailable * NUM_CHANNELS * sizeof(SAMPLE));
+                this->copyToBuffers((float *)pData, numFramesAvailable * NUM_CHANNELS);
 
                 // Release buffer after data is captured and handled
                 status = captureClient->ReleaseBuffer(numFramesAvailable);
@@ -421,262 +422,6 @@ void WindowsAudio::capture()
             hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
             exit(1); // TODO: Handle error
         }
-    }
-}
-
-/**
- * Execution loop for playback
- */
-void WindowsAudio::playback()
-{
-    //     // Instantiate clients and services for audio capture
-    //     IAudioRenderClient *renderClient = NULL;
-    //     IAudioClient *audioClient = NULL;
-    //     WAVEFORMATEX *pwfx = NULL;
-    //     IMMDevice *audioDevice = NULL;
-    //     UINT32 numFramesAvailable;
-    //     UINT32 numFramesPadding;
-    //     DWORD flags;
-    //     char *buffer = (char *)malloc(500);
-    //     uint32_t packetLength = 0;
-    //     DWORD duration;
-    //     REFERENCE_TIME req = REFTIMES_PER_SEC;
-    //     ring_buffer_size_t samplesRead;
-    //     float phase = 0.0f;
-    //     std::vector<char> mixFormatBuf;
-
-    //     // Setup capture environment
-    //     status = CoInitialize(NULL);
-    //     HANDLE_ERROR(status);
-
-    //     // Creates a system instance of the device enumerator
-    //     status = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
-    //     HANDLE_ERROR(status);
-
-    //     // Select the current active record/loopback device
-    //     //status = pEnumerator->GetDevice(activeOutputDevice->getID().windowsID, &audioDevice);
-    //     status = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &audioDevice);
-    //     HANDLE_ERROR(status);
-    //     std::cout << "Selected Device: " << activeOutputDevice->getName() << std::endl; // TODO: Remove this later
-
-    //     // Activate the IMMDevice
-    //     status = audioDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void **)&audioClient);
-    //     HANDLE_ERROR(status);
-
-    //     {
-    //         WAVEFORMATEX *p = nullptr;
-    //         audioClient->GetMixFormat(&p);
-    //         mixFormatBuf.resize(sizeof(*p) + p->cbSize);
-    //         memcpy(mixFormatBuf.data(), p, mixFormatBuf.size());
-    //         CoTaskMemFree(p);
-    //     }
-    //     auto *const pMixFormat = reinterpret_cast<const WAVEFORMATEX *>(mixFormatBuf.data());
-
-    //     // Not sure what this does yet!?
-    //     status = audioClient->GetMixFormat(&pwfx);
-    //     HANDLE_ERROR(status);
-
-    //     int num_channels = 2;
-    // 	int bit_rate = 32;
-    // 	int sample_rate = 44100;
-
-    // 	pwfx->wFormatTag = WAVE_FORMAT_PCM;
-    // 	pwfx->nChannels = 2;
-    // 	pwfx->nSamplesPerSec = 44100;
-    // 	pwfx->wBitsPerSample = sizeof(float) * 8;
-    // 	pwfx->nBlockAlign = (pwfx->nChannels * pwfx->wBitsPerSample)/8;
-    // 	pwfx->nAvgBytesPerSec = pwfx->nSamplesPerSec * pwfx->nBlockAlign;
-    // 	pwfx->cbSize = 0;
-
-    //     WAVEFORMATEX* closest_format = NULL;
-    // 	status = audioClient->IsFormatSupported(AUDCLNT_SHAREMODE_SHARED,pwfx, &closest_format);
-    //     HANDLE_ERROR(status);
-    //     if(closest_format)
-    // 		pwfx = closest_format;
-
-    //     // Initialize the audio client in loopback mode and set audio engine format
-    //     status = audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, 0, req, 0, pwfx, NULL);
-    //     HANDLE_ERROR(status);
-
-    //     // Gets the maximum capacity of the endpoint buffer (audio frames)
-    //     status = audioClient->GetBufferSize(&captureBufferSize);
-    //     HANDLE_ERROR(status);
-
-    //     // Gets the capture client service under the audio client instance
-    //     status = audioClient->GetService(IID_IAudioRenderClient, (void **)&renderClient);
-    //     HANDLE_ERROR(status);
-
-    //     // Initial silence before actual audio is passed to remove excess noise
-    //     rData = nullptr;
-    //     status = renderClient->GetBuffer(captureBufferSize, &rData);
-    //     HANDLE_ERROR(status);
-
-    //     status = renderClient->ReleaseBuffer(captureBufferSize, AUDCLNT_BUFFERFLAGS_SILENT);
-    //     HANDLE_ERROR(status);
-
-    //     // Start the audio stream
-    //     status = audioClient->Start();
-    //     HANDLE_ERROR(status);
-
-    //     // Sleep duration
-    //     duration = (DWORD)REFTIMES_PER_SEC * captureBufferSize / pwfx->nSamplesPerSec;
-
-    //     // Continue loop under process ends
-    //     // Each loop fills half of the shared buffer
-    //     std::cout << "End Play?: " << this->endPlay.load() << std::endl;
-    //     const auto dPhase = static_cast<float>(440.0f * 2.0f * 3.1415 / pMixFormat->nSamplesPerSec);
-    //     while (!this->endPlay.load())
-    //     {
-    //         // Sleep for half the buffer duration
-    //         Sleep(duration / (REFTIMES_PER_MILLISEC * 2));
-
-    //         // See how much buffer space is available.
-    //         status = audioClient->GetCurrentPadding(&numFramesPadding);
-    //         HANDLE_ERROR(status);
-
-    //         numFramesAvailable = captureBufferSize - numFramesPadding;
-
-    //         // Grab all the available space in the shared buffer.
-    //         rData = nullptr;
-    //         status = renderClient->GetBuffer(numFramesAvailable, &rData);
-    //         HANDLE_ERROR(status);
-
-    //         // TODO: Add audio data to rData pointer
-    //         float *data = reinterpret_cast<float *>(rData);
-    //         // TODO: rb->directRead();
-    //         //samplesRead = 0;
-    //         //while (samplesRead < numFramesAvailable * NUM_CHANNELS)
-    //         //{
-    //             void *ptr[2] = {0};
-    //             ring_buffer_size_t sizes[2] = {0};
-    //             samplesRead = this->playbackBuffer->directRead(numFramesAvailable * NUM_CHANNELS, ptr + 0, sizes + 0, ptr + 1, sizes + 1);
-    //         /*for (UINT32 iFrame = 0; iFrame < numFramesAvailable; ++iFrame)
-    //         {
-    //             const auto v = sinf(phase) * 0.25f;
-    //             for (int iChannel = 0; iChannel < NUM_CHANNELS; ++iChannel)
-    //             {
-    //                 *data++ = v;
-    //             }
-    //             phase += dPhase;
-    //         }*/
-    //         // //std::cout << "Total Samples Read: " << samplesRead << std::endl;
-    //             if (sizes[1] > 0)
-    //             {
-    //                 memcpy(data, (float *)ptr[0], sizes[0] * sizeof(float));
-    //                 data = data + (sizes[0] * sizeof(float));
-    //                 memcpy(data, (float *)ptr[1], sizes[1] * sizeof(float));
-    //                 //data = data + (sizes[1] * sizeof(float));
-    //             }
-    //             else
-    //             {
-    //                 memcpy(data, (float *)ptr[0], sizes[0] * sizeof(float));
-    //                 //data = data + (sizes[0] * sizeof(float));
-    //             }
-    //         // for(UINT32 i = 0;i < sizes[0] * sizeof(float);i++)
-    //         // {
-    //         //     *data++ = *((float*)ptr[0] + i);
-    //         //     std::cout << *((float*)ptr[0] + i) << std::endl;
-    //         // }
-    //         //std::cout << "Playing audio" << std::endl;
-
-    //         status = renderClient->ReleaseBuffer(numFramesAvailable, 0);
-    //         HANDLE_ERROR(status);
-    //     }
-
-    //     // Wait for last data in buffer to play before stopping.
-    //     Sleep((DWORD)(captureBufferSize / (REFTIMES_PER_MILLISEC * 2)));
-
-    //     status = audioClient->Stop(); // Stop playing.
-    //     HANDLE_ERROR(status);
-
-    //     // goto label for exiting loop in-case of error
-    // Exit:
-    //     CoTaskMemFree(pwfx);
-    //     SAFE_RELEASE(pEnumerator);
-    //     SAFE_RELEASE(audioDevice);
-    //     SAFE_RELEASE(audioClient);
-    //     SAFE_RELEASE(renderClient);
-
-    //     if (FAILED(status))
-    //     {
-    //         _com_error err(status);
-    //         LPCTSTR errMsg = err.ErrorMessage();
-    //         std::cerr << "\nError: " << errMsg << std::endl;
-    //         exit(1);
-    //         // TODO: Handle error accordingly
-    //     }
-
-    /* PortAudio Playback */
-    PaStreamParameters outputParameters = {0};
-    PaStream *stream;
-    PaError err = paNoError;
-
-    outputParameters.device = Pa_GetDefaultOutputDevice(); /* default output device */
-    if (outputParameters.device == paNoDevice)
-    {
-        fprintf(stderr, "Error: No default output device.\n");
-        exit(1);
-    }
-    outputParameters.channelCount = Pa_GetDeviceInfo(outputParameters.device)->maxOutputChannels;
-    outputParameters.sampleFormat = PA_SAMPLE_TYPE;
-    outputParameters.suggestedLatency = Pa_GetDeviceInfo(outputParameters.device)->defaultLowOutputLatency;
-    outputParameters.hostApiSpecificStreamInfo = NULL;
-
-    err = Pa_OpenStream(
-        &stream,
-        NULL,
-        &outputParameters,
-        SAMPLE_RATE,
-        FRAMES_PER_BUFFER,
-        paClipOff, // We won't output out of range samples so don't bother clipping them
-        paPlayCallback,
-        this // Pass our instance in
-    );
-
-    if (err != paNoError)
-    {
-        fprintf(stderr, "%sCould not open Port Audio device stream.\n", HL_ERROR_PREFIX);
-        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
-        exit(1); // TODO: Handle error
-    }
-
-    // Start the stream
-    err = Pa_StartStream(stream);
-    if (err != paNoError)
-    {
-        fprintf(stderr, "%sCould not start Port Audio device stream.\n", HL_ERROR_PREFIX);
-        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
-        exit(1); // TODO: Handle error
-    }
-
-    printf("%sCapture keep-alive\n", HL_PRINT_PREFIX);
-
-    while (!this->endPlay.load())
-    {
-        // Keep this thread alive
-        // The second half of this function could be moved to a separate
-        // function like endCapture() so that we don't have to keep this thread alive.
-
-        // This value can be adjusted
-        // 100 msec is decent precision for now
-        std::this_thread::yield();
-    }
-
-    printf("%sCapture thread ended keep-alive.\n\n", HL_PRINT_PREFIX);
-
-    if (err != paNoError)
-    {
-        fprintf(stderr, "%sError during read from device stream.\n", HL_ERROR_PREFIX);
-        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
-        exit(1); // TODO: Handle error
-    }
-
-    err = Pa_CloseStream(stream);
-    if (err != paNoError)
-    {
-        fprintf(stderr, "%sCould not close Port Audio device stream.\n", HL_ERROR_PREFIX);
-        fprintf(stderr, "%sPortAudio: %s\n", HL_ERROR_PREFIX, Pa_GetErrorText(err));
-        exit(1); // TODO: Handle error
     }
 }
 

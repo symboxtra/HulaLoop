@@ -30,7 +30,7 @@ namespace hula
                 this->activeInputDevice = nullptr;
                 this->activeOutputDevice = nullptr;
 
-                playbackBuffer = new HulaRingBuffer(5);
+                playbackBuffer = new HulaRingBuffer(1);
             };
 
             /**
@@ -94,10 +94,11 @@ namespace hula
 
             void addBuffer(HulaRingBuffer *rb);
             void removeBuffer(HulaRingBuffer *rb);
-            void copyToBuffers(const void *data, uint32_t bytes);
 
             void startPlayback();
             void endPlayback();
+            void copyToBuffers(const float *samples, ring_buffer_size_t sampleCount);
+            ring_buffer_size_t playbackCopyToBuffers(const float *samples, ring_buffer_size_t sampleCount);
 
             /**
              * Receive the list of available record, playback and/or loopback audio devices
@@ -117,7 +118,7 @@ namespace hula
             /**
              * Execution loop for audio playback
              */
-            virtual void playback() = 0; // TODO: Make this pure virtual once all OS implementation is complete
+            void playback();
             static void backgroundPlayback(OSAudio *_this);
 
             /**

@@ -238,6 +238,7 @@ static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
                             void *userData)
 {
     OSXAudio *obj = (OSXAudio *)userData;
+    float *samples = (float *)inputBuffer;
 
     // Prevent unused variable warnings.
     (void) outputBuffer;
@@ -246,7 +247,7 @@ static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
     (void) userData;
 
     // TODO: Make sure this calculation is right
-    obj->copyToBuffers(inputBuffer, framesPerBuffer * NUM_CHANNELS * sizeof(SAMPLE));
+    obj->copyToBuffers(samples, framesPerBuffer * NUM_CHANNELS);
 
     return paContinue;
 }
