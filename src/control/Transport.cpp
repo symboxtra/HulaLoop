@@ -14,7 +14,7 @@ Transport::Transport()
 {
     controller = new Controller();
     recorder = new Record(controller);
-    player = new Playback(controller);
+    player = new Playback(controller, recorder);
 
     canRecord = true;
     canPlayback = false;
@@ -217,6 +217,11 @@ Transport::~Transport()
 {
     hlDebugf("Transport destructor called\n");
 
+    if (player)
+    {
+        delete player;
+    }
+
     if (recorder)
     {
         delete recorder;
@@ -225,10 +230,5 @@ Transport::~Transport()
     if (controller)
     {
         delete controller;
-    }
-
-    if (player)
-    {
-        delete player;
     }
 }

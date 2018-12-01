@@ -63,6 +63,8 @@ void OSAudio::endPlayback()
 {
     this->endPlay.store(true);
     joinAndKillThreads(outThreads);
+
+    this->playbackBuffer->clear();
 }
 
 /**
@@ -284,7 +286,7 @@ void OSAudio::playback()
     outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
     outputParameters.hostApiSpecificStreamInfo = NULL;
 
-    std::cout << "Opening PortAudio playback stream...\n";
+    hlDebug() << "Opening PortAudio playback stream..." << std::endl;
 
     err = Pa_OpenStream(
               &stream,
@@ -293,14 +295,13 @@ void OSAudio::playback()
               SAMPLE_RATE,
               FRAMES_PER_BUFFER,
               paClipOff,      /* we won't output out of range samples so don't bother clipping them */
-              //paPlayCallback,
               paPlayCallback,
               this
     );
 
     if (err != paNoError)
     {
-        std::cout << "Could not start stream" << std::endl;
+        hlDebug() << "Could not start stream" << std::endl;
         exit(1);
     }
 
@@ -308,7 +309,7 @@ void OSAudio::playback()
 
     if (err != paNoError)
     {
-        std::cout << "Could not start stream" << std::endl;
+        hlDebug() << "Could not start stream" << std::endl;
         exit(1);
     }
 
@@ -321,7 +322,7 @@ void OSAudio::playback()
 
     if (err != paNoError)
     {
-        std::cout << "Failed to close playback stream." << std::endl;
+        hlDebug() << "Failed to close playback stream." << std::endl;
     }
 }
 

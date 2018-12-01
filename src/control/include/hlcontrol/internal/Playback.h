@@ -2,6 +2,7 @@
 #define HL_PLAYBACK_H
 
 #include <hlaudio/hlaudio.h>
+#include "Record.h"
 
 namespace hula
 {
@@ -9,12 +10,13 @@ namespace hula
 
         private:
             Controller *controller;
+            Record *recorder;
 
             std::thread playThread;
             std::atomic<bool> endPlay;
 
         public:
-            Playback(Controller *controller);
+            Playback(Controller *controller, Record *record);
             ~Playback();
 
             void player();
