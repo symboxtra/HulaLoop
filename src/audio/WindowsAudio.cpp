@@ -120,16 +120,16 @@ std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
             HANDLE_PA_ERROR(pa_status);
         }
 
-        for (uint32_t i = 0; i < deviceCount; i++)
+        for (uint32_t i = 0; i < numDevices; i++)
         {
             const PaDeviceInfo *paDevice = Pa_GetDeviceInfo(i);
             DeviceType checkType = (DeviceType) 0;
 
-            if (isPlaySet && paDevice->maxOutputChannels > 0)
+            if (isPlaySet && paDevice->maxOutputChannels > 0 && paDevice->hostApi == Pa_GetDefaultHostApi())
             {
                 checkType = (DeviceType)(checkType | DeviceType::PLAYBACK);
             }
-            if (isRecSet && paDevice->maxInputChannels > 0)
+            if (isRecSet && paDevice->maxInputChannels > 0 && paDevice->hostApi == Pa_GetDefaultHostApi())
             {
                 checkType = (DeviceType)(checkType | DeviceType::RECORD);
             }
@@ -146,7 +146,7 @@ std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
                 DeviceID id;
                 id.portAudioID = i;
                 Device *hlDevice = new Device(id, std::string(paDevice->name), checkType);
-                devices.push_back(hlDevice);
+                deviceList.push_back(hlDevice);
             }
         }
 

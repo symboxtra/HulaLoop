@@ -38,7 +38,7 @@ void Playback::player()
     sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
 
     ring_buffer_size_t maxSize = 1024;
-    float buffer[maxSize];
+    float buffer[1024];
 
     size_t fileIndex = 0;
     std::vector<std::string> files = recorder->getExportPaths();
@@ -71,7 +71,7 @@ void Playback::player()
             // If the buffer was too full, wait a little bit
             if (totalWrite != samplesRead)
             {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                std::this_thread::sleep_for(std::chrono::milliseconds(150));
             }
         }
 
@@ -90,6 +90,7 @@ void Playback::player()
             }
             else
             {
+                hlDebug() << "Played final file. Exiting playback loop." << std::endl;
                 this->endPlay.store(true);
 
                 // TODO: The UI will not know that this has ended
@@ -104,6 +105,8 @@ void Playback::player()
         // We trim this by 3ms to accomodate for execution
         std::this_thread::sleep_for(std::chrono::milliseconds(maxSize / NUM_CHANNELS * 1000 / SAMPLE_RATE - 3));
     }
+
+    hlDebug() << "Playback write loop exited." << std::endl;
 
     sf_close(sndFile);
     this->controller->endPlayback();

@@ -31,6 +31,9 @@ namespace hula
                 this->activeOutputDevice = nullptr;
 
                 playbackBuffer = new HulaRingBuffer(1);
+
+                endCapture.store(true);
+                endPlay.store(true);
             };
 
             /**

@@ -30,7 +30,7 @@ void OSAudio::addBuffer(HulaRingBuffer *rb)
         this->rbs.push_back(rb);
     }
 
-    if (rbs.size() == 1)
+    if (rbs.size() == 1 && endPlay.load())
     {
         // Signal death and join all threads
         this->endCapture.store(true);
@@ -41,30 +41,6 @@ void OSAudio::addBuffer(HulaRingBuffer *rb)
         this->endCapture.store(false);
         inThreads.emplace_back(std::thread(&backgroundCapture, this));
     }
-}
-
-/**
- * Signal the start of the playback thread. Add playback buffer to the
- * HulaRingBuffer vector and start the playback thread. This signal is to notify
- * the backend to start reading data that will be played to the selected audio device.
- */
-void OSAudio::startPlayback()
-{
-    this->endPlay.store(false);
-    outThreads.emplace_back(std::thread(&backgroundPlayback, this));
-}
-
-/**
- * Signal the end of the playback thread. Kill all playback threads.
- * This signal is to notify the backend to stop reading
- * data to playback to the selected audio device.
- */
-void OSAudio::endPlayback()
-{
-    this->endPlay.store(true);
-    joinAndKillThreads(outThreads);
-
-    this->playbackBuffer->clear();
 }
 
 /**
@@ -121,7 +97,7 @@ ring_buffer_size_t OSAudio::playbackCopyToBuffers(const float *samples, ring_buf
     ring_buffer_size_t samplesWritten = this->playbackBuffer->write(samples, sampleCount);
 
     // Copy to the rest of the buffers
-    copyToBuffers(samples, sampleCount);
+    copyToBuffers(samples, samplesWritten);
 
     return samplesWritten;
 }
@@ -139,6 +115,7 @@ ring_buffer_size_t OSAudio::playbackCopyToBuffers(const float *samples, ring_buf
 */
 void OSAudio::backgroundCapture(OSAudio *_this)
 {
+    // TODO: Does this need to move to setActiveInputDevice
     if (_this->rbs.size() == 0)
     {
         return;
@@ -160,14 +137,73 @@ void OSAudio::backgroundCapture(OSAudio *_this)
         Device::deleteDevices(devices);
     }
 
-    // Start the capture
-    // Kill any live playback threads before starting audio capture
-    // _this->endPlay.store(true);
-    // _this->joinAndKillThreads(_this->outThreads);
-
     // Don't reset the endCapture flag here as it can cause a race condition
     _this->capture();
 }
+
+/**
+* Static function to allow starting a thread with an instance's playback method.
+* This will block, so it should be called in a new thread.
+*
+* Calling this directly outside of this class is dangerous.
+* Any thread not in the outThreads vector cannot be guaranteed a valid endPlayback
+* signal since it won't be joined after a device switch or 0 buffer state.
+* Sync flags might be reset before the independent thread sees them.
+*
+* @param _this Instance of OSAudio subclass which capture should be called on.
+*/
+void OSAudio::backgroundPlayback(OSAudio *_this)
+{
+
+    if (_this->activeOutputDevice == NULL)
+    {
+        std::vector<Device *> devices = _this->getDevices((DeviceType)(DeviceType::PLAYBACK));
+        if (devices.empty())
+        {
+            return;
+        }
+
+        if (_this->activeOutputDevice)
+        {
+            delete _this->activeOutputDevice;
+        }
+        _this->activeOutputDevice = new Device(*devices[0]);
+        Device::deleteDevices(devices);
+    }
+
+    // Start the playback loop
+    // DO NOT reset the interrupt flag here as it can cause a race condition
+    _this->playback();
+}
+
+/**
+ * Signal the start of the playback thread. Add playback buffer to the
+ * HulaRingBuffer vector and start the playback thread. This signal is to notify
+ * the backend to start reading data that will be played to the selected audio device.
+ */
+void OSAudio::startPlayback()
+{
+    // Kill any live record threads before starting audio capture
+    this->endCapture.store(true);
+    this->joinAndKillThreads(this->inThreads);
+
+    this->endPlay.store(false);
+    outThreads.emplace_back(std::thread(&backgroundPlayback, this));
+}
+
+/**
+ * Signal the end of the playback thread. Kill all playback threads.
+ * This signal is to notify the backend to stop reading
+ * data to playback to the selected audio device.
+ */
+void OSAudio::endPlayback()
+{
+    this->endPlay.store(true);
+    joinAndKillThreads(outThreads);
+
+    this->playbackBuffer->clear();
+}
+
 
 /**
  * This routine will be called by the PortAudio engine when audio is needed.
@@ -225,45 +261,6 @@ static int paPlayCallback(const void *inputBuffer, void *outputBuffer,
 }
 
 /**
-* Static function to allow starting a thread with an instance's playback method.
-* This will block, so it should be called in a new thread.
-*
-* Calling this directly outside of this class is dangerous.
-* Any thread not in the outThreads vector cannot be guaranteed a valid endPlayback
-* signal since it won't be joined after a device switch or 0 buffer state.
-* Sync flags might be reset before the independent thread sees them.
-*
-* @param _this Instance of OSAudio subclass which capture should be called on.
-*/
-void OSAudio::backgroundPlayback(OSAudio *_this)
-{
-
-    if (_this->activeOutputDevice == NULL)
-    {
-        std::vector<Device *> devices = _this->getDevices((DeviceType)(DeviceType::PLAYBACK));
-        if (devices.empty())
-        {
-            return;
-        }
-
-        if (_this->activeOutputDevice)
-        {
-            delete _this->activeOutputDevice;
-        }
-        _this->activeOutputDevice = new Device(*devices[0]);
-        Device::deleteDevices(devices);
-    }
-
-    // Kill any live playback threads before starting audio capture
-    _this->endCapture.store(true);
-    _this->joinAndKillThreads(_this->inThreads);
-
-    // Start the playback loop
-    // DO NOT reset the interrupt flag here as it can cause a race condition
-    _this->playback();
-}
-
-/**
  * Generic playback function for all operating systems using PortAudio.
  *
  * If an OS needs a more specifc implementation, this can be overridden.
@@ -287,9 +284,9 @@ void OSAudio::playback()
         return;
     }
 
-    outputParameters.channelCount = 2;                     /* stereo output */
+    outputParameters.channelCount = Pa_GetDeviceInfo(outputParameters.device)->maxOutputChannels;
     outputParameters.sampleFormat =  PA_SAMPLE_TYPE;
-    outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
+    outputParameters.suggestedLatency = Pa_GetDeviceInfo(outputParameters.device)->defaultLowOutputLatency;
     outputParameters.hostApiSpecificStreamInfo = NULL;
 
     hlDebug() << "Opening PortAudio playback stream..." << std::endl;
@@ -369,8 +366,12 @@ bool OSAudio::setActiveInputDevice(Device *device)
     joinAndKillThreads(inThreads);
 
     // Startup a new thread
-    this->endCapture.store(false);
-    inThreads.emplace_back(std::thread(&backgroundCapture, this));
+    // Make sure a playback is not running
+    if (endPlay.load())
+    {
+        this->endCapture.store(false);
+        inThreads.emplace_back(std::thread(&backgroundCapture, this));
+    }
 
     return true;
 }
@@ -425,11 +426,17 @@ bool OSAudio::setActiveOutputDevice(Device *device)
     }
     this->activeOutputDevice = new Device(*device);
 
+    bool fromPlay = !endPlay.load();
     this->endPlay.store(true);
     joinAndKillThreads(outThreads);
 
     // Startup a new thread
-    outThreads.emplace_back(std::thread(&backgroundPlayback, this));
+    // Only restart the thread if we were just in a playback
+    if (fromPlay && endCapture.load())
+    {
+        endPlay.store(false);
+        outThreads.emplace_back(std::thread(&backgroundPlayback, this));
+    }
 
     return true;
 }
@@ -443,6 +450,7 @@ OSAudio::~OSAudio()
 
     // Signal thread death
     this->endCapture.store(true);
+    this->endPlay.store(true);
     joinAndKillThreads(inThreads);
     joinAndKillThreads(outThreads);
 
@@ -456,7 +464,7 @@ OSAudio::~OSAudio()
         delete activeOutputDevice;
     }
 
-    if(playbackBuffer)
+    if (playbackBuffer)
     {
         delete playbackBuffer;
     }

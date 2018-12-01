@@ -411,7 +411,7 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
     _this->transport->getController()->addBuffer(_this->rb);
 
     int maxSize = 512;
-    int accuracy = 5;
+    int accuracy = 8;
     // float *temp = new float[maxSize];
 
     while (!_this->endVis.load())
@@ -424,42 +424,27 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
         float *data2;
         ring_buffer_size_t size1;
         ring_buffer_size_t size2;
-        ring_buffer_size_t bytesRead;
-
-        // Only process every @ref accuracy cycles
-        int cycle = 1;
+        ring_buffer_size_t bytesRead = 0;
 
         while (!_this->endVis.load() && actualoutreal.size() < maxSize)
         {
-            // Do directRead until Windows read is fixed
-            // bytesRead =_this->rb->read(temp, maxSize
-            bytesRead = _this->rb->directRead(maxSize, (void **)&data1, &size1, (void **)&data2, &size2);
-
             // Keep draining the buffer, but only actually
             // process the drained data every nth cycle
-            if (cycle % accuracy == 0)
-            {
-                for (int i = 0; i < size1 && actualoutreal.size() < maxSize; i++)
-                {
-                    actualoutimag.push_back(data1[i]);
-                    actualoutreal.push_back(data1[i]);
-                    realData.push_back(data1[i]);
-                }
+            bytesRead = _this->rb->directRead(maxSize, (void **)&data1, &size1, (void **)&data2, &size2);
+            // hlDebug() << "Process " << bytesRead << std::endl;
 
-                for (int i = 0; i < size2 && actualoutreal.size() < maxSize; i++)
-                {
-                    actualoutimag.push_back(data2[i]);
-                    actualoutreal.push_back(data2[i]);
-                    realData.push_back(data2[i]);
-                }
-            }
-            else
+            for (int i = 0; i < size1 && actualoutreal.size() < maxSize; i++)
             {
-                // Only count cycles that actually have data
-                if (bytesRead > 0)
-                {
-                    cycle++;
-                }
+                actualoutimag.push_back(data1[i]);
+                actualoutreal.push_back(data1[i]);
+                realData.push_back(data1[i]);
+            }
+
+            for (int i = 0; i < size2 && actualoutreal.size() < maxSize; i++)
+            {
+                actualoutimag.push_back(data2[i]);
+                actualoutreal.push_back(data2[i]);
+                realData.push_back(data2[i]);
             }
         }
 
@@ -489,6 +474,24 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
         }
 
         _this->emit visData(realData, heights);
+
+        // Accumulate some audio
+        // We have to make sure this delay is shorter than the length of the ring buffer
+        // We approximate it to accuracy * the length (seconds) of our buffer period
+        std::this_thread::sleep_for(std::chrono::milliseconds((maxSize / NUM_CHANNELS * 1000 / SAMPLE_RATE) * accuracy));
+
+        // Completely drain the rest of the buffer
+        bytesRead = 1;
+        while (bytesRead != 0)
+        {
+            bytesRead = _this->rb->directRead(maxSize * 2, (void **)&data1, &size1, (void **)&data2, &size2);
+            // hlDebug() << "Read " << bytesRead << std::endl;
+        }
+
+        // Accumulate more audio
+        // We have to make sure this delay is shorter than the length of the ring buffer
+        // We approximate it to accuracy * the length (seconds) of our buffer period
+        std::this_thread::sleep_for(std::chrono::milliseconds((maxSize / NUM_CHANNELS * 1000 / SAMPLE_RATE)));
     }
 
     _this->transport->getController()->removeBuffer(_this->rb);
