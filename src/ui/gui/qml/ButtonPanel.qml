@@ -559,6 +559,9 @@ Rectangle {
                 id: iDeviceInfoLabel
                 Layout.preferredWidth: Math.max(Math.round(window.width * 0.2), 320)
 
+                currentIndex: 0
+                property int selectedInd: currentIndex
+
                 hoverEnabled: true
                 ToolTip.delay: 500
                 ToolTip.timeout: 5000
@@ -572,20 +575,25 @@ Rectangle {
                         var i
                         for (i = 0; i < idevices.length; i++) {
                             append({
-                                       "text": idevices[i]
-                                   })
+                                "text": idevices[i]
+                            })
                         }
                     }
                 }
                 onActivated: {
                     console.log("Audio device has been changed to: " + iDeviceInfoLabel.currentText);
-                    qmlbridge.setActiveInputDevice(iDeviceInfoLabel.currentText);
+                    let success = qmlbridge.setActiveInputDevice(iDeviceInfoLabel.currentText);
+
+                    // Restore the previous device if the switch failed
+                    if (!success)
+                    {
+                        currentIndex = selectedInd
+                    }
                 }
 
                 onPressedChanged: {
 
-                    let selectedInd = 0;
-                    if(currentIndex < 0)
+                    if(currentIndex != -1)
                         selectedInd = currentIndex;
 
                     model.clear();
@@ -593,14 +601,13 @@ Rectangle {
                         var i
                         for (i = 0; i < idevices.length; i++) {
                             model.append({
-                                       "text": idevices[i]
-                                   })
+                                "text": idevices[i]
+                            })
                         }
 
                     // Keep the previously selected device active
                     currentIndex = selectedInd
                 }
-                currentIndex: 0
             }
             Label {
                 id: outputDeviceLabel
@@ -611,6 +618,9 @@ Rectangle {
             ComboBox {
                 id: oDeviceInfoLabel
                 Layout.preferredWidth: Math.max(Math.round(window.width * 0.2), 320)
+
+                currentIndex: 0
+                property int selectedInd: currentIndex
 
                 hoverEnabled: true
                 ToolTip.delay: 500
@@ -625,19 +635,24 @@ Rectangle {
                         var i
                         for (i = 0; i < odevices.length; i++) {
                             append({
-                                       "text": odevices[i]
-                                   })
+                                "text": odevices[i]
+                            })
                         }
                     }
                 }
                 onActivated: {
                     console.log("Audio device has been changed to: " + oDeviceInfoLabel.currentText);
-                    qmlbridge.setActiveOutputDevice(oDeviceInfoLabel.currentText);
+                    let success = qmlbridge.setActiveOutputDevice(oDeviceInfoLabel.currentText);
+
+                    // Restore the previous device if the switch failed
+                    if (!success)
+                    {
+                        currentIndex = selectedInd
+                    }
                 }
 
                 onPressedChanged: {
 
-                    let selectedInd = 0;
                     if(currentIndex != -1)
                         selectedInd = currentIndex;
 
@@ -646,14 +661,13 @@ Rectangle {
                         var i
                         for (i = 0; i < odevices.length; i++) {
                             model.append({
-                                       "text": odevices[i]
-                                   })
+                                "text": odevices[i]
+                            })
                         }
 
                     // Keep the previously selected device active
                     currentIndex = selectedInd
                 }
-                currentIndex: 0
             }
         }
 

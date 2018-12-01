@@ -440,41 +440,70 @@ Exit:
  */
 bool WindowsAudio::checkDeviceParams(Device *activeDevice)
 {
-    return true; // TODO: Remove this and add PortAudio checks and change deviceID code
-
-    HRESULT status;
-    IMMDevice *device = nullptr;
-    PROPVARIANT prop;
-    IPropertyStore *store = nullptr;
-    PWAVEFORMATEX deviceProperties;
-    // Setup capture environment
-    status = CoInitialize(nullptr);
-    HANDLE_ERROR(status);
-    // Creates a system instance of the device enumerator
-    status = CoCreateInstance(CLSID_MMDeviceEnumerator, nullptr, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
-    HANDLE_ERROR(status);
-    // Select the current active record/loopback device
-    status = pEnumerator->GetDevice(activeDevice->getID().windowsID, &device);
-    HANDLE_ERROR(status);
-    status = device->OpenPropertyStore(STGM_READ, &store);
-    HANDLE_ERROR(status);
-    status = store->GetValue(PKEY_AudioEngine_DeviceFormat, &prop);
-    HANDLE_ERROR(status);
-    deviceProperties = (PWAVEFORMATEX)prop.blob.pBlobData;
-    // Check number of channels
-    if (deviceProperties->nChannels != HulaAudioSettings::getInstance()->getNumberOfChannels())
+    if (activeDevice->getType() & DeviceType::LOOPBACK)
     {
-        hlDebug() << "Invalid number of channels" << std::endl;
-        return false;
-    }
-    // Check sample rate
-    if (deviceProperties->nSamplesPerSec != HulaAudioSettings::getInstance()->getSampleRate())
-    {
-        hlDebug() << "Invalid sample rate" << std::endl;
-        return false;
-    }
+        HRESULT status;
+        IMMDevice *device = nullptr;
+        PROPVARIANT prop;
+        IPropertyStore *store = nullptr;
+        PWAVEFORMATEX deviceProperties;
+        // Setup capture environment
+        status = CoInitialize(nullptr);
+        HANDLE_ERROR(status);
+        // Creates a system instance of the device enumerator
+        status = CoCreateInstance(CLSID_MMDeviceEnumerator, nullptr, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
+        HANDLE_ERROR(status);
+        // Select the current active record/loopback device
+        status = pEnumerator->GetDevice(activeDevice->getID().windowsID, &device);
+        HANDLE_ERROR(status);
+        status = device->OpenPropertyStore(STGM_READ, &store);
+        HANDLE_ERROR(status);
+        status = store->GetValue(PKEY_AudioEngine_DeviceFormat, &prop);
+        HANDLE_ERROR(status);
+        deviceProperties = (PWAVEFORMATEX)prop.blob.pBlobData;
+        // Check number of channels
+        if (deviceProperties->nChannels != HulaAudioSettings::getInstance()->getNumberOfChannels())
+        {
+            hlDebug() << "Invalid number of channels" << std::endl;
+            return false;
+        }
+        // Check sample rate
+        if (deviceProperties->nSamplesPerSec != HulaAudioSettings::getInstance()->getSampleRate())
+        {
+            hlDebug() << "Invalid sample rate" << std::endl;
+            return false;
+        }
 
-    return true;
+        return true;
+    }
+    else
+    {
+        PaStreamParameters parameters = {0};
+        parameters.channelCount = NUM_CHANNELS;
+        parameters.device = device->getID().portAudioID;
+        parameters.sampleFormat = paFloat32;
+
+        PaError err;
+        if (device->getType() & DeviceType::PLAYBACK)
+        {
+            err = Pa_IsFormatSupported(nullptr, &parameters, HulaAudioSettings::getInstance()->getSampleRate());
+        }
+        else
+        {
+            err = Pa_IsFormatSupported(&parameters, nullptr, HulaAudioSettings::getInstance()->getSampleRate());
+        }
+
+        if (err == paFormatIsSupported)
+        {
+            hlDebug() << HL_SAMPLE_RATE_VALID << std::endl;
+        }
+        else
+        {
+            hlDebug() << HL_SAMPLE_RATE_INVALID << std::endl;
+        }
+
+        return err == paFormatIsSupported;
+    }
 
 Exit:
     hlDebug() << "WASAPI Init Error" << std::endl;

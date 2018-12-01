@@ -366,13 +366,17 @@ std::vector<Device *> OSXAudio::getDevices(DeviceType type)
         {
             checkType = (DeviceType)(checkType | DeviceType::LOOPBACK);
         }
-        if (paDevice->maxOutputChannels > 0)
+        else
         {
-            checkType = (DeviceType)(checkType | DeviceType::PLAYBACK);
-        }
-        if (paDevice->maxInputChannels > 0)
-        {
-            checkType = (DeviceType)(checkType | DeviceType::RECORD);
+            // Only allow loopback on HulaLoop
+            if (paDevice->maxOutputChannels > 0)
+            {
+                checkType = (DeviceType)(checkType | DeviceType::PLAYBACK);
+            }
+            if (paDevice->maxInputChannels > 0)
+            {
+                checkType = (DeviceType)(checkType | DeviceType::RECORD);
+            }
         }
 
         // Create HulaLoop style device and add to vector
@@ -401,12 +405,20 @@ std::vector<Device *> OSXAudio::getDevices(DeviceType type)
  */
 bool OSXAudio::checkDeviceParams(Device *device)
 {
-    PaStreamParameters inputParameters = {0};
-    inputParameters.channelCount = NUM_CHANNELS;
-    inputParameters.device = device->getID().portAudioID;
-    inputParameters.sampleFormat = paFloat32;
+    PaStreamParameters parameters = {0};
+    parameters.channelCount = NUM_CHANNELS;
+    parameters.device = device->getID().portAudioID;
+    parameters.sampleFormat = paFloat32;
 
-    PaError err = Pa_IsFormatSupported(&inputParameters, nullptr, HulaAudioSettings::getInstance()->getSampleRate());
+    PaError err;
+    if (device->getType() & DeviceType::PLAYBACK)
+    {
+        err = Pa_IsFormatSupported(nullptr, &parameters, HulaAudioSettings::getInstance()->getSampleRate());
+    }
+    else
+    {
+        err = Pa_IsFormatSupported(&parameters, nullptr, HulaAudioSettings::getInstance()->getSampleRate());
+    }
 
     if (err == paFormatIsSupported)
     {

@@ -42,8 +42,8 @@ namespace hula
             QString getVisualizerType();
             void setVisualizerType(const QString &);
 
-            Q_INVOKABLE void setActiveInputDevice(QString QDeviceName);
-            Q_INVOKABLE void setActiveOutputDevice(QString QDeviceName);
+            Q_INVOKABLE bool setActiveInputDevice(QString QDeviceName);
+            Q_INVOKABLE bool setActiveOutputDevice(QString QDeviceName);
             Q_INVOKABLE QString getInputDevices();
             Q_INVOKABLE QString getOutputDevices();
 

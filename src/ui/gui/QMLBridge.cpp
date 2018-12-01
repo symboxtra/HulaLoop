@@ -213,7 +213,7 @@ QString QMLBridge::getEmptyStr()
  * Match a string that the user chose to the input device list
  * and notify the backend
  */
-void QMLBridge::setActiveInputDevice(QString QDeviceName)
+bool QMLBridge::setActiveInputDevice(QString QDeviceName)
 {
     hlDebug() << "setActiveDevice() called" << std::endl;
 
@@ -223,21 +223,23 @@ void QMLBridge::setActiveInputDevice(QString QDeviceName)
     {
         if (device->getName() == deviceName)
         {
-            transport->getController()->setActiveInputDevice(device);
+            bool success = transport->getController()->setActiveInputDevice(device);
             Device::deleteDevices(iDevices);
-            return;
+            return success;
         }
     }
 
     // Should not get here should have found the device
     hlDebug() << "Input device not found: " << deviceName << std::endl;
+
+    return false;
 }
 
 /**
  * Match a string that the user chose to the output device list
  * and notify the backend
  */
-void QMLBridge::setActiveOutputDevice(QString QDeviceName)
+bool QMLBridge::setActiveOutputDevice(QString QDeviceName)
 {
     std::string deviceName = QDeviceName.toStdString();
     std::vector<Device *> oDevices = transport->getController()->getDevices(DeviceType::PLAYBACK);
@@ -245,14 +247,16 @@ void QMLBridge::setActiveOutputDevice(QString QDeviceName)
     {
         if (device->getName() == deviceName)
         {
-            transport->getController()->setActiveOutputDevice(device);
+            bool success = transport->getController()->setActiveOutputDevice(device);
             Device::deleteDevices(oDevices);
-            return;
+            return success;
         }
     }
 
     // Should not get here should have found the device
     hlDebug() << "Output device not found: " << deviceName << std::endl;
+
+    return false;
 }
 
 /**
