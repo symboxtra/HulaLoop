@@ -334,6 +334,7 @@ bool QMLBridge::loadLanguage(const QString &id)
         saveSettings();
 
         emit languageChanged();
+        emit stateChanged();
         return true;
     }
     return false;

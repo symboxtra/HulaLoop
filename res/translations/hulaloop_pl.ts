@@ -115,6 +115,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="28"/>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="54"/>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="57"/>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="844"/>
@@ -590,22 +591,22 @@
 <context>
     <name>hula::QMLBridge</name>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="527"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="528"/>
         <source>Unsaved Changes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="530"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="531"/>
         <source>You have unsaved audio.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="531"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="532"/>
         <source>Would you like to save your audio?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="532"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="533"/>
         <source>Go back and save</source>
         <translation type="unfinished"></translation>
     </message>
@@ -694,6 +695,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../src/ui/gui/qml/main.qml" line="43"/>
+        <source>Ready</source>
+        <comment>state</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="52"/>
         <source>HulaLoop Information</source>
         <translation>Informacja HulaLoop</translation>
@@ -704,6 +711,7 @@
         <translation>HulaLoop zaczeło nagrywać dźwięk!</translation>
     </message>
     <message>
+        <location filename="../../src/ui/gui/qml/main.qml" line="50"/>
         <location filename="../../src/ui/gui/qml/main.qml" line="65"/>
         <source>Recording</source>
         <comment>state</comment>

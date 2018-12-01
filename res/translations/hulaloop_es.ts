@@ -119,6 +119,7 @@
         <translation>Cambiar el dispositivo de salida</translation>
     </message>
     <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="28"/>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="54"/>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="57"/>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="844"/>
@@ -624,22 +625,22 @@
 <context>
     <name>hula::QMLBridge</name>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="527"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="528"/>
         <source>Unsaved Changes</source>
         <translation>Cambios sin Guardar</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="530"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="531"/>
         <source>You have unsaved audio.</source>
         <translation>Hay audio sin guardar.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="531"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="532"/>
         <source>Would you like to save your audio?</source>
         <translation>¿Le gustaría guardar el audio?</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="532"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="533"/>
         <source>Go back and save</source>
         <translation>Volver atrás y guardar</translation>
     </message>
@@ -732,6 +733,12 @@
         <translation>Transcurrido: %1</translation>
     </message>
     <message>
+        <location filename="../../src/ui/gui/qml/main.qml" line="43"/>
+        <source>Ready</source>
+        <comment>state</comment>
+        <translation>Listo</translation>
+    </message>
+    <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="52"/>
         <source>HulaLoop Information</source>
         <translation>Información de HulaLoop</translation>
@@ -742,6 +749,7 @@
         <translation>¡HulaLoop ha empezado a grabar!</translation>
     </message>
     <message>
+        <location filename="../../src/ui/gui/qml/main.qml" line="50"/>
         <location filename="../../src/ui/gui/qml/main.qml" line="65"/>
         <source>Recording</source>
         <comment>state</comment>
