@@ -37,7 +37,7 @@ std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
 
     // Get devices from WASAPI if loopback and/or playback devices
     // are requested
-    if (isLoopSet | isPlaySet)
+    if (isLoopSet)
     {
         // Setup capture environment
         status = CoInitialize(nullptr);
@@ -104,8 +104,8 @@ std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
 
     HulaAudioSettings *s = HulaAudioSettings::getInstance();
 
-    // Get devices from PortAudio if record devices are requested
-    if (isRecSet && s->getShowRecordDevices())
+    // Get devices from PortAudio if record or playback devices are requested
+    if (isPlaySet || isRecSet)
     {
 
         // Initialize PortAudio and update audio devices
@@ -120,21 +120,33 @@ std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
             HANDLE_PA_ERROR(pa_status);
         }
 
-        //
-        const PaDeviceInfo *deviceInfo;
-        for (int i = 0; i < numDevices; i++)
+        for (uint32_t i = 0; i < deviceCount; i++)
         {
-            deviceInfo = Pa_GetDeviceInfo(i);
+            const PaDeviceInfo *paDevice = Pa_GetDeviceInfo(i);
+            DeviceType checkType = (DeviceType) 0;
 
-            if (deviceInfo->maxInputChannels != 0 && deviceInfo->hostApi == Pa_GetDefaultHostApi())
+            if (isPlaySet && paDevice->maxOutputChannels > 0)
             {
-                // Create instance of Device using acquired data
+                checkType = (DeviceType)(checkType | DeviceType::PLAYBACK);
+            }
+            if (isRecSet && paDevice->maxInputChannels > 0)
+            {
+                checkType = (DeviceType)(checkType | DeviceType::RECORD);
+            }
+
+            // Create HulaLoop style device and add to vector
+            // This needs to be freed elsewhere
+            if (checkType)
+            {
+                if (checkType == DeviceType::RECORD && !s->getShowRecordDevices())
+                {
+                    continue;
+                }
+
                 DeviceID id;
                 id.portAudioID = i;
-                Device *audio = new Device(id, std::string(deviceInfo->name), DeviceType::RECORD);
-
-                // Add to devicelist
-                deviceList.push_back(audio);
+                Device *hlDevice = new Device(id, std::string(paDevice->name), checkType);
+                devices.push_back(hlDevice);
             }
         }
 

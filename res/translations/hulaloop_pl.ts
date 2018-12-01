@@ -544,37 +544,37 @@
 <context>
     <name>Transport</name>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="162"/>
+        <location filename="../../src/control/Transport.cpp" line="168"/>
         <source>Ready</source>
         <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="164"/>
+        <location filename="../../src/control/Transport.cpp" line="170"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation>Nagrywa</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="166"/>
+        <location filename="../../src/control/Transport.cpp" line="172"/>
         <source>Stopped</source>
         <comment>state</comment>
         <translation>Zatrzymany</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="168"/>
+        <location filename="../../src/control/Transport.cpp" line="174"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation>Gra</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="170"/>
+        <location filename="../../src/control/Transport.cpp" line="176"/>
         <source>Paused</source>
         <comment>state</comment>
         <translation>Wstrzymane</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="172"/>
+        <location filename="../../src/control/Transport.cpp" line="178"/>
         <source>Unknown</source>
         <comment>state</comment>
         <translation>Nieznany</translation>
@@ -583,7 +583,7 @@
 <context>
     <name>hula::QMLBridge</name>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="530"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="532"/>
         <source>Go back and save</source>
         <translation type="unfinished"></translation>
     </message>

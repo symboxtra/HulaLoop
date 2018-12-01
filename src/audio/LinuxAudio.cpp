@@ -1,3 +1,5 @@
+#include <portaudio.h>
+
 #include "LinuxAudio.h"
 #include "hlaudio/internal/HulaAudioError.h"
 #include "hlaudio/internal/HulaAudioSettings.h"
@@ -80,22 +82,63 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
                     devices.push_back(new Device(id, fullDeviceName, DeviceType::RECORD));
                 }
             }
-            if (playSet)
-            {
-                snd_pcm_info_set_stream(subInfo, SND_PCM_STREAM_PLAYBACK);
-                if (snd_ctl_pcm_info(handle, subInfo) >= 0)
-                {
-                    DeviceID id;
-                    id.linuxID = "hw:" + std::to_string(cardNumber) + "," + std::to_string(subDevice);
-                    std::string deviceName = snd_ctl_card_info_get_name(cardInfo);
-                    std::string subDeviceName = snd_pcm_info_get_name(subInfo);
-                    std::string fullDeviceName = deviceName + ": " + subDeviceName;
-                    devices.push_back(new Device(id, fullDeviceName, DeviceType::PLAYBACK));
-                }
-            }
         }
         snd_ctl_close(handle);
     }
+
+    HulaAudioSettings *s = HulaAudioSettings::getInstance();
+
+    // Get devices from PortAudio if record or playback devices are requested
+    if (playSet)
+    {
+        // Initialize PortAudio and update audio devices
+        pa_status = Pa_Initialize();
+        HANDLE_PA_ERROR(pa_status);
+
+        // Get the total count of audio devices
+        int numDevices = Pa_GetDeviceCount();
+        if (numDevices < 0)
+        {
+            pa_status = numDevices;
+            HANDLE_PA_ERROR(pa_status);
+        }
+
+        for (uint32_t i = 0; i < deviceCount; i++)
+        {
+            const PaDeviceInfo *paDevice = Pa_GetDeviceInfo(i);
+            DeviceType checkType = (DeviceType) 0;
+
+            if (playSet && paDevice->maxOutputChannels > 0)
+            {
+                checkType = (DeviceType)(checkType | DeviceType::PLAYBACK);
+            }
+
+            // Disabled until LinuxAudio switches over
+            /* if (recSet && paDevice->maxInputChannels > 0)
+            {
+                checkType = (DeviceType)(checkType | DeviceType::RECORD);
+            } */
+
+            // Create HulaLoop style device and add to vector
+            // This needs to be freed elsewhere
+            if (checkType)
+            {
+                if (checkType == DeviceType::RECORD && !s->getShowRecordDevices())
+                {
+                    continue;
+                }
+
+                DeviceID id;
+                id.portAudioID = i;
+                Device *hlDevice = new Device(id, std::string(paDevice->name), checkType);
+                devices.push_back(hlDevice);
+            }
+        }
+
+        pa_status = Pa_Terminate();
+        HANDLE_PA_ERROR(pa_status);
+    }
+
     snd_config_update_free_global();
     return devices;
 }

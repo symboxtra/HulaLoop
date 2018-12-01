@@ -112,8 +112,6 @@ void Export::copyData(std::vector<std::string> dirs)
     }
 
     sf_close(out_file);
-
-    delete [] buffer;
 }
 
 /**
