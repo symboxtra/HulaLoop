@@ -73,13 +73,6 @@ foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
     set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/lib/lib)
 endforeach ()
 
-# Set output for libs compiled with --target install
-# Allow override via -DCMAKE_INSTALL_PREFIX=blah
-if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND CMAKE_BUILD_TYPE MATCHES "Debug")
-    set (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/lib CACHE PATH "Installation path" FORCE)
-    set (CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/lib CACHE PATH "" FORCE) # Should this be here?
-endif ()
-
 message (STATUS "System Platform: ${CMAKE_SYSTEM_NAME} ${CMAKE_GENERATOR_PLATFORM}")
 message (STATUS "Install Prefix: ${CMAKE_INSTALL_PREFIX}\n")
 
@@ -225,7 +218,7 @@ endif ()
 
 install (
     DIRECTORY ${CMAKE_BINARY_DIR}/bin
-    DESTINATION ${CMAKE_INSTALL_PREFIX}
+    DESTINATION .
     USE_SOURCE_PERMISSIONS
     PATTERN "*.ilk" EXCLUDE
     PATTERN "*.pdb" EXCLUDE

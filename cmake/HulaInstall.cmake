@@ -1,25 +1,47 @@
-set (CPACK_PACKAGE_NAME "HulaLoop Installer")
+set (CPACK_PACKAGE_NAME "HulaLoop")
 set (CPACK_PACKAGE_VENDOR "Symboxtra Software")
 set (CPACK_PACKAGE_CONTACT "dev.symboxtra@gmail.com")
 set (CPACK_PACKAGE_HOMEPAGE_URL "https://hulaloop.readthedocs.io/")
 
 set (CPACK_PACKAGE_VERSION ${HL_VERSION_STR})
-set (CPACK_PACKAGE_FILE_NAME "hulaloop")
+set (CPACK_PACKAGE_FILE_NAME "hulaloop-setup-${HL_VERSION_STR}")
 set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Simple cross-platform audio loopback and recording.")
 set (CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/res/eula.txt)
 
 set (HL_PACKAGE_TYPE ".tar.gz")
-if (WIN32 AND 64BIT)
+if (WIN32 OR OSX)
 
-    set (HL_PACKAGE_TYPE "win64.exe")
+    set (CPACK_GENERATOR "IFW")
+    set (CPACK_IFW_VERBOSE ON)
 
-elseif (WIN32 AND NOT 64BIT)
+    if (WIN32 AND 64BIT)
+        set (HL_PACKAGE_TYPE "win64.exe")
+        set (CPACK_IFW_PACKAGE_ICON ${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico)
+        set (CPACK_PACKAGE_FILE_NAME "hulaloop-setup-${HL_VERSION_STR}-win64")
+    elseif (WIN32 AND NOT 64BIT)
+        set (HL_PACKAGE_TYPE "win32.exe")
+        set (CPACK_IFW_PACKAGE_ICON ${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico)
+        set (CPACK_PACKAGE_FILE_NAME "hulaloop-setup-${HL_VERSION_STR}-win32")
+    elseif (OSX)
+        set (HL_PACKAGE_TYPE ".dmg")
+        set (CPACK_IFW_PACKAGE_ICON ${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.icns)
+    endif ()
 
-    set (HL_PACKAGE_TYPE "win32.exe")
+    set (CPACK_IFW_PACKAGE_TITLE "HulaLoop")
+    set (CPACK_IFW_PACKAGE_WIZARD_STYLE "Modern")
+    set (CPACK_IFW_PACKAGE_WINDOW_ICON ${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.png)
+    set (CPACK_IFW_PACKAGE_WATERMARK ${PROJECT_SOURCE_DIR}/res/logo/hulaloop-header-small.png)
+    set (CPACK_IFW_PACKAGE_TITLE_COLOR "#f75c26")
 
-elseif (OSX)
+    set (CPACK_IFW_PACKAGE_START_MENU_DIRECTORY "HulaLoop")
+    set (CPACK_IFW_TARGET_DIRECTORY "@HomeDir@/HulaLoop")
+    set (CPACK_IFW_ADMIN_TARGET_DIRECTORY "@HomeDir@/HulaLoop")
 
-    set (HL_PACKAGE_TYPE ".dmg")
+    set (CPACK_IFW_PACKAGE_CONTROL_SCRIPT ${PROJECT_SOURCE_DIR}/res/installer/ifwscript.qs)
+    set (CPACK_IFW_PACKAGE_MAINTENANCE_TOOL_NAME "hulaloop-uninstaller")
+    set (CPACK_IFW_PACKAGE_MAINTENANCE_TOOL_INI_FILE "hulaloop-uninstaller")
+
+    set (CPACK_IFW_PACKAGE_ALLOW_NON_ASCII_CHARACTERS OFF)
 
 elseif (EXISTS "/etc/debian_version")
 
@@ -51,39 +73,6 @@ elseif (EXISTS "/etc/redhat-release")
     install (FILES ${CMAKE_BINARY_DIR}/hulaloop.desktop DESTINATION /usr/share/applications)
     install (FILES ${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.svg DESTINATION /usr/share/icons/hicolor/scalable/apps)
 
-endif ()
-
-######## CPack ########
-if (64BIT) # Windows x64
-
-    set (CPACK_GENERATOR "NSIS64")
-
-    set (CPACK_NSIS_MUI_ICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
-    set (CPACK_NSIS_MUI_UNIICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
-    set (CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
-    set (CPACK_PACKAGE_INSTALL_DIRECTORY "Test CPack")
-    set (CPACK_NSIS_MODIFY_PATH ON)
-    set (CPACK_COMPONENTS_ALL app)
-
-    if (PACK)
-        set (INSTALL_DIR bin)
-        set (LIB_DIR bin/lib)
-    endif ()
-
-elseif (WIN32) # Windows x86
-    set (CPACK_GENERATOR "NSIS")
-
-    set (CPACK_NSIS_MUI_ICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
-    set (CPACK_NSIS_MUI_UNIICON "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
-    set (CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_SOURCE_DIR}/res/logo/hulaloop-logo.ico")
-    set (CPACK_PACKAGE_INSTALL_DIRECTORY "Test CPack")
-    set (CPACK_NSIS_MODIFY_PATH ON)
-    set (CPACK_COMPONENTS_ALL app)
-
-    if (PACK)
-        set (INSTALL_DIR bin)
-        set (LIB_DIR bin/lib)
-    endif ()
 endif ()
 
 include (CPack)
