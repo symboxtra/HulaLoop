@@ -5,6 +5,7 @@ ChartView {
 
     property int maxTime: 20
     property double nextSample: 0
+    property double position: -1
 
     function reset() {
         samples.clear()

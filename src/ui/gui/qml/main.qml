@@ -57,17 +57,23 @@ ApplicationWindow {
                 systrayicon.setDefaultIcon()
             }
 
+            if (qmlbridge.getTransportState() === qsTr("Playing", "state"))
+            {
+                marker.reset()
+            }
+
             systrayicon.setToolTip("HulaLoop - " + qmlbridge.getTransportState())
         }
 
         onVisData: {
 
+            let channels = 2
+            let sampleRate = 44100
+            let interval = Math.min(rawData.length, 441); // Grab every 441st sample
+            let refsPerSec = channels * sampleRate / interval
+
             if (qmlbridge.getTransportState() === qsTr("Recording", "state"))
             {
-                let channels = 2
-                let sampleRate = 44100
-                let interval = Math.min(rawData.length, 441); // Grab every 441st sample
-                let refsPerSec = channels * sampleRate / interval
                 let scale = 5 // Scale up
 
                 let sum = 0;
@@ -79,9 +85,8 @@ ApplicationWindow {
                         sum = 0;
 
                         // Move forward
-                        // The multiplied value is arbitrarily adjusted
-                        // to line up with the time markers. IDK man
-                        timeline.nextSample += 1 / refsPerSec * 5.73
+                        // The multiplied value is from QMLBridge
+                        timeline.nextSample += 1 / refsPerSec * 5.55
 
                         // Scale the plot
                         if (timeline.nextSample >= timeline.maxTime)
@@ -94,6 +99,11 @@ ApplicationWindow {
                         sum += rawData[i];
                     }
                 }
+            }
+
+            if (qmlbridge.getTransportState() === qsTr("Recording", "state") || qmlbridge.getTransportState() === qsTr("Playing", "state"))
+            {
+                marker.position += rawData.length / channels / sampleRate * 9.9
             }
 
             // If the array only contains [0], its the signal to clear the bars
@@ -143,6 +153,7 @@ ApplicationWindow {
 
         onDiscarded: {
             timeline.reset()
+            marker.reset()
         }
     }
 
@@ -247,6 +258,12 @@ ApplicationWindow {
 
         Timeline {
             id: timeline
+
+            PlaybackMarker {
+                id: marker
+
+                maxTime: timeline.maxTime
+            }
         }
 
         anchors.left: parent.left
