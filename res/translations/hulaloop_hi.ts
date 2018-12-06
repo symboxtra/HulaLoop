@@ -22,7 +22,7 @@
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="59"/>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="881"/>
         <source>Elapsed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>गुजर चुके: %1</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="151"/>
@@ -33,7 +33,7 @@
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="181"/>
         <source>Stop recording</source>
-        <translation type="unfinished"></translation>
+        <translation>रिकॉर्डिंग शुरू|</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="202"/>
@@ -56,17 +56,17 @@
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="308"/>
         <source>Set recording delay and duration</source>
-        <translation type="unfinished"></translation>
+        <translation>रिकॉर्डिंग देरी और अवधि सेट करें</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="340"/>
         <source>Export audio</source>
-        <translation type="unfinished"></translation>
+        <translation>ऑडियो निर्यात करें</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="372"/>
         <source>Check for updates</source>
-        <translation type="unfinished"></translation>
+        <translation>अद्यतन के लिए चेंक करें</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="579"/>
@@ -76,7 +76,7 @@
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="592"/>
         <source>Change input device</source>
-        <translation type="unfinished"></translation>
+        <translation>इनपुट डिवाइस बदलें</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="639"/>
@@ -86,42 +86,42 @@
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="652"/>
         <source>Change output device</source>
-        <translation type="unfinished"></translation>
+        <translation>आउटपुट डिवाइस बदलें</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="725"/>
         <source>Display record devices</source>
-        <translation type="unfinished"></translation>
+        <translation>रिकॉर्ड डिवाइस प्रदर्शित करें</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="745"/>
         <source>Visualizer type</source>
-        <translation type="unfinished"></translation>
+        <translation>विजुअलाइज़र प्रकार</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="755"/>
         <source>Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>बार</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="755"/>
         <source>Circle</source>
-        <translation type="unfinished"></translation>
+        <translation>वृत्त</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="755"/>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>लाइन</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="780"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>भाषा</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="850"/>
         <source>Are you sure you want to discard?</source>
-        <translation type="unfinished"></translation>
+        <translation>क्या आप वाकई त्यागना चाहते हैं?</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="911"/>
