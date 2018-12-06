@@ -12,8 +12,26 @@ using namespace hula;
  */
 Transport::Transport()
 {
-    controller = new Controller();
-    recorder = new Record(controller);
+    controller = nullptr;
+    recorder = nullptr;
+
+    try
+    {
+        controller = new Controller();
+    }
+    catch (const AudioException &ae)
+    {
+        throw ControlException(ae.getErrorCode());
+    }
+
+    try
+    {
+        recorder = new Record(controller);
+    }
+    catch (const AudioException &ae)
+    {
+        throw ControlException(ae.getErrorCode());
+    }
 
     canRecord = true;
     canPlayback = false;
@@ -38,7 +56,15 @@ bool Transport::record(double delay, double duration)
     if (canRecord)
     {
         hlDebug() << "STARTED RECORDING" << std::endl;
-        recorder->start();
+
+        try
+        {
+            recorder->start();
+        }
+        catch(const AudioException &ae)
+        {
+            throw ControlException(ae.getErrorCode());
+        }
 
         initRecordClicked = true;
         canRecord = false;
@@ -72,7 +98,14 @@ bool Transport::stop()
 
     if ((!canRecord && !canPlayback) || state == PAUSED)
     {
-        recorder->stop();
+        try
+        {
+            recorder->stop();
+        }
+        catch(const AudioException &ae)
+        {
+            throw ControlException(ae.getErrorCode());
+        }
 
         canRecord = false;
         canPlayback = true;
@@ -116,7 +149,14 @@ bool Transport::pause()
 
     if (state == RECORDING && !canRecord) // Pause record
     {
-        recorder->stop();
+        try
+        {
+            recorder->stop();
+        }
+        catch(const AudioException &ae)
+        {
+            throw ControlException(ae.getErrorCode());
+        }
 
         canRecord = true;
         canPlayback = true;

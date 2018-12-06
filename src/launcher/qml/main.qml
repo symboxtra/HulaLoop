@@ -58,6 +58,15 @@ ApplicationWindow {
             visible: true
 	    }
 
+        Timer {
+            id: errTimer
+
+            interval: 5000
+            repeat: false
+
+            onTriggered: updater.startHulaLoopApp()
+        }
+
         Label {
             id: status
 
@@ -68,21 +77,58 @@ ApplicationWindow {
             font.pointSize: Math.round(0.025 * window.width)
 
             Component.onCompleted: {
+                let uRet = updater.checkForUpdate()
 
-                if(updater.checkForUpdate())
+                if(uRet === 1)
                 {
                     progressBar.indeterminate = false
                     status.text = qsTr("Downloading updates...")
 
-                    if(updater.downloadUpdate())
+                    let dRet = updater.downloadUpdate()
+
+                    if(dRet === 1)
                         updater.startHulaLoopInstaller()
+                    else
+                    {
+                        dismiss.visible = true
+                        status.text = updater.getErrorMessage()
+                        errTimer.start()
+                    }
                 }
-                else
+                else if(uRet === 0)
                 {
                     status.text = qsTr("No updates found.")
                     updater.startHulaLoopApp()
                 }
+                else
+                {
+                    dismiss.visible = true
+                    status.text = updater.getErrorMessage()
+                    errTimer.start()
+                }
 
+            }
+
+        }
+
+        Label {
+            id: dismiss
+            visible: false
+
+            anchors.top: status.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            text: qsTr("Click here to dismiss")
+            font.pointSize: Math.round(0.025 * window.width)
+
+            MouseArea {
+                id: clickable
+                enabled: true
+
+                anchors.fill: parent
+
+                acceptedButtons: Qt.LeftButton
+                onClicked: updater.startHulaLoopApp()
             }
 
         }

@@ -12,6 +12,8 @@
 #include <QProcess>
 #include <QRegularExpression>
 
+#include <QDebug>
+
 using namespace hula;
 
 /**
@@ -24,6 +26,7 @@ Updater::Updater(QObject *parent) : QObject(parent)
     manager = new QNetworkAccessManager(this);
     reply = nullptr;
 
+    errorMsg = "";
     updateHostUrl = "";
     downloadHostUrl = "";
     downloadFileName = "";
@@ -115,54 +118,69 @@ QList<int> Updater::parseTagName(const QString &tagName)
 }
 
 /**
+ * Method to check the descriptive error message.
+ *
+ * @return QString - The error in human-readable format
+ */
+QString Updater::getErrorMessage()
+{
+    return errorMsg;
+}
+
+/**
  * Creates the network request using the updateHostUrl.
  * This method blocks until the finished signal is caught.
  *
- * @return bool - True if an update was found, false otherwise
+ * @return int - 1 if found, 0 if not found, -1 if an error occurred
  */
-bool Updater::checkForUpdate()
+int Updater::checkForUpdate()
 {
 
-    bool updateAvailable = false;
+    int updateAvailable = 0;
     reply = manager->get(QNetworkRequest(QUrl(updateHostUrl)));
+
+    connect(reply, &QNetworkReply::sslErrors, [&](QList<QSslError> sslErr)
+    {
+        reply->deleteLater();
+        updateAvailable = -1;
+
+        errorMsg = "Updater: " + sslErr.at(0).errorString() + "!";
+    });
 
     connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [&](QNetworkReply::NetworkError code)
     {
-        // throw exception
         reply->deleteLater();
-        updateAvailable = false;
-    });
+        updateAvailable = -1;
 
-    connect(reply, &QNetworkReply::sslErrors, [&]
-    {
-        // throw exception
-        reply->deleteLater();
-        updateAvailable = false;
+        errorMsg = "Updater: " + reply->errorString() + "!";
     });
 
     connect(reply, &QNetworkReply::finished, [&]
     {
 
+        if(reply->error())
+            return;
+
         QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
         if (doc.isNull())
-            updateAvailable = false;
+            updateAvailable = 0;
 
         QJsonObject rootObj = doc.object();
         if (rootObj.isEmpty())
-            updateAvailable = false;
+            updateAvailable = 0;
 
         QList<int> versionParts = parseTagName(rootObj["tag_name"].toString());
         if (versionParts.at(0) > HL_VERSION_MAJOR)
         {
-            updateAvailable = true;
+            updateAvailable = 1;
         }
         else if (versionParts.at(1) > HL_VERSION_MINOR)
         {
-            updateAvailable = true;
+            updateAvailable = 1;
         }
         else if (versionParts.at(2) > HL_VERSION_REV)
         {
-            updateAvailable = true;
+            updateAvailable = 1;
         }
 
         // Found an update, check the assets of the release
@@ -186,11 +204,12 @@ bool Updater::checkForUpdate()
 
                     if (!ok)
                     {
-                        // TODO: Handle exception
                         downloadHostUrl = "";
                         downloadFileName = "";
                         downloadSize = 0L;
-                        updateAvailable = false;
+
+                        updateAvailable = -1;
+                        errorMsg = "Updater: Error obtaining download size!";
                     }
                     break;
                 }
@@ -212,12 +231,12 @@ bool Updater::checkForUpdate()
  * This method writes incrementally to a file in the system's temporary
  * directory and blocks until the finished signal is caught.
  *
- * @return bool - True if the download finished successfully, false otherwise
+ * @return int - True if the download finished successfully, false otherwise
  */
-bool Updater::downloadUpdate()
+int Updater::downloadUpdate()
 {
 
-    bool finishedDownload = false;
+    int finishedDownload = 0;
 
     QNetworkRequest req(downloadHostUrl);
     req.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
@@ -227,24 +246,31 @@ bool Updater::downloadUpdate()
     QFile file(QDir::tempPath() + "/" + fileName);
     file.open(QIODevice::WriteOnly);
 
+    connect(reply, &QNetworkReply::sslErrors, [&](QList<QSslError> sslErr)
+    {
+        // throw exception
+        file.close();
+        reply->deleteLater();
+        finishedDownload = -1;
+
+        errorMsg = "Downloader: " + sslErr.at(0).errorString() + "!";
+    });
+
     connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [&](QNetworkReply::NetworkError code)
     {
         // throw exception
         file.close();
         reply->deleteLater();
-        finishedDownload = false;
-    });
+        finishedDownload = -1;
 
-    connect(reply, &QNetworkReply::sslErrors, [&]
-    {
-        // throw exception
-        file.close();
-        reply->deleteLater();
-        finishedDownload = false;
+        errorMsg = "Downloader: " + reply->errorString() + "!";
     });
 
     connect(reply, &QNetworkReply::readyRead, [&]
     {
+
+        if(reply->error())
+            return;
 
         numBytesDownloaded = reply->bytesAvailable();
         emit bytesDownloaded();
@@ -255,12 +281,14 @@ bool Updater::downloadUpdate()
     connect(reply, &QNetworkReply::finished, [&]
     {
 
+        if(reply->error())
+            return;
+
         file.flush();
         file.close();
-
         reply->deleteLater();
 
-        finishedDownload = true;
+        finishedDownload = 1;
 
     });
 

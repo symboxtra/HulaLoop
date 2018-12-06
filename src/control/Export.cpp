@@ -14,7 +14,7 @@ using namespace hula;
 /**
  * Construct a new instance of the Export class.
  *
- * @param The target directory of the file
+ * @param targetFile The target directory of the file
  */
 Export::Export(std::string targetFile)
 {
@@ -24,7 +24,7 @@ Export::Export(std::string targetFile)
 /**
  * Gets the system temporary directory
  *
- * @return string the absolute path to the system temp directory
+ * @return std::string the absolute path to the system temp directory
  */
 std::string Export::getTempPath()
 {
@@ -34,7 +34,7 @@ std::string Export::getTempPath()
 /**
  * Copies the data from the temp file
  *
- * @param The input file directory to copy from
+ * @param dirs The list of input file directory to copy from
  */
 void Export::copyData(std::vector<std::string> dirs)
 {
