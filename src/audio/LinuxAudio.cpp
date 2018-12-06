@@ -1,3 +1,5 @@
+#include <fcntl.h>
+#include <unistd.h>
 #include <portaudio.h>
 
 #include "LinuxAudio.h"
@@ -11,14 +13,26 @@ using namespace hula;
  */
 LinuxAudio::LinuxAudio()
 {
-    // Initialize PortAudio and update audio devices
+    #if HL_NO_DEBUG_OUTPUT
+    int out = dup(1);
+    int temp_null = open("/dev/null", O_WRONLY);
+    dup2(temp_null, 1);
+    close(temp_null);
+    #endif
+
+    // Initialize PortAudio
     PaError err = Pa_Initialize();
     if (err != paNoError)
     {
         hlDebugf("PortAudio failed to initialize.\n");
         hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
-        exit(1); // TODO: Handle error
+        throw AudioException(HL_PA_INIT_CODE, HL_PA_INIT_MSG);
     }
+
+    #if HL_NO_DEBUG_OUTPUT
+    dup2(out, 1);
+    close(out);
+    #endif
 }
 
 /**

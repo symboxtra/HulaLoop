@@ -256,13 +256,13 @@
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="94"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="481"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="486"/>
         <source>Translation file successfully loaded.</source>
         <translation>Plik z tłumaczeniem został pomyślnie załadowany.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="98"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="485"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="490"/>
         <source>Could not find translation file for %1.</source>
         <translation>Nie można znaleźć pliku tłumaczącego dla &apos;%1&apos;.</translation>
     </message>
@@ -408,52 +408,52 @@
         <translation>&apos;%1&apos; nie jest prawidłowy &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="329"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="330"/>
         <source>Are you sure you want to discard? (y/N): </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="339"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="340"/>
         <source>Discard cancelled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="379"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="380"/>
         <source>Input device set to: %1</source>
         <translation>Urządzenie wejściowe ustawione do &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="383"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="385"/>
         <source>Failed to set input device.</source>
         <translation>Nie można ustawić urządzenia wejściowego.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="430"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="432"/>
         <source>Output device set to: %1</source>
         <translation>Urządzenie wyjściowe ustawione do &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="434"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="437"/>
         <source>Failed to set output device.</source>
         <translation>Nie można ustawić urządzenia wyjściowego.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="505"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="510"/>
         <source>System command returned: %1</source>
         <translation>Polecenie systemowe zostało zwrócone: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="510"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="515"/>
         <source>No system command processor is available.</source>
         <translation>Żaden procesor poleceń systemu nie jest dostępny.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="520"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="525"/>
         <source>Unrecognized command &apos;%1&apos;</source>
         <translation>Polecenie nierozpoznane &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="527"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="532"/>
         <source>Command failed with value of &apos;false&apos;.</source>
         <translation>Polecenie nie powiodło się z wartością &apos;false&apos;.</translation>
     </message>

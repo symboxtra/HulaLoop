@@ -248,13 +248,13 @@
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="94"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="481"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="486"/>
         <source>Translation file successfully loaded.</source>
         <translation>अनुवाद फ़ाइल कामयाबी से लोड हो गई|</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="98"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="485"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="490"/>
         <source>Could not find translation file for %1.</source>
         <translation>%1 के लिए अनुवाद फ़ाइल नहीं मिल सका|</translation>
     </message>
@@ -381,52 +381,52 @@
         <translation>&apos;%1&apos; वैध &apos;%2&apos; नहीं है|</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="329"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="330"/>
         <source>Are you sure you want to discard? (y/N): </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="339"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="340"/>
         <source>Discard cancelled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="379"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="380"/>
         <source>Input device set to: %1</source>
         <translation>इनपुट डिवाइस पर सेट: %1</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="383"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="385"/>
         <source>Failed to set input device.</source>
         <translation>इनपुट डिवाइस सेट करने में विफल रहा|</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="430"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="432"/>
         <source>Output device set to: %1</source>
         <translation>आउटपुट डिवाइस पर सेट: %1</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="434"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="437"/>
         <source>Failed to set output device.</source>
         <translation>आउटपुट डिवाइस सेट करने में विफल रहा|</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="505"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="510"/>
         <source>System command returned: %1</source>
         <translation>सिस्टम कमांड: %1</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="510"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="515"/>
         <source>No system command processor is available.</source>
         <translation>कोई सिस्टम कमांड प्रोसेसर उपलब्ध नहीं है|</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="520"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="525"/>
         <source>Unrecognized command &apos;%1&apos;</source>
         <translation>अनजाना कमांड &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="527"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="532"/>
         <source>Command failed with value of &apos;false&apos;.</source>
         <translation>&apos;झूठी&apos; के मूल्य के साथ आदेश विफल|</translation>
     </message>

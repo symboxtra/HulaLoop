@@ -248,13 +248,13 @@
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="94"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="481"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="486"/>
         <source>Translation file successfully loaded.</source>
         <translation>Fichier de traduction chargé avec succès.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="98"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="485"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="490"/>
         <source>Could not find translation file for %1.</source>
         <translation>Impossible de trouver le fichier de traduction pour %1.</translation>
     </message>
@@ -381,52 +381,52 @@
         <translation>&apos;%1&apos; n&apos;est pas un(e) %2 valide.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="329"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="330"/>
         <source>Are you sure you want to discard? (y/N): </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="339"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="340"/>
         <source>Discard cancelled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="379"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="380"/>
         <source>Input device set to: %1</source>
         <translation>Périphérique d&apos;entrée réglé sur: %1</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="383"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="385"/>
         <source>Failed to set input device.</source>
         <translation>Impossible de définir périphérique d&apos;entrée.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="430"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="432"/>
         <source>Output device set to: %1</source>
         <translation>Périphérique de sortie réglé sur: %1</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="434"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="437"/>
         <source>Failed to set output device.</source>
         <translation>Impossible de définir périphérique de sortie.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="505"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="510"/>
         <source>System command returned: %1</source>
         <translation>Commande système a returner: %1</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="510"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="515"/>
         <source>No system command processor is available.</source>
         <translation>Aucun processeur de commande système n&apos;est disponible.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="520"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="525"/>
         <source>Unrecognized command &apos;%1&apos;</source>
         <translation>Commande &apos;%1&apos; non reconnue</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="527"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="532"/>
         <source>Command failed with value of &apos;false&apos;.</source>
         <translation>La commande a échoué avec la valeur &apos;faux&apos;.</translation>
     </message>
