@@ -532,6 +532,27 @@ Rectangle {
                 samples: 3
                 source: checkUpdateBtn
             }
+
+            DropShadow {
+                visible: (settingsBtn.enabled && !settingsBtn.pressed) ? true : false
+                color: "#606060"
+                anchors.fill: settingsBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: settingsBtn
+            }
+
+            InnerShadow {
+                visible: settingsBtn.pressed ? true : false
+                color: "#606060"
+                anchors.fill: settingsBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: settingsBtn
+            }
+
         }
 
         FileDialog {
