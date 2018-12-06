@@ -763,7 +763,7 @@
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="60"/>
-        <location filename="../../src/ui/gui/qml/main.qml" line="104"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="98"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation type="unfinished">Sonando</translation>
@@ -771,7 +771,7 @@
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="50"/>
         <location filename="../../src/ui/gui/qml/main.qml" line="75"/>
-        <location filename="../../src/ui/gui/qml/main.qml" line="104"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="98"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation>Grabando</translation>

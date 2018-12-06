@@ -69,7 +69,7 @@ ApplicationWindow {
 
             let channels = 2
             let sampleRate = 44100
-            let interval = Math.min(rawData.length, 441); // Grab every 441st sample
+            let interval = Math.min(rawData.length, 441) * 1.0; // Grab every 441st sample
             let refsPerSec = channels * sampleRate / interval
 
             if (qmlbridge.getTransportState() === qsTr("Recording", "state"))
@@ -86,13 +86,7 @@ ApplicationWindow {
 
                         // Move forward
                         // The multiplied value is from QMLBridge
-                        timeline.nextSample += 1 / refsPerSec * 5.55
-
-                        // Scale the plot
-                        if (timeline.nextSample >= timeline.maxTime)
-                        {
-                            timeline.maxTime += 5
-                        }
+                        timeline.nextSample += 1 / refsPerSec * (samplesProcessed / interval / 2.15)
                     }
                     else
                     {
@@ -104,6 +98,12 @@ ApplicationWindow {
             if (qmlbridge.getTransportState() === qsTr("Recording", "state") || qmlbridge.getTransportState() === qsTr("Playing", "state"))
             {
                 marker.position += samplesProcessed / channels / sampleRate
+
+                // Scale the plot
+                if (marker.position >= timeline.maxTime)
+                {
+                    timeline.maxTime += 5
+                }
             }
 
             // If the array only contains [0], its the signal to clear the bars

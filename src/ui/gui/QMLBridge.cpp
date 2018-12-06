@@ -614,7 +614,7 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
 
     int maxSize = 512;
     int accuracy = 8;
-    ring_buffer_size_t samplesHandled = 0;
+    ring_buffer_size_t samplesProcessed = 0;
     // float *temp = new float[maxSize];
 
     while (!_this->endVis.load())
@@ -650,7 +650,7 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
                 realData.push_back(data2[i]);
             }
 
-            samplesHandled += samplesRead;
+            samplesProcessed += samplesRead;
         }
 
         Fft::transform(actualoutreal, actualoutimag);
@@ -678,8 +678,8 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
             }
         }
 
-        _this->emit visData(realData, heights, samplesHandled);
-        samplesHandled = 0;
+        _this->emit visData(realData, heights, samplesProcessed);
+        samplesProcessed = 0;
 
         // Accumulate some audio
         // We have to make sure this delay is shorter than the length of the ring buffer
@@ -692,7 +692,7 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
         {
             samplesRead = _this->rb->directRead(maxSize * 2, (void **)&data1, &size1, (void **)&data2, &size2);
             // hlDebug() << "Read " << bytesRead << std::endl;
-            samplesHandled += samplesRead;
+            samplesProcessed += samplesRead;
         }
 
         // Accumulate more audio
