@@ -16,6 +16,8 @@ Rectangle {
     height: 115
     color: window.barColor
 
+    property var triggerPlayPause: playpauseBtn.onClicked
+
     Timer {
         id: countDownTimer
         objectName: "countDownTimer"

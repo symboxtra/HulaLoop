@@ -21,46 +21,46 @@
         <translation type="obsolete">Grabando</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="149"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="151"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation>Grabando</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="179"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="181"/>
         <source>Stop recording</source>
         <translation>Detener grabación</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="200"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="202"/>
         <source>Stopped</source>
         <comment>state</comment>
         <translation>Parado</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="260"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="262"/>
         <source>Paused</source>
         <comment>state</comment>
         <translation>Pausada</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="278"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="280"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation>Sonando</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="306"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="308"/>
         <source>Set recording delay and duration</source>
         <translation>Cambiar el retraso y la duración</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="338"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="340"/>
         <source>Export audio</source>
         <translation>Exportar audio</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="370"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="372"/>
         <source>Check for updates</source>
         <translation>Buscar actualizaciones</translation>
     </message>
@@ -69,75 +69,75 @@
         <translation type="vanished">Temporizador:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="577"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="579"/>
         <source>Input Device:</source>
         <translation>Dispositivo de Entrada:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="590"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="592"/>
         <source>Change input device</source>
         <translation>Cambiar el dispositivo de entrada</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="637"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="639"/>
         <source>Output Device:</source>
         <translation>Dispositivo de Salida:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="723"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="725"/>
         <source>Display record devices</source>
         <translation>Mostrar dispositivos de grabar</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="743"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="745"/>
         <source>Visualizer type</source>
         <translation>Tipo de visualizador</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="753"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="755"/>
         <source>Bar</source>
         <translation>Histograma</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="753"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="755"/>
         <source>Circle</source>
         <translation>Círculo</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="753"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="755"/>
         <source>Line</source>
         <translation>Línea</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="778"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="780"/>
         <source>Language</source>
         <translation>Lengua</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="650"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="652"/>
         <source>Change output device</source>
         <translation>Cambiar el dispositivo de salida</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="28"/>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="54"/>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="57"/>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="879"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="30"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="56"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="59"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="881"/>
         <source>Elapsed: %1</source>
         <translation>Transcurrido: %1</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="848"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="850"/>
         <source>Are you sure you want to discard?</source>
         <translation>¿Seguro que quieres descartar?</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="909"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="911"/>
         <source>Delay Recording (hh:mm:ss)</source>
         <translation>Retraso antes de grabar (hh:mm:ss)</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="928"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="930"/>
         <source>Record Duration (hh:mm:ss)</source>
         <translatorcomment>Format for hours, minutes, seconds remains unchanged because of the way the response is parsed.</translatorcomment>
         <translation>Duración de la grabación (hh:mm:ss)</translation>
@@ -148,12 +148,12 @@
         <translation type="vanished">Duración de la grabación (hh:mm:ss)</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="960"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="962"/>
         <source>CANCEL</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="978"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="980"/>
         <source>OK</source>
         <translation>Aceptar</translation>
     </message>
@@ -763,15 +763,20 @@
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="60"/>
-        <location filename="../../src/ui/gui/qml/main.qml" line="98"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="111"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation type="unfinished">Sonando</translation>
     </message>
     <message>
+        <location filename="../../src/ui/gui/qml/main.qml" line="65"/>
+        <source>Paused</source>
+        <comment>state</comment>
+        <translation type="unfinished">Pausada</translation>
+    </message>
+    <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="50"/>
-        <location filename="../../src/ui/gui/qml/main.qml" line="75"/>
-        <location filename="../../src/ui/gui/qml/main.qml" line="98"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="80"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation>Grabando</translation>

@@ -66,7 +66,7 @@ void Record::recorder()
     {
         void *ptr[2] = {0};
         ring_buffer_size_t sizes[2] = {0};
-        samplesRead = this->rb->directRead(512, ptr + 0, sizes + 0, ptr + 1, sizes + 1);
+        samplesRead = this->rb->directRead(maxSize, ptr + 0, sizes + 0, ptr + 1, sizes + 1);
 
         if (samplesRead > 0)
         {
@@ -87,8 +87,8 @@ void Record::recorder()
     }
 
 
-    sf_close(file);
     this->controller->removeBuffer(this->rb);
+    sf_close(file);
 }
 
 /**

@@ -62,6 +62,11 @@ ApplicationWindow {
                 marker.reset()
             }
 
+            if (qmlbridge.getTransportState() === qsTr("Paused", "state"))
+            {
+                markerTimer.stop();
+            }
+
             systrayicon.setToolTip("HulaLoop - " + qmlbridge.getTransportState())
         }
 
@@ -81,12 +86,20 @@ ApplicationWindow {
                 {
                     if (i % interval == 0)
                     {
+                        // Move marker
+                        marker.position += 1 / refsPerSec * (samplesProcessed / interval / 2.0)
+
+                        // Scale the plot
+                        if (marker.position >= timeline.maxTime) {
+                            timeline.maxTime += 5
+                        }
+
                         timeline.samples.append(timeline.nextSample, sum / interval * scale);
                         sum = 0;
 
                         // Move forward
                         // The multiplied value is from QMLBridge
-                        timeline.nextSample += 1 / refsPerSec * (samplesProcessed / interval / 2.15)
+                        timeline.nextSample += 1 / refsPerSec * (samplesProcessed / interval / 2.05)
                     }
                     else
                     {
@@ -95,14 +108,10 @@ ApplicationWindow {
                 }
             }
 
-            if (qmlbridge.getTransportState() === qsTr("Recording", "state") || qmlbridge.getTransportState() === qsTr("Playing", "state"))
+            if (qmlbridge.getTransportState() === qsTr("Playing", "state"))
             {
-                marker.position += samplesProcessed / channels / sampleRate
-
-                // Scale the plot
-                if (marker.position >= timeline.maxTime)
-                {
-                    timeline.maxTime += 5
+                if (!markerTimer.running) {
+                    markerTimer.start();
                 }
             }
 
@@ -263,6 +272,29 @@ ApplicationWindow {
                 id: marker
 
                 maxTime: timeline.maxTime
+
+                Timer {
+                    id: markerTimer
+                    interval: 25
+                    running: false
+                    repeat: true
+
+                    onTriggered: {
+                        marker.position += interval / 1000.0
+
+                        // Hard-coded offset for now
+                        if (marker.position >= timeline.nextSample + marker.maxTime * 0.0143) {
+                            markerTimer.stop()
+                            btnPanel.triggerPlayPause();
+                        }
+
+                        // Scale the plot
+                        if (marker.position >= timeline.maxTime) {
+                            timeline.maxTime += 5
+                        }
+                    }
+                }
+
             }
         }
 
