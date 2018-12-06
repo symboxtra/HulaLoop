@@ -416,6 +416,7 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
 
     int maxSize = 512;
     int accuracy = 8;
+    ring_buffer_size_t samplesHandled = 0;
     // float *temp = new float[maxSize];
 
     while (!_this->endVis.load())
@@ -428,14 +429,14 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
         float *data2;
         ring_buffer_size_t size1;
         ring_buffer_size_t size2;
-        ring_buffer_size_t bytesRead = 0;
+        ring_buffer_size_t samplesRead = 0;
 
         while (!_this->endVis.load() && actualoutreal.size() < maxSize)
         {
             // Keep draining the buffer, but only actually
             // process the drained data every nth cycle
-            bytesRead = _this->rb->directRead(maxSize, (void **)&data1, &size1, (void **)&data2, &size2);
-            // hlDebug() << "Process " << bytesRead << std::endl;
+            samplesRead = _this->rb->directRead(maxSize, (void **)&data1, &size1, (void **)&data2, &size2);
+            // hlDebug() << "Process " << samplesRead << std::endl;
 
             for (int i = 0; i < size1 && actualoutreal.size() < maxSize; i++)
             {
@@ -450,6 +451,8 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
                 actualoutreal.push_back(data2[i]);
                 realData.push_back(data2[i]);
             }
+
+            samplesHandled += samplesRead;
         }
 
         Fft::transform(actualoutreal, actualoutimag);
@@ -464,7 +467,7 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
 
                 #if _WIN32
                 // Adjust the values since WASAPI data comes in screaming loud
-                heights.push_back(sum * 0.2);
+                heights.push_back(sum * 0.3);
                 #else
                 heights.push_back(sum);
                 #endif
@@ -477,7 +480,8 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
             }
         }
 
-        _this->emit visData(realData, heights);
+        _this->emit visData(realData, heights, samplesHandled);
+        samplesHandled = 0;
 
         // Accumulate some audio
         // We have to make sure this delay is shorter than the length of the ring buffer
@@ -485,11 +489,12 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
         std::this_thread::sleep_for(std::chrono::milliseconds((maxSize / NUM_CHANNELS * 1000 / SAMPLE_RATE) * accuracy));
 
         // Completely drain the rest of the buffer
-        bytesRead = 1;
-        while (bytesRead != 0)
+        samplesRead = 1;
+        while (samplesRead != 0)
         {
-            bytesRead = _this->rb->directRead(maxSize * 2, (void **)&data1, &size1, (void **)&data2, &size2);
+            samplesRead = _this->rb->directRead(maxSize * 2, (void **)&data1, &size1, (void **)&data2, &size2);
             // hlDebug() << "Read " << bytesRead << std::endl;
+            samplesHandled += samplesRead;
         }
 
         // Accumulate more audio

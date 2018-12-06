@@ -480,11 +480,11 @@ bool WindowsAudio::checkDeviceParams(Device *activeDevice)
     {
         PaStreamParameters parameters = {0};
         parameters.channelCount = NUM_CHANNELS;
-        parameters.device = device->getID().portAudioID;
+        parameters.device = activeDevice->getID().portAudioID;
         parameters.sampleFormat = paFloat32;
 
         PaError err;
-        if (device->getType() & DeviceType::PLAYBACK)
+        if (activeDevice->getType() & DeviceType::PLAYBACK)
         {
             err = Pa_IsFormatSupported(nullptr, &parameters, HulaAudioSettings::getInstance()->getSampleRate());
         }

@@ -103,7 +103,7 @@ ApplicationWindow {
 
             if (qmlbridge.getTransportState() === qsTr("Recording", "state") || qmlbridge.getTransportState() === qsTr("Playing", "state"))
             {
-                marker.position += rawData.length / channels / sampleRate * 9.9
+                marker.position += samplesProcessed / channels / sampleRate
             }
 
             // If the array only contains [0], its the signal to clear the bars

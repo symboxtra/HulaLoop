@@ -86,21 +86,24 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
         snd_ctl_close(handle);
     }
 
-    HulaAudioSettings *s = HulaAudioSettings::getInstance();
-
     // Get devices from PortAudio if record or playback devices are requested
     if (playSet)
     {
         // Initialize PortAudio and update audio devices
-        pa_status = Pa_Initialize();
-        HANDLE_PA_ERROR(pa_status);
+        PaError err = Pa_Initialize();
+        if (err != paNoError)
+        {
+            hlDebugf("PortAudio failed to initialize.\n");
+            hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
+            exit(1); // TODO: Handle error
+        }
 
         // Get the total count of audio devices
-        int numDevices = Pa_GetDeviceCount();
-        if (numDevices < 0)
+        int deviceCount = Pa_GetDeviceCount();
+        if (deviceCount < 0)
         {
-            pa_status = numDevices;
-            HANDLE_PA_ERROR(pa_status);
+            hlDebugf("Failed to fetch PortAudio devices.\n");
+            exit(1); // TODO: Handle error
         }
 
         for (uint32_t i = 0; i < deviceCount; i++)
@@ -135,8 +138,13 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
             }
         }
 
-        pa_status = Pa_Terminate();
-        HANDLE_PA_ERROR(pa_status);
+        // Close the Port Audio session
+        err = Pa_Terminate();
+        if (err != paNoError)
+        {
+            hlDebugf("Could not terminate Port Audio session.\n");
+            hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
+        }
     }
 
     snd_config_update_free_global();
@@ -166,6 +174,35 @@ bool LinuxAudio::setActiveInputDevice(Device *device)
  */
 bool LinuxAudio::checkDeviceParams(Device *device)
 {
+    if (device->getID().portAudioID != -1)
+    {
+        PaStreamParameters parameters = {0};
+        parameters.channelCount = NUM_CHANNELS;
+        parameters.device = device->getID().portAudioID;
+        parameters.sampleFormat = paFloat32;
+
+        PaError err;
+        if (device->getType() & DeviceType::PLAYBACK)
+        {
+            err = Pa_IsFormatSupported(nullptr, &parameters, HulaAudioSettings::getInstance()->getSampleRate());
+        }
+        else
+        {
+            err = Pa_IsFormatSupported(&parameters, nullptr, HulaAudioSettings::getInstance()->getSampleRate());
+        }
+
+        if (err == paFormatIsSupported)
+        {
+            hlDebug() << HL_SAMPLE_RATE_VALID << std::endl;
+        }
+        else
+        {
+            hlDebug() << HL_SAMPLE_RATE_INVALID << std::endl;
+        }
+
+        return err == paFormatIsSupported;
+    }
+
     int err;                     // return for commands that might return an error
     snd_pcm_t *pcmHandle = nullptr; // default pcm handle
     snd_pcm_hw_params_t *param;  // defaults param for the pcm
