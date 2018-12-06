@@ -1,3 +1,5 @@
+#include <portaudio.h>
+
 #include "LinuxAudio.h"
 #include "hlaudio/internal/HulaAudioError.h"
 #include "hlaudio/internal/HulaAudioSettings.h"
@@ -80,22 +82,71 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
                     devices.push_back(new Device(id, fullDeviceName, DeviceType::RECORD));
                 }
             }
-            if (playSet)
-            {
-                snd_pcm_info_set_stream(subInfo, SND_PCM_STREAM_PLAYBACK);
-                if (snd_ctl_pcm_info(handle, subInfo) >= 0)
-                {
-                    DeviceID id;
-                    id.linuxID = "hw:" + std::to_string(cardNumber) + "," + std::to_string(subDevice);
-                    std::string deviceName = snd_ctl_card_info_get_name(cardInfo);
-                    std::string subDeviceName = snd_pcm_info_get_name(subInfo);
-                    std::string fullDeviceName = deviceName + ": " + subDeviceName;
-                    devices.push_back(new Device(id, fullDeviceName, DeviceType::PLAYBACK));
-                }
-            }
         }
         snd_ctl_close(handle);
     }
+
+    // Get devices from PortAudio if record or playback devices are requested
+    if (playSet)
+    {
+        // Initialize PortAudio and update audio devices
+        PaError err = Pa_Initialize();
+        if (err != paNoError)
+        {
+            hlDebugf("PortAudio failed to initialize.\n");
+            hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
+            exit(1); // TODO: Handle error
+        }
+
+        // Get the total count of audio devices
+        int deviceCount = Pa_GetDeviceCount();
+        if (deviceCount < 0)
+        {
+            hlDebugf("Failed to fetch PortAudio devices.\n");
+            exit(1); // TODO: Handle error
+        }
+
+        for (uint32_t i = 0; i < deviceCount; i++)
+        {
+            const PaDeviceInfo *paDevice = Pa_GetDeviceInfo(i);
+            DeviceType checkType = (DeviceType) 0;
+
+            if (playSet && paDevice->maxOutputChannels > 0)
+            {
+                checkType = (DeviceType)(checkType | DeviceType::PLAYBACK);
+            }
+
+            // Disabled until LinuxAudio switches over
+            /* if (recSet && paDevice->maxInputChannels > 0)
+            {
+                checkType = (DeviceType)(checkType | DeviceType::RECORD);
+            } */
+
+            // Create HulaLoop style device and add to vector
+            // This needs to be freed elsewhere
+            if (checkType)
+            {
+                if (checkType == DeviceType::RECORD && !s->getShowRecordDevices())
+                {
+                    continue;
+                }
+
+                DeviceID id;
+                id.portAudioID = i;
+                Device *hlDevice = new Device(id, std::string(paDevice->name), checkType);
+                devices.push_back(hlDevice);
+            }
+        }
+
+        // Close the Port Audio session
+        err = Pa_Terminate();
+        if (err != paNoError)
+        {
+            hlDebugf("Could not terminate Port Audio session.\n");
+            hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
+        }
+    }
+
     snd_config_update_free_global();
     return devices;
 }
@@ -123,6 +174,36 @@ bool LinuxAudio::setActiveInputDevice(Device *device)
  */
 bool LinuxAudio::checkDeviceParams(Device *device)
 {
+    if (device->getID().portAudioID != -1)
+    {
+        PaStreamParameters parameters = {0};
+        parameters.channelCount = NUM_CHANNELS;
+        parameters.device = device->getID().portAudioID;
+        parameters.sampleFormat = paFloat32;
+
+        PaError err;
+        if (device->getType() & DeviceType::PLAYBACK)
+        {
+            err = Pa_IsFormatSupported(nullptr, &parameters, HulaAudioSettings::getInstance()->getSampleRate());
+        }
+        else
+        {
+            err = Pa_IsFormatSupported(&parameters, nullptr, HulaAudioSettings::getInstance()->getSampleRate());
+        }
+
+        if (err == paFormatIsSupported)
+        {
+            hlDebug() << "Parameters were valid" << std::endl;
+        }
+        else
+        {
+            hlDebug() << "Parameters were NOT valid" << std::endl;
+            throw AudioException(HL_CHECK_PARAMS_CODE, HL_CHECK_PARAMS_MSG);
+        }
+
+        return err == paFormatIsSupported;
+    }
+
     int err;                     // return for commands that might return an error
     snd_pcm_t *pcmHandle = nullptr; // default pcm handle
     snd_pcm_hw_params_t *param;  // defaults param for the pcm
@@ -284,7 +365,8 @@ void LinuxAudio::capture()
         {
             hlDebug() << "Underrun: Exepected " << frame << " frames but got " << framesRead << std::endl;
         }
-        this->copyToBuffers(audioBuffer, framesRead * NUM_CHANNELS * sizeof(SAMPLE));
+
+        copyToBuffers((float *)audioBuffer, framesRead * NUM_CHANNELS);
     }
 
     // cleanup stuff

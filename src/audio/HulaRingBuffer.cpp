@@ -141,7 +141,15 @@ ring_buffer_size_t HulaRingBuffer::write(const SAMPLE *data, ring_buffer_size_t 
 }
 
 /**
- * \ingroup memory_management
+ * Clear the contents of the ring buffer.
+ */
+void HulaRingBuffer::clear()
+{
+    PaUtil_FlushRingBuffer(&this->rb);
+}
+
+/**
+ * @ingroup memory_management
  *
  * Destructor for the ring buffer.
  *

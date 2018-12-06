@@ -118,6 +118,7 @@ namespace hula
             ring_buffer_size_t read(SAMPLE *data, ring_buffer_size_t maxSamples);
             ring_buffer_size_t directRead(ring_buffer_size_t maxSamples, void **dataPtr1, ring_buffer_size_t *size1, void **dataPtr2, ring_buffer_size_t *size2);
             ring_buffer_size_t write(const SAMPLE *data, ring_buffer_size_t maxSamples);
+            void clear();
 
             ~HulaRingBuffer();
 

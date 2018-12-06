@@ -33,6 +33,15 @@ Transport::Transport()
         throw ControlException(ae.getErrorCode());
     }
 
+    try
+    {
+        player = new Playback(controller, recorder);
+    }
+    catch (const AudioException &ae)
+    {
+        throw ControlException(ae.getErrorCode());
+    }
+
     canRecord = true;
     canPlayback = false;
     initRecordClicked = false;
@@ -71,6 +80,7 @@ bool Transport::record(double delay, double duration)
         canPlayback = false;
 
         state = RECORDING;
+
         std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
@@ -111,6 +121,7 @@ bool Transport::stop()
         canPlayback = true;
 
         state = STOPPED;
+
         std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
@@ -127,12 +138,13 @@ bool Transport::play()
 
     if (canPlayback)
     {
-        // TODO: Add start playback call
+        player->start(0);
 
         canPlayback = false;
         canRecord = false;
 
         state = PLAYING;
+
         std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
@@ -162,16 +174,18 @@ bool Transport::pause()
         canPlayback = true;
 
         state = PAUSED;
+
         std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
     else if (!canPlayback && initRecordClicked) // Pause playback
     {
-        // TODO: Add playback pause call
+        player->stop();
 
         canPlayback = true;
 
         state = PAUSED;
+
         std::this_thread::sleep_for(std::chrono::milliseconds(HL_TRANSPORT_LOCKOUT_MS));
         return true;
     }
@@ -274,6 +288,11 @@ bool Transport::hasExportPaths()
 Transport::~Transport()
 {
     hlDebugf("Transport destructor called\n");
+
+    if (player)
+    {
+        delete player;
+    }
 
     if (recorder)
     {

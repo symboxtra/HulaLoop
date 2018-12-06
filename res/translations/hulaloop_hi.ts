@@ -20,7 +20,7 @@
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="28"/>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="54"/>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="57"/>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="865"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="879"/>
         <source>Elapsed: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -74,72 +74,72 @@
         <translation>इनपुट डिवाइस:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="587"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="590"/>
         <source>Change input device</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="630"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="637"/>
         <source>Output Device:</source>
         <translation>आउटपुट डिवाइस:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="640"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="650"/>
         <source>Change output device</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="709"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="723"/>
         <source>Display record devices</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="729"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="743"/>
         <source>Visualizer type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="739"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="753"/>
         <source>Bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="739"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="753"/>
         <source>Circle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="739"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="753"/>
         <source>Line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="764"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="778"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="834"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="848"/>
         <source>Are you sure you want to discard?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="895"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="909"/>
         <source>Delay Recording (hh:mm:ss)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="914"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="928"/>
         <source>Record Duration (hh:mm:ss)</source>
         <translation>रिकॉर्ड लंबाई (hh:mm:ss)</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="946"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="960"/>
         <source>CANCEL</source>
         <translation>रद्द करें</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="964"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="978"/>
         <source>OK</source>
         <translation>ठीक</translation>
     </message>
@@ -533,37 +533,37 @@
 <context>
     <name>Transport</name>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="202"/>
+        <location filename="../../src/control/Transport.cpp" line="216"/>
         <source>Ready</source>
         <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="204"/>
+        <location filename="../../src/control/Transport.cpp" line="218"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation>रिकॉर्डिंग</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="206"/>
+        <location filename="../../src/control/Transport.cpp" line="220"/>
         <source>Stopped</source>
         <comment>state</comment>
         <translation>रूका</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="208"/>
+        <location filename="../../src/control/Transport.cpp" line="222"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation>चल रहा है</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="210"/>
+        <location filename="../../src/control/Transport.cpp" line="224"/>
         <source>Paused</source>
         <comment>state</comment>
         <translation>रूका</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="212"/>
+        <location filename="../../src/control/Transport.cpp" line="226"/>
         <source>Unknown</source>
         <comment>state</comment>
         <translation>अज्ञात</translation>
@@ -572,22 +572,22 @@
 <context>
     <name>hula::QMLBridge</name>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="741"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="735"/>
         <source>Unsaved Changes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="744"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="738"/>
         <source>You have unsaved audio.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="745"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="739"/>
         <source>Would you like to save your audio?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="746"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="740"/>
         <source>Go back and save</source>
         <translation type="unfinished"></translation>
     </message>
@@ -672,8 +672,16 @@
         <translation type="unfinished">HulaLoop ने ऑडियो रिकॉर्ड करना शुरू कर दिया है!</translation>
     </message>
     <message>
+        <location filename="../../src/ui/gui/qml/main.qml" line="60"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="104"/>
+        <source>Playing</source>
+        <comment>state</comment>
+        <translation type="unfinished">चल रहा है</translation>
+    </message>
+    <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="50"/>
-        <location filename="../../src/ui/gui/qml/main.qml" line="65"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="75"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="104"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation type="unfinished">रिकॉर्डिंग</translation>

@@ -59,6 +59,8 @@ void Record::recorder()
     // Add file_path to vector of files
     exportPaths.push_back(file_path);
 
+    int maxSize = 512;
+
     // Keep recording until recording is stopped
     while (!this->endRecord.load())
     {
@@ -80,6 +82,8 @@ void Record::recorder()
                 }
             }
         }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds((maxSize / NUM_CHANNELS * 1000 / SAMPLE_RATE) - 1));
     }
 
 

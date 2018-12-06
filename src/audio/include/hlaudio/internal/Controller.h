@@ -29,6 +29,11 @@ namespace hula
             HulaRingBuffer *createBuffer(float duration);
             HulaRingBuffer *createAndAddBuffer(float duration);
 
+            void startPlayback();
+            void endPlayback();
+            void copyToBuffers(const float *samples, ring_buffer_size_t sampleCount);
+            ring_buffer_size_t playbackCopyToBuffers(const float *samples, ring_buffer_size_t sampleCount);
+
             std::vector<Device *> getDevices(DeviceType type) const;
 
             bool setActiveInputDevice(Device *device) const;

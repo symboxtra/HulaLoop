@@ -114,6 +114,70 @@ void Controller::removeBuffer(HulaRingBuffer *rb)
 }
 
 /**
+ * Notify OSAudio to start reading from the list of buffers
+ * that will be played back on the selected device.
+ *
+ */
+void Controller::startPlayback()
+{
+    audio->startPlayback();
+}
+
+/**
+ * Notify OSAudio to stop reading from the list of buffers
+ * and reset back to recording audio
+ *
+ */
+void Controller::endPlayback()
+{
+    audio->endPlayback();
+}
+
+/**
+ * Write to each of the buffers that have been registered with the backend.
+ *
+ * To calculate the number of samples from frames or bytes,
+ * refer to the following:
+ *
+ * 1 sample = sizeof(SAMPLE) bytes -- In our case this is sizeof(float)
+ * 1 frame = NUM_CHANNELS * 1 sample
+ *
+ * The macros BYTES_TO_SAMPLES and SAMPLES_TO_BYTES are also available
+ * to ease any conversion.
+ *
+ * @param samples Buffer of interleaved float samples
+ * @param sampleCount Number of samples in the buffer
+ */
+void Controller::copyToBuffers(const float *samples, ring_buffer_size_t sampleCount)
+{
+    return audio->copyToBuffers(samples, sampleCount);
+}
+
+/**
+ * This function differs from copyToBuffers in that it
+ * returns the number of samples written to the playback
+ * ring buffer. This is useful for filling the buffer at
+ * a reliable rate when reading from a file for playback.
+ *
+ * To calculate the number of samples from frames or bytes,
+ * refer to the following:
+ *
+ * 1 sample = sizeof(SAMPLE) bytes -- In our case this is sizeof(float)
+ * 1 frame = NUM_CHANNELS * 1 sample
+ *
+ * The macros BYTES_TO_SAMPLES and SAMPLES_TO_BYTES are also available
+ * to ease any conversion.
+ *
+ * @param samples Buffer of interleaved float samples
+ * @param sampleCount Number of samples in the buffer
+ * @return Number of samples written to the playback buffer
+ */
+ring_buffer_size_t Controller::playbackCopyToBuffers(const float *samples, ring_buffer_size_t sampleCount)
+{
+    return audio->playbackCopyToBuffers(samples, sampleCount);
+}
+
+/**
  * @ingroup memory_management
  *
  * Fetch a list of devices for the given DeviceType.
