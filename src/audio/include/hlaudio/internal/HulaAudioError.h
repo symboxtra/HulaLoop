@@ -83,44 +83,53 @@
 #define HL_PA_DEVICE_READ_STREAM_CODE -8
 #define HL_PA_DEVICE_READ_STREAM_MSG  "Error during read from device stream!"
 
+#define HL_INPUT_EQUAL_OUTPUT_CODE -9
+#define HL_INPUT_EQUAL_OUTPUT_MSG  "Cannot assign an output device as input!"
+
+#define HL_OUTPUT_EQUAL_INPUT_CODE -10
+#define HL_OUTPUT_EQUAL_INPUT_MSG  "Cannot assign an input device as output!"
+
 // OSXAudio error messages
-#define HL_OSX_DAEMON_INIT_CODE -9
+// Block: 100-109
+#define HL_OSX_DAEMON_INIT_CODE -100
 #define HL_OSX_DAEMON_INIT_MSG  "Could not start hulaloop-osx-daemon process!"
 
-#define HL_OSX_DAEMON_CRASH_CODE -10
+#define HL_OSX_DAEMON_CRASH_CODE -101
 #define HL_OSX_DAEMON_CRASH_MSG  "The hulaloop-osx-daemon process crashed!"
 
-#define HL_OSX_PGREP_CODE -11
+#define HL_OSX_PGREP_CODE -102
 #define HL_OSX_PGREP_MSG  "Could not start pgrep process!"
 
-#define HL_OSX_EXEPATH_CODE -12
+#define HL_OSX_EXEPATH_CODE -103
 #define HL_OSX_EXEPATH_MSG  "Could not retrieve path to current executable!"
 
-#define HL_OSX_EXEPATH_TRIM_CODE -13
+#define HL_OSX_EXEPATH_TRIM_CODE -104
 #define HL_OSX_EXEPATH_TRIM_MSG  "Could not trim executable name from install path!"
 
 // LinuxAudio error messages
-#define HL_LINUX_OPEN_DEVICE_CODE -14
+// Block: 110-119
+#define HL_LINUX_OPEN_DEVICE_CODE -110
 #define HL_LINUX_OPEN_DEVICE_MSG  "Could not open ALSA audio device!"
 
-#define HL_LINUX_ALSA_CLOSE_STREAM_CODE -15
+#define HL_LINUX_ALSA_CLOSE_STREAM_CODE -111
 #define HL_LINUX_ALSA_CLOSE_STREAM_MSG  "Could not close ALSA device stream!"
 
-#define HL_LINUX_SET_PARAMS_CODE -16
+#define HL_LINUX_SET_PARAMS_CODE -112
 #define HL_LINUX_SET_PARAMS_MSG "Could not set ALSA device params!"
 
 // WindowsAudio error messages
-#define HL_WIN_GET_DEVICES_CODE -17
+// Block: 120-229
+#define HL_WIN_GET_DEVICES_CODE -120
 #define HL_WIN_GET_DEVICES_MSG "Could not fetch WASAPI audio devices!"
 
-#define HL_WIN_OPEN_STREAM_CODE -18
+#define HL_WIN_OPEN_STREAM_CODE -121
 #define HL_WIN_OPEN_STREAM_MSG  "Could not open WASAPI device stream!"
 
 // HulaRingBuffer error messages
-#define HL_RB_ALLOC_BUFFER_CODE -19
+#define HL_RB_ALLOC_BUFFER_CODE -200
 #define HL_RB_ALLOC_BUFFER_MSG  "Could not allocate ring buffer!"
 
-#define HL_RB_INIT_BUFFER_CODE -20
+#define HL_RB_INIT_BUFFER_CODE -201
 #define HL_RB_INIT_BUFFER_MSG  "Could not initialize ring buffer! Perhaps the size is not power of 2?"
 
 namespace hula
