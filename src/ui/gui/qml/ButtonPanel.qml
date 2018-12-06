@@ -594,7 +594,7 @@ Rectangle {
                 model: ListModel {
                     id: iDeviceItems
                     Component.onCompleted: {
-                        var idevices = qmlbridge.getInputDevices().split(',')
+                        var idevices = qmlbridge.getInputDevices().split('^^')
                         var i
                         for (i = 0; i < idevices.length; i++) {
                             append({
@@ -620,7 +620,7 @@ Rectangle {
                         selectedInd = currentIndex;
 
                     model.clear();
-                    var idevices = qmlbridge.getInputDevices().split(',')
+                    var idevices = qmlbridge.getInputDevices().split('^^')
                         var i
                         for (i = 0; i < idevices.length; i++) {
                             model.append({
@@ -654,7 +654,7 @@ Rectangle {
                 model: ListModel {
                     id: oDeviceItems
                     Component.onCompleted: {
-                        var odevices = qmlbridge.getOutputDevices().split(',')
+                        var odevices = qmlbridge.getOutputDevices().split('^^')
                         var i
                         for (i = 0; i < odevices.length; i++) {
                             append({
@@ -680,7 +680,7 @@ Rectangle {
                         selectedInd = currentIndex;
 
                     model.clear();
-                    var odevices = qmlbridge.getOutputDevices().split(',')
+                    var odevices = qmlbridge.getOutputDevices().split('^^')
                         var i
                         for (i = 0; i < odevices.length; i++) {
                             model.append({

@@ -552,7 +552,7 @@
 <context>
     <name>Exception</name>
     <message>
-        <location filename="../../src/control/include/hlcontrol/internal/HulaControlError.h" line="146"/>
+        <location filename="../../src/control/include/hlcontrol/internal/HulaControlError.h" line="152"/>
         <source>Unknown error code: %1</source>
         <translation type="unfinished"></translation>
     </message>

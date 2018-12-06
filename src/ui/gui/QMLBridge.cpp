@@ -452,7 +452,7 @@ QString QMLBridge::getInputDevices()
         devices += vd[i]->getName();
         if (i < vd.size() - 1)
         {
-            devices += ",";
+            devices += "^^";
         }
     }
 
@@ -492,7 +492,7 @@ QString QMLBridge::getOutputDevices()
         devices += vd[i]->getName();
         if (i < vd.size() - 1)
         {
-            devices += ",";
+            devices += "^^";
         }
     }
 
