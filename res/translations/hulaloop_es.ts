@@ -132,6 +132,21 @@
         <translation>¿Seguro que quieres descartar?</translation>
     </message>
     <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="858"/>
+        <source>No</source>
+        <translation type="unfinished">No</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="865"/>
+        <source>Yes</source>
+        <translation type="unfinished">Sí</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="869"/>
+        <source>Record Audio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="911"/>
         <source>Delay Recording (hh:mm:ss)</source>
         <translation>Retraso antes de grabar (hh:mm:ss)</translation>

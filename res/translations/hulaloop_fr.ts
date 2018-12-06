@@ -124,6 +124,21 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="858"/>
+        <source>No</source>
+        <translation type="unfinished">Non</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="865"/>
+        <source>Yes</source>
+        <translation type="unfinished">Oui</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="869"/>
+        <source>Record Audio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="911"/>
         <source>Delay Recording (hh:mm:ss)</source>
         <translation>Enregistrement différé (hh:mm:ss)</translation>

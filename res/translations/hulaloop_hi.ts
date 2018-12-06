@@ -124,6 +124,21 @@
         <translation>क्या आप वाकई त्यागना चाहते हैं?</translation>
     </message>
     <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="858"/>
+        <source>No</source>
+        <translation type="unfinished">नहीं</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="865"/>
+        <source>Yes</source>
+        <translation type="unfinished">हाँ</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="869"/>
+        <source>Record Audio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="911"/>
         <source>Delay Recording (hh:mm:ss)</source>
         <translation></translation>
