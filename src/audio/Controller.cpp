@@ -224,7 +224,7 @@ bool Controller::setActiveInputDevice(Device *device) const
     }
     catch(const AudioException &ae)
     {
-        throw ae;
+        throw;
     }
 }
 
@@ -248,7 +248,7 @@ bool Controller::setActiveOutputDevice(Device *device) const
     }
     catch(const AudioException &ae)
     {
-        throw ae;
+        throw;
     }
 }
 

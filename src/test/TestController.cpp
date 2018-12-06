@@ -45,7 +45,7 @@ Disabled until LinuxAudio works
  *
  * EXPECTED:
  *      returns true
-
+ */
 TEST_F(TestController, set_input_works_with_record)
 {
     std::vector<Device *> devices = this->getDevices(DeviceType::RECORD);
@@ -64,7 +64,7 @@ TEST_F(TestController, set_input_works_with_record)
  *
  * EXPECTED:
  *      returns true
-
+ */
 TEST_F(TestController, set_output_works)
 {
     std::vector<Device *> devices = this->getDevices(DeviceType::PLAYBACK);
@@ -77,34 +77,36 @@ TEST_F(TestController, set_output_works)
 
     Device::deleteDevices(devices);
 }
-*/
+
 
 /**
  * setActiveInputDevice with an output device
  *
  * EXPECTED:
- *      returns false
+ *      throws exception
  */
 TEST_F(TestController, set_input_fails_when_given_output)
 {
     Device device(DeviceID(), "Device", DeviceType::PLAYBACK);
 
-    bool success = this->setActiveInputDevice(&device);
-    EXPECT_FALSE(success);
+    EXPECT_THROW({
+        bool success = this->setActiveInputDevice(&device);
+    }, AudioException);
 }
 
 /**
  * setActiveOutputDevice with an input device
  *
  * EXPECTED:
- *      returns false
+ *      throws exception
  */
 TEST_F(TestController, set_output_fails_when_given_input)
 {
     Device device(DeviceID(), "Device", DeviceType::RECORD);
 
-    bool success = this->setActiveOutputDevice(&device);
-    EXPECT_FALSE(success);
+    EXPECT_THROW({
+        bool success = this->setActiveOutputDevice(&device);
+    }, AudioException);
 }
 
 /**
