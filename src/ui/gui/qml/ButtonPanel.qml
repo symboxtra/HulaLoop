@@ -832,18 +832,18 @@ Rectangle {
 
         x: Math.round((window.width - width) / 2)
         y: Math.round((window.height - height) / 2)
-        width: 255
-        height: 100
 
         modal: true
         focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
         ColumnLayout {
-            spacing: Math.round(window.height * 0.15)
+            spacing: Math.round(window.height * 0.1)
+
             ColumnLayout {
-                spacing: Math.round(discardPopup.height * 0.15)
-                RowLayout{
+                spacing: Math.round(discardPopup.height * 0.1)
+
+                RowLayout {
                     Text {
                         id: textbot
                         color: "white"
@@ -852,21 +852,21 @@ Rectangle {
                 }
                 RowLayout {
                     Layout.alignment: Qt.AlignCenter
-                    spacing: Math.round(buttonPanel.width * 0.05)
                     width: gridLayout.width / 2
+
                     Button {
-                        text: "No"
+                        text: qsTr("No")
                         onClicked: {
                             discardPopup.close()
                         }
                     }
 
                     Button {
-                        text: "Yes"
+                        text: qsTr("Yes")
                         onClicked: {
                             // Discard files
                             qmlbridge.discard()
-                            recordBtn.tttext = "Record Audio"
+                            recordBtn.tttext = qsTr("Record Audio")
 
                             // Start recording again
                             stopBtn.isStopped = false

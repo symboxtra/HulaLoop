@@ -16,8 +16,8 @@ ApplicationWindow {
     minimumWidth: 800
 
     visible: true
-    width: 1024
-    height: 576
+    width: 1152
+    height: 648
 
     Material.theme: Material.Grey
     Material.accent: Material.Orange
