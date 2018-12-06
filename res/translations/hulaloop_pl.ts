@@ -6,12 +6,12 @@
     <message>
         <location filename="../../src/ui/gui/qml/BottomRectangle.qml" line="23"/>
         <source>  Visualizer  </source>
-        <translation type="unfinished"></translation>
+        <translation>  Wizualizator  </translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/BottomRectangle.qml" line="23"/>
         <source>  Editor  </source>
-        <translation type="unfinished"></translation>
+        <translation>  Redaktor  </translation>
     </message>
 </context>
 <context>
@@ -25,7 +25,7 @@
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="181"/>
         <source>Stop recording</source>
-        <translation type="unfinished"></translation>
+        <translation>Zatrzymaj nagrywanie</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="202"/>
@@ -52,17 +52,17 @@
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="308"/>
         <source>Set recording delay and duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustaw czas trwania i opóźnienia</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="340"/>
         <source>Export audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj nagranie</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="372"/>
         <source>Check for updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprawdź aktualizacje</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="579"/>
@@ -72,7 +72,7 @@
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="592"/>
         <source>Change input device</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmien urządzenia wejściowe</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="639"/>
@@ -82,37 +82,37 @@
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="725"/>
         <source>Display record devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż urządzenia wejściowe</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="745"/>
         <source>Visualizer type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ wizualizatora</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="755"/>
         <source>Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Słupkowy</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="755"/>
         <source>Circle</source>
-        <translation type="unfinished"></translation>
+        <translation>Koło</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="755"/>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linia</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="780"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Język</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="652"/>
         <source>Change output device</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmień urządzenie wyjściowe</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="30"/>
@@ -120,12 +120,12 @@
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="59"/>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="881"/>
         <source>Elapsed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Minęło %1</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="850"/>
         <source>Are you sure you want to discard?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy na pewno chcesz odrzucić nagranie?</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="911"/>
@@ -410,12 +410,12 @@
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="330"/>
         <source>Are you sure you want to discard? (y/N): </source>
-        <translation type="unfinished"></translation>
+        <translation>Czy na pewno chcesz odrzucić?(t/N): </translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="340"/>
         <source>Discard cancelled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Odrzucenie anulowane.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="380"/>
@@ -551,12 +551,12 @@
     <message>
         <location filename="../../src/ui/cli/main.cpp" line="81"/>
         <source>Delaying for %1 seconds...</source>
-        <translation type="unfinished"></translation>
+        <translation>Opóźnienie na %1 sekundę...</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/main.cpp" line="91"/>
         <source>Recording for %1 seconds...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nagrywanie przez %1 sekunde...</translation>
     </message>
 </context>
 <context>
@@ -564,7 +564,7 @@
     <message>
         <location filename="../../src/control/include/hlcontrol/internal/HulaControlError.h" line="152"/>
         <source>Unknown error code: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieznany błąd: %1</translation>
     </message>
 </context>
 <context>
@@ -573,7 +573,7 @@
         <location filename="../../src/control/Transport.cpp" line="216"/>
         <source>Ready</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation>Gotowy</translation>
     </message>
     <message>
         <location filename="../../src/control/Transport.cpp" line="218"/>
@@ -611,22 +611,22 @@
     <message>
         <location filename="../../src/ui/gui/QMLBridge.cpp" line="737"/>
         <source>Unsaved Changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Niezapisane Zmiany</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/QMLBridge.cpp" line="740"/>
         <source>You have unsaved audio.</source>
-        <translation type="unfinished"></translation>
+        <translation>Masz niezapisany nagranie.</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/QMLBridge.cpp" line="741"/>
         <source>Would you like to save your audio?</source>
-        <translation type="unfinished"></translation>
+        <translation>Chciałbyś zapisać swoje nagranie?</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/QMLBridge.cpp" line="742"/>
         <source>Go back and save</source>
-        <translation type="unfinished"></translation>
+        <translation>Wróć i zapisz</translation>
     </message>
 </context>
 <context>
@@ -710,18 +710,18 @@
     <message>
         <location filename="../../src/launcher/qml/main.qml" line="121"/>
         <source>Click here to dismiss</source>
-        <translation type="unfinished"></translation>
+        <translation>Kliknij tutaj, aby zamknąć</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="25"/>
         <source>Elapsed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Upływający czas %1</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="43"/>
         <source>Ready</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation>gotowy</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="52"/>
@@ -738,20 +738,20 @@
         <location filename="../../src/ui/gui/qml/main.qml" line="111"/>
         <source>Playing</source>
         <comment>state</comment>
-        <translation type="unfinished">Gra</translation>
+        <translation>Gra</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="65"/>
         <source>Paused</source>
         <comment>state</comment>
-        <translation type="unfinished">Wstrzymane</translation>
+        <translation>Wstrzymane</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="50"/>
         <location filename="../../src/ui/gui/qml/main.qml" line="80"/>
         <source>Recording</source>
         <comment>state</comment>
-        <translation type="unfinished">Nagrywa</translation>
+        <translation>Nagrywa</translation>
     </message>
 </context>
 </TS>
