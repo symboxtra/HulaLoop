@@ -562,6 +562,16 @@
         <source>Run a system command from within HulaLoop.</source>
         <translation>Ejecutar un comando del sistema desde HulaLoop.</translation>
     </message>
+    <message>
+        <location filename="../../src/ui/cli/main.cpp" line="81"/>
+        <source>Delaying for %1 seconds...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/main.cpp" line="91"/>
+        <source>Recording for %1 seconds...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Exception</name>

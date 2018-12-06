@@ -548,6 +548,16 @@
         <source>Run a system command from within HulaLoop.</source>
         <translation>Uruchom polecenie systemowe z aplikacji.</translation>
     </message>
+    <message>
+        <location filename="../../src/ui/cli/main.cpp" line="81"/>
+        <source>Delaying for %1 seconds...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/main.cpp" line="91"/>
+        <source>Recording for %1 seconds...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Exception</name>

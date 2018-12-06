@@ -521,6 +521,16 @@
         <source>Command failed with value of &apos;false&apos;.</source>
         <translation></translation>
     </message>
+    <message>
+        <location filename="../../src/ui/cli/main.cpp" line="81"/>
+        <source>Delaying for %1 seconds...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/main.cpp" line="91"/>
+        <source>Recording for %1 seconds...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Exception</name>

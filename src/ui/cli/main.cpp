@@ -1,4 +1,6 @@
+#include <chrono>
 #include <cstdio>
+#include <thread>
 
 #include <hlaudio/hlaudio.h>
 #include <hlcontrol/hlcontrol.h>
@@ -72,6 +74,27 @@ int main(int argc, char **argv)
     }
     else
     {
+        if (extraArgs.delay.size() > 0)
+        {
+            double delay = stod(extraArgs.delay);
+
+            printf("%s\n", qPrintable(CLI::tr("Delaying for %1 seconds...").arg(delay)));
+            std::this_thread::sleep_for(std::chrono::milliseconds((int)(delay * 1000)));
+        }
+
         cli.processCommand(HL_RECORD_LONG, { extraArgs.delay, extraArgs.duration });
+
+        if (extraArgs.duration.size() > 0)
+        {
+            double duration = stod(extraArgs.duration);
+
+            printf("%s\n", qPrintable(CLI::tr("Recording for %1 seconds...").arg(duration)));
+            std::this_thread::sleep_for(std::chrono::milliseconds((int)(duration * 1000)));
+        }
+
+        if (extraArgs.outputFilePath.size() > 0)
+        {
+            cli.processCommand(HL_EXPORT_LONG, { extraArgs.outputFilePath });
+        }
     }
 }
