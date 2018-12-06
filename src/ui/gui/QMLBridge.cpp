@@ -179,7 +179,6 @@ bool QMLBridge::record()
 
         if (msgBox.exec() == QMessageBox::Ok)
         {
-            exit(1);
         }
 
     }
@@ -213,7 +212,6 @@ bool QMLBridge::stop()
 
         if (msgBox.exec() == QMessageBox::Ok)
         {
-            exit(1);
         }
 
     }
@@ -243,7 +241,6 @@ bool QMLBridge::play()
 
         if (msgBox.exec() == QMessageBox::Ok)
         {
-            exit(1);
         }
 
     }
@@ -277,7 +274,6 @@ bool QMLBridge::pause()
 
         if (msgBox.exec() == QMessageBox::Ok)
         {
-            exit(1);
         }
 
     }
@@ -350,6 +346,10 @@ bool QMLBridge::setActiveInputDevice(QString QDeviceName)
                 msgBox.setWindowTitle("HulaLoop Error");
                 msgBox.setText(QString::fromStdString(ce.getErrorMessage()));
                 msgBox.setStandardButtons(QMessageBox::Ok);
+
+                if (msgBox.exec() == QMessageBox::Ok)
+                {
+                }
             }
 
             Device::deleteDevices(iDevices);
@@ -403,6 +403,10 @@ bool QMLBridge::setActiveOutputDevice(QString QDeviceName)
                 msgBox.setWindowTitle("HulaLoop Error");
                 msgBox.setText(QString::fromStdString(ce.getErrorMessage()));
                 msgBox.setStandardButtons(QMessageBox::Ok);
+
+                if (msgBox.exec() == QMessageBox::Ok)
+                {
+                }
             }
 
             Device::deleteDevices(oDevices);
@@ -440,7 +444,6 @@ QString QMLBridge::getInputDevices()
 
         if (msgBox.exec() == QMessageBox::Ok)
         {
-            exit(1);
         }
     }
 
@@ -481,7 +484,6 @@ QString QMLBridge::getOutputDevices()
 
         if (msgBox.exec() == QMessageBox::Ok)
         {
-            exit(1);
         }
     }
 

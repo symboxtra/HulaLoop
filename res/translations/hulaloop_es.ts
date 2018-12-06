@@ -633,22 +633,22 @@
 <context>
     <name>hula::QMLBridge</name>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="735"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="737"/>
         <source>Unsaved Changes</source>
         <translation>Cambios sin Guardar</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="738"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="740"/>
         <source>You have unsaved audio.</source>
         <translation>Hay audio sin guardar.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="739"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="741"/>
         <source>Would you like to save your audio?</source>
         <translation>¿Le gustaría guardar el audio?</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="740"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="742"/>
         <source>Go back and save</source>
         <translation>Volver atrás y guardar</translation>
     </message>
