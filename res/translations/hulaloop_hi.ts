@@ -6,12 +6,12 @@
     <message>
         <location filename="../../src/ui/gui/qml/BottomRectangle.qml" line="23"/>
         <source>  Visualizer  </source>
-        <translation type="unfinished"></translation>
+        <translation>  विजुआलाइज़र  </translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/BottomRectangle.qml" line="23"/>
         <source>  Editor  </source>
-        <translation type="unfinished"></translation>
+        <translation>  संपादिक  </translation>
     </message>
 </context>
 <context>
@@ -383,12 +383,12 @@
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="330"/>
         <source>Are you sure you want to discard? (y/N): </source>
-        <translation type="unfinished"></translation>
+        <translation>क्या आप वाकई त्यागना चाहते हैं?</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="340"/>
         <source>Discard cancelled.</source>
-        <translation type="unfinished"></translation>
+        <translation>रद्द रद्द करें</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="380"/>
@@ -524,12 +524,12 @@
     <message>
         <location filename="../../src/ui/cli/main.cpp" line="81"/>
         <source>Delaying for %1 seconds...</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 सेकंड के लिए देरी</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/main.cpp" line="91"/>
         <source>Recording for %1 seconds...</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 सेकंड के लिए रिकॉर्डिंग</translation>
     </message>
 </context>
 <context>
@@ -537,7 +537,7 @@
     <message>
         <location filename="../../src/control/include/hlcontrol/internal/HulaControlError.h" line="152"/>
         <source>Unknown error code: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>अज्ञात त्रुटि: %1</translation>
     </message>
 </context>
 <context>
@@ -546,7 +546,7 @@
         <location filename="../../src/control/Transport.cpp" line="216"/>
         <source>Ready</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation>तैयार</translation>
     </message>
     <message>
         <location filename="../../src/control/Transport.cpp" line="218"/>
@@ -584,22 +584,22 @@
     <message>
         <location filename="../../src/ui/gui/QMLBridge.cpp" line="737"/>
         <source>Unsaved Changes</source>
-        <translation type="unfinished"></translation>
+        <translation>सहेजे गए परिवर्तन</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/QMLBridge.cpp" line="740"/>
         <source>You have unsaved audio.</source>
-        <translation type="unfinished"></translation>
+        <translation>आपके पास सहेजे गए ऑडियो नहीं हैं</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/QMLBridge.cpp" line="741"/>
         <source>Would you like to save your audio?</source>
-        <translation type="unfinished"></translation>
+        <translation>क्या आप अपना ऑडियो सहेजने के लिए जीते रहेंगे?</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/QMLBridge.cpp" line="742"/>
         <source>Go back and save</source>
-        <translation type="unfinished"></translation>
+        <translation>वापस जाओ और बचाओ</translation>
     </message>
 </context>
 <context>
@@ -663,43 +663,43 @@
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="25"/>
         <source>Elapsed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>गुजर चुके: %1</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="43"/>
         <source>Ready</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation>तैयार</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="52"/>
         <source>HulaLoop Information</source>
-        <translation type="unfinished">HulaLoop की जानकारी</translation>
+        <translation>HulaLoop की जानकारी</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="52"/>
         <source>HulaLoop has started recording audio!</source>
-        <translation type="unfinished">HulaLoop ने ऑडियो रिकॉर्ड करना शुरू कर दिया है!</translation>
+        <translation>HulaLoop ने ऑडियो रिकॉर्ड करना शुरू कर दिया है!</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="60"/>
         <location filename="../../src/ui/gui/qml/main.qml" line="111"/>
         <source>Playing</source>
         <comment>state</comment>
-        <translation type="unfinished">चल रहा है</translation>
+        <translation>चल रहा है</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="65"/>
         <source>Paused</source>
         <comment>state</comment>
-        <translation type="unfinished">रूका</translation>
+        <translation>रूका</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="50"/>
         <location filename="../../src/ui/gui/qml/main.qml" line="80"/>
         <source>Recording</source>
         <comment>state</comment>
-        <translation type="unfinished">रिकॉर्डिंग</translation>
+        <translation>रिकॉर्डिंग</translation>
     </message>
     <message>
         <location filename="../../src/launcher/qml/main.qml" line="40"/>
@@ -724,7 +724,7 @@
     <message>
         <location filename="../../src/launcher/qml/main.qml" line="121"/>
         <source>Click here to dismiss</source>
-        <translation type="unfinished"></translation>
+        <translation>खारिज करने के लिए यहां क्लिक करें</translation>
     </message>
 </context>
 </TS>
