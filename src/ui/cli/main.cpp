@@ -92,6 +92,8 @@ int main(int argc, char **argv)
             std::this_thread::sleep_for(std::chrono::milliseconds((int)(duration * 1000)));
         }
 
+        cli.processCommand(HL_STOP_LONG, {});
+
         if (extraArgs.outputFilePath.size() > 0)
         {
             cli.processCommand(HL_EXPORT_LONG, { extraArgs.outputFilePath });
