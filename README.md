@@ -1,7 +1,7 @@
 [![Jenkins Server Status](https://img.shields.io/badge/dynamic/json.svg?label=Jenkins%20Server&url=http%3A%2F%2Fwww.symboxtra.tk%2Fstatus.php%3Fservers%3Djenkins&query=%24..jenkins&colorB=0b7cbd)](http://jenkins.symboxtra.dynu.net "Jenkins Server Status")
 [![](https://jenkins.symboxtra.dynu.net/job/HulaLoop/job/master/badge/icon)](https://jenkins.symboxtra.dynu.net/job/HulaLoop/job/master/ "Jenkins Build Status")
-[![codecov](https://codecov.io/gh/jmcker/HulaLoop/branch/master/graph/badge.svg?token=okLfIHMeEf)](https://codecov.io/gh/jmcker/HulaLoop "Code Coverage Status")
-[![CodeFactor](https://www.codefactor.io/repository/github/jmcker/hulaloop/badge)](https://www.codefactor.io/repository/github/jmcker/hulaloop "Code Factor Grade")
+[![codecov](https://codecov.io/gh/symboxtra/HulaLoop/branch/master/graph/badge.svg?token=okLfIHMeEf)](https://codecov.io/gh/symboxtra/HulaLoop "Code Coverage Status")
+[![CodeFactor](https://www.codefactor.io/repository/github/symboxtra/hulaloop/badge)](https://www.codefactor.io/repository/github/symboxtra/hulaloop "Code Factor Grade")
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.opensource.org/licenses/GPL-3.0)
 
 # HulaLoop #
@@ -24,12 +24,21 @@ git submodule update --remote --merge
 
 
 #### Debian-based Linux ####
-Required:
+Check which version of Debian you have by running
 ```bash
-sudo apt install g++ build-essential cmake libgl1-mesa-dev libasound2-dev libsndfile-dev pavucontrol
+cat /etc/debian_version
 ```
 
-**IMPORTANT:** This application requires Qt 5.10+. This typically has to be installed using the Qt GUI installer since ```apt``` does not backport a recent enough version. Be sure to install the extra **Qt Charts** package as the GUI relies on it.
+If running Debian Stretch:
+```bash
+sudo apt install build-essential cmake libgl1-mesa-dev libasound2-dev libsndfile-dev pavucontrol
+```
+**IMPORTANT:** This application requires Qt 5.9.5+. This typically has to be installed using the Qt GUI installer since ```apt``` on Debian Stretch does not backport an up-to-date version. Be sure to install the extra **Qt Charts** package as the GUI relies on it.
+
+If running Debian Buster:
+```bash
+sudo apt install build-essential cmake libgl1-mesa-dev libasound2 libasound2-dev pavucontrol qt5-default libqt5charts5 libqt5quickcontrols2-5
+```
 
 If using GNOME (fixes system tray icons and notifications):
 ```bash
@@ -42,10 +51,10 @@ sudo apt install python-sphinx doxygen graphviz help2man
 python -m pip install --user recommonmark
 ```
 
-#### RPM-based Linux ####
+#### Redhat-based Linux ####
 Required:
 ```bash
-sudo dnf install gcc-c++ make cmake qt5-devel qt5-qtquickcontrols2-devel alsa-lib alsa-lib-devel
+sudo dnf install gcc-c++ make cmake qt5-devel qt5-qtcharts qt5-qtquickcontrols2-devel alsa-lib alsa-lib-devel
 ```
 
 To enable the system tray icon and notifications the ```Topicons plus``` extension must be installed via ```dnf``` and enabled under *Tweaks->Extensions*.
@@ -57,6 +66,11 @@ If you want to compile documentation:
 ```bash
 sudo dnf install python-sphinx doxygen graphviz help2man
 python -m pip install --user recommonmark
+```
+
+If you want to generate RPM packages:
+```bash
+sudo dnf install rpm-build
 ```
 
 #### OSX ####

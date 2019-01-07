@@ -248,13 +248,13 @@
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="94"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="408"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="481"/>
         <source>Translation file successfully loaded.</source>
         <translation>Plik z tłumaczeniem został pomyślnie załadowany.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="98"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="412"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="485"/>
         <source>Could not find translation file for %1.</source>
         <translation>Nie można znaleźć pliku tłumaczącego dla &apos;%1&apos;.</translation>
     </message>
@@ -269,13 +269,13 @@
         <translation>Lista urządzeń audio</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="255"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="285"/>
         <source>Hz</source>
         <comment>unit</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="243"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="273"/>
         <source>Output file:</source>
         <comment>setting</comment>
         <translation>Plik wyjściowy:</translation>
@@ -300,152 +300,152 @@
         <translation type="vanished">Wydajność:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="144"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="164"/>
         <source>Device #%1</source>
         <translation>Nr urządzenia #%1</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="147"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="167"/>
         <source>Record</source>
         <comment>device capability</comment>
         <translation>Rozpocznij nagrywanie</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="148"/>
-        <location filename="../../src/ui/cli/CLICommon.h" line="151"/>
-        <location filename="../../src/ui/cli/CLICommon.h" line="154"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="168"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="171"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="174"/>
         <source>Yes</source>
         <translation>Tak</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="148"/>
-        <location filename="../../src/ui/cli/CLICommon.h" line="151"/>
-        <location filename="../../src/ui/cli/CLICommon.h" line="154"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="168"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="171"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="174"/>
         <source>No</source>
         <translation>Nie</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="150"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="170"/>
         <source>Loopback</source>
         <comment>device capability</comment>
         <translation>Sprzężenie zwrotne</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="153"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="173"/>
         <source>Output</source>
         <comment>device capability</comment>
         <translation>Wydajność</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="220"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="250"/>
         <source>Could not find device matching: %1</source>
         <extracomment>The argument in this text is the name or id of the device that the user searched for</extracomment>
         <translation>Nie można znaleźć dopasowania urządzenia: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="248"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="278"/>
         <source>Delay:</source>
         <translation>Opóźnienie:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="249"/>
-        <location filename="../../src/ui/cli/CLICommon.h" line="252"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="279"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="282"/>
         <source>s</source>
         <comment>abbreviation for seconds</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="251"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="281"/>
         <source>Duration:</source>
         <translation>Trwanie:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="254"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="284"/>
         <source>Sample rate:</source>
         <translation>Częstotliwość próbkowania:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="258"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="288"/>
         <source>Encoding:</source>
         <translation>Kodowanie:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="261"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="291"/>
         <source>Input device:</source>
         <translation>Urządzenie wejściowe:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="264"/>
+        <location filename="../../src/ui/cli/CLICommon.h" line="294"/>
         <source>Output device:</source>
         <translation>Urządzenie wyjściowe:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="37"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="38"/>
         <source>Warning: Unused argument &apos;%1&apos;.</source>
         <translation>Ostrzeżenie: Nieużywanego argumentu &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="48"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="49"/>
         <source>Missing argument &apos;%1&apos;</source>
         <translation>Brakujący argument &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="60"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="61"/>
         <source>Malformed argument &apos;%1&apos;</source>
         <translation>Zepsuty argument &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="61"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="62"/>
         <source>&apos;%1&apos; is not a valid %2.</source>
         <translation>&apos;%1&apos; nie jest prawidłowy &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="279"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="329"/>
         <source>Are you sure you want to discard? (y/N): </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="289"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="339"/>
         <source>Discard cancelled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="317"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="379"/>
         <source>Input device set to: %1</source>
         <translation>Urządzenie wejściowe ustawione do &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="321"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="383"/>
         <source>Failed to set input device.</source>
         <translation>Nie można ustawić urządzenia wejściowego.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="357"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="430"/>
         <source>Output device set to: %1</source>
         <translation>Urządzenie wyjściowe ustawione do &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="361"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="434"/>
         <source>Failed to set output device.</source>
         <translation>Nie można ustawić urządzenia wyjściowego.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="432"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="505"/>
         <source>System command returned: %1</source>
         <translation>Polecenie systemowe zostało zwrócone: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="437"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="510"/>
         <source>No system command processor is available.</source>
         <translation>Żaden procesor poleceń systemu nie jest dostępny.</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="447"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="520"/>
         <source>Unrecognized command &apos;%1&apos;</source>
         <translation>Polecenie nierozpoznane &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="454"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="527"/>
         <source>Command failed with value of &apos;false&apos;.</source>
         <translation>Polecenie nie powiodło się z wartością &apos;false&apos;.</translation>
     </message>
@@ -542,39 +542,47 @@
     </message>
 </context>
 <context>
+    <name>Exception</name>
+    <message>
+        <location filename="../../src/control/include/hlcontrol/internal/HulaControlError.h" line="146"/>
+        <source>Unknown error code: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Transport</name>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="162"/>
+        <location filename="../../src/control/Transport.cpp" line="202"/>
         <source>Ready</source>
         <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="164"/>
+        <location filename="../../src/control/Transport.cpp" line="204"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation>Nagrywa</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="166"/>
+        <location filename="../../src/control/Transport.cpp" line="206"/>
         <source>Stopped</source>
         <comment>state</comment>
         <translation>Zatrzymany</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="168"/>
+        <location filename="../../src/control/Transport.cpp" line="208"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation>Gra</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="170"/>
+        <location filename="../../src/control/Transport.cpp" line="210"/>
         <source>Paused</source>
         <comment>state</comment>
         <translation>Wstrzymane</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="172"/>
+        <location filename="../../src/control/Transport.cpp" line="212"/>
         <source>Unknown</source>
         <comment>state</comment>
         <translation>Nieznany</translation>
@@ -583,7 +591,7 @@
 <context>
     <name>hula::QMLBridge</name>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="530"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="745"/>
         <source>Go back and save</source>
         <translation type="unfinished"></translation>
     </message>
@@ -629,17 +637,17 @@
         <translation>Aktualizator HulaLoop</translation>
     </message>
     <message>
-        <location filename="../../src/launcher/main.cpp" line="41"/>
+        <location filename="../../src/launcher/main.cpp" line="43"/>
         <source>A newer version has been detected!</source>
         <translation>Nowsza wersja była znaleziona!</translation>
     </message>
     <message>
-        <location filename="../../src/launcher/main.cpp" line="41"/>
+        <location filename="../../src/launcher/main.cpp" line="43"/>
         <source>Click Ok to update!</source>
         <translation>Kliknij Ok aby rozpocząć aktualizację!</translation>
     </message>
     <message>
-        <location filename="../../src/launcher/main.cpp" line="62"/>
+        <location filename="../../src/launcher/main.cpp" line="63"/>
         <source>All systems are up-to-date!</source>
         <translation>Wszystkie systemy są aktualne!</translation>
     </message>
@@ -652,19 +660,24 @@
         <translation>Trwa aktualizacja HulaLoop</translation>
     </message>
     <message>
-        <location filename="../../src/launcher/qml/main.qml" line="67"/>
+        <location filename="../../src/launcher/qml/main.qml" line="76"/>
         <source>Checking for updates...</source>
         <translation>Sprawdzanie aktualizacji...</translation>
     </message>
     <message>
-        <location filename="../../src/launcher/qml/main.qml" line="75"/>
+        <location filename="../../src/launcher/qml/main.qml" line="85"/>
         <source>Downloading updates...</source>
         <translation>Pobieranie aktualizacji...</translation>
     </message>
     <message>
-        <location filename="../../src/launcher/qml/main.qml" line="82"/>
+        <location filename="../../src/launcher/qml/main.qml" line="100"/>
         <source>No updates found.</source>
         <translation>Nie znaleziono żadnych aktualizacji.</translation>
+    </message>
+    <message>
+        <location filename="../../src/launcher/qml/main.qml" line="121"/>
+        <source>Click here to dismiss</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="25"/>

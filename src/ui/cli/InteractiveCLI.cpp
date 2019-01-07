@@ -10,6 +10,7 @@
 #include "InteractiveCLI.h"
 
 using namespace hula;
+using namespace std;
 
 /**
  * Constuct a new instance of InteractiveCLI.
@@ -209,7 +210,15 @@ HulaCliStatus InteractiveCLI::processCommand(const std::string &command, const s
                 return HulaCliStatus::HULA_CLI_FAILURE;
             }
 
-            success = t->record(delay, duration);
+            try
+            {
+                success = t->record(delay, duration);
+            }
+            catch(const ControlException &ce)
+            {
+                fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, ce.getErrorMessage().c_str());
+                return HulaCliStatus::HULA_CLI_FAILURE;
+            }
         }
         else if (args.size() == 1)
         {
@@ -225,7 +234,15 @@ HulaCliStatus InteractiveCLI::processCommand(const std::string &command, const s
                 return HulaCliStatus::HULA_CLI_FAILURE;
             }
 
-            success = t->record(delay, HL_INFINITE_RECORD);
+            try
+            {
+                success = t->record(delay, HL_INFINITE_RECORD);
+            }
+            catch(const ControlException &ce)
+            {
+                fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, ce.getErrorMessage().c_str());
+                return HulaCliStatus::HULA_CLI_FAILURE;
+            }
         }
         else
         {
@@ -233,20 +250,53 @@ HulaCliStatus InteractiveCLI::processCommand(const std::string &command, const s
             printf("Delay: %.2f\n", this->delay);
             printf("Duration: %.2f\n", this->duration);
 
-            success = t->record(this->delay, this->duration);
+            try
+            {
+                success = t->record(this->delay, this->duration);
+            }
+            catch(const ControlException &ce)
+            {
+                fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, ce.getErrorMessage().c_str());
+                return HulaCliStatus::HULA_CLI_FAILURE;
+            }
+
         }
     }
     else if (command == HL_STOP_SHORT || command == HL_STOP_LONG)
     {
-        success = t->stop();
+        try
+        {
+            success = t->stop();
+        }
+        catch(const ControlException &ce)
+        {
+            fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, ce.getErrorMessage().c_str());
+            return HulaCliStatus::HULA_CLI_FAILURE;
+        }
     }
     else if (command == HL_PLAY_SHORT || command == HL_PLAY_LONG)
     {
-        success = t->play();
+        try
+        {
+            success = t->play();
+        }
+        catch(const ControlException &ce)
+        {
+            fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, ce.getErrorMessage().c_str());
+            return HulaCliStatus::HULA_CLI_FAILURE;
+        }
     }
     else if (command == HL_PAUSE_SHORT || command == HL_PAUSE_LONG)
     {
-        success = t->pause();
+        try
+        {
+            success = t->pause();
+        }
+        catch(const ControlException &ce)
+        {
+            fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, ce.getErrorMessage().c_str());
+            return HulaCliStatus::HULA_CLI_FAILURE;
+        }
     }
     else if (command == HL_EXPORT_SHORT || command == HL_EXPORT_LONG)
     {
@@ -310,7 +360,19 @@ HulaCliStatus InteractiveCLI::processCommand(const std::string &command, const s
         // Find device will already have printed a not-found error
         if (device != nullptr)
         {
-            bool ret = t->getController()->setActiveInputDevice(device);
+            bool ret = false;
+
+            try
+            {
+                ret = t->getController()->setActiveInputDevice(device);
+            }
+            catch(const AudioException &ae)
+            {
+                ControlException ce(ae.getErrorCode());
+
+                fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, ce.getErrorMessage().c_str());
+                return HulaCliStatus::HULA_CLI_FAILURE;
+            }
 
             if (ret)
             {
@@ -350,7 +412,18 @@ HulaCliStatus InteractiveCLI::processCommand(const std::string &command, const s
         // Find device will already have printed a not-found error
         if (device != nullptr)
         {
-            bool ret = t->getController()->setActiveOutputDevice(device);
+            bool ret = false;
+            try
+            {
+                ret = t->getController()->setActiveOutputDevice(device);
+            }
+            catch(const AudioException &ae)
+            {
+                ControlException ce(ae.getErrorCode());
+
+                fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, ce.getErrorMessage().c_str());
+                return HulaCliStatus::HULA_CLI_FAILURE;
+            }
 
             if (ret)
             {

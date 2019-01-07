@@ -4,8 +4,11 @@ cmake_minimum_required (VERSION 3.5)
 
 set (CMAKE_CXX_STANDARD 14)
 
-include (cmake/Qt5.cmake)
-include (cmake/Utility.cmake)
+# Make sure we can find our Find<package>.cmake files
+list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
+include (${CMAKE_CURRENT_LIST_DIR}/cmake/Qt5.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/cmake/Utility.cmake)
 
 # Version
 set (HL_VERSION_MAJOR 0)
@@ -36,18 +39,8 @@ if (WIN32 AND CMAKE_GENERATOR_PLATFORM MATCHES "x64")
     set (64BIT TRUE)
 endif ()
 
-set (HL_PACKAGE_TYPE ".tar.gz")
-if (WIN32 AND 64BIT)
-    set (HL_PACKAGE_TYPE "win64.exe")
-elseif (WIN32 AND NOT 64BIT)
-    set (HL_PACKAGE_TYPE "win32.exe")
-elseif (OSX)
-    set (HL_PACKAGE_TYPE ".dmg")
-elseif (EXISTS "/etc/debian_version")
-    set (HL_PACKAGE_TYPE ".deb")
-elseif (EXISTS "/etc/redhat-release")
-    set (HL_PACKAGE_TYPE ".rpm")
-endif ()
+# Configuration code for installers
+include (${CMAKE_CURRENT_LIST_DIR}/cmake/HulaInstall.cmake)
 
 # Global build options
 option (HL_BUILD_ONLY_AUDIO "Build only the audio library." OFF)
@@ -80,13 +73,6 @@ foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
     set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/lib/lib)
 endforeach ()
 
-# Set output for libs compiled with --target install
-# Allow override via -DCMAKE_INSTALL_PREFIX=blah
-if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND CMAKE_BUILD_TYPE MATCHES "Debug")
-    set (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/lib CACHE PATH "Installation path" FORCE)
-    set (CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/lib CACHE PATH "" FORCE) # Should this be here?
-endif ()
-
 message (STATUS "System Platform: ${CMAKE_SYSTEM_NAME} ${CMAKE_GENERATOR_PLATFORM}")
 message (STATUS "Install Prefix: ${CMAKE_INSTALL_PREFIX}\n")
 
@@ -98,9 +84,6 @@ set (HL_LIBRARIES)
 if (WIN32)
     list (APPEND HL_LIBRARIES winmm.lib ) # TODO: Add required windows libraries
 endif ()
-
-# Make sure we can find our Find<package>.cmake files
-list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 
 
@@ -226,12 +209,20 @@ if (NOT HL_BUILD_ONLY_AUDIO)
     endif ()
 
     add_subdirectory (${PROJECT_SOURCE_DIR}/res/translations)
-    include (cmake/Translation.cmake)
+    include (${CMAKE_CURRENT_LIST_DIR}/cmake/Translation.cmake)
 
     if (HL_BUILD_EXAMPLES)
         add_subdirectory (examples)
     endif ()
 endif ()
+
+install (
+    DIRECTORY ${CMAKE_BINARY_DIR}/bin
+    DESTINATION .
+    USE_SOURCE_PERMISSIONS
+    PATTERN "*.ilk" EXCLUDE
+    PATTERN "*.pdb" EXCLUDE
+)
 
 
 
@@ -243,7 +234,7 @@ endif ()
 # Build settings for DEBUG builds only
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
-    include (cmake/Testing.cmake)
+    include (${CMAKE_CURRENT_LIST_DIR}/cmake/Testing.cmake)
 
     # Test that only rely on the audio library
     create_test ("src/test/TestOSAudio.cpp" "" 3 FALSE FALSE)
