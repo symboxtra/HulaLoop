@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
         if (arg == "silent")
         {
             Updater updater;
-            updater.setUpdateHost("https://api.github.com/repos/jmcker/HulaLoop/releases/latest");
+            updater.setUpdateHost("https://api.github.com/repos/symboxtra/HulaLoop/releases/latest");
 
             QMessageBox msgBox;
             msgBox.setWindowTitle(Updater::tr("HulaLoop Updater"));

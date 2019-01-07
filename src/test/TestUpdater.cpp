@@ -34,7 +34,7 @@ class TestUpdater : public ::testing::Test {
 
 TEST_F(TestUpdater, checkAndDownloadUpdate)
 {
-    updater->setUpdateHost("https://api.github.com/repos/jmcker/HulaLoop/releases/latest");
+    updater->setUpdateHost("https://api.github.com/repos/symboxtra/HulaLoop/releases/latest");
     ASSERT_EQ(updater->checkForUpdate(), 1);
     ASSERT_EQ(updater->downloadUpdate(), 1);
 
