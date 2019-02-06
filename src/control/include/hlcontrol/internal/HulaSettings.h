@@ -31,6 +31,11 @@ namespace hula
             Encoding outputFileEncoding;
 
         protected:
+            /**
+             * Application wide instance of Qt translator.
+             * The translator is installed in the respective startup methods of the
+             * CLI and GUI and is used to translate on the fly.
+             */
             QTranslator *trans;
             HulaSettings();
 

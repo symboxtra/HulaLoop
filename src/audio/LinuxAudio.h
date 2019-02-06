@@ -34,7 +34,6 @@ namespace hula
             ~LinuxAudio();
 
             void capture();
-            void playback();
 
             bool setActiveInputDevice(Device *device);
             static void startPAVUControl();

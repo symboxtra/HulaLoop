@@ -42,10 +42,20 @@ namespace hula
             bool initRecordClicked;
 
         protected:
+            /**
+             * Instance of the Recorder class.
+             */
             Record *recorder;
+
+            /**
+             * Instance of the Playback class.
+             */
             Playback *player;
 
         public:
+            /**
+             * Instance of the Controller class.
+             */
             Controller *controller;
 
         public:

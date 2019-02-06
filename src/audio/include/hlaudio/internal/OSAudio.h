@@ -89,6 +89,12 @@ namespace hula
             uint32_t captureBufferSize;
 
         public:
+            /**
+             * Singular buffer reserved for distributing playback audio data
+             * to PortAudio.
+             * Samples are read from file in the Control/Playback class and
+             * delivered to PortAudio in the OSAudio/paPlayCallback method.
+             */
             HulaRingBuffer *playbackBuffer;
 
             virtual ~OSAudio() = 0;
