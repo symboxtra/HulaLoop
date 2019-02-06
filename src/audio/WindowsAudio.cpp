@@ -498,11 +498,11 @@ bool WindowsAudio::checkDeviceParams(Device *activeDevice)
 
         if (err == paFormatIsSupported)
         {
-            hlDebug() << HL_SAMPLE_RATE_VALID << std::endl;
+            hlDebug() << "Sample rate and format were valid." << std::endl;
         }
         else
         {
-            hlDebug() << HL_SAMPLE_RATE_INVALID << std::endl;
+            hlDebug() << "Sample rate and format were NOT valid." << std::endl;
             throw AudioException(HL_CHECK_PARAMS_CODE, HL_CHECK_PARAMS_MSG);
         }
 
