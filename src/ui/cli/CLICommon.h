@@ -131,11 +131,31 @@ namespace hula
         std::vector<Device *> devices;
         if (settings->getShowRecordDevices())
         {
-            devices = t->getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK | RECORD));
+            try
+            {
+                devices = t->getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK | RECORD));
+            }
+            catch(const AudioException &ae)
+            {
+                ControlException ce(ae.getErrorCode());
+
+                fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, ce.getErrorMessage().c_str());
+                exit(1);
+            }
         }
         else
         {
-            devices = t->getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK));
+            try
+            {
+                devices = t->getController()->getDevices((DeviceType)(PLAYBACK | LOOPBACK));
+            }
+            catch(const AudioException &ae)
+            {
+                ControlException ce(ae.getErrorCode());
+
+                fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, ce.getErrorMessage().c_str());
+                exit(1);
+            }
         }
 
         printf("\n");
@@ -179,7 +199,17 @@ namespace hula
 
         // TODO: Change this when proper device indexing is possible
         // devices = t->getController()->getDevices(type);
-        devices = t->getController()->getDevices((DeviceType)(DeviceType::LOOPBACK | DeviceType::RECORD | DeviceType::PLAYBACK));
+        try
+        {
+            devices = t->getController()->getDevices((DeviceType)(DeviceType::LOOPBACK | DeviceType::RECORD | DeviceType::PLAYBACK));
+        }
+        catch(const AudioException &ae)
+        {
+            ControlException ce(ae.getErrorCode());
+
+            fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, ce.getErrorMessage().c_str());
+            exit(1);
+        }
 
         // Check if we got a numeric id
         // Since we all do this differently,

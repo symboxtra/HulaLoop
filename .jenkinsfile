@@ -424,7 +424,8 @@ pipeline {
                     }
                     environment {
                         HL_OS = "Linux"
-                        HL_DOX_UNDOCUMENTED_LIMIT = 25
+                        // 25 + 40: To ignore the HulaAudioError macros that are uncommented
+                        HL_DOX_UNDOCUMENTED_LIMIT = 65
                     }
 
                     steps {

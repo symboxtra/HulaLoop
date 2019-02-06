@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+
+Version=@HL_VERSION_STR@
+Name=@PROJECT_NAME@
+GenericName=Audio Application
+Comment[en_US.UTF-8]=Simple cross-platform audio loopback and recording.
+Icon=hulaloop-logo
+
+Terminal=false
+Categories=Qt;AudioVideo;Audio;Recorder
+
+Exec=hulaloop-launcher

@@ -31,8 +31,8 @@ namespace hula
         private:
             QNetworkAccessManager *manager;
             QNetworkReply *reply;
-            QFile *file;
 
+            QString errorMsg;
             QString updateHostUrl;
             QString downloadHostUrl;
             QString downloadFileName;
@@ -53,8 +53,9 @@ namespace hula
 
             QList<int> parseTagName(const QString &);
 
-            Q_INVOKABLE bool checkForUpdate();
-            Q_INVOKABLE bool downloadUpdate();
+            Q_INVOKABLE QString getErrorMessage();
+            Q_INVOKABLE int checkForUpdate();
+            Q_INVOKABLE int downloadUpdate();
 
             Q_INVOKABLE void startHulaLoopInstaller();
             Q_INVOKABLE void startHulaLoopApp();
@@ -67,7 +68,6 @@ namespace hula
              * network request and is used to update the progress bar accordingly.
              */
             void bytesDownloaded();
-
     };
 }
 

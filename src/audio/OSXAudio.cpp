@@ -52,7 +52,7 @@ OSXAudio::OSXAudio()
     {
         hlDebugf("PortAudio failed to initialize.\n");
         hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
-        exit(1); // TODO: Handle error
+        throw AudioException(HL_PA_INIT_CODE, HL_PA_INIT_MSG);
     }
 
     #if HL_NO_DEBUG_OUTPUT
@@ -130,7 +130,7 @@ int OSXAudio::isDaemonRunning()
             }
             catch (std::invalid_argument &e)
             {
-                (void)e;
+                (void) e;
                 hlDebugf("Failed to convert parsed PID.\n");
             }
         }
@@ -248,7 +248,6 @@ static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
     (void) statusFlags;
     (void) userData;
 
-    // TODO: Make sure this calculation is right
     obj->copyToBuffers(samples, framesPerBuffer * NUM_CHANNELS);
 
     return paContinue;
@@ -269,7 +268,7 @@ void OSXAudio::capture()
     if (inputParameters.device == paNoDevice)
     {
         hlDebug() << "Device %s not found." << this->activeInputDevice->getName() << std::endl;
-        exit(1); // TODO: Handle error
+        throw AudioException(HL_DEVICE_NOT_FOUND_CODE, HL_DEVICE_NOT_FOUND_MSG);
     }
 
     // Setup the stream for the selected device
@@ -293,7 +292,7 @@ void OSXAudio::capture()
     {
         hlDebugf("Could not open Port Audio device stream.\n");
         hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
-        exit(1); // TODO: Handle error
+        throw AudioException(HL_PA_OPEN_STREAM_CODE, HL_PA_OPEN_STREAM_MSG);
     }
 
     // Start the stream
@@ -302,7 +301,7 @@ void OSXAudio::capture()
     {
         hlDebugf("Could not start Port Audio device stream.\n");
         hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
-        exit(1); // TODO: Handle error
+        throw AudioException(HL_PA_DEVICE_READ_STREAM_CODE, HL_PA_DEVICE_READ_STREAM_MSG);
     }
 
     hlDebugf("Capture thread keep-alive started...\n");
@@ -320,7 +319,7 @@ void OSXAudio::capture()
     {
         hlDebugf("Error during read from device stream.\n");
         hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
-        exit(1); // TODO: Handle error
+        throw AudioException(HL_PA_DEVICE_READ_STREAM_CODE, HL_PA_DEVICE_READ_STREAM_MSG);
     }
 
     err = Pa_CloseStream(stream);
@@ -328,7 +327,7 @@ void OSXAudio::capture()
     {
         hlDebugf("Could not close Port Audio device stream.\n");
         hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
-        exit(1); // TODO: Handle error
+        throw AudioException(HL_PA_DEVICE_READ_STREAM_CODE, HL_PA_DEVICE_READ_STREAM_MSG);
     }
 }
 
@@ -350,7 +349,7 @@ std::vector<Device *> OSXAudio::getDevices(DeviceType type)
     if (deviceCount < 0)
     {
         hlDebugf("Failed to fetch PortAudio devices.\n");
-        exit(1); // TODO: Handle error
+        throw AudioException(HL_PA_GET_DEVICES_CODE, HL_PA_GET_DEVICES_MSG);
     }
 
     HulaAudioSettings *s = HulaAudioSettings::getInstance();
@@ -420,13 +419,9 @@ bool OSXAudio::checkDeviceParams(Device *device)
         err = Pa_IsFormatSupported(&parameters, nullptr, HulaAudioSettings::getInstance()->getSampleRate());
     }
 
-    if (err == paFormatIsSupported)
+    if (err != paFormatIsSupported)
     {
-        hlDebug() << HL_SAMPLE_RATE_VALID << std::endl;
-    }
-    else
-    {
-        hlDebug() << HL_SAMPLE_RATE_INVALID << std::endl;
+        throw AudioException(HL_CHECK_PARAMS_CODE, HL_CHECK_PARAMS_MSG);
     }
 
     return err == paFormatIsSupported;
