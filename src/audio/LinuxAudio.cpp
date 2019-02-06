@@ -250,7 +250,6 @@ bool LinuxAudio::checkDeviceParams(Device *device)
     snd_config_update_free_global();
     if (samplingRateValid && formatValid)
     {
-        hlDebug() << HL_SAMPLE_RATE_VALID << std::endl;
         return true;
     }
 
@@ -263,7 +262,7 @@ bool LinuxAudio::checkDeviceParams(Device *device)
         hlDebug() << "Format was invalid." << std::endl;
     }
 
-    hlDebug() << HL_SAMPLE_RATE_INVALID << std::endl;
+    throw AudioException(HL_CHECK_PARAMS_CODE, HL_CHECK_PARAMS_MSG);
     return false;
 }
 
@@ -311,7 +310,7 @@ void LinuxAudio::capture()
     if (err < 0)
     {
         hlDebug() << "Unable to open " << defaultDevice << " exiting..." << std::endl;
-        exit(1);
+        throw AudioException(HL_LINUX_OPEN_DEVICE_CODE, HL_LINUX_OPEN_DEVICE_MSG);
     }
 
     // allocate hw params object and fill the pcm device with the default params
@@ -324,7 +323,6 @@ void LinuxAudio::capture()
     snd_pcm_hw_params_set_channels(pcmHandle, param, 2);
 
     // we set the sampling rate to whatever the user or device wants
-    // TODO insert sample rate
     unsigned int sampleRate = 44100;
     snd_pcm_hw_params_set_rate_near(pcmHandle, param, &sampleRate, nullptr);
 
@@ -337,7 +335,8 @@ void LinuxAudio::capture()
     if (err < 0)
     {
         hlDebug() << "Unable to set parameters: " << defaultDevice << " exiting..." << std::endl;
-        exit(1);
+        throw AudioException(HL_LINUX_SET_PARAMS_CODE, HL_LINUX_SET_PARAMS_MSG);
+
     }
 
     // get the size of one period
@@ -365,6 +364,7 @@ void LinuxAudio::capture()
         {
             hlDebug() << "Underrun: Exepected " << frame << " frames but got " << framesRead << std::endl;
         }
+
         copyToBuffers((float *)audioBuffer, framesRead * NUM_CHANNELS);
     }
 
@@ -373,7 +373,7 @@ void LinuxAudio::capture()
     if (err < 0)
     {
         hlDebug() << "Unable to close stream." << std::endl;
-        exit(1);
+        throw AudioException(HL_LINUX_ALSA_CLOSE_STREAM_CODE, HL_LINUX_ALSA_CLOSE_STREAM_MSG);
     }
     free(audioBuffer);
 }

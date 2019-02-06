@@ -51,15 +51,15 @@ function (add_library_target _name _src_files)
 
     # Copy the include directory
     install (DIRECTORY include/${_name}
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/include
+        DESTINATION include
     )
 
     # Copy the library
     install (TARGETS ${_name}
-        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin                               # DLLs
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib                               # Static libs
-        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib                               # Shared libs (non-DLL)
-        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${_name}  # Headers
+        RUNTIME DESTINATION bin                     # DLLs
+        ARCHIVE DESTINATION lib                     # Static libs
+        LIBRARY DESTINATION lib                     # Shared libs (non-DLL)
+        PUBLIC_HEADER DESTINATION include/${_name}  # Headers
         COMPONENT library
     )
 

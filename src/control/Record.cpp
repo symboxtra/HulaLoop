@@ -16,7 +16,14 @@ using namespace hula;
 Record::Record(Controller *control)
 {
     this->controller = control;
-    this->rb = this->controller->createBuffer(0.5);
+    try
+    {
+        this->rb = this->controller->createBuffer(0.5);
+    }
+    catch(const AudioException &ae)
+    {
+        throw;
+    }
 }
 
 /**

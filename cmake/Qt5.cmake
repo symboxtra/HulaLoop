@@ -21,8 +21,15 @@ macro (qt5_post_build_windeployqt APP QMLDIR)
         message (FATAL_ERROR "\nCould not find windeployqt.\n")
     endif ()
 
+    set (TYPEDLL "")
+    # if (CMAKE_BUILD_TYPE MATCHES "Debug")
+    #     set (TYPEDLL "--debug")
+    # elseif (CMAKE_BUILD_TYPE MATCHES "Release")
+    #     set (TYPEDLL "--release")
+    # endif ()
+
     add_custom_command (TARGET ${APP} POST_BUILD
-        COMMAND ${WINDEPLOYQT_EXECUTABLE} --verbose 0 -qmldir ${QMLDIR} $<TARGET_FILE:${APP}>
+        COMMAND ${WINDEPLOYQT_EXECUTABLE} -verbose=0 -qmldir ${QMLDIR} ${TYPEDLL} $<TARGET_FILE:${APP}>
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
 

@@ -60,15 +60,13 @@ HulaRingBuffer::HulaRingBuffer(float maxDuration)
     if (this->rbMemory == nullptr)
     {
         hlDebugf("Could not allocate ring buffer of size %zu.\n", numSamples * sizeof(SAMPLE));
-        exit(1);
-        // TODO: Handle error
+        throw AudioException(HL_RB_ALLOC_BUFFER_CODE, HL_RB_ALLOC_BUFFER_MSG);
     }
 
     if (PaUtil_InitializeRingBuffer(&this->rb, sizeof(SAMPLE), numSamples, this->rbMemory) < 0)
     {
         hlDebugf("Failed to initialize ring buffer. Perhaps the size is not power of 2?\nSize: %d\n", numSamples);
-        exit(1);
-        // TODO: Handle error
+        throw AudioException(HL_RB_INIT_BUFFER_CODE, HL_RB_INIT_BUFFER_MSG);
     }
 }
 

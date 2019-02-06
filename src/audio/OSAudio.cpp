@@ -350,8 +350,16 @@ bool OSAudio::setActiveInputDevice(Device *device)
         return false;
     }
 
-    if (!this->checkDeviceParams(device))
+    try
     {
+        if (!this->checkDeviceParams(device))
+        {
+            return false;
+        }
+    }
+    catch(const AudioException &ae)
+    {
+        throw;
         return false;
     }
 
@@ -415,8 +423,16 @@ bool OSAudio::setActiveOutputDevice(Device *device)
         return false;
     }
 
-    if (!this->checkDeviceParams(device))
+    try
     {
+        if (!this->checkDeviceParams(device))
+        {
+            return false;
+        }
+    }
+    catch(const AudioException &ae)
+    {
+        throw;
         return false;
     }
 
