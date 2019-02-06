@@ -586,37 +586,37 @@
         <translation type="vanished">Desconocido</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="202"/>
+        <location filename="../../src/control/Transport.cpp" line="217"/>
         <source>Ready</source>
         <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="204"/>
+        <location filename="../../src/control/Transport.cpp" line="219"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation>Grabando</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="206"/>
+        <location filename="../../src/control/Transport.cpp" line="221"/>
         <source>Stopped</source>
         <comment>state</comment>
         <translation>Parado</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="208"/>
+        <location filename="../../src/control/Transport.cpp" line="223"/>
         <source>Playing</source>
         <comment>state</comment>
         <translation>Sonando</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="210"/>
+        <location filename="../../src/control/Transport.cpp" line="225"/>
         <source>Paused</source>
         <comment>state</comment>
         <translation>Pausada</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="212"/>
+        <location filename="../../src/control/Transport.cpp" line="227"/>
         <source>Unknown</source>
         <comment>state</comment>
         <translation>Desconocido</translation>
@@ -625,7 +625,7 @@
 <context>
     <name>hula::QMLBridge</name>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="745"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="759"/>
         <source>Go back and save</source>
         <translation type="unfinished"></translation>
     </message>
@@ -733,7 +733,15 @@
         <translation>¡HulaLoop ha empezado a grabar!</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="65"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="60"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="104"/>
+        <source>Playing</source>
+        <comment>state</comment>
+        <translation type="unfinished">Sonando</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/main.qml" line="75"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="104"/>
         <source>Recording</source>
         <comment>state</comment>
         <translation type="unfinished">Grabando</translation>
