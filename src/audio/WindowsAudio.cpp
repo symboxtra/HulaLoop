@@ -15,6 +15,7 @@ WindowsAudio::WindowsAudio()
         throw AudioException(HL_PA_INIT_CODE, HL_PA_INIT_MSG);
     }
 
+    status = S_OK;
     pa_status = paNoError;
 }
 
