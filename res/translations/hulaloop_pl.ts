@@ -115,6 +115,14 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="28"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="54"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="57"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="858"/>
+        <source>Elapsed: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="827"/>
         <source>Are you sure you want to discard?</source>
         <translation type="unfinished"></translation>
@@ -591,7 +599,22 @@
 <context>
     <name>hula::QMLBridge</name>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="759"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="745"/>
+        <source>Unsaved Changes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="748"/>
+        <source>You have unsaved audio.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="749"/>
+        <source>Would you like to save your audio?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="750"/>
         <source>Go back and save</source>
         <translation type="unfinished"></translation>
     </message>
@@ -681,7 +704,13 @@
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="25"/>
-        <source>Elapsed: 0</source>
+        <source>Elapsed: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/main.qml" line="43"/>
+        <source>Ready</source>
+        <comment>state</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -702,6 +731,7 @@
         <translation type="unfinished">Gra</translation>
     </message>
     <message>
+        <location filename="../../src/ui/gui/qml/main.qml" line="50"/>
         <location filename="../../src/ui/gui/qml/main.qml" line="75"/>
         <location filename="../../src/ui/gui/qml/main.qml" line="104"/>
         <source>Recording</source>

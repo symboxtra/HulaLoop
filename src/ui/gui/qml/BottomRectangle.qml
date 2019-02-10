@@ -20,7 +20,7 @@ Rectangle {
         Text {
             id: switchText
             y: 5
-            text: window.anim ? qsTr("  Visualizer  ") : qsTr("  Editor  ")
+            text: window.anim ? qsTr("  Visualizer  ") + qmlbridge.emptyStr : qsTr("  Editor  ") + qmlbridge.emptyStr
         }
         onClicked: {
             window.anim = !window.anim;
@@ -36,7 +36,7 @@ Rectangle {
             objectName: "transportState"
 
             color: "black"
-            text: window.currentState
+            text: window.currentState + qmlbridge.emptyStr
         }
 
         Label {
@@ -44,7 +44,7 @@ Rectangle {
             objectName: "textCountdown"
 
             color: "black"
-            text:  ("  |  " + window.textDisplayed)
+            text:  ("  |  " + window.textDisplayed + qmlbridge.emptyStr)
         }
     }
 }

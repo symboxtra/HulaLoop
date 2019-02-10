@@ -543,6 +543,7 @@ bool QMLBridge::loadLanguage(const QString &id)
         saveSettings();
 
         emit languageChanged();
+        emit stateChanged();
         return true;
     }
     return false;
@@ -741,11 +742,11 @@ bool QMLBridge::wannaClose()
     {
         // user has unsaved audio prompt them
         QMessageBox msgBox;
-        msgBox.setWindowTitle("Exit???");
+        msgBox.setWindowTitle(tr("Unsaved Changes"));
         QPixmap pix(":/res/hulaloop-logo-small.png");
         msgBox.setIconPixmap(pix.scaled(100, 100, Qt::KeepAspectRatio));
-        msgBox.setText("You have unsaved audio.");
-        msgBox.setInformativeText("Would you like to save your audio?");
+        msgBox.setText(tr("You have unsaved audio."));
+        msgBox.setInformativeText(tr("Would you like to save your audio?"));
         QAbstractButton *goBackAndSave = msgBox.addButton(tr("Go back and save"), QMessageBox::RejectRole);
         QIcon ico = QApplication::style()->standardIcon(QStyle::SP_DialogYesButton);
         goBackAndSave->setIcon(ico);

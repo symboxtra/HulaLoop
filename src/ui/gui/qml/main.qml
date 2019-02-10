@@ -22,7 +22,7 @@ ApplicationWindow {
     Material.theme: Material.Grey
     Material.accent: Material.Orange
 
-    property string textDisplayed: qsTr("Elapsed: 0")
+    property string textDisplayed: qsTr("Elapsed: %1").arg(0) + qmlbridge.emptyStr
     property string currentState: qmlbridge.getTransportState()
     property string barColor: "#888888"
     property bool updateAndTimerBtnEnabled: true
@@ -40,14 +40,14 @@ ApplicationWindow {
             currentState = qmlbridge.getTransportState()
 
             // enable/disable update button
-            if(currentState === "Ready"){
+            if(qmlbridge.getTransportState() === qsTr("Ready", "state")) {
                 updateAndTimerBtnEnabled = true;
             }
             else{
                 updateAndTimerBtnEnabled = false;
             }
 
-            if(qmlbridge.getTransportState() === "Recording")
+            if(qmlbridge.getTransportState() === qsTr("Recording", "state"))
             {
                 systrayicon.showMessage(qsTr("HulaLoop Information"), qsTr("HulaLoop has started recording audio!"))
                 systrayicon.setRecordIcon()

@@ -25,7 +25,7 @@ Rectangle {
         repeat: true
         onTriggered: {
             if (timeFuncs.time === 0) {
-                window.textDisplayed = "Elapsed: 0"
+                window.textDisplayed = qsTr("Elapsed: %1").arg(0)
                 countDownTimer.stop()
 
                 recordBtn.onClicked()
@@ -51,10 +51,10 @@ Rectangle {
         onTriggered: {
             // Since the timer starts at 0, go to endTime - 1
             if (!recordingTimer.inf && timeFuncs.time >= timeFuncs.time2 - 1) {
-                window.textDisplayed = "Elapsed: " + (++timeFuncs.time)
+                window.textDisplayed = qsTr("Elapsed: %1").arg(++timeFuncs.time)
                 stopBtn.onClicked();
             } else {
-                window.textDisplayed = "Elapsed: " + (++timeFuncs.time)
+                window.textDisplayed = qsTr("Elapsed: %1").arg(++timeFuncs.time)
             }
         }
     }
@@ -855,7 +855,7 @@ Rectangle {
                             timeFuncs.time = 0;
                             delayInput.text = "00:00:00";
                             recordTimeInput.text = "00:00:00";
-                            window.textDisplayed = "Elapsed: 0";
+                            window.textDisplayed = qsTr("Elapsed: %1").arg(0);
                         }
                     }
                 }

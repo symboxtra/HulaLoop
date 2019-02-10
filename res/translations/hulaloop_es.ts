@@ -6,12 +6,12 @@
     <message>
         <location filename="../../src/ui/gui/qml/BottomRectangle.qml" line="23"/>
         <source>  Visualizer  </source>
-        <translation type="unfinished"></translation>
+        <translation>  Visualizador  </translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/BottomRectangle.qml" line="23"/>
         <source>  Editor  </source>
-        <translation type="unfinished"></translation>
+        <translation>  Editor  </translation>
     </message>
 </context>
 <context>
@@ -29,7 +29,7 @@
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="179"/>
         <source>Stop recording</source>
-        <translation type="unfinished"></translation>
+        <translation>Detener grabación</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="200"/>
@@ -52,17 +52,17 @@
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="306"/>
         <source>Set recording delay and duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar el retraso y la duración</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="338"/>
         <source>Export audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar audio</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="370"/>
         <source>Check for updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Buscar actualizaciones</translation>
     </message>
     <message>
         <source>Timer:</source>
@@ -76,52 +76,60 @@
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="569"/>
         <source>Change input device</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar el dispositivo de entrada</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="616"/>
         <source>Output Device:</source>
-        <translation>Dispositivo de Salida</translation>
+        <translation>Dispositivo de Salida:</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="702"/>
         <source>Display record devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar dispositivos de grabar</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="722"/>
         <source>Visualizer type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de visualizador</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="732"/>
         <source>Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Histograma</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="732"/>
         <source>Circle</source>
-        <translation type="unfinished"></translation>
+        <translation>Círculo</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="732"/>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Línea</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="757"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Lengua</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="629"/>
         <source>Change output device</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar el dispositivo de salida</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="28"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="54"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="57"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="858"/>
+        <source>Elapsed: %1</source>
+        <translation>Transcurrido: %1</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="827"/>
         <source>Are you sure you want to discard?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Seguro que quieres descartar?</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="888"/>
@@ -412,12 +420,12 @@
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="329"/>
         <source>Are you sure you want to discard? (y/N): </source>
-        <translation type="unfinished"></translation>
+        <translation>¿Seguro que quieres descartar? (s/N): </translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="339"/>
         <source>Discard cancelled.</source>
-        <translation type="unfinished"></translation>
+        <translation>El descarte fue cancelado.</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="379"/>
@@ -589,7 +597,7 @@
         <location filename="../../src/control/Transport.cpp" line="217"/>
         <source>Ready</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation>Listo</translation>
     </message>
     <message>
         <location filename="../../src/control/Transport.cpp" line="219"/>
@@ -625,9 +633,24 @@
 <context>
     <name>hula::QMLBridge</name>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="759"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="745"/>
+        <source>Unsaved Changes</source>
+        <translation>Cambios sin Guardar</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="748"/>
+        <source>You have unsaved audio.</source>
+        <translation>Hay audio sin guardar.</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="749"/>
+        <source>Would you like to save your audio?</source>
+        <translation>¿Le gustaría guardar el audio?</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="750"/>
         <source>Go back and save</source>
-        <translation type="unfinished"></translation>
+        <translation>Volver atrás y guardar</translation>
     </message>
 </context>
 <context>
@@ -719,8 +742,14 @@
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="25"/>
-        <source>Elapsed: 0</source>
-        <translation type="unfinished"></translation>
+        <source>Elapsed: %1</source>
+        <translation>Transcurrido: %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/main.qml" line="43"/>
+        <source>Ready</source>
+        <comment>state</comment>
+        <translation>Listo</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="52"/>
@@ -740,11 +769,12 @@
         <translation type="unfinished">Sonando</translation>
     </message>
     <message>
+        <location filename="../../src/ui/gui/qml/main.qml" line="50"/>
         <location filename="../../src/ui/gui/qml/main.qml" line="75"/>
         <location filename="../../src/ui/gui/qml/main.qml" line="104"/>
         <source>Recording</source>
         <comment>state</comment>
-        <translation type="unfinished">Grabando</translation>
+        <translation>Grabando</translation>
     </message>
 </context>
 </TS>
