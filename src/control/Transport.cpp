@@ -270,17 +270,7 @@ void Transport::discard()
  */
 bool Transport::hasExportPaths()
 {
-    bool exportPaths = recorder->getExportPaths().empty();
-    if (exportPaths)
-    {
-        // there are no paths left
-        return false;
-    }
-    else
-    {
-        // there are paths left
-        return true;
-    }
+    return !recorder->getExportPaths().empty();
 }
 
 /**
