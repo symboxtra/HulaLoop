@@ -459,7 +459,8 @@ QString QMLBridge::getInputDevices()
         devices += vd[i]->getName();
         if (i < vd.size() - 1)
         {
-            devices += ",";
+            // Concat with the separator that ButtonPanel.qml expects
+            devices += "%%%%%%";
         }
     }
 
@@ -500,7 +501,8 @@ QString QMLBridge::getOutputDevices()
         devices += vd[i]->getName();
         if (i < vd.size() - 1)
         {
-            devices += ",";
+            // Concat with the separator that ButtonPanel.qml expects
+            devices += "%%%%%%";
         }
     }
 
