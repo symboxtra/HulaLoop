@@ -417,7 +417,7 @@
     <name>Exception</name>
     <message>
         <source>Unknown error code: %1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -538,7 +538,7 @@
     </message>
     <message>
         <source>Click here to dismiss</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Elapsed: %1</source>
@@ -560,7 +560,7 @@
     <message>
         <source>Playing</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Recording</source>
