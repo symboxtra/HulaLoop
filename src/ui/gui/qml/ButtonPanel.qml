@@ -7,7 +7,7 @@ import QtQuick.Layouts 1.3
 import Qt.labs.platform 1.0
 import QtGraphicalEffects 1.0
 
-import "../fonts/Icon.js" as MDFont
+import "../fonts/Icon.min.js" as MDFont
 
 Rectangle {
 

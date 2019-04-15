@@ -7,7 +7,7 @@
         <file>qml/CircleVisualizer.qml</file>
         <file>qml/Timeline.qml</file>
         <file>qml/PlaybackMarker.qml</file>
-        <file>fonts/Icon.js</file>
+        <file>fonts/Icon.min.js</file>
         <file>fonts/materialdesignicons-webfont.ttf</file>
         <file>res/hulaloop-logo.png</file>
         <file>res/hulaloop-logo.svg</file>
