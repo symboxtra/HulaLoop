@@ -35,12 +35,20 @@ class TestUpdater : public ::testing::Test {
 TEST_F(TestUpdater, checkAndDownloadUpdate)
 {
     updater->setUpdateHost("https://api.github.com/repos/symboxtra/HulaLoop/releases/latest");
-    ASSERT_EQ(updater->checkForUpdate(), 1);
-    ASSERT_EQ(updater->downloadUpdate(), 1);
+    int updateAvailable = updater->checkForUpdate();
 
-    QFile file(QDir::tempPath() + "/" + updater->getDownloadFileName());
-    ASSERT_TRUE(file.exists());
-    ASSERT_EQ(file.size(), updater->getDownloadSize());
+    // Make sure we didn't have an error
+    // 0 or 1 are acceptable values
+    ASSERT_NE(updater->checkForUpdate(), -1);
+
+    if (updateAvailable == 1)
+    {
+        ASSERT_EQ(updater->downloadUpdate(), 1);
+
+        QFile file(QDir::tempPath() + "/" + updater->getDownloadFileName());
+        ASSERT_TRUE(file.exists());
+        ASSERT_EQ(file.size(), updater->getDownloadSize());
+    }
 }
 
 TEST_F(TestUpdater, checkForUpdateError)
