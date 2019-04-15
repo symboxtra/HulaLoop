@@ -349,6 +349,7 @@ bool QMLBridge::setActiveInputDevice(QString QDeviceName)
 
                 if (msgBox.exec() == QMessageBox::Ok)
                 {
+                    // Don't do anything since this isn't fatal
                 }
             }
 
@@ -406,6 +407,7 @@ bool QMLBridge::setActiveOutputDevice(QString QDeviceName)
 
                 if (msgBox.exec() == QMessageBox::Ok)
                 {
+                    // Don't do anything since this isn't fatal
                 }
             }
 
@@ -452,7 +454,8 @@ QString QMLBridge::getInputDevices()
         devices += vd[i]->getName();
         if (i < vd.size() - 1)
         {
-            devices += "^^";
+            // Concat with the separator that ButtonPanel.qml expects
+            devices += "%%%%%%";
         }
     }
 
@@ -492,7 +495,8 @@ QString QMLBridge::getOutputDevices()
         devices += vd[i]->getName();
         if (i < vd.size() - 1)
         {
-            devices += "^^";
+            // Concat with the separator that ButtonPanel.qml expects
+            devices += "%%%%%%";
         }
     }
 
