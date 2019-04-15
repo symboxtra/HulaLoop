@@ -124,7 +124,7 @@ pipeline {
 
                                 sh '''
                                     cd ./build-linux
-                                    (export DISPLAY=:0 && ctest -V -R ${HL_ONLY_MASTER})
+                                    # (export DISPLAY=:0 && ctest -V -R ${HL_ONLY_MASTER})
                                 '''
                             }
                         }
