@@ -1,6 +1,7 @@
 import QtQuick 2.0
 
 Rectangle {
+    id: marker
     color: "red"
 
     property double position: 0

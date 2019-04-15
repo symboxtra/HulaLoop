@@ -321,6 +321,8 @@ void OSAudio::playback()
         Pa_Sleep(100);
     }
 
+    hlDebug() << "Closing PortAudio playback stream." << std::endl;
+
     err = Pa_CloseStream(stream);
 
     if (err != paNoError)
@@ -347,6 +349,7 @@ bool OSAudio::setActiveInputDevice(Device *device)
     // If this isn't a loopback or record device
     if (!(device->getType() & LOOPBACK || device->getType() & RECORD))
     {
+        throw AudioException(HL_INPUT_EQUAL_OUTPUT_CODE, HL_INPUT_EQUAL_OUTPUT_MSG);
         return false;
     }
 
@@ -420,6 +423,7 @@ bool OSAudio::setActiveOutputDevice(Device *device)
     // If this isn't a loopback or record device
     if (!(device->getType() & PLAYBACK))
     {
+        throw AudioException(HL_OUTPUT_EQUAL_INPUT_CODE, HL_OUTPUT_EQUAL_INPUT_MSG);
         return false;
     }
 

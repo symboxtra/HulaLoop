@@ -49,8 +49,8 @@ if (FOUND_QT_LINGUIST)
     # Install information for the translation files
     if (OSX)
         # This should eventually be the OSX bundle
-        install (FILES ${TRANSLATION_QM} DESTINATION translations)
+        install (FILES ${TRANSLATION_QM} DESTINATION bin)
     else ()
-        install (FILES ${TRANSLATION_QM} DESTINATION translations)
+        install (FILES ${TRANSLATION_QM} DESTINATION bin)
     endif ()
 endif ()

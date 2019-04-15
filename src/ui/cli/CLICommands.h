@@ -9,7 +9,7 @@
 #define HL_ORANGE "\033[48;2;255;165;0m"
 #define HL_NC     "\033[0m"
 
-#define HL_PROMPT "\nHulaLoop> "
+#define HL_PROMPT(state) "\nHulaLoop (" state ")> "
 
 #define HL_DELAY_TIMER_LONG    "delay"
 #define HL_DELAY_TIMER_SHORT   "de"

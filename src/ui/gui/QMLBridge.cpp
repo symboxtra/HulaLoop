@@ -179,7 +179,6 @@ bool QMLBridge::record()
 
         if (msgBox.exec() == QMessageBox::Ok)
         {
-            exit(1);
         }
 
     }
@@ -213,7 +212,6 @@ bool QMLBridge::stop()
 
         if (msgBox.exec() == QMessageBox::Ok)
         {
-            exit(1);
         }
 
     }
@@ -243,7 +241,6 @@ bool QMLBridge::play()
 
         if (msgBox.exec() == QMessageBox::Ok)
         {
-            exit(1);
         }
 
     }
@@ -277,7 +274,6 @@ bool QMLBridge::pause()
 
         if (msgBox.exec() == QMessageBox::Ok)
         {
-            exit(1);
         }
 
     }
@@ -331,11 +327,6 @@ bool QMLBridge::setActiveInputDevice(QString QDeviceName)
         msgBox.setWindowTitle("HulaLoop Error");
         msgBox.setText(QString::fromStdString(ce.getErrorMessage()));
         msgBox.setStandardButtons(QMessageBox::Ok);
-
-        if (msgBox.exec() == QMessageBox::Ok)
-        {
-            exit(1);
-        }
     }
 
     for (auto const &device : iDevices)
@@ -358,7 +349,6 @@ bool QMLBridge::setActiveInputDevice(QString QDeviceName)
 
                 if (msgBox.exec() == QMessageBox::Ok)
                 {
-                    exit(1);
                 }
             }
 
@@ -394,11 +384,6 @@ bool QMLBridge::setActiveOutputDevice(QString QDeviceName)
         msgBox.setWindowTitle("HulaLoop Error");
         msgBox.setText(QString::fromStdString(ce.getErrorMessage()));
         msgBox.setStandardButtons(QMessageBox::Ok);
-
-        if (msgBox.exec() == QMessageBox::Ok)
-        {
-            exit(1);
-        }
     }
 
     for (auto const &device : oDevices)
@@ -421,7 +406,6 @@ bool QMLBridge::setActiveOutputDevice(QString QDeviceName)
 
                 if (msgBox.exec() == QMessageBox::Ok)
                 {
-                    exit(1);
                 }
             }
 
@@ -460,7 +444,6 @@ QString QMLBridge::getInputDevices()
 
         if (msgBox.exec() == QMessageBox::Ok)
         {
-            exit(1);
         }
     }
 
@@ -469,7 +452,7 @@ QString QMLBridge::getInputDevices()
         devices += vd[i]->getName();
         if (i < vd.size() - 1)
         {
-            devices += ",";
+            devices += "^^";
         }
     }
 
@@ -501,7 +484,6 @@ QString QMLBridge::getOutputDevices()
 
         if (msgBox.exec() == QMessageBox::Ok)
         {
-            exit(1);
         }
     }
 
@@ -510,7 +492,7 @@ QString QMLBridge::getOutputDevices()
         devices += vd[i]->getName();
         if (i < vd.size() - 1)
         {
-            devices += ",";
+            devices += "^^";
         }
     }
 
@@ -553,6 +535,7 @@ bool QMLBridge::loadLanguage(const QString &id)
         saveSettings();
 
         emit languageChanged();
+        emit stateChanged();
         return true;
     }
     return false;
@@ -631,7 +614,7 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
 
     int maxSize = 512;
     int accuracy = 8;
-    ring_buffer_size_t samplesHandled = 0;
+    ring_buffer_size_t samplesProcessed = 0;
     // float *temp = new float[maxSize];
 
     while (!_this->endVis.load())
@@ -667,7 +650,7 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
                 realData.push_back(data2[i]);
             }
 
-            samplesHandled += samplesRead;
+            samplesProcessed += samplesRead;
         }
 
         Fft::transform(actualoutreal, actualoutimag);
@@ -695,8 +678,8 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
             }
         }
 
-        _this->emit visData(realData, heights, samplesHandled);
-        samplesHandled = 0;
+        _this->emit visData(realData, heights, samplesProcessed);
+        samplesProcessed = 0;
 
         // Accumulate some audio
         // We have to make sure this delay is shorter than the length of the ring buffer
@@ -709,7 +692,7 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
         {
             samplesRead = _this->rb->directRead(maxSize * 2, (void **)&data1, &size1, (void **)&data2, &size2);
             // hlDebug() << "Read " << bytesRead << std::endl;
-            samplesHandled += samplesRead;
+            samplesProcessed += samplesRead;
         }
 
         // Accumulate more audio
@@ -751,11 +734,11 @@ bool QMLBridge::wannaClose()
     {
         // user has unsaved audio prompt them
         QMessageBox msgBox;
-        msgBox.setWindowTitle("Exit???");
+        msgBox.setWindowTitle(tr("Unsaved Changes"));
         QPixmap pix(":/res/hulaloop-logo-small.png");
         msgBox.setIconPixmap(pix.scaled(100, 100, Qt::KeepAspectRatio));
-        msgBox.setText("You have unsaved audio.");
-        msgBox.setInformativeText("Would you like to save your audio?");
+        msgBox.setText(tr("You have unsaved audio."));
+        msgBox.setInformativeText(tr("Would you like to save your audio?"));
         QAbstractButton *goBackAndSave = msgBox.addButton(tr("Go back and save"), QMessageBox::RejectRole);
         QIcon ico = QApplication::style()->standardIcon(QStyle::SP_DialogYesButton);
         goBackAndSave->setIcon(ico);

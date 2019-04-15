@@ -103,7 +103,9 @@ TEST_F(TestOSAudio, wrong_type_does_not_switch)
     setActiveInputDevice(this->testDevice);
 
     Device *d = new Device(DeviceID(), "Device", PLAYBACK);
-    setActiveInputDevice(d);
+    EXPECT_THROW({
+        bool success = setActiveInputDevice(d);
+    }, AudioException);
 
     EXPECT_EQ(this->activeInputDevice->getName(), this->testDevice->getName());
 

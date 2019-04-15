@@ -242,7 +242,14 @@ bool Controller::setActiveInputDevice(Device *device) const
  */
 bool Controller::setActiveOutputDevice(Device *device) const
 {
-    return audio->setActiveOutputDevice(device);
+    try
+    {
+        return audio->setActiveOutputDevice(device);
+    }
+    catch(const AudioException &ae)
+    {
+        throw;
+    }
 }
 
 /**

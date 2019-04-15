@@ -62,7 +62,7 @@ void Playback::player()
 
         ring_buffer_size_t lastWrite = 0;
         ring_buffer_size_t totalWrite = 0;
-        while (totalWrite < samplesRead)
+        while (!this->endPlay.load() && totalWrite < samplesRead)
         {
             ring_buffer_size_t samplesWritten = this->controller->playbackCopyToBuffers((float *)&buffer + lastWrite, samplesRead - totalWrite * sizeof(float));
             lastWrite = samplesWritten;
@@ -71,7 +71,7 @@ void Playback::player()
             // If the buffer was too full, wait a little bit
             if (totalWrite != samplesRead)
             {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                std::this_thread::sleep_for(std::chrono::milliseconds(150));
             }
         }
 

@@ -6,134 +6,157 @@
     <message>
         <location filename="../../src/ui/gui/qml/BottomRectangle.qml" line="23"/>
         <source>  Visualizer  </source>
-        <translation type="unfinished"></translation>
+        <translation>  विजुआलाइज़र  </translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/BottomRectangle.qml" line="23"/>
         <source>  Editor  </source>
-        <translation type="unfinished"></translation>
+        <translation>  संपादिक  </translation>
     </message>
 </context>
 <context>
     <name>ButtonPanel</name>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="149"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="30"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="56"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="59"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="881"/>
+        <source>Elapsed: %1</source>
+        <translation>गुजर चुके: %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="151"/>
         <source>Recording</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation>रिकॉर्डिंग</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="179"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="181"/>
         <source>Stop recording</source>
-        <translation type="unfinished"></translation>
+        <translation>रिकॉर्डिंग शुरू|</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="200"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="202"/>
         <source>Stopped</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation>रूका</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="260"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="262"/>
         <source>Paused</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation>रूका</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="278"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="280"/>
         <source>Playing</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation>चल रहा है</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="306"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="308"/>
         <source>Set recording delay and duration</source>
-        <translation type="unfinished"></translation>
+        <translation>रिकॉर्डिंग देरी और अवधि सेट करें</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="338"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="340"/>
         <source>Export audio</source>
-        <translation type="unfinished"></translation>
+        <translation>ऑडियो निर्यात करें</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="370"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="372"/>
         <source>Check for updates</source>
-        <translation type="unfinished"></translation>
+        <translation>अद्यतन के लिए चेंक करें</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="556"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="579"/>
         <source>Input Device:</source>
-        <translation type="unfinished"></translation>
+        <translation>इनपुट डिवाइस:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="569"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="592"/>
         <source>Change input device</source>
-        <translation type="unfinished"></translation>
+        <translation>इनपुट डिवाइस बदलें</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="616"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="639"/>
         <source>Output Device:</source>
-        <translation type="unfinished"></translation>
+        <translation>आउटपुट डिवाइस:</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="629"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="652"/>
         <source>Change output device</source>
-        <translation type="unfinished"></translation>
+        <translation>आउटपुट डिवाइस बदलें</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="702"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="725"/>
         <source>Display record devices</source>
-        <translation type="unfinished"></translation>
+        <translation>रिकॉर्ड डिवाइस प्रदर्शित करें</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="722"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="745"/>
         <source>Visualizer type</source>
-        <translation type="unfinished"></translation>
+        <translation>विजुअलाइज़र प्रकार</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="732"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="755"/>
         <source>Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>बार</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="732"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="755"/>
         <source>Circle</source>
-        <translation type="unfinished"></translation>
+        <translation>वृत्त</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="732"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="755"/>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>लाइन</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="757"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="780"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>भाषा</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="827"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="850"/>
         <source>Are you sure you want to discard?</source>
+        <translation>क्या आप वाकई त्यागना चाहते हैं?</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="858"/>
+        <source>No</source>
+        <translation type="unfinished">नहीं</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="865"/>
+        <source>Yes</source>
+        <translation type="unfinished">हाँ</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="869"/>
+        <source>Record Audio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="888"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="911"/>
         <source>Delay Recording (hh:mm:ss)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="907"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="930"/>
         <source>Record Duration (hh:mm:ss)</source>
-        <translation type="unfinished"></translation>
+        <translation>रिकॉर्ड लंबाई (hh:mm:ss)</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="939"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="962"/>
         <source>CANCEL</source>
-        <translation type="unfinished"></translation>
+        <translation>रद्द करें</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="957"/>
+        <location filename="../../src/ui/gui/qml/ButtonPanel.qml" line="980"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>ठीक</translation>
     </message>
 </context>
 <context>
@@ -141,432 +164,457 @@
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="47"/>
         <source>Invalid argument &apos;%1&apos; provided to option &apos;%2&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>गलत तर्क &apos;%1&apos; विकल्प &apos;%2&apos;|</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="64"/>
         <source>Simple cross-platform audio loopback and recording.</source>
-        <translation type="unfinished"></translation>
+        <translation>सरल संकर प्लेटफार्म ऑडियो लूपबैक और रिकॉर्डिंग|</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="71"/>
         <source>Path to audio output file.</source>
-        <translation type="unfinished"></translation>
+        <translation>ऑडियो आउटपुट फ़ाइल की पथ|</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="71"/>
         <source>output filepath</source>
-        <translation type="unfinished"></translation>
+        <translation>आउटपुट फ़ाइल</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="72"/>
         <source>Duration, in seconds, of the countdown timer before record.</source>
-        <translation type="unfinished"></translation>
+        <translation>टाइमर की लंबाई, सेकंड में|</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="72"/>
         <source>delay</source>
-        <translation type="unfinished"></translation>
+        <translation>देरी</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="73"/>
         <source>Duration, in seconds, of the record.</source>
-        <translation type="unfinished"></translation>
+        <translation>रिकॉर्डिंग की लंबाई, सेकंड में|</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="73"/>
         <source>record duration</source>
-        <translation type="unfinished"></translation>
+        <translation>रिकॉर्डिंग की लंबाई</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="74"/>
         <source>Start the countdown/record immediately.</source>
-        <translation type="unfinished"></translation>
+        <translation>काउंटडाउन/रिकॉर्डिंग तुरंत शुरू करें|</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="75"/>
         <source>Desired sample rate of the output file.</source>
-        <translation type="unfinished"></translation>
+        <translation>आउटपुट फ़ाइल की वांछित नमूना दर|</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="75"/>
         <source>sample rate</source>
-        <translation type="unfinished"></translation>
+        <translation>नमूना दर</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="76"/>
         <source>Encoding format for the output file. Valid options are WAV and MP3. This will default to WAV.</source>
-        <translation type="unfinished"></translation>
+        <translation>आउटपुट फ़ाइल की एन्कोडिंग प्रारूप| मान्य विकल्प WAV और MP3 हैं|</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="76"/>
         <source>encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>एन्कोडिंग</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="77"/>
         <source>System name of the input device. This will default if not provided.</source>
-        <translation type="unfinished"></translation>
+        <translation>इनपुट डिवाइस का सिस्टम नाम|</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="77"/>
         <source>input device name</source>
-        <translation type="unfinished"></translation>
+        <translation>इनपुट डिवाइस का नाम</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="78"/>
         <source>System name of the output device. This will default if not provided.</source>
-        <translation type="unfinished"></translation>
+        <translation>उत्पादन डिवाइस का सिस्टम नाम|</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="78"/>
         <source>output device name</source>
-        <translation type="unfinished"></translation>
+        <translation>उत्पादन डिवाइस का नाम</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="79"/>
         <source>List available input and output devices.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLIArgs.h" line="80"/>
-        <source>Set the language of the application.</source>
-        <translation type="unfinished"></translation>
+        <translation>उपलब्ध इनपुट और आउटपुट डिवाइस सूचीबद्ध करें|</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="80"/>
         <source>target language</source>
-        <translation type="unfinished"></translation>
+        <translation>लक्ष्य भाषा</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLIArgs.h" line="80"/>
+        <source>Set the language of the application.</source>
+        <translation>आवेदन की भाषा निर्धारित करें|</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="94"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="481"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="486"/>
         <source>Translation file successfully loaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>अनुवाद फ़ाइल कामयाबी से लोड हो गई|</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="98"/>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="485"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="490"/>
         <source>Could not find translation file for %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 के लिए अनुवाद फ़ाइल नहीं मिल सका|</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="143"/>
         <source>Only WAV format is supported at this time.</source>
-        <translation type="unfinished"></translation>
+        <translation>केवल WAV प्रारूप समर्थित है|</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLIArgs.h" line="162"/>
         <source>Device List</source>
-        <translation type="unfinished"></translation>
+        <translation>डिवाइस सूची</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="84"/>
-        <source>Display this help.</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../src/ui/cli/CLICommon.h" line="285"/>
+        <source>Hz</source>
+        <comment>unit</comment>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="85"/>
-        <source>Display version information.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="86"/>
-        <source>List all devices.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="87"/>
-        <source>Print the current configuration.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="88"/>
-        <source>Switch the application language.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="89"/>
-        <source>Quit the application.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="93"/>
-        <source>Start recording.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="94"/>
-        <source>Stop playback or recording.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="95"/>
-        <source>Playback captured audio.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="96"/>
-        <source>Pause playback or recording.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="97"/>
-        <source>Export captured audio to the specified file.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="98"/>
-        <source>Discard the current recording.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="102"/>
-        <source>Set the input device.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="104"/>
-        <source>Set the output device.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="108"/>
-        <source>Set the delay, in seconds, of the countdown timer before record.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="109"/>
-        <location filename="../../src/ui/cli/CLICommands.h" line="113"/>
-        <source>The timer will be overridden by an argument to the record command.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="112"/>
-        <source>Set the duration, in seconds, of the record.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommands.h" line="116"/>
-        <source>Run a system command from within HulaLoop.</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../src/ui/cli/CLICommon.h" line="273"/>
+        <source>Output file:</source>
+        <comment>setting</comment>
+        <translation>आउटपुट फाइल:</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="164"/>
         <source>Device #%1</source>
-        <translation type="unfinished"></translation>
+        <translation>डिवाइस #%1</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="167"/>
         <source>Record</source>
         <comment>device capability</comment>
-        <translation type="unfinished"></translation>
+        <translation>रिकॉर्ड</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="168"/>
         <location filename="../../src/ui/cli/CLICommon.h" line="171"/>
         <location filename="../../src/ui/cli/CLICommon.h" line="174"/>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>हाँ</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="168"/>
         <location filename="../../src/ui/cli/CLICommon.h" line="171"/>
         <location filename="../../src/ui/cli/CLICommon.h" line="174"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>नहीं</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="170"/>
         <source>Loopback</source>
         <comment>device capability</comment>
-        <translation type="unfinished"></translation>
+        <translation>लूपबैक</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="173"/>
         <source>Output</source>
         <comment>device capability</comment>
-        <translation type="unfinished"></translation>
+        <translation>आउटपुट</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="250"/>
         <source>Could not find device matching: %1</source>
         <extracomment>The argument in this text is the name or id of the device that the user searched for</extracomment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="273"/>
-        <source>Output file:</source>
-        <comment>setting</comment>
-        <translation type="unfinished"></translation>
+        <translation>डिवाइस %1 नहीं मिला</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="278"/>
         <source>Delay:</source>
-        <translation type="unfinished"></translation>
+        <translation>देरी:</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="279"/>
         <location filename="../../src/ui/cli/CLICommon.h" line="282"/>
         <source>s</source>
         <comment>abbreviation for seconds</comment>
-        <translation type="unfinished"></translation>
+        <translation>s</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="281"/>
         <source>Duration:</source>
-        <translation type="unfinished"></translation>
+        <translation>लंबाई:</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="284"/>
         <source>Sample rate:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/CLICommon.h" line="285"/>
-        <source>Hz</source>
-        <comment>unit</comment>
-        <translation type="unfinished"></translation>
+        <translation>नमूना दर:</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="288"/>
         <source>Encoding:</source>
-        <translation type="unfinished"></translation>
+        <translation>एन्कोडिंग:</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="291"/>
         <source>Input device:</source>
-        <translation type="unfinished"></translation>
+        <translation>इनपुट डिवाइस:</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/CLICommon.h" line="294"/>
         <source>Output device:</source>
-        <translation type="unfinished"></translation>
+        <translation>आउटपुट डिवाइस:</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="38"/>
         <source>Warning: Unused argument &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>चेतावनी: अप्रयुक्त तर्क &apos;%1&apos;|</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="49"/>
         <source>Missing argument &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>गुम तर्क &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="61"/>
         <source>Malformed argument &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>विकृत तर्क &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="62"/>
         <source>&apos;%1&apos; is not a valid %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; वैध &apos;%2&apos; नहीं है|</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="329"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="330"/>
         <source>Are you sure you want to discard? (y/N): </source>
-        <translation type="unfinished"></translation>
+        <translation>क्या आप वाकई त्यागना चाहते हैं?</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="339"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="340"/>
         <source>Discard cancelled.</source>
-        <translation type="unfinished"></translation>
+        <translation>रद्द रद्द करें</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="379"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="380"/>
         <source>Input device set to: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>इनपुट डिवाइस पर सेट: %1</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="383"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="385"/>
         <source>Failed to set input device.</source>
-        <translation type="unfinished"></translation>
+        <translation>इनपुट डिवाइस सेट करने में विफल रहा|</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="430"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="432"/>
         <source>Output device set to: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>आउटपुट डिवाइस पर सेट: %1</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="434"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="437"/>
         <source>Failed to set output device.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="505"/>
-        <source>System command returned: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>आउटपुट डिवाइस सेट करने में विफल रहा|</translation>
     </message>
     <message>
         <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="510"/>
+        <source>System command returned: %1</source>
+        <translation>सिस्टम कमांड: %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="515"/>
         <source>No system command processor is available.</source>
-        <translation type="unfinished"></translation>
+        <translation>कोई सिस्टम कमांड प्रोसेसर उपलब्ध नहीं है|</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="520"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="525"/>
         <source>Unrecognized command &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>अनजाना कमांड &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="527"/>
+        <location filename="../../src/ui/cli/InteractiveCLI.cpp" line="532"/>
         <source>Command failed with value of &apos;false&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;झूठी&apos; के मूल्य के साथ आदेश विफल|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="84"/>
+        <source>Display this help.</source>
+        <translation>इस जानकारी को प्रदर्शित करें|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="85"/>
+        <source>Display version information.</source>
+        <translation>संस्करण जानकारी प्रदर्शित करें|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="86"/>
+        <source>List all devices.</source>
+        <translation>सभी डिवाइस की सूची|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="87"/>
+        <source>Print the current configuration.</source>
+        <translation>वर्तमान विन्यास मुद्रित करें|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="88"/>
+        <source>Switch the application language.</source>
+        <translation>भाषा स्विच करे|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="89"/>
+        <source>Quit the application.</source>
+        <translation>आवेदन छोड़ो|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="93"/>
+        <source>Start recording.</source>
+        <translation>रिकॉर्डिंग शुरू|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="94"/>
+        <source>Stop playback or recording.</source>
+        <translation>प्लेबैक या रिकॉर्डिंग रोकें|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="95"/>
+        <source>Playback captured audio.</source>
+        <translation>प्लेबैक पकड़े ऑडियो|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="96"/>
+        <source>Pause playback or recording.</source>
+        <translation>प्लेबैक या रिकॉर्डिंग रोकें|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="97"/>
+        <source>Export captured audio to the specified file.</source>
+        <translation>निर्यात करने के लिए पकड़े ऑडियो|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="98"/>
+        <source>Discard the current recording.</source>
+        <translation> रिकॉर्डिंग को त्यागें|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="102"/>
+        <source>Set the input device.</source>
+        <translation>इनपुट डिवाइस सेट करें|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="104"/>
+        <source>Set the output device.</source>
+        <translation>आउटपुट डिवाइस सेट करें|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="108"/>
+        <source>Set the delay, in seconds, of the countdown timer before record.</source>
+        <translation>रिकॉर्डिंग की देरी सेकंड में सेट करे|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="109"/>
+        <location filename="../../src/ui/cli/CLICommands.h" line="113"/>
+        <source>The timer will be overridden by an argument to the record command.</source>
+        <translation>रिकॉर्ड कमांड के लिए एक तर्क से टाइमर ओवरराइड किया जाएगा|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="112"/>
+        <source>Set the duration, in seconds, of the record.</source>
+        <translation>रिकॉर्डिंग की लंबाई सेकंड में सेट करे|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/CLICommands.h" line="116"/>
+        <source>Run a system command from within HulaLoop.</source>
+        <translation>HulaLoop से सिस्टम कमांड चलाएं|</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/main.cpp" line="81"/>
+        <source>Delaying for %1 seconds...</source>
+        <translation>%1 सेकंड के लिए देरी</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/cli/main.cpp" line="91"/>
+        <source>Recording for %1 seconds...</source>
+        <translation>%1 सेकंड के लिए रिकॉर्डिंग</translation>
     </message>
 </context>
 <context>
     <name>Exception</name>
     <message>
-        <location filename="../../src/control/include/hlcontrol/internal/HulaControlError.h" line="146"/>
+        <location filename="../../src/control/include/hlcontrol/internal/HulaControlError.h" line="152"/>
         <source>Unknown error code: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>अज्ञात त्रुटि: %1</translation>
     </message>
 </context>
 <context>
     <name>Transport</name>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="217"/>
+        <location filename="../../src/control/Transport.cpp" line="216"/>
         <source>Ready</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation>तैयार</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="219"/>
+        <location filename="../../src/control/Transport.cpp" line="218"/>
         <source>Recording</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation>रिकॉर्डिंग</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="221"/>
+        <location filename="../../src/control/Transport.cpp" line="220"/>
         <source>Stopped</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation>रूका</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="223"/>
+        <location filename="../../src/control/Transport.cpp" line="222"/>
         <source>Playing</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation>चल रहा है</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="225"/>
+        <location filename="../../src/control/Transport.cpp" line="224"/>
         <source>Paused</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation>रूका</translation>
     </message>
     <message>
-        <location filename="../../src/control/Transport.cpp" line="227"/>
+        <location filename="../../src/control/Transport.cpp" line="226"/>
         <source>Unknown</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation>अज्ञात</translation>
     </message>
 </context>
 <context>
     <name>hula::QMLBridge</name>
     <message>
-        <location filename="../../src/ui/gui/QMLBridge.cpp" line="759"/>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="737"/>
+        <source>Unsaved Changes</source>
+        <translation>सहेजे गए परिवर्तन</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="740"/>
+        <source>You have unsaved audio.</source>
+        <translation>आपके पास सहेजे गए ऑडियो नहीं हैं</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="741"/>
+        <source>Would you like to save your audio?</source>
+        <translation>क्या आप अपना ऑडियो सहेजने के लिए जीते रहेंगे?</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/QMLBridge.cpp" line="742"/>
         <source>Go back and save</source>
-        <translation type="unfinished"></translation>
+        <translation>वापस जाओ और बचाओ</translation>
     </message>
 </context>
 <context>
@@ -574,32 +622,32 @@
     <message>
         <location filename="../../src/ui/gui/SystemTrayIcon.cpp" line="26"/>
         <source>Record</source>
-        <translation type="unfinished"></translation>
+        <translation>रिकॉर्ड</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/SystemTrayIcon.cpp" line="27"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>रुकें</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/SystemTrayIcon.cpp" line="29"/>
         <source>Minimize to Tray</source>
-        <translation type="unfinished"></translation>
+        <translation>ट्रे पर छोटा करें</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/SystemTrayIcon.cpp" line="31"/>
         <source>Check for Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>अद्यतन के लिए चेंक करें</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/SystemTrayIcon.cpp" line="32"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>सेटिंग्स</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/SystemTrayIcon.cpp" line="34"/>
         <source>Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>बंध</translation>
     </message>
 </context>
 <context>
@@ -607,79 +655,91 @@
     <message>
         <location filename="../../src/launcher/main.cpp" line="35"/>
         <source>HulaLoop Updater</source>
-        <translation type="unfinished"></translation>
+        <translation>HulaLoop अपडेटर</translation>
     </message>
     <message>
         <location filename="../../src/launcher/main.cpp" line="43"/>
         <source>A newer version has been detected!</source>
-        <translation type="unfinished"></translation>
+        <translation>एक नया संस्करण मिला है!</translation>
     </message>
     <message>
         <location filename="../../src/launcher/main.cpp" line="43"/>
         <source>Click Ok to update!</source>
-        <translation type="unfinished"></translation>
+        <translation>अद्यतन करने के लिए ठीक क्लिक करें!</translation>
     </message>
     <message>
         <location filename="../../src/launcher/main.cpp" line="63"/>
         <source>All systems are up-to-date!</source>
-        <translation type="unfinished"></translation>
+        <translation>सभी सिस्टम अद्यतित हैं!</translation>
     </message>
 </context>
 <context>
     <name>main</name>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="25"/>
-        <source>Elapsed: 0</source>
-        <translation type="unfinished"></translation>
+        <source>Elapsed: %1</source>
+        <translation>गुजर चुके: %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/main.qml" line="43"/>
+        <source>Ready</source>
+        <comment>state</comment>
+        <translation>तैयार</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="52"/>
         <source>HulaLoop Information</source>
-        <translation type="unfinished"></translation>
+        <translation>HulaLoop की जानकारी</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="52"/>
         <source>HulaLoop has started recording audio!</source>
-        <translation type="unfinished"></translation>
+        <translation>HulaLoop ने ऑडियो रिकॉर्ड करना शुरू कर दिया है!</translation>
     </message>
     <message>
         <location filename="../../src/ui/gui/qml/main.qml" line="60"/>
-        <location filename="../../src/ui/gui/qml/main.qml" line="104"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="111"/>
         <source>Playing</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation>चल रहा है</translation>
     </message>
     <message>
-        <location filename="../../src/ui/gui/qml/main.qml" line="75"/>
-        <location filename="../../src/ui/gui/qml/main.qml" line="104"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="65"/>
+        <source>Paused</source>
+        <comment>state</comment>
+        <translation>रूका</translation>
+    </message>
+    <message>
+        <location filename="../../src/ui/gui/qml/main.qml" line="50"/>
+        <location filename="../../src/ui/gui/qml/main.qml" line="80"/>
         <source>Recording</source>
         <comment>state</comment>
-        <translation type="unfinished"></translation>
+        <translation>रिकॉर्डिंग</translation>
     </message>
     <message>
         <location filename="../../src/launcher/qml/main.qml" line="40"/>
         <source>Updating HulaLoop</source>
-        <translation type="unfinished"></translation>
+        <translation>HulaLoop अद्यतन हो रहा है</translation>
     </message>
     <message>
         <location filename="../../src/launcher/qml/main.qml" line="76"/>
         <source>Checking for updates...</source>
-        <translation type="unfinished"></translation>
+        <translation>अद्यतन के लिए चेक हो रहा है...</translation>
     </message>
     <message>
         <location filename="../../src/launcher/qml/main.qml" line="85"/>
         <source>Downloading updates...</source>
-        <translation type="unfinished"></translation>
+        <translation>अद्यतन डाउनलोड किए जा रहे हैं...</translation>
     </message>
     <message>
         <location filename="../../src/launcher/qml/main.qml" line="100"/>
         <source>No updates found.</source>
-        <translation type="unfinished"></translation>
+        <translation>कोई अपडेट नहीं है|</translation>
     </message>
     <message>
         <location filename="../../src/launcher/qml/main.qml" line="121"/>
         <source>Click here to dismiss</source>
-        <translation type="unfinished"></translation>
+        <translation>खारिज करने के लिए यहां क्लिक करें</translation>
     </message>
 </context>
 </TS>

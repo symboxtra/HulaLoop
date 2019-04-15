@@ -16,6 +16,8 @@ Rectangle {
     height: 115
     color: window.barColor
 
+    property var triggerPlayPause: playpauseBtn.onClicked
+
     Timer {
         id: countDownTimer
         objectName: "countDownTimer"
@@ -25,7 +27,7 @@ Rectangle {
         repeat: true
         onTriggered: {
             if (timeFuncs.time === 0) {
-                window.textDisplayed = "Elapsed: 0"
+                window.textDisplayed = qsTr("Elapsed: %1").arg(0)
                 countDownTimer.stop()
 
                 recordBtn.onClicked()
@@ -51,10 +53,10 @@ Rectangle {
         onTriggered: {
             // Since the timer starts at 0, go to endTime - 1
             if (!recordingTimer.inf && timeFuncs.time >= timeFuncs.time2 - 1) {
-                window.textDisplayed = "Elapsed: " + (++timeFuncs.time)
+                window.textDisplayed = qsTr("Elapsed: %1").arg(++timeFuncs.time)
                 stopBtn.onClicked();
             } else {
-                window.textDisplayed = "Elapsed: " + (++timeFuncs.time)
+                window.textDisplayed = qsTr("Elapsed: %1").arg(++timeFuncs.time)
             }
         }
     }
@@ -532,6 +534,27 @@ Rectangle {
                 samples: 3
                 source: checkUpdateBtn
             }
+
+            DropShadow {
+                visible: (settingsBtn.enabled && !settingsBtn.pressed) ? true : false
+                color: "#606060"
+                anchors.fill: settingsBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: settingsBtn
+            }
+
+            InnerShadow {
+                visible: settingsBtn.pressed ? true : false
+                color: "#606060"
+                anchors.fill: settingsBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: settingsBtn
+            }
+
         }
 
         FileDialog {
@@ -571,7 +594,7 @@ Rectangle {
                 model: ListModel {
                     id: iDeviceItems
                     Component.onCompleted: {
-                        var idevices = qmlbridge.getInputDevices().split(',')
+                        var idevices = qmlbridge.getInputDevices().split('^^')
                         var i
                         for (i = 0; i < idevices.length; i++) {
                             append({
@@ -597,7 +620,7 @@ Rectangle {
                         selectedInd = currentIndex;
 
                     model.clear();
-                    var idevices = qmlbridge.getInputDevices().split(',')
+                    var idevices = qmlbridge.getInputDevices().split('^^')
                         var i
                         for (i = 0; i < idevices.length; i++) {
                             model.append({
@@ -631,7 +654,7 @@ Rectangle {
                 model: ListModel {
                     id: oDeviceItems
                     Component.onCompleted: {
-                        var odevices = qmlbridge.getOutputDevices().split(',')
+                        var odevices = qmlbridge.getOutputDevices().split('^^')
                         var i
                         for (i = 0; i < odevices.length; i++) {
                             append({
@@ -657,7 +680,7 @@ Rectangle {
                         selectedInd = currentIndex;
 
                     model.clear();
-                    var odevices = qmlbridge.getOutputDevices().split(',')
+                    var odevices = qmlbridge.getOutputDevices().split('^^')
                         var i
                         for (i = 0; i < odevices.length; i++) {
                             model.append({
@@ -735,7 +758,7 @@ Rectangle {
                         //add behavior for which setting it was just changed to
                         qmlbridge.visType = visSetting.currentText
                         qmlbridge.saveSettings()
-                        qmlbridge.onVisData([], [0])
+                        qmlbridge.onVisData([], [0], 0)
                     }
 
                     Component.onCompleted: {
@@ -809,18 +832,18 @@ Rectangle {
 
         x: Math.round((window.width - width) / 2)
         y: Math.round((window.height - height) / 2)
-        width: 255
-        height: 100
 
         modal: true
         focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
         ColumnLayout {
-            spacing: Math.round(window.height * 0.15)
+            spacing: Math.round(window.height * 0.1)
+
             ColumnLayout {
-                spacing: Math.round(discardPopup.height * 0.15)
-                RowLayout{
+                spacing: Math.round(discardPopup.height * 0.1)
+
+                RowLayout {
                     Text {
                         id: textbot
                         color: "white"
@@ -829,21 +852,21 @@ Rectangle {
                 }
                 RowLayout {
                     Layout.alignment: Qt.AlignCenter
-                    spacing: Math.round(buttonPanel.width * 0.05)
                     width: gridLayout.width / 2
+
                     Button {
-                        text: "No"
+                        text: qsTr("No")
                         onClicked: {
                             discardPopup.close()
                         }
                     }
 
                     Button {
-                        text: "Yes"
+                        text: qsTr("Yes")
                         onClicked: {
                             // Discard files
                             qmlbridge.discard()
-                            recordBtn.tttext = "Record Audio"
+                            recordBtn.tttext = qsTr("Record Audio")
 
                             // Start recording again
                             stopBtn.isStopped = false
@@ -855,7 +878,7 @@ Rectangle {
                             timeFuncs.time = 0;
                             delayInput.text = "00:00:00";
                             recordTimeInput.text = "00:00:00";
-                            window.textDisplayed = "Elapsed: 0";
+                            window.textDisplayed = qsTr("Elapsed: %1").arg(0);
                         }
                     }
                 }

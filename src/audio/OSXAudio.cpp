@@ -47,7 +47,7 @@ OSXAudio::OSXAudio()
     #endif
 
     // Initialize PortAudio
-    int err = Pa_Initialize();
+    PaError err = Pa_Initialize();
     if (err != paNoError)
     {
         hlDebugf("PortAudio failed to initialize.\n");

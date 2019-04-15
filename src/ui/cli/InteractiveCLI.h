@@ -33,6 +33,8 @@ namespace hula
             double delay = 0;
             double duration = HL_INFINITE_RECORD;
             std::string outputFilePath;
+            std::string lastInputDevice = "";
+            std::string lastOutputDevice = "";
 
         public:
             InteractiveCLI(QCoreApplication *app);

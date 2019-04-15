@@ -10,4 +10,4 @@ Icon=hulaloop-logo
 Terminal=false
 Categories=Qt;AudioVideo;Audio;Recorder
 
-Exec=hulaloop-launcher
+Exec=hulaloop

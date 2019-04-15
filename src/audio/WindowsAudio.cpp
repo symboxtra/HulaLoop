@@ -17,6 +17,7 @@ WindowsAudio::WindowsAudio()
 
     status = S_OK;
     pa_status = paNoError;
+    status = 0;
 }
 
 /**

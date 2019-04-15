@@ -1,3 +1,5 @@
+#include <fcntl.h>
+#include <unistd.h>
 #include <portaudio.h>
 
 #include "LinuxAudio.h"
@@ -11,6 +13,26 @@ using namespace hula;
  */
 LinuxAudio::LinuxAudio()
 {
+    #if HL_NO_DEBUG_OUTPUT
+    int out = dup(1);
+    int temp_null = open("/dev/null", O_WRONLY);
+    dup2(temp_null, 1);
+    close(temp_null);
+    #endif
+
+    // Initialize PortAudio
+    PaError err = Pa_Initialize();
+    if (err != paNoError)
+    {
+        hlDebugf("PortAudio failed to initialize.\n");
+        hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
+        throw AudioException(HL_PA_INIT_CODE, HL_PA_INIT_MSG);
+    }
+
+    #if HL_NO_DEBUG_OUTPUT
+    dup2(out, 1);
+    close(out);
+    #endif
 }
 
 /**
@@ -52,7 +74,7 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
 
     HulaAudioSettings *s = HulaAudioSettings::getInstance();
 
-    // outer while gets all the sound cards
+    /* // outer while gets all the sound cards
     while (snd_card_next(&cardNumber) >= 0 && cardNumber >= 0)
     {
         // open and init the sound card
@@ -84,20 +106,13 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
             }
         }
         snd_ctl_close(handle);
-    }
+
+        snd_config_update_free_global();
+    } */
 
     // Get devices from PortAudio if record or playback devices are requested
     if (playSet)
     {
-        // Initialize PortAudio and update audio devices
-        PaError err = Pa_Initialize();
-        if (err != paNoError)
-        {
-            hlDebugf("PortAudio failed to initialize.\n");
-            hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
-            exit(1); // TODO: Handle error
-        }
-
         // Get the total count of audio devices
         int deviceCount = Pa_GetDeviceCount();
         if (deviceCount < 0)
@@ -137,17 +152,8 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
                 devices.push_back(hlDevice);
             }
         }
-
-        // Close the Port Audio session
-        err = Pa_Terminate();
-        if (err != paNoError)
-        {
-            hlDebugf("Could not terminate Port Audio session.\n");
-            hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
-        }
     }
 
-    snd_config_update_free_global();
     return devices;
 }
 
@@ -176,6 +182,8 @@ bool LinuxAudio::checkDeviceParams(Device *device)
 {
     if (device->getID().portAudioID != -1)
     {
+        hlDebug() << "Testing PortAudio device" << std::endl;
+
         PaStreamParameters parameters = {0};
         parameters.channelCount = NUM_CHANNELS;
         parameters.device = device->getID().portAudioID;
@@ -203,6 +211,8 @@ bool LinuxAudio::checkDeviceParams(Device *device)
 
         return err == paFormatIsSupported;
     }
+
+    hlDebug() << "Testing ALSA device" << std::endl;
 
     int err;                     // return for commands that might return an error
     snd_pcm_t *pcmHandle = nullptr; // default pcm handle
@@ -387,4 +397,12 @@ LinuxAudio::~LinuxAudio()
     hlDebugf("LinuxAudio destructor called\n");
 
     system("pkill pavucontrol");
+
+    // Close the Port Audio session
+    PaError err = Pa_Terminate();
+    if (err != paNoError)
+    {
+        hlDebugf("Could not terminate Port Audio session.\n");
+        hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
+    }
 }
