@@ -36,6 +36,10 @@ Controller::Controller()
         hlDebug() << HL_OS_INIT_MSG << std::endl;
         throw AudioException(HL_OS_INIT_CODE, HL_OS_INIT_MSG);
     }
+    else
+    {
+        audio->addBufferReadyCallback(this);
+    }
 
 }
 
@@ -113,6 +117,21 @@ void Controller::removeBuffer(HulaRingBuffer *rb)
     audio->removeBuffer(rb);
 }
 
+void Controller::addBufferCallback(ICallback *func)
+{
+    // Check if callback function already exists
+    if(find(callbackList.begin(), callbackList.end(), func) == callbackList.end())
+        this->callbackList.push_back(func);
+}
+
+void Controller::removeBufferCallback(ICallback *func)
+{
+    // Check if callback function exists to remove
+    std::vector<ICallback *>::iterator it = find(callbackList.begin(), callbackList.end(), func);
+    if(it != callbackList.end())
+        this->callbackList.erase(it);
+}
+
 /**
  * Notify OSAudio to start reading from the list of buffers
  * that will be played back on the selected device.
@@ -151,6 +170,20 @@ void Controller::endPlayback()
 void Controller::copyToBuffers(const float *samples, ring_buffer_size_t sampleCount)
 {
     return audio->copyToBuffers(samples, sampleCount);
+}
+
+/**
+ * Callback function that is triggered when audio is captured
+ * by OSAudio
+ *
+ * @param size Size of returned audio data (frames)
+ * @param data Audio data in byte buffer
+ */
+void Controller::handleData(uint8_t* data, uint32_t size)
+{
+    // Trigger upper layer callback functions
+    for(int i = 0;i < callbackList.size();i++)
+        callbackList[i]->handleData(data, size);
 }
 
 /**

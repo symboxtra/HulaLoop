@@ -6,6 +6,7 @@
 #include "Device.h"
 #include "OSAudio.h"
 #include "HulaRingBuffer.h"
+#include "ICallback.h"
 
 namespace hula
 {
@@ -15,10 +16,12 @@ namespace hula
      * Central component of the audio backend.
      * A class that structures the receival of audio from the OS framework.
      */
-    class Controller {
+    class Controller : public ICallback {
 
         private:
             OSAudio *audio;
+
+            std::vector<ICallback *> callbackList;
 
         public:
             Controller();
@@ -31,8 +34,15 @@ namespace hula
 
             void startPlayback();
             void endPlayback();
+
+            // Ringbuffer Functionality
             void copyToBuffers(const float *samples, ring_buffer_size_t sampleCount);
             ring_buffer_size_t playbackCopyToBuffers(const float *samples, ring_buffer_size_t sampleCount);
+
+            // Callback Functionality
+            void addBufferCallback(ICallback* func);
+            void removeBufferCallback(ICallback* func);
+            void handleData(uint8_t* data, uint32_t size);
 
             std::vector<Device *> getDevices(DeviceType type) const;
 

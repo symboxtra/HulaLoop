@@ -9,6 +9,7 @@
 
 #include "Device.h"
 #include "HulaRingBuffer.h"
+#include "ICallback.h"
 
 namespace hula
 {
@@ -87,6 +88,8 @@ namespace hula
              * Peace. Love. Happiness. Doxygen :)
              */
             uint32_t captureBufferSize;
+
+            ICallback * controller_callback;
 
         public:
             /**
