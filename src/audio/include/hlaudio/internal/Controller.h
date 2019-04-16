@@ -42,7 +42,7 @@ namespace hula
             // Callback Functionality
             void addBufferCallback(ICallback* func);
             void removeBufferCallback(ICallback* func);
-            void handleData(uint8_t* data, uint32_t size);
+            void handleData(const float *data, long size);
 
             std::vector<Device *> getDevices(DeviceType type) const;
 

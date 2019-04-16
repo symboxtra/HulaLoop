@@ -102,6 +102,17 @@ ring_buffer_size_t OSAudio::playbackCopyToBuffers(const float *samples, ring_buf
     return samplesWritten;
 }
 
+void OSAudio::addBufferCallback(ICallback *func)
+{
+    if(!controller_callback)
+        controller_callback = func;
+}
+
+void OSAudio::removeBufferCallback(ICallback *func)
+{
+        controller_callback = nullptr;
+}
+
 /**
 * Static function to allow starting a thread with an instance's capture method.
 * This will block, so it should be called in a new thread.

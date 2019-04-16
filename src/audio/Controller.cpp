@@ -38,7 +38,7 @@ Controller::Controller()
     }
     else
     {
-        audio->addBufferReadyCallback(this);
+        audio->addBufferCallback(this);
     }
 
 }
@@ -179,8 +179,10 @@ void Controller::copyToBuffers(const float *samples, ring_buffer_size_t sampleCo
  * @param size Size of returned audio data (frames)
  * @param data Audio data in byte buffer
  */
-void Controller::handleData(uint8_t* data, uint32_t size)
+void Controller::handleData(const float* data, long size)
 {
+    hlDebug() << "Sample Size: " << size << std::endl;
+
     // Trigger upper layer callback functions
     for(int i = 0;i < callbackList.size();i++)
         callbackList[i]->handleData(data, size);
@@ -291,6 +293,8 @@ bool Controller::setActiveOutputDevice(Device *device) const
 Controller::~Controller()
 {
     hlDebug() << "Controller destructor called" << std::endl;
+
+    //audio->removeBufferCallback(this);
 
     // Don't do this until mem management is fixed
     if (audio)

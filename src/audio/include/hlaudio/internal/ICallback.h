@@ -5,10 +5,10 @@ namespace hula
 {
     class ICallback {
         public:
-            ICallback();
-            ~ICallback();
+            ICallback(){};
+            ~ICallback(){};
 
-            virtual void handleData(uint8_t* data, uint32_t size) = 0;
+            virtual void handleData(const float* data, long size) = 0;
     };
 }
 

@@ -31,6 +31,8 @@ namespace hula
                 this->activeInputDevice = nullptr;
                 this->activeOutputDevice = nullptr;
 
+                this->controller_callback = nullptr;
+
                 playbackBuffer = new HulaRingBuffer(1);
 
                 endCapture.store(true);
@@ -89,8 +91,6 @@ namespace hula
              */
             uint32_t captureBufferSize;
 
-            ICallback * controller_callback;
-
         public:
             /**
              * Singular buffer reserved for distributing playback audio data
@@ -99,6 +99,8 @@ namespace hula
              * delivered to PortAudio in the OSAudio/paPlayCallback method.
              */
             HulaRingBuffer *playbackBuffer;
+
+            ICallback * controller_callback;
 
             virtual ~OSAudio() = 0;
 
@@ -111,6 +113,9 @@ namespace hula
             void endPlayback();
             void copyToBuffers(const float *samples, ring_buffer_size_t sampleCount);
             ring_buffer_size_t playbackCopyToBuffers(const float *samples, ring_buffer_size_t sampleCount);
+
+            void addBufferCallback(ICallback* func);
+            void removeBufferCallback(ICallback* func);
 
             /**
              * Receive the list of available record, playback and/or loopback audio devices
