@@ -377,6 +377,8 @@ void LinuxAudio::capture()
         }
 
         copyToBuffers((float *)audioBuffer, framesRead * NUM_CHANNELS);
+
+        doCallbacks((float *)audioBuffer, framesRead * NUM_CHANNELS);
     }
 
     // cleanup stuff

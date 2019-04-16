@@ -25,21 +25,52 @@ void OSAudio::setBufferSize(uint32_t size)
 */
 void OSAudio::addBuffer(HulaRingBuffer *rb)
 {
+    // Prevent duplicate buffers in list
     if (find(rbs.begin(), rbs.end(), rb) == rbs.end())
     {
         this->rbs.push_back(rb);
+
+        // Start record thread if only one buffer or callback exists
+        if (rbs.size() == 1 && cbs.size() == 0)
+        {
+            startRecord();
+        }
     }
+}
 
-    if (rbs.size() == 1 && endPlay.load())
+/**
+ * Internal function for managing record thread creation
+ */
+void OSAudio::startRecord()
+{
+    hlDebug() << "Start Record Called" << std::endl;
+
+    // Prevent other state changes
+    this->stateSem.wait();
+    if(this->endCapture.load() && this->endPlay.load())
     {
-        // Signal death and join all threads
-        this->endCapture.store(true);
-        joinAndKillThreads(inThreads);
+        // Mutex will be unlocked by backgroundCapture once
+        // thread creation is complete
+        inThreads.emplace_back(std::thread(&OSAudio::backgroundCapture, this));
+    }
+    else
+    {
+        this->stateSem.notify();
+    }
+}
 
-        // Start up the capture thread
-        // TODO: Figure out how to manage this with playback
-        this->endCapture.store(false);
-        inThreads.emplace_back(std::thread(&backgroundCapture, this));
+/**
+ * Write to each of the buffers contained in rbs.
+ *
+ * @param samples Buffer of interleaved float samples
+ * @param sampleCount Number of samples in the buffer
+ */
+void OSAudio::copyToBuffers(const float *samples, ring_buffer_size_t sampleCount)
+{
+    std::vector<HulaRingBuffer *>::iterator it;
+    for (it = rbs.begin(); it != rbs.end(); it++)
+    {
+        (*it)->write(samples, sampleCount);
     }
 }
 
@@ -58,11 +89,9 @@ void OSAudio::removeBuffer(HulaRingBuffer *rb)
     if (it != rbs.end())
     {
         // Stop the capture thread if there will be no buffers left
-        if (rbs.size() == 1)
+        if (rbs.size() == 1 && cbs.size() == 0)
         {
-            // Signal death and join all threads
-            this->endCapture.store(true);
-            joinAndKillThreads(inThreads);
+            endRecord();
         }
 
         // Prevent invalid iterator for copyToBuffers
@@ -71,17 +100,187 @@ void OSAudio::removeBuffer(HulaRingBuffer *rb)
 }
 
 /**
- * Write to each of the buffers contained in rbs.
- *
- * @param samples Buffer of interleaved float samples
- * @param sampleCount Number of samples in the buffer
+ * Internal function for managing record thread deletion
  */
-void OSAudio::copyToBuffers(const float *samples, ring_buffer_size_t sampleCount)
+void OSAudio::endRecord()
 {
-    std::vector<HulaRingBuffer *>::iterator it;
-    for (it = rbs.begin(); it != rbs.end(); it++)
+    hlDebug() << "End Record Called" << std::endl;
+
+    this->stateSem.wait();
+
+    this->endCapture.store(true);
+    joinAndKillThreads(inThreads);
+
+    this->stateSem.notify();
+}
+
+/**
+ * Add a callback to the list of callbacks that receive audio data.
+ * If already present, the callback will not be duplicated.
+ *
+ * @param obj ICallback object to add to the callback list.
+ */
+void OSAudio::addCallback(ICallback *obj)
+{
+    if(std::find(cbs.begin(), cbs.end(), obj) == cbs.end())
     {
-        (*it)->write(samples, sampleCount);
+        this->cbs.push_back(obj);
+
+        if(cbs.size() == 1 && rbs.size() == 0)
+        {
+            startRecord();
+        }
+    }
+}
+
+/**
+ * Call each callback contained in cbs
+ *
+ * @param samples Audio data to be copied
+ * @param sampleCount Number of samples
+ */
+void OSAudio::doCallbacks(const float *samples, ring_buffer_size_t sampleCount)
+{
+    std::vector<ICallback *>::iterator it;
+    for (it = cbs.begin(); it != cbs.end(); it++)
+    {
+        (*it)->handleData(samples, sampleCount);
+    }
+}
+
+/**
+ * Remove a callback from the list of callbacks that receive audio data.
+ *
+ * @param obj ICallback object to add to the callback list.
+ */
+void OSAudio::removeCallback(ICallback *obj)
+{
+    // Check if callback function exists to remove
+    std::vector<ICallback *>::iterator it = std::find(cbs.begin(), cbs.end(), obj);
+    if(it != cbs.end())
+    {
+        // Stop the capture thread if there will be no buffers left
+        if(cbs.size() == 1 && rbs.size() == 0)
+        {
+            endRecord();
+        }
+
+        this->cbs.erase(it);
+    }
+}
+
+/**
+* Static function to allow starting a thread with an instance's capture method.
+* This will block, so it should be called in a new thread.
+*
+* Calling this directly outside of this class is dangerous.
+* Any thread not in the inThreads vector cannot be guaranteed a valid endCapture
+* signal since it won't be joined after a device switch or 0 buffer state.
+* Sync flags might be reset before the independent thread sees them.
+*
+*/
+void OSAudio::backgroundCapture()
+{
+    // TODO: Does this need to move to setActiveInputDevice
+    if (this->rbs.size() == 0)
+    {
+
+        this->stateSem.notify();
+        return;
+    }
+
+    // Default to first device
+    if (this->activeInputDevice == nullptr)
+    {
+        std::vector<Device *> devices = this->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
+        if (devices.empty())
+        {
+            hlDebug() << "In backgroundCapture: No input devices available." << std::endl;
+
+            this->stateSem.notify();
+            return;
+        }
+
+        // TODO: Why? Not sure what this means since above condition is opposite
+        // if (this->activeInputDevice)
+        // {
+        //     delete this->activeInputDevice;
+        // }
+        this->activeInputDevice = new Device(*devices[0]);
+        Device::deleteDevices(devices);
+    }
+
+    this->endCapture.store(false);
+
+    // TODO: Make sure this is a FIFO notification if necessary
+    // Notify any waiting threads
+    this->stateSem.notify();
+
+    // Infinite loop until endRecord
+    this->capture();
+}
+
+/**
+* Static function to allow starting a thread with an instance's playback method.
+* This will block, so it should be called in a new thread.
+*
+* Calling this directly outside of this class is dangerous.
+* Any thread not in the outThreads vector cannot be guaranteed a valid endPlayback
+* signal since it won't be joined after a device switch or 0 buffer state.
+* Sync flags might be reset before the independent thread sees them.
+*
+*/
+void OSAudio::backgroundPlayback()
+{
+    // Default to first device
+    if (this->activeOutputDevice == nullptr)
+    {
+        std::vector<Device *> devices = this->getDevices((DeviceType)(DeviceType::PLAYBACK));
+        if (devices.empty())
+        {
+            hlDebug() << "In backgroundPlayback: No output devices available." << std::endl;
+
+            this->stateSem.notify();
+            return;
+        }
+
+        // TODO: Why? Not sure what this means since above condition is opposite
+        // if (this->activeOutputDevice)
+        // {
+        //     delete this->activeOutputDevice;
+        // }
+        this->activeOutputDevice = new Device(*devices[0]);
+        Device::deleteDevices(devices);
+    }
+
+    this->endPlay.store(false);
+
+    // TODO: Make sure this is a FIFO notification if necessary
+    // Notify any waiting threads
+    this->stateSem.notify();
+
+    // Infinite loop until endPlayback
+    this->playback();
+}
+
+/**
+ * Signal the start of the playback thread. Add playback buffer to the
+ * HulaRingBuffer vector and start the playback thread. This signal is to notify
+ * the backend to start reading data that will be played to the selected audio device.
+ */
+void OSAudio::startPlayback()
+{
+    this->stateSem.wait();
+
+    if(this->endPlay.load() && this->endCapture.load())
+    {
+        // Mutex will be unlocked by backgroundPlayback once
+        // thread creation is complete
+        outThreads.emplace_back(std::thread(&OSAudio::backgroundPlayback, this));
+    }
+    else
+    {
+        this->stateSem.notify();
     }
 }
 
@@ -102,106 +301,6 @@ ring_buffer_size_t OSAudio::playbackCopyToBuffers(const float *samples, ring_buf
     return samplesWritten;
 }
 
-void OSAudio::addBufferCallback(ICallback *func)
-{
-    if(!controller_callback)
-        controller_callback = func;
-}
-
-void OSAudio::removeBufferCallback(ICallback *func)
-{
-        controller_callback = nullptr;
-}
-
-/**
-* Static function to allow starting a thread with an instance's capture method.
-* This will block, so it should be called in a new thread.
-*
-* Calling this directly outside of this class is dangerous.
-* Any thread not in the inThreads vector cannot be guaranteed a valid endCapture
-* signal since it won't be joined after a device switch or 0 buffer state.
-* Sync flags might be reset before the independent thread sees them.
-*
-* @param _this Instance of OSAudio subclass which capture should be called on.
-*/
-void OSAudio::backgroundCapture(OSAudio *_this)
-{
-    // TODO: Does this need to move to setActiveInputDevice
-    if (_this->rbs.size() == 0)
-    {
-        return;
-    }
-
-    if (_this->activeInputDevice == nullptr)
-    {
-        std::vector<Device *> devices = _this->getDevices((DeviceType)(DeviceType::RECORD | DeviceType::LOOPBACK));
-        if (devices.empty())
-        {
-            return;
-        }
-
-        if (_this->activeInputDevice)
-        {
-            delete _this->activeInputDevice;
-        }
-        _this->activeInputDevice = new Device(*devices[0]);
-        Device::deleteDevices(devices);
-    }
-
-    // Don't reset the endCapture flag here as it can cause a race condition
-    _this->capture();
-}
-
-/**
-* Static function to allow starting a thread with an instance's playback method.
-* This will block, so it should be called in a new thread.
-*
-* Calling this directly outside of this class is dangerous.
-* Any thread not in the outThreads vector cannot be guaranteed a valid endPlayback
-* signal since it won't be joined after a device switch or 0 buffer state.
-* Sync flags might be reset before the independent thread sees them.
-*
-* @param _this Instance of OSAudio subclass which capture should be called on.
-*/
-void OSAudio::backgroundPlayback(OSAudio *_this)
-{
-
-    if (_this->activeOutputDevice == NULL)
-    {
-        std::vector<Device *> devices = _this->getDevices((DeviceType)(DeviceType::PLAYBACK));
-        if (devices.empty())
-        {
-            return;
-        }
-
-        if (_this->activeOutputDevice)
-        {
-            delete _this->activeOutputDevice;
-        }
-        _this->activeOutputDevice = new Device(*devices[0]);
-        Device::deleteDevices(devices);
-    }
-
-    // Start the playback loop
-    // DO NOT reset the interrupt flag here as it can cause a race condition
-    _this->playback();
-}
-
-/**
- * Signal the start of the playback thread. Add playback buffer to the
- * HulaRingBuffer vector and start the playback thread. This signal is to notify
- * the backend to start reading data that will be played to the selected audio device.
- */
-void OSAudio::startPlayback()
-{
-    // Kill any live record threads before starting audio capture
-    this->endCapture.store(true);
-    this->joinAndKillThreads(this->inThreads);
-
-    this->endPlay.store(false);
-    outThreads.emplace_back(std::thread(&backgroundPlayback, this));
-}
-
 /**
  * Signal the end of the playback thread. Kill all playback threads.
  * This signal is to notify the backend to stop reading
@@ -209,10 +308,15 @@ void OSAudio::startPlayback()
  */
 void OSAudio::endPlayback()
 {
+    this->stateSem.wait();
+
     this->endPlay.store(true);
     joinAndKillThreads(outThreads);
 
+    // Remove any unplayed audio
     this->playbackBuffer->clear();
+
+    this->stateSem.notify();
 }
 
 
@@ -383,37 +487,19 @@ bool OSAudio::setActiveInputDevice(Device *device)
     }
     this->activeInputDevice = new Device(*device);
 
-    // Signal death and wait for all threads to catch the signal
-    this->endCapture.store(true);
-    joinAndKillThreads(inThreads);
+    // Store value since endRecord will override endCapture
+    bool prevRec = !endCapture.load();
+
+    endRecord();
 
     // Startup a new thread
-    // Make sure a playback is not running
-    if (endPlay.load())
+    // Only restart the thread if we were just in a playback
+    if(prevRec)
     {
-        this->endCapture.store(false);
-        inThreads.emplace_back(std::thread(&backgroundCapture, this));
+        startRecord();
     }
 
     return true;
-}
-
-/**
- * Helper function to join and kill a vector of threads.
- * Will only join if joinable.
- *
- * @param threads Vector of threads to join and kill.
- */
-void OSAudio::joinAndKillThreads(std::vector<std::thread> &threads)
-{
-    for (auto &t : threads)
-    {
-        if (t.joinable())
-        {
-            t.join();
-        }
-    }
-    threads.clear();
 }
 
 /**
@@ -457,19 +543,37 @@ bool OSAudio::setActiveOutputDevice(Device *device)
     }
     this->activeOutputDevice = new Device(*device);
 
-    bool fromPlay = !endPlay.load();
-    this->endPlay.store(true);
-    joinAndKillThreads(outThreads);
+    // Store value since endPlayback will override endPlay
+    bool prevPlay = !endPlay.load();
+
+    endPlayback();
 
     // Startup a new thread
     // Only restart the thread if we were just in a playback
-    if (fromPlay && endCapture.load())
+    if (prevPlay)
     {
-        endPlay.store(false);
-        outThreads.emplace_back(std::thread(&backgroundPlayback, this));
+        startPlayback();
     }
 
     return true;
+}
+
+/**
+ * Helper function to join and kill a vector of threads.
+ * Will only join if joinable.
+ *
+ * @param threads Vector of threads to join and kill.
+ */
+void OSAudio::joinAndKillThreads(std::vector<std::thread> &threads)
+{
+    for (auto &t : threads)
+    {
+        if (t.joinable())
+        {
+            t.join();
+        }
+    }
+    threads.clear();
 }
 
 /**

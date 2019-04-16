@@ -16,7 +16,7 @@ namespace hula
      * Central component of the audio backend.
      * A class that structures the receival of audio from the OS framework.
      */
-    class Controller : public ICallback {
+    class Controller {
 
         private:
             OSAudio *audio;
@@ -40,9 +40,8 @@ namespace hula
             ring_buffer_size_t playbackCopyToBuffers(const float *samples, ring_buffer_size_t sampleCount);
 
             // Callback Functionality
-            void addBufferCallback(ICallback* func);
-            void removeBufferCallback(ICallback* func);
-            void handleData(const float *data, long size);
+            void addCallback(ICallback* obj);
+            void removeCallback(ICallback* obj);
 
             std::vector<Device *> getDevices(DeviceType type) const;
 

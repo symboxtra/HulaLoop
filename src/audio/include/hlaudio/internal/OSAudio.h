@@ -3,13 +3,16 @@
 
 // System
 #include <atomic>
+#include <condition_variable>
 #include <cstdlib>
+#include <mutex>
 #include <thread>
 #include <vector>
 
 #include "Device.h"
 #include "HulaRingBuffer.h"
 #include "ICallback.h"
+#include "Semaphore.h"
 
 namespace hula
 {
@@ -21,6 +24,10 @@ namespace hula
         private:
             void joinAndKillThreads(std::vector<std::thread> &threads);
 
+            Semaphore stateSem;
+            void startRecord();
+            void endRecord();
+
         protected:
 
             /**
@@ -31,9 +38,9 @@ namespace hula
                 this->activeInputDevice = nullptr;
                 this->activeOutputDevice = nullptr;
 
-                this->controller_callback = nullptr;
-
                 playbackBuffer = new HulaRingBuffer(1);
+
+               // stateSem = Semaphore(1);
 
                 endCapture.store(true);
                 endPlay.store(true);
@@ -100,7 +107,7 @@ namespace hula
              */
             HulaRingBuffer *playbackBuffer;
 
-            ICallback * controller_callback;
+            std::vector<ICallback *> cbs;
 
             virtual ~OSAudio() = 0;
 
@@ -111,11 +118,13 @@ namespace hula
 
             void startPlayback();
             void endPlayback();
+
             void copyToBuffers(const float *samples, ring_buffer_size_t sampleCount);
             ring_buffer_size_t playbackCopyToBuffers(const float *samples, ring_buffer_size_t sampleCount);
 
-            void addBufferCallback(ICallback* func);
-            void removeBufferCallback(ICallback* func);
+            void addCallback(ICallback* obj);
+            void removeCallback(ICallback* obj);
+            void doCallbacks(const float *samples, ring_buffer_size_t sampleCount);
 
             /**
              * Receive the list of available record, playback and/or loopback audio devices
@@ -130,13 +139,13 @@ namespace hula
              * Execution loop for loopback capture
              */
             virtual void capture() = 0;
-            static void backgroundCapture(OSAudio *_this);
+            void backgroundCapture();
 
             /**
              * Execution loop for audio playback
              */
             void playback();
-            static void backgroundPlayback(OSAudio *_this);
+            void backgroundPlayback();
 
             /**
              * Verify the bit rate of set rate with the hardware device compatibility

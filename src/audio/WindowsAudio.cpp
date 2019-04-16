@@ -204,8 +204,7 @@ static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
     // TODO: Make sure this calculation is right
     obj->copyToBuffers(samples, framesPerBuffer * NUM_CHANNELS);
 
-    if(obj->controller_callback)
-        obj->controller_callback->handleData(samples, framesPerBuffer * NUM_CHANNELS);
+    obj->doCallbacks(samples, framesPerBuffer * NUM_CHANNELS);
 
     return paContinue;
 }
@@ -334,8 +333,7 @@ void WindowsAudio::capture()
 
                 this->copyToBuffers((float *)pData, numFramesAvailable * NUM_CHANNELS);
 
-                if(this->controller_callback)
-                   this->controller_callback->handleData((float*)pData, numFramesAvailable * NUM_CHANNELS);
+                this->doCallbacks((float*)pData, numFramesAvailable * NUM_CHANNELS);
 
                 // Release buffer after data is captured and handled
                 status = captureClient->ReleaseBuffer(numFramesAvailable);
