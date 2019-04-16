@@ -15,6 +15,10 @@
 <context>
     <name>ButtonPanel</name>
     <message>
+        <source>Elapsed: %1</source>
+        <translation></translation>
+    </message>
+    <message>
         <source>Recording</source>
         <comment>state</comment>
         <translation></translation>
@@ -63,6 +67,10 @@
         <translation></translation>
     </message>
     <message>
+        <source>Change output device</source>
+        <translation></translation>
+    </message>
+    <message>
         <source>Display record devices</source>
         <translation></translation>
     </message>
@@ -87,15 +95,19 @@
         <translation></translation>
     </message>
     <message>
-        <source>Change output device</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Elapsed: %1</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Are you sure you want to discard?</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Record Audio</source>
         <translation></translation>
     </message>
     <message>
@@ -113,18 +125,6 @@
     <message>
         <source>OK</source>
         <translation></translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Record Audio</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -202,11 +202,11 @@
         <translation></translation>
     </message>
     <message>
-        <source>target language</source>
+        <source>Set the language of the application.</source>
         <translation></translation>
     </message>
     <message>
-        <source>Set the language of the application.</source>
+        <source>target language</source>
         <translation></translation>
     </message>
     <message>
@@ -298,16 +298,6 @@
         <translation></translation>
     </message>
     <message>
-        <source>Hz</source>
-        <comment>unit</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Output file:</source>
-        <comment>setting</comment>
-        <translation></translation>
-    </message>
-    <message>
         <source>Device #%1</source>
         <translation></translation>
     </message>
@@ -340,6 +330,11 @@
         <translation></translation>
     </message>
     <message>
+        <source>Output file:</source>
+        <comment>setting</comment>
+        <translation></translation>
+    </message>
+    <message>
         <source>Delay:</source>
         <translation></translation>
     </message>
@@ -354,6 +349,11 @@
     </message>
     <message>
         <source>Sample rate:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Hz</source>
+        <comment>unit</comment>
         <translation></translation>
     </message>
     <message>
@@ -426,11 +426,11 @@
     </message>
     <message>
         <source>Delaying for %1 seconds...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Recording for %1 seconds...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -541,6 +541,38 @@
 <context>
     <name>main</name>
     <message>
+        <source>Elapsed: %1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Ready</source>
+        <comment>state</comment>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Recording</source>
+        <comment>state</comment>
+        <translation></translation>
+    </message>
+    <message>
+        <source>HulaLoop Information</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>HulaLoop has started recording audio!</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Playing</source>
+        <comment>state</comment>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Paused</source>
+        <comment>state</comment>
+        <translation></translation>
+    </message>
+    <message>
         <source>Updating HulaLoop</source>
         <translation></translation>
     </message>
@@ -559,38 +591,6 @@
     <message>
         <source>Click here to dismiss</source>
         <translation></translation>
-    </message>
-    <message>
-        <source>Elapsed: %1</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ready</source>
-        <comment>state</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>HulaLoop Information</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>HulaLoop has started recording audio!</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Playing</source>
-        <comment>state</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Recording</source>
-        <comment>state</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Paused</source>
-        <comment>state</comment>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
