@@ -157,9 +157,11 @@ std::vector<Device *> LinuxAudio::parsePulseAudioDevices()
                 type = DeviceType::PLAYBACK;
             }
 
+#if 0
             hlDebug() << "Creating device from pactl:" << std::endl;
             hlDebug() << "    ID: " << id.linuxID << std::endl;
             hlDebug() << "    Name: " << name << std::endl;
+#endif
 
             devices.push_back(new Device(id, name, type));
         }
@@ -304,7 +306,7 @@ void LinuxAudio::capture()
 
     if (!s)
     {
-        hlDebug() << "Could not open PulseAudio stream to " << deviceName << std::endl;
+        hlDebug() << "Could not open PulseAudio input stream to " << deviceName << std::endl;
         pa_simple_free(s);
 
         throw AudioException(HL_LINUX_OPEN_DEVICE_CODE, HL_LINUX_OPEN_DEVICE_MSG);
@@ -326,6 +328,105 @@ void LinuxAudio::capture()
     }
 
     // cleanup stuff
+    if (s)
+    {
+        pa_simple_free(s);
+        hlDebug() << "Freed PulseAudio stream." << std::endl;
+    }
+
+    delete [] audioBuffer;
+}
+
+/**
+ * Override the generic OSAudio playback since we need
+ * to use PulseAudio.
+ */
+void LinuxAudio::playback()
+{
+    if (this->activeOutputDevice->getID().linuxID == "")
+    {
+        hlDebug() << "Device did not have a PulseAudio ID." << std::endl;
+        return;
+    }
+
+    int err = 0, ret = 0;
+    int audioBufferSize;
+    float *audioBuffer = nullptr;
+
+    // PulseAudio variables
+    pa_simple *s;
+    pa_sample_spec ss;
+    pa_usec_t latency;
+    std::string deviceName;
+
+    SAMPLE *data1;
+    SAMPLE *data2;
+    ring_buffer_size_t size1;
+    ring_buffer_size_t size2;
+    ring_buffer_size_t samplesRead;
+    ring_buffer_size_t elementsToRead = (ring_buffer_size_t)(HL_LINUX_FRAMES_PER_BUFFER * NUM_CHANNELS);
+
+    ss.format = PA_SAMPLE_FLOAT32;
+    ss.channels = NUM_CHANNELS;
+    ss.rate = HulaAudioSettings::getInstance()->getSampleRate();
+
+    // Allocate memory for the buffer
+    audioBufferSize = HL_LINUX_FRAMES_PER_BUFFER * NUM_CHANNELS * sizeof(SAMPLE);
+    audioBuffer = new float[audioBufferSize];
+
+    // Grab device name
+    deviceName = this->activeOutputDevice->getID().linuxID;
+
+    hlDebug() << "Opening PulseAudio playback stream..." << std::endl;
+
+    s = pa_simple_new(
+        NULL,
+        "HulaLoop",
+        PA_STREAM_PLAYBACK,
+        deviceName.c_str(),
+        "HulaLoop Playback",
+        &ss,
+        NULL,
+        NULL,
+        NULL
+    );
+
+    if (!s)
+    {
+        hlDebug() << "Could not open PulseAudio output stream to " << deviceName << std::endl;
+        pa_simple_free(s);
+
+        throw AudioException(HL_LINUX_OPEN_DEVICE_CODE, HL_LINUX_OPEN_DEVICE_MSG);
+    }
+
+    while (!this->endPlay.load())
+    {
+        // Don't use direct read since number of bytes must be proper multiple of frame size
+        samplesRead = this->playbackBuffer->read(audioBuffer, elementsToRead);
+
+        // Fill with silence if we don't have enough data ready
+        if (samplesRead < elementsToRead)
+        {
+            hlDebug() << "Playback: Ring buffer underrun. Received " << samplesRead << " of " << elementsToRead << std::endl;
+            hlDebug() << "Writing " << elementsToRead - samplesRead << " samples of silence." << std::endl;
+            for (int i = samplesRead; i < elementsToRead; i++)
+            {
+                audioBuffer[i] = 0;
+            }
+        }
+
+        ret = pa_simple_write(s, (void *)audioBuffer, audioBufferSize, &err);
+        if (ret < 0)
+        {
+            hlDebugf("PulseAudio write on device %s failed: %s\n", deviceName.c_str(), pa_strerror(err));
+            // TODO: cleanup and throw error?
+        }
+    }
+
+    // Clear any remaining samples that haven't played yet
+    pa_simple_drain(s, &err);
+
+    hlDebug() << "Freeing PulseAudio playback stream." << std::endl;
     if (s)
     {
         pa_simple_free(s);

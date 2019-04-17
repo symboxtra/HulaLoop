@@ -149,7 +149,7 @@ namespace hula
             /**
              * Execution loop for audio playback
              */
-            void playback();
+            virtual void playback();
             void backgroundPlayback();
 
             /**
