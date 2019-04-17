@@ -109,13 +109,13 @@
 // LinuxAudio error messages
 // Block: 110-119
 #define HL_LINUX_OPEN_DEVICE_CODE -110
-#define HL_LINUX_OPEN_DEVICE_MSG  "Could not open ALSA audio device!"
+#define HL_LINUX_OPEN_DEVICE_MSG  "Could not open PulseAudio audio device!"
 
-#define HL_LINUX_ALSA_CLOSE_STREAM_CODE -111
-#define HL_LINUX_ALSA_CLOSE_STREAM_MSG  "Could not close ALSA device stream!"
+#define HL_LINUX_CLOSE_STREAM_CODE -111
+#define HL_LINUX_CLOSE_STREAM_MSG  "Could not close PulseAudio device stream!"
 
 #define HL_LINUX_SET_PARAMS_CODE -112
-#define HL_LINUX_SET_PARAMS_MSG "Could not set ALSA device params!"
+#define HL_LINUX_SET_PARAMS_MSG "Could not set PulseAudio device params!"
 
 // WindowsAudio error messages
 // Block: 120-229

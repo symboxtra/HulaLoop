@@ -1,6 +1,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <portaudio.h>
+#include <pulse/simple.h>
+#include <pulse/error.h>
 
 #include "LinuxAudio.h"
 #include "hlaudio/internal/HulaAudioError.h"
@@ -51,64 +53,31 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
 {
     // variables needed for the getting of devices to work
     std::vector<Device *> devices;
-    snd_ctl_card_info_t *cardInfo;
-    snd_pcm_info_t *subInfo;
-    snd_ctl_t *handle;
-    int subDevice;
-    int cardNumber = -1;
-    std::string cardName;
 
     // check what devices we need to get
     bool loopSet = (type & DeviceType::LOOPBACK) == DeviceType::LOOPBACK;
     bool recSet = (type & DeviceType::RECORD) == DeviceType::RECORD;
     bool playSet = (type & DeviceType::PLAYBACK) == DeviceType::PLAYBACK;
 
-    // add pavucontrol to loopback for now
-    if (loopSet)
-    {
-        DeviceID id;
-        id.linuxID = std::string("default");
-        std::string temp("Pulse Audio Volume Control");
-        devices.push_back(new Device(id, temp, DeviceType::LOOPBACK));
-    }
-
     HulaAudioSettings *s = HulaAudioSettings::getInstance();
 
-    /* // outer while gets all the sound cards
-    while (snd_card_next(&cardNumber) >= 0 && cardNumber >= 0)
+    // Fetch from pactl
+    if (loopSet || recSet)
     {
-        // open and init the sound card
-        cardName = "hw:" + std::to_string(cardNumber);
-        snd_ctl_open(&handle, cardName.c_str(), 0);
-        snd_ctl_card_info_alloca(&cardInfo);
-        snd_ctl_card_info(handle, cardInfo);
-        // inner while gets all the sound card subdevices
-        subDevice = -1;
-        while (snd_ctl_pcm_next_device(handle, &subDevice) >= 0 && subDevice >= 0)
+        std::vector<Device *> newDevices = parsePulseAudioDevices();
+
+        for (int i = 0; i < newDevices.size(); i++)
         {
-            // open and init the subdevices
-            snd_pcm_info_alloca(&subInfo);
-            snd_pcm_info_set_device(subInfo, subDevice);
-            snd_pcm_info_set_subdevice(subInfo, 0);
-            // check if the device is an input or output device
-            if (recSet && s->getShowRecordDevices())
+            if (loopSet && newDevices[i]->getType() == DeviceType::LOOPBACK)
             {
-                snd_pcm_info_set_stream(subInfo, SND_PCM_STREAM_CAPTURE);
-                if (snd_ctl_pcm_info(handle, subInfo) >= 0)
-                {
-                    DeviceID id;
-                    id.linuxID = "hw:" + std::to_string(cardNumber) + "," + std::to_string(subDevice);
-                    std::string deviceName = snd_ctl_card_info_get_name(cardInfo);
-                    std::string subDeviceName = snd_pcm_info_get_name(subInfo);
-                    std::string fullDeviceName = deviceName + ": " + subDeviceName;
-                    devices.push_back(new Device(id, fullDeviceName, DeviceType::RECORD));
-                }
+                devices.push_back(newDevices[i]);
+            }
+            else if (recSet && s->getShowRecordDevices() && newDevices[i]->getType() == DeviceType::RECORD)
+            {
+                devices.push_back(newDevices[i]);
             }
         }
-        snd_ctl_close(handle);
-
-        snd_config_update_free_global();
-    } */
+    }
 
     // Get devices from PortAudio if record or playback devices are requested
     if (playSet)
@@ -158,6 +127,109 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
 }
 
 /**
+ * Helper function to open a pipe, run a command,
+ * and return the output.
+ *
+ * Only works on POSIX compliant systems.
+ */
+std::string pipeAndReadOutput(const char *command)
+{
+    std::string output = "";
+
+    // Open a pipe
+    FILE *pipe = popen(command, "r");
+    if (!pipe)
+    {
+        hlDebug() << "Could not open pipe to execute command: " << command << std::endl;
+        return "";
+    }
+
+    char c;
+    while (!feof(pipe) && (c = fgetc(pipe)))
+    {
+        output += c;
+    }
+
+    pclose(pipe);
+
+    return output;
+}
+
+/**
+ * Call pactl list and parse the PulseAudio devices from it.
+ *
+ * This should eventually be replaced by the introspection abilities of
+ * the PulseAudio async API. Since we're using the simple API, this will
+ * do for now.
+ */
+std::vector<Device *> LinuxAudio::parsePulseAudioDevices()
+{
+    // If keywords are changed, must update type conditions below
+    std::vector<std::string> keywords = {"Source #", "Sink #"};
+    std::vector<Device *> devices;
+    std::string output;
+    size_t pos;
+    size_t endPos;
+
+    output = pipeAndReadOutput("pactl list");
+
+    for (int i = 0; i < keywords.size(); i++)
+    {
+        endPos = 0;
+
+        // Split output by keyword
+        while ((pos = output.find(keywords[i], endPos)) != std::string::npos)
+        {
+            DeviceID id;
+            std::string name;
+            DeviceType type;
+            std::string sub;
+            size_t subPos;
+            size_t subEndPos;
+
+            // Search for next identifier to split at
+            endPos = output.find(keywords[i], pos + 1);
+            if (endPos == std::string::npos)
+                sub = output.substr(pos);
+            else
+                sub = output.substr(pos, endPos - pos);
+
+            // Collect id
+            subPos = sub.find("Name: ") + 6;
+            subEndPos = sub.find("\n", subPos);
+            id.linuxID = sub.substr(subPos, subEndPos - subPos);
+
+            // Collect name
+            // TODO: Could decide to strip "Monitor of"
+            subPos = sub.find("Description: ") + 13;
+            subEndPos = sub.find("\n", subPos);
+            name = sub.substr(subPos, subEndPos - subPos);
+
+            if (i == 0 && id.linuxID.find(".monitor", id.linuxID.length() - 8) != std::string::npos)
+            {
+                type = DeviceType::LOOPBACK;
+            }
+            else if (i == 0)
+            {
+                type = DeviceType::RECORD;
+            }
+            else if (i == 1)
+            {
+                type = DeviceType::PLAYBACK;
+            }
+
+            hlDebug() << "Creating device from pactl:" << std::endl;
+            hlDebug() << "    ID: " << id.linuxID << std::endl;
+            hlDebug() << "    Name: " << name << std::endl;
+
+            devices.push_back(new Device(id, name, type));
+        }
+    }
+
+    return devices;
+}
+
+/**
  * Override of OSAudio base method. Checks if the selected
  * device is PAVUControl and opens the program if necessary.
  * Control is then passed on to the base method.
@@ -180,6 +252,8 @@ bool LinuxAudio::setActiveInputDevice(Device *device)
  */
 bool LinuxAudio::checkDeviceParams(Device *device)
 {
+    int err = 0;
+
     if (device->getID().portAudioID != -1)
     {
         hlDebug() << "Testing PortAudio device" << std::endl;
@@ -212,69 +286,54 @@ bool LinuxAudio::checkDeviceParams(Device *device)
         return err == paFormatIsSupported;
     }
 
-    hlDebug() << "Testing ALSA device" << std::endl;
+    hlDebug() << "Testing PulseAudio device: " << device->getID().linuxID << std::endl;
 
-    int err;                     // return for commands that might return an error
-    snd_pcm_t *pcmHandle = nullptr; // default pcm handle
-    snd_pcm_hw_params_t *param;  // defaults param for the pcm
-    snd_pcm_format_t format;     // format that user chooses
-    unsigned samplingRate;       // sampling rate the user choooses
-    bool samplingRateValid;      // bool that gets set if the sampling rate is valid
-    bool formatValid;            // bool that gets set if the format is valid
+    // PulseAudio variables
+    pa_simple *s;
+    pa_sample_spec ss;
+    std::string deviceName = device->getID().linuxID;
 
-    // device id
-    const char *id = device->getID().linuxID.c_str();
-    hlDebug() << id << std::endl;
-    // open pcm device
+    ss.format = PA_SAMPLE_FLOAT32;
+    ss.channels = NUM_CHANNELS;
+    ss.rate = HulaAudioSettings::getInstance()->getSampleRate();
 
     if (device->getType() == DeviceType::PLAYBACK)
     {
-        err = snd_pcm_open(&pcmHandle, id, SND_PCM_STREAM_PLAYBACK, 0);
+        s = pa_simple_new(
+            NULL,
+            "HulaLoop",
+            PA_STREAM_PLAYBACK,
+            deviceName.c_str(),
+            "HulaLoop Device Check",
+            &ss,
+            NULL,
+            NULL,
+            NULL
+        );
     }
     else
     {
-        err = snd_pcm_open(&pcmHandle, id, SND_PCM_STREAM_CAPTURE, 0);
+        s = pa_simple_new(
+            NULL,
+            "HulaLoop",
+            PA_STREAM_RECORD,
+            deviceName.c_str(),
+            "HulaLoop Device Check",
+            &ss,
+            NULL,
+            NULL,
+            NULL
+        );
     }
 
-    if (err < 0)
+    if (!s)
     {
-        hlDebug() << "Unable to test device: " << id << std::endl;
+        hlDebug() << "" << std::endl;
+        throw AudioException(HL_CHECK_PARAMS_CODE, HL_CHECK_PARAMS_MSG);
         return false;
     }
 
-    // allocate hw params object and fill the pcm device with the default params
-    snd_pcm_hw_params_alloca(&param);
-    snd_pcm_hw_params_any(pcmHandle, param);
-
-    // test the desired sample rate
-    // TODO: insert actual sampling rate
-    samplingRate = HulaAudioSettings::getInstance()->getSampleRate();
-    samplingRateValid = snd_pcm_hw_params_test_rate(pcmHandle, param, samplingRate, 0) == 0;
-
-    // test the desired format (bit depth)
-    format = SND_PCM_FORMAT_FLOAT_LE;
-    formatValid = snd_pcm_hw_params_test_format(pcmHandle, param, format) == 0;
-
-    // clean up
-    snd_pcm_drain(pcmHandle);
-    snd_pcm_close(pcmHandle);
-    snd_config_update_free_global();
-    if (samplingRateValid && formatValid)
-    {
-        return true;
-    }
-
-    if (!samplingRateValid)
-    {
-        hlDebug() << "Sampling rate was invalid." << std::endl;
-    }
-    else
-    {
-        hlDebug() << "Format was invalid." << std::endl;
-    }
-
-    throw AudioException(HL_CHECK_PARAMS_CODE, HL_CHECK_PARAMS_MSG);
-    return false;
+    return true;
 }
 
 /**
@@ -304,91 +363,69 @@ void LinuxAudio::startPAVUControl()
  */
 void LinuxAudio::capture()
 {
-    int err;                        // return for commands that might return an error
-    snd_pcm_t *pcmHandle = nullptr;    // default pcm handle
-    std::string defaultDevice;      // default hw id for the device
-    snd_pcm_hw_params_t *param;     // object to store our paramets (they are just the default ones for now)
+    int err = 0, ret = 0;           // return for commands that might return an error
     int audioBufferSize;            // size of the buffer for the audio
-    uint8_t *audioBuffer = nullptr;       // buffer for the audio
-    snd_pcm_uframes_t *temp = nullptr; // useless parameter because the api requires it
-    int framesRead = 0;             // amount of frames read
+    float *audioBuffer = nullptr;   // buffer for the audio
 
-    // just writing to a buffer for now
-    defaultDevice = "default";
+    // PulseAudio variables
+    pa_simple *s;
+    pa_sample_spec ss;
+    std::string deviceName;
 
-    // open the pcm device
-    err = snd_pcm_open(&pcmHandle, defaultDevice.c_str(), SND_PCM_STREAM_CAPTURE, 0);
-    if (err < 0)
+    ss.format = PA_SAMPLE_FLOAT32;
+    ss.channels = NUM_CHANNELS;
+    ss.rate = HulaAudioSettings::getInstance()->getSampleRate();
+
+    // Allocate memory for the buffer
+    audioBufferSize = HL_LINUX_FRAMES_PER_BUFFER * NUM_CHANNELS * sizeof(SAMPLE);
+    audioBuffer = new float[audioBufferSize];
+
+    // Grab device name
+    deviceName = this->activeInputDevice->getID().linuxID;
+
+    s = pa_simple_new(
+        NULL,
+        "HulaLoop",
+        PA_STREAM_RECORD,
+        deviceName.c_str(),
+        "HulaLoop Record",
+        &ss,
+        NULL,
+        NULL,
+        NULL
+    );
+
+    if (!s)
     {
-        hlDebug() << "Unable to open " << defaultDevice << " exiting..." << std::endl;
+        hlDebug() << "Could not open PulseAudio stream to " << deviceName << std::endl;
+        pa_simple_free(s);
+
         throw AudioException(HL_LINUX_OPEN_DEVICE_CODE, HL_LINUX_OPEN_DEVICE_MSG);
     }
 
-    // allocate hw params object and fill the pcm device with the default params
-    snd_pcm_hw_params_alloca(&param);
-    snd_pcm_hw_params_any(pcmHandle, param);
-
-    // set to interleaved mode, 16-bit little endian, 2 channels
-    snd_pcm_hw_params_set_access(pcmHandle, param, SND_PCM_ACCESS_RW_INTERLEAVED);
-    snd_pcm_hw_params_set_format(pcmHandle, param, SND_PCM_FORMAT_FLOAT_LE);
-    snd_pcm_hw_params_set_channels(pcmHandle, param, 2);
-
-    // we set the sampling rate to whatever the user or device wants
-    unsigned int sampleRate = 44100;
-    snd_pcm_hw_params_set_rate_near(pcmHandle, param, &sampleRate, nullptr);
-
-    // set the period size to 32 TODO
-    snd_pcm_uframes_t frame = FRAME_TIME;
-    snd_pcm_hw_params_set_period_size_near(pcmHandle, param, &frame, nullptr);
-
-    // send the param to the the pcm device
-    err = snd_pcm_hw_params(pcmHandle, param);
-    if (err < 0)
-    {
-        hlDebug() << "Unable to set parameters: " << defaultDevice << " exiting..." << std::endl;
-        throw AudioException(HL_LINUX_SET_PARAMS_CODE, HL_LINUX_SET_PARAMS_MSG);
-
-    }
-
-    // get the size of one period
-    snd_pcm_hw_params_get_period_size(param, &frame, nullptr);
-
-    // allocate memory for the buffer
-    audioBufferSize = frame * NUM_CHANNELS * sizeof(SAMPLE);
-    audioBuffer = (uint8_t *)malloc(audioBufferSize);
-
     while (!this->endCapture.load())
     {
-        // read frames from the pcm
-        framesRead = snd_pcm_readi(pcmHandle, audioBuffer, frame);
-        if (framesRead == -EPIPE)
+        // This will block until bytes are available
+        ret = pa_simple_read(s, (void *)audioBuffer, audioBufferSize, &err);
+
+        if (ret < 0)
         {
-            hlDebug() << "Buffer overrun" << std::endl;
-            snd_pcm_prepare(pcmHandle);
-        }
-        else if (framesRead < 0)
-        {
-            // TODO: This really needs to not be properly switchable and not defaultDevice
-            hlDebug() << "ALSA read on device " << defaultDevice << " failed." << std::endl;
-        }
-        else if (framesRead != (int)frame)
-        {
-            hlDebug() << "Underrun: Exepected " << frame << " frames but got " << framesRead << std::endl;
+            hlDebugf("PulseAudio read on device %s failed: %s\n", deviceName.c_str(), pa_strerror(err));
+            // TODO: cleanup and throw error?
         }
 
-        copyToBuffers((float *)audioBuffer, framesRead * NUM_CHANNELS);
-
-        doCallbacks((float *)audioBuffer, framesRead * NUM_CHANNELS);
+        copyToBuffers((float *)audioBuffer, HL_LINUX_FRAMES_PER_BUFFER * NUM_CHANNELS);
+        doCallbacks((float *)audioBuffer, HL_LINUX_FRAMES_PER_BUFFER * NUM_CHANNELS);
     }
 
     // cleanup stuff
-    err = snd_pcm_close(pcmHandle);
-    if (err < 0)
+    if (s)
     {
-        hlDebug() << "Unable to close stream." << std::endl;
-        throw AudioException(HL_LINUX_ALSA_CLOSE_STREAM_CODE, HL_LINUX_ALSA_CLOSE_STREAM_MSG);
+        pa_simple_free(s);
+        hlDebug() << "Freed PulseAudio stream." << std::endl;
     }
-    free(audioBuffer);
+
+    delete [] audioBuffer;
 }
 
 /**
