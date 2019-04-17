@@ -6,6 +6,10 @@
 
 namespace hula
 {
+    /**
+     * Class handling recorded file playback for the
+     * HulaLoop GUI and CLI applications.
+     */
     class Playback {
 
         private:

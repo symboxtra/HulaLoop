@@ -63,6 +63,13 @@ namespace hula
             std::vector<HulaRingBuffer *> rbs;
 
             /**
+             * List of registered callbacks.
+             * Data received from the operating system is passed
+             * as the argument to each of these callbacks.
+             */
+            std::vector<ICallback *> cbs;
+
+            /**
              * Thread for input device activities.
              */
             std::vector<std::thread> inThreads;
@@ -106,8 +113,6 @@ namespace hula
              * delivered to PortAudio in the OSAudio/paPlayCallback method.
              */
             HulaRingBuffer *playbackBuffer;
-
-            std::vector<ICallback *> cbs;
 
             virtual ~OSAudio() = 0;
 
