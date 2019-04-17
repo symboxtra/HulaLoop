@@ -1,6 +1,5 @@
 #include <fcntl.h>
 #include <unistd.h>
-#include <portaudio.h>
 #include <pulse/simple.h>
 #include <pulse/error.h>
 
@@ -15,26 +14,6 @@ using namespace hula;
  */
 LinuxAudio::LinuxAudio()
 {
-    #if HL_NO_DEBUG_OUTPUT
-    int out = dup(1);
-    int temp_null = open("/dev/null", O_WRONLY);
-    dup2(temp_null, 1);
-    close(temp_null);
-    #endif
-
-    // Initialize PortAudio
-    PaError err = Pa_Initialize();
-    if (err != paNoError)
-    {
-        hlDebugf("PortAudio failed to initialize.\n");
-        hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
-        throw AudioException(HL_PA_INIT_CODE, HL_PA_INIT_MSG);
-    }
-
-    #if HL_NO_DEBUG_OUTPUT
-    dup2(out, 1);
-    close(out);
-    #endif
 }
 
 /**
@@ -62,7 +41,7 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
     HulaAudioSettings *s = HulaAudioSettings::getInstance();
 
     // Fetch from pactl
-    if (loopSet || recSet)
+    if (loopSet || recSet || playSet)
     {
         std::vector<Device *> newDevices = parsePulseAudioDevices();
 
@@ -76,49 +55,9 @@ std::vector<Device *> LinuxAudio::getDevices(DeviceType type)
             {
                 devices.push_back(newDevices[i]);
             }
-        }
-    }
-
-    // Get devices from PortAudio if record or playback devices are requested
-    if (playSet)
-    {
-        // Get the total count of audio devices
-        int deviceCount = Pa_GetDeviceCount();
-        if (deviceCount < 0)
-        {
-            hlDebugf("Failed to fetch PortAudio devices.\n");
-            exit(1); // TODO: Handle error
-        }
-
-        for (uint32_t i = 0; i < deviceCount; i++)
-        {
-            const PaDeviceInfo *paDevice = Pa_GetDeviceInfo(i);
-            DeviceType checkType = (DeviceType) 0;
-
-            if (playSet && paDevice->maxOutputChannels > 0)
+            else if (playSet && newDevices[i]->getType() == DeviceType::PLAYBACK)
             {
-                checkType = (DeviceType)(checkType | DeviceType::PLAYBACK);
-            }
-
-            // Disabled until LinuxAudio switches over
-            /* if (recSet && paDevice->maxInputChannels > 0)
-            {
-                checkType = (DeviceType)(checkType | DeviceType::RECORD);
-            } */
-
-            // Create HulaLoop style device and add to vector
-            // This needs to be freed elsewhere
-            if (checkType)
-            {
-                if (checkType == DeviceType::RECORD && !s->getShowRecordDevices())
-                {
-                    continue;
-                }
-
-                DeviceID id;
-                id.portAudioID = i;
-                Device *hlDevice = new Device(id, std::string(paDevice->name), checkType);
-                devices.push_back(hlDevice);
+                devices.push_back(newDevices[i]);
             }
         }
     }
@@ -253,38 +192,6 @@ bool LinuxAudio::setActiveInputDevice(Device *device)
 bool LinuxAudio::checkDeviceParams(Device *device)
 {
     int err = 0;
-
-    if (device->getID().portAudioID != -1)
-    {
-        hlDebug() << "Testing PortAudio device" << std::endl;
-
-        PaStreamParameters parameters = {0};
-        parameters.channelCount = NUM_CHANNELS;
-        parameters.device = device->getID().portAudioID;
-        parameters.sampleFormat = paFloat32;
-
-        PaError err;
-        if (device->getType() & DeviceType::PLAYBACK)
-        {
-            err = Pa_IsFormatSupported(nullptr, &parameters, HulaAudioSettings::getInstance()->getSampleRate());
-        }
-        else
-        {
-            err = Pa_IsFormatSupported(&parameters, nullptr, HulaAudioSettings::getInstance()->getSampleRate());
-        }
-
-        if (err == paFormatIsSupported)
-        {
-            hlDebug() << "Sample rate and format were valid." << std::endl;
-        }
-        else
-        {
-            hlDebug() << "Sample rate and format were NOT valid." << std::endl;
-            throw AudioException(HL_CHECK_PARAMS_CODE, HL_CHECK_PARAMS_MSG);
-        }
-
-        return err == paFormatIsSupported;
-    }
 
     hlDebug() << "Testing PulseAudio device: " << device->getID().linuxID << std::endl;
 
@@ -436,12 +343,4 @@ LinuxAudio::~LinuxAudio()
     hlDebugf("LinuxAudio destructor called\n");
 
     system("pkill pavucontrol");
-
-    // Close the Port Audio session
-    PaError err = Pa_Terminate();
-    if (err != paNoError)
-    {
-        hlDebugf("Could not terminate Port Audio session.\n");
-        hlDebugf("PortAudio: %s\n", Pa_GetErrorText(err));
-    }
 }
