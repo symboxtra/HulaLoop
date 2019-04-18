@@ -1,6 +1,8 @@
 #ifndef HL_ICallback_H
 #define HL_ICallback_H
 
+#include "HulaRingBuffer.h"
+
 namespace hula
 {
     /**
@@ -39,7 +41,7 @@ namespace hula
              * block or is intensive. These activities should use
              * the buffer API via Controller::createAndAddBuffer().
              */
-            virtual void handleData(const SAMPLE* samples, long sampleCount) = 0;
+            virtual void handleData(const SAMPLE* samples, ring_buffer_size_t sampleCount) = 0;
     };
 }
 
