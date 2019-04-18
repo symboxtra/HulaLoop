@@ -59,13 +59,13 @@ Transport::Transport()
  */
 bool Transport::record(double delay, double duration)
 {
-    hlDebug() << "Record triggered!" << std::endl;
+    hlDebug() << "Transport received RECORD signal."<< std::endl;
     hlDebug() << "Delay set to: " << delay << std::endl;
     hlDebug() << "Duration set to: " << duration << std::endl;
 
     if (canRecord)
     {
-        hlDebug() << "STARTED RECORDING" << std::endl;
+        hlDebug() << "Starting record..." << std::endl;
 
         try
         {
@@ -86,6 +86,7 @@ bool Transport::record(double delay, double duration)
         return true;
     }
 
+    hlDebug() << "Invalid state for RECORD." << std::endl;
     return false;
 }
 
@@ -105,7 +106,7 @@ bool Transport::record()
  */
 bool Transport::stop()
 {
-    hlDebug() << "Stop button clicked!" << std::endl;
+    hlDebug() << "Transport received STOP signal." << std::endl;
 
     if ((!canRecord && !canPlayback) || state == PAUSED)
     {
@@ -127,6 +128,7 @@ bool Transport::stop()
         return true;
     }
 
+    hlDebug() << "Invalid state for STOP." << std::endl;
     return false;
 }
 
@@ -135,7 +137,7 @@ bool Transport::stop()
  */
 bool Transport::play()
 {
-    hlDebug() << "Play button clicked!" << std::endl;
+    hlDebug() << "Transport received PLAY signal." << std::endl;
 
     if (canPlayback)
     {
@@ -150,6 +152,7 @@ bool Transport::play()
         return true;
     }
 
+    hlDebug() << "Invalid state for PLAY." << std::endl;
     return false;
 }
 
@@ -158,7 +161,7 @@ bool Transport::play()
  */
 bool Transport::pause()
 {
-    hlDebug() << "Pause button clicked!" << std::endl;
+    hlDebug() << "Transport received PAUSE signal." << std::endl;
 
     if (state == RECORDING && !canRecord) // Pause record
     {
@@ -172,7 +175,7 @@ bool Transport::pause()
         }
 
         canRecord = true;
-        canPlayback = true;
+        canPlayback = false;
 
         state = PAUSED;
 
@@ -191,6 +194,7 @@ bool Transport::pause()
         return true;
     }
 
+    hlDebug() << "Invalid state for PAUSE." << std::endl;
     return false;
 }
 

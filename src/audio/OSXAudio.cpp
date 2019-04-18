@@ -249,7 +249,6 @@ static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
     (void) userData;
 
     obj->copyToBuffers(samples, framesPerBuffer * NUM_CHANNELS);
-
     obj->doCallbacks(samples, framesPerBuffer * NUM_CHANNELS);
 
     return paContinue;

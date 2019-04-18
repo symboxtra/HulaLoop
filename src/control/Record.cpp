@@ -88,6 +88,7 @@ void Record::recorder()
 
 
     this->controller->removeBuffer(this->rb);
+    this->rb->clear();
     sf_close(file);
 }
 
