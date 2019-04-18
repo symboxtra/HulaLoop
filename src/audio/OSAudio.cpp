@@ -49,7 +49,7 @@ void OSAudio::addBuffer(HulaRingBuffer *rb)
  */
 void OSAudio::startRecord()
 {
-    hlDebug() << "Start record called" << std::endl;
+    hlDebug() << "OSAudio: Start record called." << std::endl;
 
     // Prevent other state changes
     this->stateSem.wait();
@@ -61,6 +61,7 @@ void OSAudio::startRecord()
     }
     else
     {
+        hlDebug() << "OSAudio: Start record fell through." << std::endl;
         this->stateSem.notify();
     }
 }
@@ -110,7 +111,7 @@ void OSAudio::removeBuffer(HulaRingBuffer *rb)
  */
 void OSAudio::endRecord()
 {
-    hlDebug() << "End record called" << std::endl;
+    hlDebug() << "OSAudio: End record called." << std::endl;
 
     this->stateSem.wait();
 
@@ -281,6 +282,9 @@ void OSAudio::backgroundPlayback()
  */
 void OSAudio::startPlayback()
 {
+    hlDebug() << "OSAudio: Start playback called." << std::endl;
+
+
     this->stateSem.wait();
 
     if(this->endPlay.load() && this->endCapture.load())
@@ -291,6 +295,7 @@ void OSAudio::startPlayback()
     }
     else
     {
+        hlDebug() << "OSAudio: Start playback fell through." << std::endl;
         this->stateSem.notify();
     }
 }
@@ -319,6 +324,8 @@ ring_buffer_size_t OSAudio::playbackCopyToBuffers(const float *samples, ring_buf
  */
 void OSAudio::endPlayback()
 {
+    hlDebug() << "OSAudio: End playback called." << std::endl;
+
     this->stateSem.wait();
 
     this->endPlay.store(true);
@@ -377,9 +384,9 @@ static int paPlayCallback(const void *inputBuffer, void *outputBuffer,
     {
         hlDebug() << "Playback: Ring buffer underrun. Received " << samplesRead << " of " << elementsToRead << std::endl;
         hlDebug() << "Writing " << elementsToRead - samplesRead << " samples of silence." << std::endl;
-        for (int i = 0; i < elementsToRead; i++)
+        for (int i = samplesRead; i < elementsToRead; i++)
         {
-            wptr[i + size1 + size2] = 0;
+            wptr[i] = 0;
         }
     }
 

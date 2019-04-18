@@ -60,6 +60,7 @@ void Playback::player()
     SNDFILE *sndFile = sf_open(files[fileIndex].c_str(), SFM_READ, &sfinfo);
 
     hlDebug() << "Opened file #" << fileIndex << std::endl;
+    hlDebug() << "Location: " << files[fileIndex] << std::endl;
 
     sf_count_t samplesRead = 0;
     while(!this->endPlay.load())
@@ -85,7 +86,7 @@ void Playback::player()
         if (samplesRead == 0)
         {
             // Open the next file or end the playback
-            if (fileIndex != files.size() - 1)
+            if (fileIndex < files.size() - 1)
             {
                 sf_close(sndFile);
 
