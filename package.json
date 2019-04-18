@@ -1,0 +1,33 @@
+{
+  "name": "hulaloop",
+  "version": "1.0.0",
+  "description": "Simple cross-platform audio loopback and recording.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "example": "examples"
+  },
+  "scripts": {
+    "install": "cmake-js compile",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/symboxtra/HulaLoop.git"
+  },
+  "keywords": [
+    "audio",
+    "loopback",
+    "stereo-mix",
+    "media"
+  ],
+  "author": "Symboxtra Software",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/symboxtra/HulaLoop/issues"
+  },
+  "homepage": "https://github.com/symboxtra/HulaLoop#readme",
+  "dependencies": {
+    "cmake-js": "^5.2.0"
+  }
+}
