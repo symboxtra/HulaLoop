@@ -8,16 +8,6 @@
 using namespace hula;
 
 /**
- * Set the desired capture buffer size
- *
- * @param size Integer value representing the desired buffer size
- */
-void OSAudio::setBufferSize(uint32_t size)
-{
-    this->captureBufferSize = size;
-}
-
-/**
  * Add an initialized buffer to the list of buffers that receive audio data.
  * If already present, the ring buffer will not be duplicated.
  *

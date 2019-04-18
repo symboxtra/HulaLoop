@@ -121,8 +121,6 @@ namespace hula
 
             virtual ~OSAudio();
 
-            void setBufferSize(uint32_t size);
-
             void addBuffer(HulaRingBuffer *rb);
             void removeBuffer(HulaRingBuffer *rb);
 
