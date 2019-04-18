@@ -71,7 +71,7 @@ void Playback::player()
         ring_buffer_size_t totalWrite = 0;
         while (!this->endPlay.load() && totalWrite < samplesRead)
         {
-            ring_buffer_size_t samplesWritten = this->controller->playbackCopyToBuffers((float *)&buffer + lastWrite, samplesRead - totalWrite * sizeof(float));
+            ring_buffer_size_t samplesWritten = this->controller->playbackCopyToBuffers((float *)&buffer + lastWrite, samplesRead - totalWrite);
             lastWrite = samplesWritten;
             totalWrite += samplesWritten;
 

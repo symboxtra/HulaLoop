@@ -19,7 +19,8 @@ namespace hula
     {
         RECORD = 1,
         PLAYBACK = 2,
-        LOOPBACK = 4
+        LOOPBACK = 4,
+        ANY = 7
     };
 
     /**

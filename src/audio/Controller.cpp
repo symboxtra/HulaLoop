@@ -232,6 +232,69 @@ std::vector<Device *> Controller::getDevices(DeviceType type) const
 }
 
 /**
+ * Find a device by name.
+ */
+Device * Controller::findDeviceByName(const std::string &name) const
+{
+    return Controller::findDeviceByName(name, DeviceType::ANY);
+}
+
+/**
+ * Find a specific type of device by name.
+ *
+ * Use DeviceType::ANY or the above overload if type does not matter.
+ */
+Device * Controller::findDeviceByName(const std::string &name, DeviceType type) const
+{
+    Device *device = nullptr;
+    std::vector<Device *> devices;
+
+    try
+    {
+        devices = this->getDevices(type);
+    }
+    catch(const AudioException &ae)
+    {
+        return nullptr;
+    }
+
+    // Check if we got a numeric id
+    // TODO: Fix once indexing is figured out
+    // An implicit id (the index) is generated when devices
+    // are printed in order. This relies on that order
+    int id = -1;
+    try
+    {
+        id = std::stoi(name, nullptr);
+    }
+    catch (std::invalid_argument &e)
+    {
+        // Wasn't an id
+        (void)e;
+    }
+
+    for (size_t i = 0; i < devices.size(); i++)
+    {
+        // Check id and name
+        if (i == id || devices[i]->getName() == name)
+        {
+            device = devices[i];
+            break;
+        }
+    }
+
+    // Make a copy so that we can delete all
+    if (device != nullptr)
+    {
+        device = new Device(*device);
+    }
+
+    Device::deleteDevices(devices);
+
+    return device;
+}
+
+/**
  * @ingroup memory_management
  *
  * Set the device from which audio should be captured.

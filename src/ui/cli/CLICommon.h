@@ -195,54 +195,9 @@ namespace hula
     inline Device *findDevice(Transport *t, const std::string &name, DeviceType type)
     {
         Device *device = nullptr;
-        std::vector<Device *> devices;
 
-        // TODO: Change this when proper device indexing is possible
-        // devices = t->getController()->getDevices(type);
-        try
-        {
-            devices = t->getController()->getDevices((DeviceType)(DeviceType::LOOPBACK | DeviceType::RECORD | DeviceType::PLAYBACK));
-        }
-        catch(const AudioException &ae)
-        {
-            ControlException ce(ae.getErrorCode());
-
-            fprintf(stderr, "%s%s\n", HL_ERROR_PREFIX, ce.getErrorMessage().c_str());
-            exit(1);
-        }
-
-        // Check if we got a numeric id
-        // Since we all do this differently,
-        // we'll just use the relative ordering to pick
-        // ids
-        int id = -1;
-        try
-        {
-            id = std::stoi(name, nullptr);
-        }
-        catch (std::invalid_argument &e)
-        {
-            // Wasn't an id
-            (void)e;
-        }
-
-        for (size_t i = 0; i < devices.size(); i++)
-        {
-            // Check id and name
-            if (i == id || devices[i]->getName() == name)
-            {
-                device = devices[i];
-                break;
-            }
-        }
-
-        // Make a copy so that we can delete all
-        if (device != nullptr)
-        {
-            device = new Device(*device);
-        }
-
-        Device::deleteDevices(devices);
+        // TODO: Change this from DeviceType::ANY when proper device indexing is possible
+        device = t->getController()->findDeviceByName(name, DeviceType::ANY);
 
         if (device == nullptr)
         {

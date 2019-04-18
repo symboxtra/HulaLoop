@@ -261,15 +261,10 @@ void LinuxAudio::startPAVUControl()
         return;
     }
     pavuControlOpen = true;
-    system("/usr/bin/pavucontrol -t 2");
+    int ret = system("/usr/bin/pavucontrol -t 2");
     pavuControlOpen = false;
 }
 
-/*
-   lengthOfRecording is in ms
-   Device * recordingDevice is already formatted as hw:(int),(int)
-   if Device is nullptr then it chooses the default
-   */
 /**
  * Capture loop for LinuxAudio.
  */
@@ -453,5 +448,5 @@ LinuxAudio::~LinuxAudio()
 {
     hlDebugf("LinuxAudio destructor called\n");
 
-    system("pkill pavucontrol");
+    int ret = system("pkill pavucontrol");
 }

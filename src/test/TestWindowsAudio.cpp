@@ -148,7 +148,7 @@ TEST_F(TestWindowsAudio, short_capture)
     // and data to flow in
     //std::this_thread::sleep_for(std::chrono::milliseconds(200));
     std::string command = "PowerShell -Command \"(New-Object Media.SoundPlayer (Resolve-Path \'" + path + "test.wav\')).PlaySync()\"";
-    system(command.c_str());
+    int ret = system(command.c_str());
 
     // Read some samples
     ring_buffer_size_t samplesRead = rb->read(readData, maxSamples);
