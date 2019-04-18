@@ -119,7 +119,7 @@ namespace hula
              */
             HulaRingBuffer *playbackBuffer;
 
-            virtual ~OSAudio() = 0;
+            virtual ~OSAudio();
 
             void setBufferSize(uint32_t size);
 
@@ -129,12 +129,12 @@ namespace hula
             void startPlayback();
             void endPlayback();
 
-            void copyToBuffers(const float *samples, ring_buffer_size_t sampleCount);
-            ring_buffer_size_t playbackCopyToBuffers(const float *samples, ring_buffer_size_t sampleCount);
+            void copyToBuffers(const SAMPLE *samples, ring_buffer_size_t sampleCount);
+            ring_buffer_size_t playbackCopyToBuffers(const SAMPLE *samples, ring_buffer_size_t sampleCount);
 
             void addCallback(ICallback* obj);
             void removeCallback(ICallback* obj);
-            void doCallbacks(const float *samples, ring_buffer_size_t sampleCount);
+            void doCallbacks(const SAMPLE *samples, ring_buffer_size_t sampleCount);
 
             /**
              * Receive the list of available record, playback and/or loopback audio devices

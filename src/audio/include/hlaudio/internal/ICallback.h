@@ -18,7 +18,7 @@ namespace hula
      *
      * class Example : public ICallback {
      *      public:
-     *          handleData(const float *data, long size)
+     *          handleData(const SAMPLE *samples, long sampleCount)
      *          {
      *              printf("Received data.\n");
      *          }
@@ -39,7 +39,7 @@ namespace hula
              * block or is intensive. These activities should use
              * the buffer API via Controller::createAndAddBuffer().
              */
-            virtual void handleData(const float* data, long size) = 0;
+            virtual void handleData(const SAMPLE* samples, long sampleCount) = 0;
     };
 }
 

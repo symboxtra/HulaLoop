@@ -37,9 +37,6 @@ TEST_F(TestController, set_input_works_with_loopback)
     Device::deleteDevices(devices);
 }
 
-/*
-Disabled until LinuxAudio works
-
 /**
  * setActiveInputDevice with a record device
  *
@@ -77,7 +74,6 @@ TEST_F(TestController, set_output_works)
 
     Device::deleteDevices(devices);
 }
-
 
 /**
  * setActiveInputDevice with an output device
@@ -131,4 +127,48 @@ TEST_F(TestController, set_output_fails_when_given_null)
 {
     bool success = this->setActiveOutputDevice(nullptr);
     EXPECT_FALSE(success);
+}
+
+/**
+ * addBuffer with nullptr
+ *
+ * EXPECTED:
+ *      no crash
+ */
+TEST_F(TestController, addBuffer_handles_null)
+{
+    this->addBuffer(nullptr);
+}
+
+/**
+ * removeBuffer with nullptr
+ *
+ * EXPECTED:
+ *      no crash
+ */
+TEST_F(TestController, removeBuffer_handles_null)
+{
+    this->removeBuffer(nullptr);
+}
+
+/**
+ * addCallback with nullptr
+ *
+ * EXPECTED:
+ *      no crash
+ */
+TEST_F(TestController, addCallback_handles_null)
+{
+    this->addCallback(nullptr);
+}
+
+/**
+ * removeCallback with nullptr
+ *
+ * EXPECTED:
+ *      no crash
+ */
+TEST_F(TestController, removeCallback_handles_null)
+{
+    this->removeCallback(nullptr);
 }

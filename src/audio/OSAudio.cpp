@@ -25,6 +25,12 @@ void OSAudio::setBufferSize(uint32_t size)
 */
 void OSAudio::addBuffer(HulaRingBuffer *rb)
 {
+    // Guard against NULL
+    if (!rb)
+    {
+        return;
+    }
+
     // Prevent duplicate buffers in list
     if (find(rbs.begin(), rbs.end(), rb) == rbs.end())
     {
@@ -43,7 +49,7 @@ void OSAudio::addBuffer(HulaRingBuffer *rb)
  */
 void OSAudio::startRecord()
 {
-    hlDebug() << "Start Record Called" << std::endl;
+    hlDebug() << "Start record called" << std::endl;
 
     // Prevent other state changes
     this->stateSem.wait();
@@ -104,7 +110,7 @@ void OSAudio::removeBuffer(HulaRingBuffer *rb)
  */
 void OSAudio::endRecord()
 {
-    hlDebug() << "End Record Called" << std::endl;
+    hlDebug() << "End record called" << std::endl;
 
     this->stateSem.wait();
 
@@ -122,6 +128,12 @@ void OSAudio::endRecord()
  */
 void OSAudio::addCallback(ICallback *obj)
 {
+    // Guard against NULL
+    if (!obj)
+    {
+        return;
+    }
+
     if(std::find(cbs.begin(), cbs.end(), obj) == cbs.end())
     {
         this->cbs.push_back(obj);
@@ -182,9 +194,8 @@ void OSAudio::removeCallback(ICallback *obj)
 void OSAudio::backgroundCapture()
 {
     // TODO: Does this need to move to setActiveInputDevice
-    if (this->rbs.size() == 0)
+    if (this->rbs.size() == 0 && this->cbs.size() == 0)
     {
-
         this->stateSem.notify();
         return;
     }
