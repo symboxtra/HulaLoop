@@ -14,6 +14,11 @@
 #include "ICallback.h"
 #include "Semaphore.h"
 
+/**
+ * Length of the playback ring buffer in seconds.
+ */
+#define HL_PLAYBACK_RB_DURATION 1
+
 namespace hula
 {
     /**
@@ -38,7 +43,7 @@ namespace hula
                 this->activeInputDevice = nullptr;
                 this->activeOutputDevice = nullptr;
 
-                playbackBuffer = new HulaRingBuffer(1);
+                playbackBuffer = new HulaRingBuffer(HL_PLAYBACK_RB_DURATION);
 
                // stateSem = Semaphore(1);
 

@@ -3,6 +3,9 @@
 #include <pulse/simple.h>
 #include <pulse/error.h>
 
+#include <chrono>
+#include <thread>
+
 #include "LinuxAudio.h"
 #include "hlaudio/internal/HulaAudioError.h"
 #include "hlaudio/internal/HulaAudioSettings.h"
@@ -407,6 +410,13 @@ void LinuxAudio::playback()
         // Fill with silence if we don't have enough data ready
         if (samplesRead < elementsToRead)
         {
+            if (samplesRead == 0)
+            {
+                hlDebug() << "Playback: Got empty buffer. Sleeping before trying again." << std::endl;
+                std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                continue;
+            }
+
             hlDebug() << "Playback: Ring buffer underrun. Received " << samplesRead << " of " << elementsToRead << std::endl;
             hlDebug() << "Writing " << elementsToRead - samplesRead << " samples of silence." << std::endl;
             for (int i = samplesRead; i < elementsToRead; i++)

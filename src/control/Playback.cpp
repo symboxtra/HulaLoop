@@ -23,6 +23,12 @@ Playback::Playback(Controller *control, Record *record)
  */
 void Playback::start(uint32_t startTime)
 {
+    // Make sure the last thread was joined or
+    // the assignment of the new thread will fail
+    this->endPlay.store(true);
+    if (playThread.joinable())
+        playThread.join();
+
     this->endPlay.store(false);
     playThread = std::thread(&Playback::player, this);
 }
@@ -109,6 +115,9 @@ void Playback::player()
     hlDebug() << "Playback write loop exited." << std::endl;
 
     sf_close(sndFile);
+
+    // Make sure the playback buffer gets drained first
+    std::this_thread::sleep_for(std::chrono::milliseconds(HL_PLAYBACK_RB_DURATION * 1000 + 200));
     this->controller->endPlayback();
 }
 
@@ -119,6 +128,7 @@ void Playback::player()
 void Playback::stop()
 {
     this->endPlay.store(true);
+    this->controller->endPlayback();
 
     if (playThread.joinable())
         playThread.join();

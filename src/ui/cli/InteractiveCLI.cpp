@@ -279,6 +279,16 @@ HulaCliStatus InteractiveCLI::processCommand(const std::string &command, const s
         try
         {
             success = t->play();
+
+            // TODO: Once a callback for onplayend is added
+            // to Playback, this won't be needed
+            // For now, if we fail to play, try stopping and then
+            // playing
+            if (!success)
+            {
+                t->stop();
+                success = t->play();
+            }
         }
         catch(const ControlException &ce)
         {
