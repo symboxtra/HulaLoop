@@ -28,6 +28,13 @@
   },
   "homepage": "https://github.com/symboxtra/HulaLoop#readme",
   "dependencies": {
-    "cmake-js": "^5.2.0"
+    "cmake-js": "^5.2.0",
+    "nan": "*",
+    "streaming-worker-sdk": "^0.9.3"
+  },
+  "cmake-js": {
+    "runtime": "electron",
+    "runtimeVersion": "4.1.4",
+    "arch": "x64"
   }
 }

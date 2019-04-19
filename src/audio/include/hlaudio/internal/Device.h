@@ -18,9 +18,11 @@ namespace hula
     enum DeviceType
     {
         RECORD = 1,
-        PLAYBACK = 2,
-        LOOPBACK = 4,
-        ANY = 7
+        LOOPBACK = 2,
+        PLAYBACK = 4,
+        INPUT = 3,  // RECORD | LOOPBACK
+        OUTPUT = 4, // PLAYBACK
+        ANY = 7     // RECORD | LOOPBACK | PLAYBACK
     };
 
     /**

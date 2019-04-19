@@ -20,9 +20,32 @@ set (HL_VERSION_STR "${HL_VERSION_MAJOR}.${HL_VERSION_MINOR}.${HL_VERSION_REV}.$
 # Declare project
 project (HulaLoop VERSION ${HL_VERSION_STR} LANGUAGES CXX C)
 
+# Node addon configuration
 message (STATUS "")
-message (STATUS "Building ${PROJECT_NAME} v${HL_VERSION_STR}")
+if (CMAKE_JS_VERSION)
+    message (STATUS "Building ${PROJECT_NAME} Node addon v${HL_VERSION_STR}")
+    option (HL_BUILD_ONLY_AUDIO "Build only the audio library." ON)
+else ()
+    message (STATUS "Building ${PROJECT_NAME} v${HL_VERSION_STR}")
+    option (HL_BUILD_ONLY_AUDIO "Build only the audio library." OFF)
+
+    # Set output for binaries
+    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/lib)
+    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/lib)
+    foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
+        string (TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
+        set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/bin)
+        set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/lib/lib)
+        set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/lib/lib)
+    endforeach ()
+endif ()
 message (STATUS "")
+
+# Global build options
+option (HL_BUILD_CLI "Build the command line application." ON)
+option (HL_BUILD_GUI "Build the graphical application." ON)
+option (HL_BUILD_EXAMPLES "Build example programs." OFF)
 
 # Set build type if not provided
 if (NOT CMAKE_BUILD_TYPE)
@@ -42,12 +65,6 @@ endif ()
 # Configuration code for installers
 include (${CMAKE_CURRENT_LIST_DIR}/cmake/HulaInstall.cmake)
 
-# Global build options
-option (HL_BUILD_ONLY_AUDIO "Build only the audio library." OFF)
-option (HL_BUILD_CLI "Build the command line application." ON)
-option (HL_BUILD_GUI "Build the graphical application." ON)
-option (HL_BUILD_EXAMPLES "Build example programs." OFF)
-
 # Turn on coverage flags if needed
 set (HL_ADD_COVERAGE_FLAGS OFF)
 if (CMAKE_BUILD_TYPE MATCHES "Debug" AND (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
@@ -61,17 +78,6 @@ if (NOT DEFINED HL_NO_DEBUG_OUTPUT)
         set (HL_NO_DEBUG_OUTPUT 0)
     endif ()
 endif ()
-
-# Set output for binaries
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/lib)
-set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/lib)
-foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
-    string (TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
-    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/bin)
-    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/lib/lib)
-    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/lib/lib)
-endforeach ()
 
 message (STATUS "System Platform: ${CMAKE_SYSTEM_NAME} ${CMAKE_GENERATOR_PLATFORM}")
 message (STATUS "Install Prefix: ${CMAKE_INSTALL_PREFIX}\n")
@@ -191,6 +197,11 @@ endif ()
 # Add subdirectories and include any headers from lower level CMakeLists
 add_subdirectory (src/audio)
 include_directories (${INCLUDE_DIRS})
+
+# Build node addon
+if (CMAKE_JS_VERSION)
+    add_subdirectory (src/node-addon)
+endif ()
 
 # Build UI and control modules
 if (NOT HL_BUILD_ONLY_AUDIO)

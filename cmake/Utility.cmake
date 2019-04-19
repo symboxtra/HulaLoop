@@ -38,7 +38,12 @@ endfunction ()
 function (add_library_target _name _src_files)
 
     # Generate libraries
-    add_library (${_name} STATIC ${_src_files})
+    # The shared lib might not work on Windows right now
+    if (CMAKE_JS_VERSION)
+        add_library (${_name} SHARED ${_src_files})
+    else ()
+        add_library (${_name} STATIC ${_src_files})
+    endif ()
     set_target_properties (${_name} PROPERTIES
         VERSION ${HL_VERSION_STR}
         SOVERSION 1
