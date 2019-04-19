@@ -1,3 +1,7 @@
+/**
+ * Modified from: https://www.npmjs.com/package/streaming-worker-sdk
+ */
+
 #ifndef ____StreamingWorker__
 #define ____StreamingWorker__
 #include <iostream>
@@ -14,11 +18,11 @@
 using namespace Nan;
 using namespace std;
 
-template <typename Data>
+template <typename T>
 class PCQueue
 {
   public:
-    void write(Data data)
+    void write(T data)
     {
         while (true)
         {
@@ -29,20 +33,20 @@ class PCQueue
             return;
         }
     }
-    Data read()
+    T read()
     {
         while (true)
         {
             std::unique_lock<std::mutex> locker(mu);
             cond.wait(locker, [this]() { return buffer_.size() > 0; });
-            Data back = buffer_.front();
+            T back = buffer_.front();
             buffer_.pop_front();
             locker.unlock();
             cond.notify_all();
             return back;
         }
     }
-    void readAll(std::deque<Data> &target)
+    void readAll(std::deque<T> &target)
     {
         std::unique_lock<std::mutex> locker(mu);
         std::copy(buffer_.begin(), buffer_.end(), std::back_inserter(target));
@@ -54,51 +58,60 @@ class PCQueue
   private:
     std::mutex mu;
     std::condition_variable cond;
-    std::deque<Data> buffer_;
+    std::deque<T> buffer_;
 };
 
+/**
+ *
+ *
+ * @tparam T
+ */
+template <typename T>
 class Message
 {
-  public:
-    string name;
-    string data;
-    Message(string name, string data) : name(name), data(data) {}
+    public:
+        string name;
+        T data;
+        size_t length;
+        Message(string name, T data, size_t length)
+        {
+            this->name = name;
+            this->data = data;
+            this->length = length;
+        }
 };
 
-class StreamingWorker : public AsyncProgressWorker
+// Stream data type
+typedef float* SDT;
+class StreamingWorker : public AsyncProgressWorkerBase<SDT>
 {
   public:
     StreamingWorker(
         Callback *progress,
         Callback *callback,
-        Callback *error_callback)
-        : AsyncProgressWorker(callback), progress(progress), error_callback(error_callback)
+        Callback *error_callback
+    ) : AsyncProgressWorkerBase<SDT>(callback), progress(progress), error_callback(error_callback)
     {
         input_closed = false;
     }
-
-    ~StreamingWorker()
-    {
-        delete progress;
-        delete error_callback;
-    }
+    ~StreamingWorker() {}
 
     void HandleErrorCallback()
     {
         HandleScope scope;
 
         v8::Local<v8::Value> argv[] = {
-            v8::Exception::Error(New<v8::String>(ErrorMessage()).ToLocalChecked())};
+            v8::Exception::Error(New<v8::String>(AsyncWorker::ErrorMessage()).ToLocalChecked())};
         error_callback->Call(1, argv);
     }
 
     void HandleOKCallback()
     {
         drainQueue();
-        callback->Call(0, NULL);
+        this->callback->Call(0, NULL);
     }
 
-    void HandleProgressCallback(const char *data, size_t size)
+    void HandleProgressCallback(const SDT *data, size_t size)
     {
         drainQueue();
     }
@@ -108,13 +121,14 @@ class StreamingWorker : public AsyncProgressWorker
         input_closed = true;
     }
 
-    PCQueue<Message> fromNode;
+    // This should always be JSON string
+    PCQueue<Message<string>> fromNode;
 
   protected:
-    void writeToNode(const AsyncProgressWorker::ExecutionProgress &progress, const Message &msg)
+    void writeToNode(const AsyncProgressWorkerBase<SDT>::ExecutionProgress &progress, const Message<SDT> &msg)
     {
         toNode.write(msg);
-        progress.Send(reinterpret_cast<const char *>(&toNode), sizeof(toNode));
+        progress.Send(reinterpret_cast<const SDT *>(&toNode), sizeof(toNode));
     }
 
     bool closed()
@@ -124,7 +138,7 @@ class StreamingWorker : public AsyncProgressWorker
 
     Callback *progress;
     Callback *error_callback;
-    PCQueue<Message> toNode;
+    PCQueue<Message<SDT>> toNode;
     bool input_closed;
 
   private:
@@ -133,15 +147,27 @@ class StreamingWorker : public AsyncProgressWorker
         HandleScope scope;
 
         // drain the queue - since we might only get called once for many writes
-        std::deque<Message> contents;
+        std::deque<Message<SDT>> contents;
         toNode.readAll(contents);
 
-        for (Message &msg : contents)
+        for (Message<SDT> &msg : contents)
         {
+            v8::Local<v8::Array> data = Nan::New<v8::Array>();
+
+            for (int i = 0; i < msg.length; i++)
+            {
+                Nan::Set(data, i, Nan::New<v8::Number>(msg.data[i]));
+            }
+
             v8::Local<v8::Value> argv[] = {
                 New<v8::String>(msg.name.c_str()).ToLocalChecked(),
-                New<v8::String>(msg.data.c_str()).ToLocalChecked()};
+                data
+            };
+
             progress->Call(2, argv);
+
+            // Delete the stashed buffer
+            delete [] msg.data;
         }
     }
 };
@@ -205,7 +231,7 @@ class StreamWorkerWrapper : public Nan::ObjectWrap
         v8::String::Utf8Value name(info[0]->ToString());
         v8::String::Utf8Value data(info[1]->ToString());
         StreamWorkerWrapper *obj = Nan::ObjectWrap::Unwrap<StreamWorkerWrapper>(info.Holder());
-        obj->_worker->fromNode.write(Message(*name, *data));
+        obj->_worker->fromNode.write(Message<string>(*name, *data, -1));
     }
 
     static NAN_METHOD(closeInput)
