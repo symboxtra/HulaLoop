@@ -3,6 +3,8 @@
 #include <hlaudio/hlaudio.h>
 #include "streaming-worker.h"
 
+#define HL_NODE_BUFFER_SIZE 512
+
 namespace hula {
 
     class NodeAddon : public StreamingWorker {
@@ -43,7 +45,15 @@ namespace hula {
                     Device *d = c.findDeviceByName(inputDevName, DeviceType::INPUT);
                     if (d != nullptr)
                     {
-                        c.setActiveInputDevice(d);
+                        try
+                        {
+                            c.setActiveInputDevice(d);
+                        }
+                        catch (const AudioException &e)
+                        {
+                            this->SetErrorMessage(e.getMessage().c_str());
+                        }
+
                         delete d;
                     }
                 }
@@ -53,15 +63,39 @@ namespace hula {
                     Device *d = c.findDeviceByName(inputDevName, DeviceType::OUTPUT);
                     if (d != nullptr)
                     {
-                        c.setActiveOutputDevice(d);
+                        try
+                        {
+                            c.setActiveOutputDevice(d);
+                        }
+                        catch (const AudioException &e)
+                        {
+                            this->SetErrorMessage(e.getMessage().c_str());
+                        }
+
                         delete d;
                     }
                 }
 
-                for (int i = 0; i < 15; i++)
+                HulaRingBuffer *rb = c.createAndAddBuffer(1);
+                Message<float *> msg("audio", nullptr, -1);
+
+                while (!closed())
                 {
-                    Message tosend("test", "this is a test");
-                    this->writeToNode(progress, tosend);
+                    SAMPLE *buff = new SAMPLE[HL_NODE_BUFFER_SIZE];
+                    ring_buffer_size_t sampleCount = rb->read(buff, HL_NODE_BUFFER_SIZE);
+
+                    if (sampleCount > 0)
+                    {
+                        msg.data = buff;
+                        msg.length = sampleCount;
+                        this->writeToNode(progress, msg);
+                    }
+                    else
+                    {
+                        delete [] buff;
+                    }
+
+                    std::this_thread::sleep_for(std::chrono::milliseconds(20));
                 }
             }
     };
