@@ -12,6 +12,7 @@
 #include <deque>
 #include <mutex>
 #include <chrono>
+#include <cstring>
 #include <condition_variable>
 #include <nan.h>
 
@@ -144,24 +145,18 @@ class StreamingWorker : public AsyncProgressWorkerBase<SDT>
   private:
     void drainQueue()
     {
-        HandleScope scope;
-
         // drain the queue - since we might only get called once for many writes
         std::deque<Message<SDT>> contents;
         toNode.readAll(contents);
 
         for (Message<SDT> &msg : contents)
         {
-            v8::Local<v8::Array> data = Nan::New<v8::Array>();
-
-            for (int i = 0; i < msg.length; i++)
-            {
-                Nan::Set(data, i, Nan::New<v8::Number>(msg.data[i]));
-            }
+            v8::Local<v8::ArrayBuffer> buffer = v8::ArrayBuffer::New(v8::Isolate::GetCurrent(), msg.length * sizeof(SDT));
+            memcpy(buffer->GetContents().Data(), msg.data, msg.length * sizeof(SDT));
 
             v8::Local<v8::Value> argv[] = {
                 New<v8::String>(msg.name.c_str()).ToLocalChecked(),
-                data
+                buffer
             };
 
             progress->Call(2, argv);
