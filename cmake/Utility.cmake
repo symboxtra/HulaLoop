@@ -38,16 +38,12 @@ endfunction ()
 function (add_library_target _name _src_files)
 
     # Generate libraries
-    # The shared lib might not work on Windows right now
-    if (CMAKE_JS_VERSION)
-        add_library (${_name} SHARED ${_src_files})
-    else ()
-        add_library (${_name} STATIC ${_src_files})
-    endif ()
+    add_library (${_name} SHARED ${_src_files})
     set_target_properties (${_name} PROPERTIES
         VERSION ${HL_VERSION_STR}
-        SOVERSION 1
+        SOVERSION ${HL_VERSION_MAJOR}
         PUBLIC_HEADER include/${_name}/${_name}.h
+        WINDOWS_EXPORT_ALL_SYMBOLS TRUE
     )
 
     # Target public and private headers

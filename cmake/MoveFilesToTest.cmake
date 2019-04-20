@@ -2,6 +2,7 @@
 # Use all applicable names (i.e. Qt5XXX.dll and Qt5XXXd.dll).
 # Any non-existent names will fail silently
 
+set (HL_DLLS ${BINARY_DIR}/bin/hlaudio.dll ${BINARY_DIR}/bin/hlcontrol.dll)
 set (PORTAUDIO_DLLS ${BINARY_DIR}/bin/portaudio.dll ${BINARY_DIR}/bin/portaudio_x64.dll ${BINARY_DIR}/bin/portaudio_x86.dll)
 set (QT_DLLS ${BINARY_DIR}/bin/Qt5Core.dll ${BINARY_DIR}/bin/Qt5Cored.dll)
 set (SNDFILE_DLLS ${BINARY_DIR}/bin/libsndfile-1.dll)
@@ -12,6 +13,7 @@ set (OSX_DAEMON ${BINARY_DIR}/bin/hulaloop-osx-daemon)
 # Copy PortAudio DLL to bin/test and suppress errors
 # Also copy the test.wav file to the bin/test folder
 execute_process (COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${HL_DLLS}
         ${PORTAUDIO_DLLS}
         ${QT_DLLS}
         ${SNDFILE_DLLS}
