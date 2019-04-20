@@ -1,109 +1,260 @@
 #include <string>
+#include <nan.h>
 
 #include <hlaudio/hlaudio.h>
-#include "streaming-worker.h"
 
-#define HL_NODE_BUFFER_SIZE 512
+#define HL_NODE_BUFFER_SIZE 1024
 
-namespace hula {
+class NodeAddon : public Nan::ObjectWrap {
+    public:
+        static NAN_MODULE_INIT(Init)
+        {
+            v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
+            tpl->SetClassName(Nan::New("HulaLoop").ToLocalChecked());
+            tpl->InstanceTemplate()->SetInternalFieldCount(4);
 
-    class NodeAddon : public StreamingWorker {
-        private:
-            std::string inputDevName = "";
-            std::string outputDevName = "";
+            SetPrototypeMethod(tpl, "startCapture", startCapture);
+            SetPrototypeMethod(tpl, "setInput", setInput);
+            SetPrototypeMethod(tpl, "readBuffer", readBuffer);
+            SetPrototypeMethod(tpl, "stopCapture", stopCapture);
 
-        public:
+            constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
+            Nan::Set(target, Nan::New("HulaLoop").ToLocalChecked(), Nan::GetFunction(tpl).ToLocalChecked());
 
-            NodeAddon(Callback *data, Callback *complete, Callback *error,
-            v8::Local<v8::Object> &options) : StreamingWorker(data, complete, error)
+            // TODO: Figure out how to set the exports
+            // Nan::SetMethod(module, "exports", New);
+        }
+
+    private:
+        /**
+         * HulaLoop Controller
+         */
+        hula::Controller *c = nullptr;
+        /**
+         * HulaLoop RingBuffer
+         */
+        hula::HulaRingBuffer *rb = nullptr;
+        /**
+         * Reference to JavaScript function used to
+         * pass events/updates (not audio) from HulaLoop to Node.
+         * This does not have a defined purpose yet.
+         */
+        Nan::Callback *dataCallback;
+        /**
+         * Reference to JavaScript function used to
+         * pass error messages from HulaLoop to Node.
+         */
+        Nan::Callback *errorCallback;
+
+        /**
+         * Construct a new HulaLoop Node Addon.
+         *
+         * This addon exposes the basic features needed
+         * to capture looback audio to a Node-based client
+         * such as Electron.
+         *
+         * Options object:
+         * @code
+         * const opts = {
+         *    input: "deviceName"
+         * }
+         * @endcode
+         *
+         * @param dataCallback JavaScript function used to
+         * pass events/updates (not audio) from HulaLoop to Node.
+         * This does not have a defined purpose yet.
+         *
+         * @param errorCallback JavaScript function used to
+         * pass error messages from HulaLoop to Node.
+         *
+         * @param options JavaScript object containing options
+         * for initial configuration of HulaLoop. As of now,
+         * the object has the options listed above.
+         */
+        explicit NodeAddon(
+            Nan::Callback *dataCallback,
+            Nan::Callback *errorCallback,
+            v8::Local<v8::Object> &options
+        )
+        {
+            this->dataCallback = dataCallback;
+            this->errorCallback = errorCallback;
+
+            this->c = new hula::Controller();
+            this->rb = c->createBuffer(1);
+
+            if (options->IsObject())
             {
-                // Parse the startup options
-                if (options->IsObject())
+                // Handle input device in options object
+                v8::Local<v8::Value> inputDevName = options->Get(Nan::New<v8::String>("input").ToLocalChecked());
+                if (inputDevName->IsString())
                 {
-                    v8::Local<v8::Value> inputDevName = options->Get(New<v8::String>("input").ToLocalChecked());
-                    if (inputDevName->IsString())
-                    {
-                        v8::String::Utf8Value s(inputDevName);
-                        this->inputDevName = *s;
-                    }
-
-                    v8::Local<v8::Value> outputDevName = options->Get(New<v8::String>("input").ToLocalChecked());
-                    if (outputDevName->IsString())
-                    {
-                        v8::String::Utf8Value s(outputDevName);
-                        this->inputDevName = *s;
-                    }
+                    v8::String::Utf8Value s(inputDevName);
+                    bool ret = this->setInputDevice(*s);
                 }
             }
+        }
 
-            void Execute(const ExecutionProgress &progress)
+        /**
+         * Destroy HulaLoop objects that won't be garbage
+         * collected by v8.
+         */
+        ~NodeAddon()
+        {
+            delete this->c;
+            delete this->rb;
+        }
+
+        /**
+         * Search for the device by name and try to set it as active.
+         *
+         * Any error message or failure generated is passed back to the
+         * browser via the errorCallback function that was registered at
+         * construction.
+         *
+         * @return True on success. False on failure.
+         */
+        bool setInputDevice(const std::string &deviceName)
+        {
+            bool ret = false;
+            hula::Device *dev = this->c->findDeviceByName(deviceName);
+            if (dev != nullptr)
             {
-                Controller c;
-
-                if (inputDevName.length())
+                try
                 {
-                    Device *d = c.findDeviceByName(inputDevName, DeviceType::INPUT);
-                    if (d != nullptr)
-                    {
-                        try
-                        {
-                            c.setActiveInputDevice(d);
-                        }
-                        catch (const AudioException &e)
-                        {
-                            this->SetErrorMessage(e.getMessage().c_str());
-                        }
-
-                        delete d;
-                    }
+                    ret = this->c->setActiveInputDevice(dev);
+                }
+                catch(const hula::AudioException &e)
+                {
+                    v8::Local<v8::Value> argv[1] = { Nan::New(e.getMessage().c_str()).ToLocalChecked() };
+                    this->errorCallback->Call(1, argv);
                 }
 
-                if (outputDevName.length())
-                {
-                    Device *d = c.findDeviceByName(inputDevName, DeviceType::OUTPUT);
-                    if (d != nullptr)
-                    {
-                        try
-                        {
-                            c.setActiveOutputDevice(d);
-                        }
-                        catch (const AudioException &e)
-                        {
-                            this->SetErrorMessage(e.getMessage().c_str());
-                        }
-
-                        delete d;
-                    }
-                }
-
-                HulaRingBuffer *rb = c.createAndAddBuffer(1);
-                Message<float *> msg("audio", nullptr, -1);
-
-                while (!closed())
-                {
-                    SAMPLE *buff = new SAMPLE[HL_NODE_BUFFER_SIZE];
-                    ring_buffer_size_t sampleCount = rb->read(buff, HL_NODE_BUFFER_SIZE);
-
-                    if (sampleCount > 0)
-                    {
-                        msg.data = buff;
-                        msg.length = sampleCount;
-                        this->writeToNode(progress, msg);
-                    }
-                    else
-                    {
-                        delete [] buff;
-                    }
-
-                    std::this_thread::sleep_for(std::chrono::milliseconds(20));
-                }
+                delete dev;
             }
-    };
-}
+            else
+            {
+                // Let the browser know that the device was not found
+                v8::Local<v8::Value> argv[1] = { Nan::New(HL_ERROR_PREFIX "Device not found.").ToLocalChecked() };
+                this->errorCallback->Call(1, argv);
+            }
 
-StreamingWorker * create_worker(Callback *data, Callback *complete, Callback *error_callback, v8::Local<v8::Object> & options)
-{
-  return new hula::NodeAddon(data, complete, error_callback, options);
-}
+            return ret;
+        }
 
-NODE_MODULE(hulaloop, StreamWorkerWrapper::Init)
+        static NAN_METHOD(New)
+        {
+            if (info.IsConstructCall())
+            {
+                Nan::Callback *dataCallback = new Nan::Callback(info[0].As<v8::Function>());
+                Nan::Callback *errorCallback = new Nan::Callback(info[1].As<v8::Function>());
+                v8::Local<v8::Object> options = info[2].As<v8::Object>();
+
+                NodeAddon *obj = new NodeAddon(
+                    dataCallback,
+                    errorCallback,
+                    options
+                );
+
+                obj->Wrap(info.This());
+                info.GetReturnValue().Set(info.This());
+            }
+            else
+            {
+                const int argc = 3;
+                v8::Local<v8::Value> argv[argc] = {info[0], info[1], info[2]};
+                v8::Local<v8::Function> cons = Nan::New(constructor());
+                v8::Local<v8::Object> instance = Nan::NewInstance(cons, argc, argv).ToLocalChecked();
+                info.GetReturnValue().Set(instance);
+            }
+        }
+
+        /**
+         * Start receiving samples from HulaLoop.
+         */
+        static NAN_METHOD(startCapture)
+        {
+            NodeAddon *_this = Nan::ObjectWrap::Unwrap<NodeAddon>(info.Holder());
+            _this->rb->clear();
+            _this->c->addBuffer(_this->rb);
+        }
+
+        /**
+         * Set the input device by name.
+         *
+         * Any error messages generated by this action
+         * are received via the registered errorCallback.
+         *
+         * @return true if successful, false if not
+         */
+        static NAN_METHOD(setInput)
+        {
+            v8::String::Utf8Value deviceName(info[0]->ToString());
+            NodeAddon *_this = Nan::ObjectWrap::Unwrap<NodeAddon>(info.Holder());
+
+            bool ret = _this->setInputDevice(*deviceName);
+
+            info.GetReturnValue().Set(ret);
+        }
+
+        /**
+         * Read audio data from the HulaLoop buffer.
+         *
+         * This function takes in a JavaScript ArrayBuffer
+         * and fills it with samples available from HulaLoop.
+         *
+         * Should HulaLoop not have enough samples available,
+         * the remaining position in the ArrayBuffer are
+         * filled with 0's (silence).
+         *
+         * Samples are stored as interleaved 32-bit floating point.
+         *
+         * Note: startCapture must be called before any non-silence
+         * samples will become available.
+         *
+         * @return undefined
+         */
+        static NAN_METHOD(readBuffer)
+        {
+            v8::Local<v8::ArrayBuffer> jsBuffer = info[0].As<v8::ArrayBuffer>();
+            NodeAddon *_this = Nan::ObjectWrap::Unwrap<NodeAddon>(info.Holder());
+
+            SAMPLE *jsRawBuff = (SAMPLE *)jsBuffer->GetContents().Data();
+            size_t maxSamples = jsBuffer->ByteLength() / sizeof(SAMPLE);
+            size_t samplesRead = 0;
+
+            samplesRead = _this->rb->read(jsRawBuff, maxSamples);
+
+            if (samplesRead == 0)
+            {
+                std::cout << maxSamples << std::endl;
+                std::cout << "Empty buffer" << std::endl;
+                hlDebug() << "NodeAddon: Received empty buffer" << std::endl;
+            }
+
+            // Finish off with silence if we weren't able to get enough samples
+            for (size_t i = samplesRead; i < maxSamples; i++)
+            {
+                std::cout << "Silence filled" << std::endl;
+                jsRawBuff[i] = 0.0f;
+            }
+        }
+
+        /**
+         * Stop receiving samples from HulaLoop.
+         */
+        static NAN_METHOD(stopCapture)
+        {
+            NodeAddon *_this = Nan::ObjectWrap::Unwrap<NodeAddon>(info.Holder());
+            _this->c->removeBuffer(_this->rb);
+            _this->rb->clear();
+        }
+
+        static inline Nan::Persistent<v8::Function> &constructor()
+        {
+            static Nan::Persistent<v8::Function> construct;
+            return construct;
+        }
+};
+
+NODE_MODULE(hulaloop, NodeAddon::Init)
