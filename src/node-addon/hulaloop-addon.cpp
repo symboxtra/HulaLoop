@@ -215,6 +215,7 @@ class NodeAddon : public Nan::ObjectWrap {
             v8::String::Utf8Value deviceName(info[0]->ToString());
             NodeAddon *_this = Nan::ObjectWrap::Unwrap<NodeAddon>(info.Holder());
 
+            // Any errors will be passed via error callback
             bool ret = _this->setInputDevice(*deviceName);
 
             info.GetReturnValue().Set(ret);
@@ -250,15 +251,14 @@ class NodeAddon : public Nan::ObjectWrap {
 
             if (samplesRead == 0)
             {
-                std::cout << maxSamples << std::endl;
-                std::cout << "Empty buffer" << std::endl;
                 hlDebug() << "NodeAddon: Received empty buffer" << std::endl;
             }
 
             // Finish off with silence if we weren't able to get enough samples
+            // double angle = 0;
             for (size_t i = samplesRead; i < maxSamples; i++)
             {
-                std::cout << "Silence filled" << std::endl;
+                hlDebug() << "Silence filled" << std::endl;
                 jsRawBuff[i] = 0.0f;
 
                 // Generate a pure sine wave
