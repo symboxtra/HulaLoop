@@ -46,7 +46,6 @@
 #include <cstdlib>
 #include <thread>
 
-#define SAMPLE_RATE             (44100)
 #define FRAMES_PER_BUFFER       (512)
 #define NUM_SECONDS             (10)
 #define NUM_CHANNELS            (2)
@@ -54,6 +53,9 @@
 
 // Select sample format.
 #if 1
+#if 0
+    #define SAMPLE_RATE     (44100)
+#endif
     #define PA_SAMPLE_TYPE  paFloat32
     #define SAMPLE          float
     #define SAMPLE_SILENCE  (0.0f)
@@ -77,6 +79,7 @@
 
 #define BYTES_TO_SAMPLES(bytes) ((bytes) / (sizeof(SAMPLE)))
 #define SAMPLES_TO_BYTES(samples) ((samples) * (sizeof(SAMPLE)))
+#define SAMPLES_TO_MS(sampleCount, sampleRate, channelCount) ((float)(sampleCount) / (channelCount) / (sampleRate) * 1000)
 
 namespace hula
 {

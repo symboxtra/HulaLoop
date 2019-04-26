@@ -252,6 +252,8 @@ static int paPlayCallback(const void *inputBuffer, void *outputBuffer,
  */
 void WindowsAudio::capture()
 {
+    HulaAudioSettings *s = HulaAudioSettings::getInstance();
+
     // Check if the following enums are set in the params
     bool isLoopSet = (activeInputDevice->getType() & DeviceType::LOOPBACK) == DeviceType::LOOPBACK;
     bool isRecSet = (activeInputDevice->getType() & DeviceType::RECORD) == DeviceType::RECORD;
@@ -388,7 +390,7 @@ Exit:
                   &stream,
                   &inputParameters,
                   nullptr, // &outputParameters
-                  SAMPLE_RATE,
+                  s->getSampleRate(),
                   FRAMES_PER_BUFFER,
                   paClipOff, // We won't output out of range samples so don't bother clipping them
                   paRecordCallback,

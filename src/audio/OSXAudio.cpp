@@ -261,6 +261,8 @@ static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
  */
 void OSXAudio::capture()
 {
+    HulaAudioSettings *s = HulaAudioSettings::getInstance();
+
     PaStreamParameters  inputParameters = {0};
     PaStream           *stream;
     PaError             err = paNoError;
@@ -282,7 +284,7 @@ void OSXAudio::capture()
               &stream,
               &inputParameters,
               nullptr,                  // &outputParameters
-              SAMPLE_RATE,
+              s->getSampleRate(),
               FRAMES_PER_BUFFER,
               paClipOff,             // We won't output out of range samples so don't bother clipping them
               paRecordCallback,

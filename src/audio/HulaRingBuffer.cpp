@@ -39,6 +39,7 @@
 #include <algorithm>
 
 #include "hlaudio/internal/HulaAudioError.h"
+#include "hlaudio/internal/HulaAudioSettings.h"
 #include "hlaudio/internal/HulaRingBuffer.h"
 
 using namespace hula;
@@ -52,8 +53,10 @@ using namespace hula;
  */
 HulaRingBuffer::HulaRingBuffer(float maxDuration)
 {
+    HulaAudioSettings *s = HulaAudioSettings::getInstance();
+
     // Set the ring buffer size to the desired duration
-    int numSamples = nextPowerOf2((uint32_t)(SAMPLE_RATE * maxDuration * NUM_CHANNELS));
+    int numSamples = nextPowerOf2((uint32_t)(s->getSampleRate() * maxDuration * NUM_CHANNELS));
     this->rbMemory = new SAMPLE[numSamples];
 
     // Make sure ring buffer was allocated
@@ -99,7 +102,7 @@ ring_buffer_size_t HulaRingBuffer::read(SAMPLE *data, ring_buffer_size_t maxSamp
 ring_buffer_size_t HulaRingBuffer::directRead(ring_buffer_size_t maxSamples, void **dataPtr1, ring_buffer_size_t *size1, void **dataPtr2, ring_buffer_size_t *size2)
 {
     ring_buffer_size_t samplesInBuffer = PaUtil_GetRingBufferReadAvailable(&this->rb);
-    ring_buffer_size_t samplesToWrite = std::min(samplesInBuffer, (ring_buffer_size_t)maxSamples);
+    ring_buffer_size_t samplesToRead = std::min(samplesInBuffer, (ring_buffer_size_t)maxSamples);
 
     // Initialize
     *dataPtr1 = NULL;
@@ -108,7 +111,7 @@ ring_buffer_size_t HulaRingBuffer::directRead(ring_buffer_size_t maxSamples, voi
     *size2 = 0;
 
     // By using PaUtil_GetRingBufferReadRegions, we can read directly from the ring buffer
-    ring_buffer_size_t samplesRead = PaUtil_GetRingBufferReadRegions(&this->rb, samplesToWrite, dataPtr1, (ring_buffer_size_t *)size1, dataPtr2, (ring_buffer_size_t *)size2);
+    ring_buffer_size_t samplesRead = PaUtil_GetRingBufferReadRegions(&this->rb, samplesToRead, dataPtr1, (ring_buffer_size_t *)size1, dataPtr2, (ring_buffer_size_t *)size2);
     if (samplesRead > 0)
     {
         // Advance the index after successful read

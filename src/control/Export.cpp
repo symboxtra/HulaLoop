@@ -1,4 +1,5 @@
 #include "hlcontrol/internal/Export.h"
+#include "hlcontrol/internal/HulaSettings.h"
 
 #include <algorithm>
 #include <cstdio>
@@ -38,6 +39,7 @@ std::string Export::getTempPath()
  */
 void Export::copyData(std::vector<std::string> dirs)
 {
+    HulaSettings *s = HulaSettings::getInstance();
 
     // Get file extension of the target export file
     std::string extension = getFileExtension(this->targetFile.c_str()); // TODO: Return encoding enum value from HulaAudioSettings
@@ -45,14 +47,15 @@ void Export::copyData(std::vector<std::string> dirs)
     hlDebug() << "Extension: " << extension << std::endl;
 
     // Initialize libsndfile info.
+    // TODO: channels should be omitted and format should be zeroed
+    // See: http://www.mega-nerd.com/libsndfile/api.html
     SF_INFO sfinfo_in = {0};
-    sfinfo_in.samplerate = SAMPLE_RATE;
     sfinfo_in.channels = NUM_CHANNELS;
     sfinfo_in.format = SF_FORMAT_FLAC | SF_FORMAT_PCM_24;
 
     // Initialize libsndfile info.
     SF_INFO sfinfo_out = {0};
-    sfinfo_out.samplerate = SAMPLE_RATE;
+    sfinfo_out.samplerate = s->getSampleRate();
     sfinfo_out.channels = NUM_CHANNELS;
     sfinfo_out.format = SF_FORMAT_FLOAT;
 

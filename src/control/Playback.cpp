@@ -1,3 +1,4 @@
+#include "hlcontrol/internal/HulaSettings.h"
 #include "hlcontrol/internal/Playback.h"
 
 using namespace hula;
@@ -35,15 +36,15 @@ void Playback::start(uint32_t startTime)
 
 void Playback::player()
 {
+    HulaSettings *s = HulaSettings::getInstance();
     this->controller->startPlayback();
 
     // Initialize libsndfile info.
     SF_INFO sfinfo;
-    sfinfo.samplerate = SAMPLE_RATE;
     sfinfo.channels = NUM_CHANNELS;
     sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
 
-    ring_buffer_size_t maxSize = 1024;
+    ring_buffer_size_t samplesPerBuffer = 1024;
     float buffer[1024];
 
     size_t fileIndex = 0;
@@ -65,7 +66,7 @@ void Playback::player()
     sf_count_t samplesRead = 0;
     while(!this->endPlay.load())
     {
-        samplesRead = sf_read_float(sndFile, (float *)&buffer, maxSize);
+        samplesRead = sf_read_float(sndFile, (float *)&buffer, samplesPerBuffer);
 
         ring_buffer_size_t lastWrite = 0;
         ring_buffer_size_t totalWrite = 0;
@@ -78,7 +79,10 @@ void Playback::player()
             // If the buffer was too full, wait a little bit
             if (totalWrite != samplesRead)
             {
-                std::this_thread::sleep_for(std::chrono::milliseconds(150));
+                // Convert buffer size to milliseconds of audio
+                // Sleep for 75 buffers worth (~217ms @ 44.1kHz)
+                int delay = static_cast<int>(SAMPLES_TO_MS(samplesPerBuffer, NUM_CHANNELS, s->getSampleRate()));
+                std::this_thread::sleep_for(std::chrono::milliseconds(delay * 75));
             }
         }
 
@@ -110,7 +114,8 @@ void Playback::player()
         // With a buffer of 1024 samples, 2 channels, and 44,100 Hz sample rate
         // this is approximately 11ms
         // We trim this by 3ms to accomodate for execution
-        std::this_thread::sleep_for(std::chrono::milliseconds(maxSize / NUM_CHANNELS * 1000 / SAMPLE_RATE - 3));
+        int delay = static_cast<int>(SAMPLES_TO_MS(samplesPerBuffer, NUM_CHANNELS, s->getSampleRate()));
+        std::this_thread::sleep_for(std::chrono::milliseconds(delay - 3));
     }
 
     hlDebug() << "Playback write loop exited." << std::endl;

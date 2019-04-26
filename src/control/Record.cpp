@@ -1,6 +1,6 @@
-#include "hlcontrol/internal/Record.h"
-
 #include "hlcontrol/internal/Export.h"
+#include "hlcontrol/internal/HulaSettings.h"
+#include "hlcontrol/internal/Record.h"
 
 #include <iostream>
 #include <fstream>
@@ -41,11 +41,12 @@ void Record::start()
 
 void Record::recorder()
 {
+    HulaSettings *s = HulaSettings::getInstance();
     ring_buffer_size_t samplesRead;
 
     // Initialize libsndfile info.
     SF_INFO sfinfo = {0};
-    sfinfo.samplerate = SAMPLE_RATE;
+    sfinfo.samplerate = s->getSampleRate();
     sfinfo.channels = NUM_CHANNELS;
     sfinfo.format = SF_FORMAT_FLAC | SF_FORMAT_PCM_24;
 
@@ -76,14 +77,14 @@ void Record::recorder()
                 if (samplesWritten != sizes[i])
                 {
                     char errstr[256];
-                    sf_error_str (0, errstr, sizeof (errstr) - 1);
+                    sf_error_str (0, errstr, sizeof(errstr) - 1);
                     hlDebugf("Could not write sndfile (%s)\n", errstr);
                     exit(1);
                 }
             }
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds((maxSize / NUM_CHANNELS * 1000 / SAMPLE_RATE) - 1));
+        std::this_thread::sleep_for(std::chrono::milliseconds((maxSize / NUM_CHANNELS * 1000 / s->getSampleRate()) - 1));
     }
 
 

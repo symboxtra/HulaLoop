@@ -390,6 +390,8 @@ static int paPlayCallback(const void *inputBuffer, void *outputBuffer,
  */
 void OSAudio::playback()
 {
+    HulaAudioSettings *s = HulaAudioSettings::getInstance();
+
     PaStream *stream = {0};
     PaError err = paNoError;
     PaStreamParameters outputParameters = {0};
@@ -418,7 +420,7 @@ void OSAudio::playback()
               &stream,
               NULL, /* no input */
               &outputParameters,
-              SAMPLE_RATE,
+              s->getSampleRate(),
               FRAMES_PER_BUFFER,
               paClipOff,      /* we won't output out of range samples so don't bother clipping them */
               paPlayCallback,

@@ -580,7 +580,7 @@ void QMLBridge::stopVisThread()
  */
 void QMLBridge::updateVisualizer(QMLBridge *_this)
 {
-
+    HulaSettings *s = HulaSettings::getInstance();
     _this->transport->getController()->addBuffer(_this->rb);
 
     int maxSize = 512;
@@ -655,7 +655,7 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
         // Accumulate some audio
         // We have to make sure this delay is shorter than the length of the ring buffer
         // We approximate it to accuracy * the length (seconds) of our buffer period
-        std::this_thread::sleep_for(std::chrono::milliseconds((maxSize / NUM_CHANNELS * 1000 / SAMPLE_RATE) * accuracy));
+        std::this_thread::sleep_for(std::chrono::milliseconds((maxSize / NUM_CHANNELS * 1000 / s->getSampleRate()) * accuracy));
 
         // Completely drain the rest of the buffer
         samplesRead = 1;
@@ -669,7 +669,7 @@ void QMLBridge::updateVisualizer(QMLBridge *_this)
         // Accumulate more audio
         // We have to make sure this delay is shorter than the length of the ring buffer
         // We approximate it to accuracy * the length (seconds) of our buffer period
-        std::this_thread::sleep_for(std::chrono::milliseconds((maxSize / NUM_CHANNELS * 1000 / SAMPLE_RATE)));
+        std::this_thread::sleep_for(std::chrono::milliseconds((maxSize / NUM_CHANNELS * 1000 / s->getSampleRate())));
     }
 
     _this->transport->getController()->removeBuffer(_this->rb);
