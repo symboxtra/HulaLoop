@@ -39,6 +39,22 @@ Controller::Controller()
 }
 
 /**
+ * Set the sample rate on the settings object.
+ *
+ * Only supports 44.1kHz and 48kHz right now.
+ */
+bool Controller::setSampleRate(float sampleRate)
+{
+    if (sampleRate == 44100 || sampleRate == 48000)
+    {
+        HulaAudioSettings::getInstance()->setSampleRate(sampleRate);
+        return true;
+    }
+
+    return false;
+}
+
+/**
  * Add an initialized buffer to the list of buffers that receive audio data.
  * As soon as the buffer is added, it should begin receiving data.
  *

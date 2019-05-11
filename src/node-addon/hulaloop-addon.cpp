@@ -14,10 +14,11 @@ class NodeAddon : public Nan::ObjectWrap {
         {
             v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
             tpl->SetClassName(Nan::New("HulaLoop").ToLocalChecked());
-            tpl->InstanceTemplate()->SetInternalFieldCount(5);
+            tpl->InstanceTemplate()->SetInternalFieldCount(6);
 
             SetPrototypeMethod(tpl, "startCapture", startCapture);
             SetPrototypeMethod(tpl, "getDevices", getDevices);
+            SetPrototypeMethod(tpl, "setSampleRate", setSampleRate);
             SetPrototypeMethod(tpl, "setInput", setInput);
             SetPrototypeMethod(tpl, "readBuffer", readBuffer);
             SetPrototypeMethod(tpl, "stopCapture", stopCapture);
@@ -200,6 +201,24 @@ class NodeAddon : public Nan::ObjectWrap {
             }
 
             info.GetReturnValue().Set(devNames);
+        }
+
+        /**
+         * Set the sample rate for HulaLoop.
+         *
+         * This should MUST match the sample rate of the Web Audio context.
+         * If it does not, audio will either be intermittent or have incorrect pitch.
+         *
+         * Only 44.1kHz and 48kHz are supported right now.
+         */
+        static NAN_METHOD(setSampleRate)
+        {
+            float rate = info[0]->NumberValue();
+            NodeAddon *_this = Nan::ObjectWrap::Unwrap<NodeAddon>(info.Holder());
+
+            bool ret = _this->c->setSampleRate(rate);
+
+            info.GetReturnValue().Set(ret);
         }
 
         /**

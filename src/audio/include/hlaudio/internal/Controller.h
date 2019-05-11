@@ -25,6 +25,8 @@ namespace hula
             Controller();
             virtual ~Controller();
 
+            bool setSampleRate(float sampleRate);
+
             void addBuffer(HulaRingBuffer *rb);
             void removeBuffer(HulaRingBuffer *rb);
             HulaRingBuffer *createBuffer(float duration);
