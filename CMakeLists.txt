@@ -126,11 +126,19 @@ if (NOT HL_BUILD_ONLY_AUDIO)
     message (STATUS "QT_ROOT: " ${QT_ROOT} "\n")
 
     if (WIN32 AND NOT DEFINED Qt5_DIR)
-        if(64BIT)
-            set (Qt5_DIR "${QT_ROOT}\\msvc2017_64\\lib\\cmake\\Qt5")
+        if (64BIT)
+            list (APPEND QT_COMPS "msvc2017_64" "msvc2015_64")
         else ()
-            set (Qt5_DIR "${QT_ROOT}\\msvc2015\\lib\\cmake\\Qt5")
+            list (APPEND QT_COMPS "msvc2017" "msvc2015")
         endif ()
+
+        foreach (QT_COMP ${QT_COMPS})
+            set (Qt5_DIR "${QT_ROOT}\\${QT_COMP}\\lib\\cmake\\Qt5")
+            if (EXISTS "${Qt5_DIR}")
+                break()
+            endif ()
+        endforeach ()
+
     endif ()
 
     message (STATUS "Qt5_DIR: ${Qt5_DIR}")
