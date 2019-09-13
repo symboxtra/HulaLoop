@@ -11,7 +11,7 @@ include (${CMAKE_CURRENT_LIST_DIR}/cmake/Qt5.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/cmake/Utility.cmake)
 
 # Version
-set (HL_VERSION_MAJOR 0)
+set (HL_VERSION_MAJOR 1)
 set (HL_VERSION_MINOR 0)
 set (HL_VERSION_REV 0)
 set (HL_VERSION_BUILD 0)

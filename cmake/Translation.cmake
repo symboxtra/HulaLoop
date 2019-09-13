@@ -25,7 +25,7 @@ if (FOUND_QT_LINGUIST)
     qt5_create_translation (QM_FILES
         ${PROJECT_SOURCE_DIR}/src/control ${PROJECT_SOURCE_DIR}/src/launcher ${PROJECT_SOURCE_DIR}/src/ui
         ${TRANSLATIONS_FILES}
-        OPTIONS -recursive
+        OPTIONS -recursive -locations none
     )
 
     # Convert the XML-based .ts files to binary .qm files
@@ -49,8 +49,8 @@ if (FOUND_QT_LINGUIST)
     # Install information for the translation files
     if (OSX)
         # This should eventually be the OSX bundle
-        install (FILES ${TRANSLATION_QM} DESTINATION translations)
+        install (FILES ${TRANSLATION_QM} DESTINATION bin)
     else ()
-        install (FILES ${TRANSLATION_QM} DESTINATION translations)
+        install (FILES ${TRANSLATION_QM} DESTINATION bin)
     endif ()
 endif ()

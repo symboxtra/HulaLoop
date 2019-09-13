@@ -15,8 +15,9 @@ WindowsAudio::WindowsAudio()
         throw AudioException(HL_PA_INIT_CODE, HL_PA_INIT_MSG);
     }
 
+    status = S_OK;
     pa_status = paNoError;
-    activeInputDevice = nullptr;
+    status = 0;
 }
 
 /**
@@ -38,7 +39,7 @@ std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
 
     // Get devices from WASAPI if loopback and/or playback devices
     // are requested
-    if (isLoopSet | isPlaySet)
+    if (isLoopSet)
     {
         // Setup capture environment
         status = CoInitialize(nullptr);
@@ -105,8 +106,8 @@ std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
 
     HulaAudioSettings *s = HulaAudioSettings::getInstance();
 
-    // Get devices from PortAudio if record devices are requested
-    if (isRecSet && s->getShowRecordDevices())
+    // Get devices from PortAudio if record or playback devices are requested
+    if (isPlaySet || isRecSet)
     {
 
         // Initialize PortAudio and update audio devices
@@ -121,21 +122,33 @@ std::vector<Device *> WindowsAudio::getDevices(DeviceType type)
             HANDLE_PA_ERROR(pa_status);
         }
 
-        //
-        const PaDeviceInfo *deviceInfo;
-        for (int i = 0; i < numDevices; i++)
+        for (uint32_t i = 0; i < numDevices; i++)
         {
-            deviceInfo = Pa_GetDeviceInfo(i);
+            const PaDeviceInfo *paDevice = Pa_GetDeviceInfo(i);
+            DeviceType checkType = (DeviceType) 0;
 
-            if (deviceInfo->maxInputChannels != 0 && deviceInfo->hostApi == Pa_GetDefaultHostApi())
+            if (isPlaySet && paDevice->maxOutputChannels > 0 && paDevice->hostApi == Pa_GetDefaultHostApi())
             {
-                // Create instance of Device using acquired data
+                checkType = (DeviceType)(checkType | DeviceType::PLAYBACK);
+            }
+            if (isRecSet && paDevice->maxInputChannels > 0 && paDevice->hostApi == Pa_GetDefaultHostApi())
+            {
+                checkType = (DeviceType)(checkType | DeviceType::RECORD);
+            }
+
+            // Create HulaLoop style device and add to vector
+            // This needs to be freed elsewhere
+            if (checkType)
+            {
+                if (checkType == DeviceType::RECORD && !s->getShowRecordDevices())
+                {
+                    continue;
+                }
+
                 DeviceID id;
                 id.portAudioID = i;
-                Device *audio = new Device(id, std::string(deviceInfo->name), DeviceType::RECORD);
-
-                // Add to devicelist
-                deviceList.push_back(audio);
+                Device *hlDevice = new Device(id, std::string(paDevice->name), checkType);
+                deviceList.push_back(hlDevice);
             }
         }
 
@@ -180,6 +193,7 @@ static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
                             void *userData)
 {
     WindowsAudio *obj = (WindowsAudio *)userData;
+    float *samples = (float *)inputBuffer;
 
     // Prevent unused variable warnings.
     (void)outputBuffer;
@@ -187,7 +201,48 @@ static int paRecordCallback(const void *inputBuffer, void *outputBuffer,
     (void)statusFlags;
     (void)userData;
 
-    obj->copyToBuffers(inputBuffer, framesPerBuffer * NUM_CHANNELS * sizeof(SAMPLE));
+    // TODO: Make sure this calculation is right
+    obj->copyToBuffers(samples, framesPerBuffer * NUM_CHANNELS);
+
+    obj->doCallbacks(samples, framesPerBuffer * NUM_CHANNELS);
+
+    return paContinue;
+}
+
+/**
+ * This routine will be called by the PortAudio engine when audio is needed.
+ * It may be called at interrupt level on some machines so don't do anything
+ * that could mess up the system like calling malloc() or free().
+ */
+static int paPlayCallback(const void *inputBuffer, void *outputBuffer,
+                            unsigned long framesPerBuffer,
+                            const PaStreamCallbackTimeInfo *timeInfo,
+                            PaStreamCallbackFlags statusFlags,
+                            void *userData)
+{
+    WindowsAudio *obj = (WindowsAudio *)userData;
+
+    // Prevent unused variable warnings.
+    //(void)outputBuffer;
+    //(void)timeInfo;
+    //(void)statusFlags;
+    //(void)userData;
+    SAMPLE* wptr = (SAMPLE*)outputBuffer;
+
+    // TODO: Make sure this calculation is right
+    void *ptr[2] = {0};
+    ring_buffer_size_t sizes[2] = {0};
+    ring_buffer_size_t samplesRead = obj->playbackBuffer->directRead((ring_buffer_size_t)(framesPerBuffer * NUM_CHANNELS), ptr + 0, sizes + 0, ptr + 1, sizes + 1);
+    if (sizes[1] > 0)
+    {
+        memcpy(wptr, (float *)ptr[0], sizes[0] * sizeof(float));
+        wptr = wptr + (sizes[0] * sizeof(float));
+        memcpy(wptr, (float *)ptr[1], sizes[1] * sizeof(float));
+    }
+    else
+    {
+        memcpy(wptr, (float *)ptr[0], sizes[0] * sizeof(float));
+    }
 
     return paContinue;
 }
@@ -276,7 +331,9 @@ void WindowsAudio::capture()
                 status = captureClient->GetBuffer(&pData, &numFramesAvailable, &flags, nullptr, nullptr);
                 HANDLE_ERROR(status);
 
-                this->copyToBuffers((float *)pData, numFramesAvailable * NUM_CHANNELS * sizeof(SAMPLE));
+                this->copyToBuffers((float *)pData, numFramesAvailable * NUM_CHANNELS);
+
+                this->doCallbacks((float*)pData, numFramesAvailable * NUM_CHANNELS);
 
                 // Release buffer after data is captured and handled
                 status = captureClient->ReleaseBuffer(numFramesAvailable);
@@ -356,15 +413,12 @@ Exit:
 
         hlDebugf("Capture keep-alive\n");
 
-        while (!this->endCapture)
+        while (!this->endCapture.load())
         {
             // Keep this thread alive
             // The second half of this function could be moved to a separate
             // function like endCapture() so that we don't have to keep this thread alive.
-
-            // This value can be adjusted
-            // 100 msec is decent precision for now
-            std::this_thread::yield();
+            Pa_Sleep(10);
         }
 
         hlDebugf("Capture thread ended keep-alive.\n\n");
@@ -393,43 +447,73 @@ Exit:
  */
 bool WindowsAudio::checkDeviceParams(Device *activeDevice)
 {
-    return true; // TODO: Remove this and add PortAudio checks and change deviceID code
-
-    HRESULT status;
-    IMMDevice *device = nullptr;
-    PROPVARIANT prop;
-    IPropertyStore *store = nullptr;
-    PWAVEFORMATEX deviceProperties;
-    // Setup capture environment
-    status = CoInitialize(nullptr);
-    HANDLE_ERROR(status);
-    // Creates a system instance of the device enumerator
-    status = CoCreateInstance(CLSID_MMDeviceEnumerator, nullptr, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
-    HANDLE_ERROR(status);
-    // Select the current active record/loopback device
-    status = pEnumerator->GetDevice(activeDevice->getID().windowsID, &device);
-    HANDLE_ERROR(status);
-    status = device->OpenPropertyStore(STGM_READ, &store);
-    HANDLE_ERROR(status);
-    status = store->GetValue(PKEY_AudioEngine_DeviceFormat, &prop);
-    HANDLE_ERROR(status);
-    deviceProperties = (PWAVEFORMATEX)prop.blob.pBlobData;
-    // Check number of channels
-    if (deviceProperties->nChannels != HulaAudioSettings::getInstance()->getNumberOfChannels())
+    if (activeDevice->getType() & DeviceType::LOOPBACK)
     {
-        hlDebug() << "Invalid number of channels" << std::endl;
-        throw AudioException(HL_CHECK_PARAMS_CODE, HL_CHECK_PARAMS_MSG);
-        return false;
-    }
-    // Check sample rate
-    if (deviceProperties->nSamplesPerSec != HulaAudioSettings::getInstance()->getSampleRate())
-    {
-        hlDebug() << "Invalid sample rate" << std::endl;
-        throw AudioException(HL_CHECK_PARAMS_CODE, HL_CHECK_PARAMS_MSG);
-        return false;
-    }
+        HRESULT status;
+        IMMDevice *device = nullptr;
+        PROPVARIANT prop;
+        IPropertyStore *store = nullptr;
+        PWAVEFORMATEX deviceProperties;
+        // Setup capture environment
+        status = CoInitialize(nullptr);
+        HANDLE_ERROR(status);
+        // Creates a system instance of the device enumerator
+        status = CoCreateInstance(CLSID_MMDeviceEnumerator, nullptr, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void **)&pEnumerator);
+        HANDLE_ERROR(status);
+        // Select the current active record/loopback device
+        status = pEnumerator->GetDevice(activeDevice->getID().windowsID, &device);
+        HANDLE_ERROR(status);
+        status = device->OpenPropertyStore(STGM_READ, &store);
+        HANDLE_ERROR(status);
+        status = store->GetValue(PKEY_AudioEngine_DeviceFormat, &prop);
+        HANDLE_ERROR(status);
+        deviceProperties = (PWAVEFORMATEX)prop.blob.pBlobData;
+        // Check number of channels
+        if (deviceProperties->nChannels != HulaAudioSettings::getInstance()->getNumberOfChannels())
+        {
+            hlDebug() << "Invalid number of channels" << std::endl;
+            throw AudioException(HL_CHECK_PARAMS_CODE, HL_CHECK_PARAMS_MSG);
+            return false;
+        }
+        // Check sample rate
+        if (deviceProperties->nSamplesPerSec != HulaAudioSettings::getInstance()->getSampleRate())
+        {
+            hlDebug() << "Invalid sample rate" << std::endl;
+            throw AudioException(HL_CHECK_PARAMS_CODE, HL_CHECK_PARAMS_MSG);
+            return false;
+        }
 
-    return true;
+        return true;
+    }
+    else
+    {
+        PaStreamParameters parameters = {0};
+        parameters.channelCount = NUM_CHANNELS;
+        parameters.device = activeDevice->getID().portAudioID;
+        parameters.sampleFormat = paFloat32;
+
+        PaError err;
+        if (activeDevice->getType() & DeviceType::PLAYBACK)
+        {
+            err = Pa_IsFormatSupported(nullptr, &parameters, HulaAudioSettings::getInstance()->getSampleRate());
+        }
+        else
+        {
+            err = Pa_IsFormatSupported(&parameters, nullptr, HulaAudioSettings::getInstance()->getSampleRate());
+        }
+
+        if (err == paFormatIsSupported)
+        {
+            hlDebug() << "Sample rate and format were valid." << std::endl;
+        }
+        else
+        {
+            hlDebug() << "Sample rate and format were NOT valid." << std::endl;
+            throw AudioException(HL_CHECK_PARAMS_CODE, HL_CHECK_PARAMS_MSG);
+        }
+
+        return err == paFormatIsSupported;
+    }
 
 Exit:
     hlDebug() << "WASAPI Init Error" << std::endl;

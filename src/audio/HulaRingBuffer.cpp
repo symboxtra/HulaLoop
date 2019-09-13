@@ -87,13 +87,13 @@ ring_buffer_size_t HulaRingBuffer::read(SAMPLE *data, ring_buffer_size_t maxSamp
 /**
  * Fetch direct pointers to memory within the ring buffer. This can be used to avoid allocating a secondary container.
  * The second pointer/size pair is for when the ring buffer has split data between its tail and head.
- * If the requested maxBytes are continuous in the underlying memory, only the first pointer/size pair is used.
+ * If the requested maxSamples are continuous in the underlying memory, only the first pointer/size pair is used.
  *
  * @param maxSamples Desired number of samples.
  * @param dataPtr1 The address where the first pointer should be stored.
- * @param size1 Number of elements available from dataPtr1.
+ * @param size1 Number of samples available from dataPtr1.
  * @param dataPtr2 The address where the second pointer (if required) will be stored. nullptr if not used.
- * @param size2 Number of elements available from dataPtr2.
+ * @param size2 Number of samples available from dataPtr2.
  * @return Number of samples read.
  */
 ring_buffer_size_t HulaRingBuffer::directRead(ring_buffer_size_t maxSamples, void **dataPtr1, ring_buffer_size_t *size1, void **dataPtr2, ring_buffer_size_t *size2)
@@ -141,7 +141,15 @@ ring_buffer_size_t HulaRingBuffer::write(const SAMPLE *data, ring_buffer_size_t 
 }
 
 /**
- * \ingroup memory_management
+ * Clear the contents of the ring buffer.
+ */
+void HulaRingBuffer::clear()
+{
+    PaUtil_FlushRingBuffer(&this->rb);
+}
+
+/**
+ * @ingroup memory_management
  *
  * Destructor for the ring buffer.
  *

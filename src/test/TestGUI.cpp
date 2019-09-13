@@ -366,7 +366,7 @@ TEST_F(TestGUI, ui_state_machine_4)
  *
  * EXPECTED:
  *      The buttons respond based on the following path:
- *          R -> PA -> PL
+ *          R -> PA -> S -> PL
  */
 TEST_F(TestGUI, ui_state_machine_5)
 {
@@ -387,19 +387,30 @@ TEST_F(TestGUI, ui_state_machine_5)
 
     EXPECT_TRUE(isEnabled("recordBtn"));
     EXPECT_TRUE(isEnabled("stopBtn"));
-    EXPECT_TRUE(isEnabled("playpauseBtn"));
+    EXPECT_TRUE(isEnabled("playpauseBtn")); // TODO: This should be disabled
     EXPECT_FALSE(isEnabled("exportBtn"));
 
     ASSERT_TRUE(isButtonPlay());
 
-    // Click Record button
+    // Click Stop button
+    clickButton("stopBtn");
+    ASSERT_EQ(getTransportState(), "Stopped");
+
+    EXPECT_TRUE(isEnabled("recordBtn")); // Will be discard
+    EXPECT_FALSE(isEnabled("stopBtn"));
+    EXPECT_TRUE(isEnabled("playpauseBtn"));
+    EXPECT_TRUE(isEnabled("exportBtn"));
+
+    ASSERT_TRUE(isButtonPlay());
+
+    // Click Play button
     clickButton("playpauseBtn");
     ASSERT_EQ(getTransportState(), "Playing");
 
-    EXPECT_FALSE(isEnabled("recordBtn"));
+    EXPECT_TRUE(isEnabled("recordBtn")); // Will be discard
     EXPECT_FALSE(isEnabled("stopBtn"));
     EXPECT_TRUE(isEnabled("playpauseBtn"));
-    EXPECT_FALSE(isEnabled("exportBtn"));
+    EXPECT_TRUE(isEnabled("exportBtn"));
 
     ASSERT_FALSE(isButtonPlay());
 }
@@ -408,7 +419,7 @@ TEST_F(TestGUI, stress_test)
 {
     clickButton("recordBtn");
     ASSERT_EQ(getTransportState(), "Recording");
-    for(unsigned i = 0; i < 50; i++)
+    for(unsigned i = 0; i < 25; i++)
     {
         // click pause button
         clickButton("playpauseBtn");
@@ -416,14 +427,22 @@ TEST_F(TestGUI, stress_test)
         EXPECT_TRUE(isEnabled("stopBtn"));
         ASSERT_EQ(getTransportState(), "Paused");
 
-        // click play button
-        clickButton("playpauseBtn");
+        // click record button
+        clickButton("recordBtn");
         EXPECT_FALSE(isEnabled("recordBtn"));
-        EXPECT_FALSE(isEnabled("stopBtn"));
-        ASSERT_EQ(getTransportState(), "Playing");
+        EXPECT_TRUE(isEnabled("stopBtn"));
+        ASSERT_EQ(getTransportState(), "Recording");
     }
+
     clickButton("stopBtn");
     EXPECT_FALSE(isEnabled("stopBtn"));
     ASSERT_EQ(getTransportState(), "Stopped");
 
+    // Let the fragmented audio play back
+    clickButton("playpauseBtn");
+    std::this_thread::sleep_for(std::chrono::seconds(5));
+
+    // TODO: Find a way to discard?
+    // Confirmation dialog is hard to get by
+    // clickButton("recordBtn"); // Will be discard
 }

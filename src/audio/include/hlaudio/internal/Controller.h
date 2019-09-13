@@ -6,6 +6,7 @@
 #include "Device.h"
 #include "OSAudio.h"
 #include "HulaRingBuffer.h"
+#include "ICallback.h"
 
 namespace hula
 {
@@ -28,6 +29,17 @@ namespace hula
             void removeBuffer(HulaRingBuffer *rb);
             HulaRingBuffer *createBuffer(float duration);
             HulaRingBuffer *createAndAddBuffer(float duration);
+
+            // Callback Functionality
+            void addCallback(ICallback* obj);
+            void removeCallback(ICallback* obj);
+
+            void startPlayback();
+            void endPlayback();
+
+            // Ringbuffer Functionality
+            void copyToBuffers(const float *samples, ring_buffer_size_t sampleCount);
+            ring_buffer_size_t playbackCopyToBuffers(const float *samples, ring_buffer_size_t sampleCount);
 
             std::vector<Device *> getDevices(DeviceType type) const;
 

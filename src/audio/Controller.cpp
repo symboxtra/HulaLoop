@@ -36,7 +36,6 @@ Controller::Controller()
         hlDebug() << HL_OS_INIT_MSG << std::endl;
         throw AudioException(HL_OS_INIT_CODE, HL_OS_INIT_MSG);
     }
-
 }
 
 /**
@@ -113,6 +112,98 @@ void Controller::removeBuffer(HulaRingBuffer *rb)
     audio->removeBuffer(rb);
 }
 
+
+/**
+ * Add a callback to the list of callbacks that receive audio data.
+ * As soon as the callback is added, it should begin receiving data.
+ *
+ * If already present, the callback will not be duplicated.
+ *
+ * This is a publicly exposed wrapper for the OSAudio method.
+ *
+ * @param obj Object that implements ICallback and defines handleData
+ */
+void Controller::addCallback(ICallback *obj)
+{
+    audio->addCallback(obj);
+}
+
+/**
+ * Remove a callback from the list of callbacks that receive audio data.
+ *
+ * This is a publicly exposed wrapper for the OSAudio method.
+ *
+ * @param obj Object that implements ICallback and defines handleData
+ */
+void Controller::removeCallback(ICallback *obj)
+{
+    audio->removeCallback(obj);
+}
+
+/**
+ * Notify OSAudio to start reading from the list of buffers
+ * that will be played back on the selected device.
+ *
+ */
+void Controller::startPlayback()
+{
+    audio->startPlayback();
+}
+
+/**
+ * Notify OSAudio to stop reading from the list of buffers
+ * and reset back to recording audio
+ *
+ */
+void Controller::endPlayback()
+{
+    audio->endPlayback();
+}
+
+/**
+ * Write to each of the buffers that have been registered with the backend.
+ *
+ * To calculate the number of samples from frames or bytes,
+ * refer to the following:
+ *
+ * 1 sample = sizeof(SAMPLE) bytes -- In our case this is sizeof(float)
+ * 1 frame = NUM_CHANNELS * 1 sample
+ *
+ * The macros BYTES_TO_SAMPLES and SAMPLES_TO_BYTES are also available
+ * to ease any conversion.
+ *
+ * @param samples Buffer of interleaved float samples
+ * @param sampleCount Number of samples in the buffer
+ */
+void Controller::copyToBuffers(const float *samples, ring_buffer_size_t sampleCount)
+{
+    return audio->copyToBuffers(samples, sampleCount);
+}
+
+/**
+ * This function differs from copyToBuffers in that it
+ * returns the number of samples written to the playback
+ * ring buffer. This is useful for filling the buffer at
+ * a reliable rate when reading from a file for playback.
+ *
+ * To calculate the number of samples from frames or bytes,
+ * refer to the following:
+ *
+ * 1 sample = sizeof(SAMPLE) bytes -- In our case this is sizeof(float)
+ * 1 frame = NUM_CHANNELS * 1 sample
+ *
+ * The macros BYTES_TO_SAMPLES and SAMPLES_TO_BYTES are also available
+ * to ease any conversion.
+ *
+ * @param samples Buffer of interleaved float samples
+ * @param sampleCount Number of samples in the buffer
+ * @return Number of samples written to the playback buffer
+ */
+ring_buffer_size_t Controller::playbackCopyToBuffers(const float *samples, ring_buffer_size_t sampleCount)
+{
+    return audio->playbackCopyToBuffers(samples, sampleCount);
+}
+
 /**
  * @ingroup memory_management
  *
@@ -178,7 +269,14 @@ bool Controller::setActiveInputDevice(Device *device) const
  */
 bool Controller::setActiveOutputDevice(Device *device) const
 {
-    return audio->setActiveOutputDevice(device);
+    try
+    {
+        return audio->setActiveOutputDevice(device);
+    }
+    catch(const AudioException &ae)
+    {
+        throw;
+    }
 }
 
 /**
@@ -187,6 +285,8 @@ bool Controller::setActiveOutputDevice(Device *device) const
 Controller::~Controller()
 {
     hlDebug() << "Controller destructor called" << std::endl;
+
+    //audio->removeBufferCallback(this);
 
     // Don't do this until mem management is fixed
     if (audio)

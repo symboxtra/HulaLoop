@@ -42,8 +42,8 @@ namespace hula
             QString getVisualizerType();
             void setVisualizerType(const QString &);
 
-            Q_INVOKABLE void setActiveInputDevice(QString QDeviceName);
-            Q_INVOKABLE void setActiveOutputDevice(QString QDeviceName);
+            Q_INVOKABLE bool setActiveInputDevice(QString QDeviceName);
+            Q_INVOKABLE bool setActiveOutputDevice(QString QDeviceName);
             Q_INVOKABLE QString getInputDevices();
             Q_INVOKABLE QString getOutputDevices();
 
@@ -85,9 +85,14 @@ namespace hula
             void languageChanged();
 
             /**
-             * Signal emitted when the visualizer needs to update
+             * Signal emitted when the visualizer needs to update.
+             *
+             * @param rawData Unprocessed time-domain samples
+             * @param dataIn FFT proccessed frequency-domain samples
+             * @param samplesProcessed The number of samples passed into the function
+             *          plus the number of samples eaten while ignoring audio
              */
-            void visData(const std::vector<qreal> &rawData, const std::vector<qreal> &dataIn);
+            void visData(const std::vector<qreal> &rawData, const std::vector<qreal> &dataIn, int samplesProcessed);
 
             /**
              * Signal emmitted when the Transport successfully discards.

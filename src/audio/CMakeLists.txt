@@ -22,7 +22,7 @@ elseif (OSX)
     add_subdirectory(OSXDaemon)
 else ()
     list (REMOVE_ITEM AUDIO_SRC_FILES ${WIN_AUDIO_SRC_FILES} ${OSX_AUDIO_SRC_FILES})
-    list (APPEND AUDIO_LIBS asound pthread)
+    list (APPEND AUDIO_LIBS pulse pulse-simple pthread)
 endif ()
 
 # Add hlaudio library

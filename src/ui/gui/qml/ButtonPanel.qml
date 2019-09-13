@@ -7,7 +7,7 @@ import QtQuick.Layouts 1.3
 import Qt.labs.platform 1.0
 import QtGraphicalEffects 1.0
 
-import "../fonts/Icon.js" as MDFont
+import "../fonts/Icon.min.js" as MDFont
 
 Rectangle {
 
@@ -15,6 +15,8 @@ Rectangle {
     width: parent.width
     height: 115
     color: window.barColor
+
+    property var triggerPlayPause: playpauseBtn.onClicked
 
     Timer {
         id: countDownTimer
@@ -25,7 +27,7 @@ Rectangle {
         repeat: true
         onTriggered: {
             if (timeFuncs.time === 0) {
-                window.textDisplayed = "Elapsed: 0"
+                window.textDisplayed = qsTr("Elapsed: %1").arg(0)
                 countDownTimer.stop()
 
                 recordBtn.onClicked()
@@ -51,10 +53,10 @@ Rectangle {
         onTriggered: {
             // Since the timer starts at 0, go to endTime - 1
             if (!recordingTimer.inf && timeFuncs.time >= timeFuncs.time2 - 1) {
-                window.textDisplayed = "Elapsed: " + (++timeFuncs.time)
+                window.textDisplayed = qsTr("Elapsed: %1").arg(++timeFuncs.time)
                 stopBtn.onClicked();
             } else {
-                window.textDisplayed = "Elapsed: " + (++timeFuncs.time)
+                window.textDisplayed = qsTr("Elapsed: %1").arg(++timeFuncs.time)
             }
         }
     }
@@ -532,6 +534,27 @@ Rectangle {
                 samples: 3
                 source: checkUpdateBtn
             }
+
+            DropShadow {
+                visible: (settingsBtn.enabled && !settingsBtn.pressed) ? true : false
+                color: "#606060"
+                anchors.fill: settingsBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: settingsBtn
+            }
+
+            InnerShadow {
+                visible: settingsBtn.pressed ? true : false
+                color: "#606060"
+                anchors.fill: settingsBtn
+                horizontalOffset: 2
+                verticalOffset: 2
+                samples: 3
+                source: settingsBtn
+            }
+
         }
 
         FileDialog {
@@ -559,6 +582,9 @@ Rectangle {
                 id: iDeviceInfoLabel
                 Layout.preferredWidth: Math.max(Math.round(window.width * 0.2), 320)
 
+                currentIndex: 0
+                property int selectedInd: currentIndex
+
                 hoverEnabled: true
                 ToolTip.delay: 500
                 ToolTip.timeout: 5000
@@ -568,39 +594,43 @@ Rectangle {
                 model: ListModel {
                     id: iDeviceItems
                     Component.onCompleted: {
-                        var idevices = qmlbridge.getInputDevices().split(',')
+                        var idevices = qmlbridge.getInputDevices().split('%%%%%%')
                         var i
                         for (i = 0; i < idevices.length; i++) {
                             append({
-                                       "text": idevices[i]
-                                   })
+                                "text": idevices[i]
+                            })
                         }
                     }
                 }
                 onActivated: {
                     console.log("Audio device has been changed to: " + iDeviceInfoLabel.currentText);
-                    qmlbridge.setActiveInputDevice(iDeviceInfoLabel.currentText);
+                    let success = qmlbridge.setActiveInputDevice(iDeviceInfoLabel.currentText);
+
+                    // Restore the previous device if the switch failed
+                    if (!success)
+                    {
+                        currentIndex = selectedInd
+                    }
                 }
 
                 onPressedChanged: {
 
-                    let selectedInd = 0;
-                    if(currentIndex < 0)
+                    if(currentIndex != -1)
                         selectedInd = currentIndex;
 
                     model.clear();
-                    var idevices = qmlbridge.getInputDevices().split(',')
+                    var idevices = qmlbridge.getInputDevices().split('%%%%%%')
                         var i
                         for (i = 0; i < idevices.length; i++) {
                             model.append({
-                                       "text": idevices[i]
-                                   })
+                                "text": idevices[i]
+                            })
                         }
 
                     // Keep the previously selected device active
                     currentIndex = selectedInd
                 }
-                currentIndex: 0
             }
             Label {
                 id: outputDeviceLabel
@@ -612,6 +642,9 @@ Rectangle {
                 id: oDeviceInfoLabel
                 Layout.preferredWidth: Math.max(Math.round(window.width * 0.2), 320)
 
+                currentIndex: 0
+                property int selectedInd: currentIndex
+
                 hoverEnabled: true
                 ToolTip.delay: 500
                 ToolTip.timeout: 5000
@@ -621,39 +654,43 @@ Rectangle {
                 model: ListModel {
                     id: oDeviceItems
                     Component.onCompleted: {
-                        var odevices = qmlbridge.getOutputDevices().split(',')
+                        var odevices = qmlbridge.getOutputDevices().split('%%%%%%')
                         var i
                         for (i = 0; i < odevices.length; i++) {
                             append({
-                                       "text": odevices[i]
-                                   })
+                                "text": odevices[i]
+                            })
                         }
                     }
                 }
                 onActivated: {
                     console.log("Audio device has been changed to: " + oDeviceInfoLabel.currentText);
-                    qmlbridge.setActiveOutputDevice(oDeviceInfoLabel.currentText);
+                    let success = qmlbridge.setActiveOutputDevice(oDeviceInfoLabel.currentText);
+
+                    // Restore the previous device if the switch failed
+                    if (!success)
+                    {
+                        currentIndex = selectedInd
+                    }
                 }
 
                 onPressedChanged: {
 
-                    let selectedInd = 0;
                     if(currentIndex != -1)
                         selectedInd = currentIndex;
 
                     model.clear();
-                    var odevices = qmlbridge.getOutputDevices().split(',')
+                    var odevices = qmlbridge.getOutputDevices().split('%%%%%%')
                         var i
                         for (i = 0; i < odevices.length; i++) {
                             model.append({
-                                       "text": odevices[i]
-                                   })
+                                "text": odevices[i]
+                            })
                         }
 
                     // Keep the previously selected device active
                     currentIndex = selectedInd
                 }
-                currentIndex: 0
             }
         }
 
@@ -721,7 +758,7 @@ Rectangle {
                         //add behavior for which setting it was just changed to
                         qmlbridge.visType = visSetting.currentText
                         qmlbridge.saveSettings()
-                        qmlbridge.onVisData([], [0])
+                        qmlbridge.onVisData([], [0], 0)
                     }
 
                     Component.onCompleted: {
@@ -795,18 +832,18 @@ Rectangle {
 
         x: Math.round((window.width - width) / 2)
         y: Math.round((window.height - height) / 2)
-        width: 255
-        height: 100
 
         modal: true
         focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
         ColumnLayout {
-            spacing: Math.round(window.height * 0.15)
+            spacing: Math.round(window.height * 0.1)
+
             ColumnLayout {
-                spacing: Math.round(discardPopup.height * 0.15)
-                RowLayout{
+                spacing: Math.round(discardPopup.height * 0.1)
+
+                RowLayout {
                     Text {
                         id: textbot
                         color: "white"
@@ -815,21 +852,21 @@ Rectangle {
                 }
                 RowLayout {
                     Layout.alignment: Qt.AlignCenter
-                    spacing: Math.round(buttonPanel.width * 0.05)
                     width: gridLayout.width / 2
+
                     Button {
-                        text: "No"
+                        text: qsTr("No")
                         onClicked: {
                             discardPopup.close()
                         }
                     }
 
                     Button {
-                        text: "Yes"
+                        text: qsTr("Yes")
                         onClicked: {
                             // Discard files
                             qmlbridge.discard()
-                            recordBtn.tttext = "Record Audio"
+                            recordBtn.tttext = qsTr("Record Audio")
 
                             // Start recording again
                             stopBtn.isStopped = false
@@ -841,7 +878,7 @@ Rectangle {
                             timeFuncs.time = 0;
                             delayInput.text = "00:00:00";
                             recordTimeInput.text = "00:00:00";
-                            window.textDisplayed = "Elapsed: 0";
+                            window.textDisplayed = qsTr("Elapsed: %1").arg(0);
                         }
                     }
                 }

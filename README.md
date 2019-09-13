@@ -31,13 +31,13 @@ cat /etc/debian_version
 
 If running Debian Stretch:
 ```bash
-sudo apt install build-essential cmake libgl1-mesa-dev libasound2-dev libsndfile-dev pavucontrol
+sudo apt install build-essential cmake libgl1-mesa-dev libsndfile-dev
 ```
 **IMPORTANT:** This application requires Qt 5.9.5+. This typically has to be installed using the Qt GUI installer since ```apt``` on Debian Stretch does not backport an up-to-date version. Be sure to install the extra **Qt Charts** package as the GUI relies on it.
 
 If running Debian Buster:
 ```bash
-sudo apt install build-essential cmake libgl1-mesa-dev libasound2 libasound2-dev pavucontrol qt5-default libqt5charts5 libqt5quickcontrols2-5
+sudo apt install build-essential cmake libgl1-mesa-dev libpulse-dev qt5-default libqt5charts5 libqt5quickcontrols2-5
 ```
 
 If using GNOME (fixes system tray icons and notifications):
@@ -54,7 +54,7 @@ python -m pip install --user recommonmark
 #### Redhat-based Linux ####
 Required:
 ```bash
-sudo dnf install gcc-c++ make cmake qt5-devel qt5-qtcharts qt5-qtquickcontrols2-devel alsa-lib alsa-lib-devel
+sudo dnf install gcc-c++ make cmake qt5-devel qt5-qtcharts qt5-qtquickcontrols2-devel pulseaudio-libs-devel
 ```
 
 To enable the system tray icon and notifications the ```Topicons plus``` extension must be installed via ```dnf``` and enabled under *Tweaks->Extensions*.

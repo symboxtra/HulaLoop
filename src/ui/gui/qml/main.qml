@@ -16,13 +16,13 @@ ApplicationWindow {
     minimumWidth: 800
 
     visible: true
-    width: 1024
-    height: 576
+    width: 1152
+    height: 648
 
     Material.theme: Material.Grey
     Material.accent: Material.Orange
 
-    property string textDisplayed: qsTr("Elapsed: 0")
+    property string textDisplayed: qsTr("Elapsed: %1").arg(0) + qmlbridge.emptyStr
     property string currentState: qmlbridge.getTransportState()
     property string barColor: "#888888"
     property bool updateAndTimerBtnEnabled: true
@@ -40,14 +40,14 @@ ApplicationWindow {
             currentState = qmlbridge.getTransportState()
 
             // enable/disable update button
-            if(currentState === "Ready"){
+            if(qmlbridge.getTransportState() === qsTr("Ready", "state")) {
                 updateAndTimerBtnEnabled = true;
             }
             else{
                 updateAndTimerBtnEnabled = false;
             }
 
-            if(qmlbridge.getTransportState() === "Recording")
+            if(qmlbridge.getTransportState() === qsTr("Recording", "state"))
             {
                 systrayicon.showMessage(qsTr("HulaLoop Information"), qsTr("HulaLoop has started recording audio!"))
                 systrayicon.setRecordIcon()
@@ -57,17 +57,28 @@ ApplicationWindow {
                 systrayicon.setDefaultIcon()
             }
 
+            if (qmlbridge.getTransportState() === qsTr("Playing", "state"))
+            {
+                marker.reset()
+            }
+
+            if (qmlbridge.getTransportState() === qsTr("Paused", "state"))
+            {
+                markerTimer.stop();
+            }
+
             systrayicon.setToolTip("HulaLoop - " + qmlbridge.getTransportState())
         }
 
         onVisData: {
 
+            let channels = 2
+            let sampleRate = 44100
+            let interval = Math.min(rawData.length, 441) * 1.0; // Grab every 441st sample
+            let refsPerSec = channels * sampleRate / interval
+
             if (qmlbridge.getTransportState() === qsTr("Recording", "state"))
             {
-                let channels = 2
-                let sampleRate = 44100
-                let interval = Math.min(rawData.length, 441); // Grab every 441st sample
-                let refsPerSec = channels * sampleRate / interval
                 let scale = 5 // Scale up
 
                 let sum = 0;
@@ -75,24 +86,32 @@ ApplicationWindow {
                 {
                     if (i % interval == 0)
                     {
+                        // Move marker
+                        marker.position += 1 / refsPerSec * (samplesProcessed / interval / 2.0)
+
+                        // Scale the plot
+                        if (marker.position >= timeline.maxTime) {
+                            timeline.maxTime += 5
+                        }
+
                         timeline.samples.append(timeline.nextSample, sum / interval * scale);
                         sum = 0;
 
                         // Move forward
-                        // The multiplied value is arbitrarily adjusted
-                        // to line up with the time markers. IDK man
-                        timeline.nextSample += 1 / refsPerSec * 5.73
-
-                        // Scale the plot
-                        if (timeline.nextSample >= timeline.maxTime)
-                        {
-                            timeline.maxTime += 5
-                        }
+                        // The multiplied value is from QMLBridge
+                        timeline.nextSample += 1 / refsPerSec * (samplesProcessed / interval / 2.05)
                     }
                     else
                     {
                         sum += rawData[i];
                     }
+                }
+            }
+
+            if (qmlbridge.getTransportState() === qsTr("Playing", "state"))
+            {
+                if (!markerTimer.running) {
+                    markerTimer.start();
                 }
             }
 
@@ -143,6 +162,7 @@ ApplicationWindow {
 
         onDiscarded: {
             timeline.reset()
+            marker.reset()
         }
     }
 
@@ -247,6 +267,35 @@ ApplicationWindow {
 
         Timeline {
             id: timeline
+
+            PlaybackMarker {
+                id: marker
+
+                maxTime: timeline.maxTime
+
+                Timer {
+                    id: markerTimer
+                    interval: 25
+                    running: false
+                    repeat: true
+
+                    onTriggered: {
+                        marker.position += interval / 1000.0
+
+                        // Hard-coded offset for now
+                        if (marker.position >= timeline.nextSample + marker.maxTime * 0.0143) {
+                            markerTimer.stop()
+                            btnPanel.triggerPlayPause();
+                        }
+
+                        // Scale the plot
+                        if (marker.position >= timeline.maxTime) {
+                            timeline.maxTime += 5
+                        }
+                    }
+                }
+
+            }
         }
 
         anchors.left: parent.left

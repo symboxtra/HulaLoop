@@ -3,12 +3,21 @@
 
 // System
 #include <atomic>
+#include <condition_variable>
 #include <cstdlib>
+#include <mutex>
 #include <thread>
 #include <vector>
 
 #include "Device.h"
 #include "HulaRingBuffer.h"
+#include "ICallback.h"
+#include "Semaphore.h"
+
+/**
+ * Length of the playback ring buffer in seconds.
+ */
+#define HL_PLAYBACK_RB_DURATION 1
 
 namespace hula
 {
@@ -20,6 +29,10 @@ namespace hula
         private:
             void joinAndKillThreads(std::vector<std::thread> &threads);
 
+            Semaphore stateSem;
+            void startRecord();
+            void endRecord();
+
         protected:
 
             /**
@@ -29,6 +42,13 @@ namespace hula
             {
                 this->activeInputDevice = nullptr;
                 this->activeOutputDevice = nullptr;
+
+                playbackBuffer = new HulaRingBuffer(HL_PLAYBACK_RB_DURATION);
+
+               // stateSem = Semaphore(1);
+
+                endCapture.store(true);
+                endPlay.store(true);
             };
 
             /**
@@ -46,6 +66,13 @@ namespace hula
              * Data received from the operating system is copied into each of these buffers.
              */
             std::vector<HulaRingBuffer *> rbs;
+
+            /**
+             * List of registered callbacks.
+             * Data received from the operating system is passed
+             * as the argument to each of these callbacks.
+             */
+            std::vector<ICallback *> cbs;
 
             /**
              * Thread for input device activities.
@@ -67,6 +94,15 @@ namespace hula
             std::atomic<bool> endCapture;
 
             /**
+             * Flag to syncronize the playback thread for an instance.
+             * This is used to break the playback loop when switching devices
+             * or when 0 buffers are present.
+             *
+             * Should never be set directly. Only by setActiveXXXDevice().
+             */
+            std::atomic<bool> endPlay;
+
+            /**
              * I don't really know what this is for right now
              * but I'm going to add this comment so that Doxygen
              * will quit complaining.
@@ -75,13 +111,28 @@ namespace hula
             uint32_t captureBufferSize;
 
         public:
-            virtual ~OSAudio() = 0;
+            /**
+             * Singular buffer reserved for distributing playback audio data
+             * to PortAudio.
+             * Samples are read from file in the Control/Playback class and
+             * delivered to PortAudio in the OSAudio/paPlayCallback method.
+             */
+            HulaRingBuffer *playbackBuffer;
 
-            void setBufferSize(uint32_t size);
+            virtual ~OSAudio();
 
             void addBuffer(HulaRingBuffer *rb);
             void removeBuffer(HulaRingBuffer *rb);
-            void copyToBuffers(const void *data, uint32_t bytes);
+
+            void startPlayback();
+            void endPlayback();
+
+            void copyToBuffers(const SAMPLE *samples, ring_buffer_size_t sampleCount);
+            ring_buffer_size_t playbackCopyToBuffers(const SAMPLE *samples, ring_buffer_size_t sampleCount);
+
+            void addCallback(ICallback* obj);
+            void removeCallback(ICallback* obj);
+            void doCallbacks(const SAMPLE *samples, ring_buffer_size_t sampleCount);
 
             /**
              * Receive the list of available record, playback and/or loopback audio devices
@@ -96,7 +147,13 @@ namespace hula
              * Execution loop for loopback capture
              */
             virtual void capture() = 0;
-            static void backgroundCapture(OSAudio *_this);
+            void backgroundCapture();
+
+            /**
+             * Execution loop for audio playback
+             */
+            virtual void playback();
+            void backgroundPlayback();
 
             /**
              * Verify the bit rate of set rate with the hardware device compatibility

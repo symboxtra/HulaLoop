@@ -97,6 +97,12 @@ namespace hula
             case HL_PA_INIT_CODE:
                 return ControlException::tr(HL_PA_INIT_MSG);
                 break;
+            case HL_INPUT_EQUAL_OUTPUT_CODE:
+                return ControlException::tr(HL_INPUT_EQUAL_OUTPUT_MSG);
+                break;
+            case HL_OUTPUT_EQUAL_INPUT_CODE:
+                return ControlException::tr(HL_OUTPUT_EQUAL_INPUT_MSG);
+                break;
             case HL_OSX_DAEMON_INIT_CODE:
                 return ControlException::tr(HL_OSX_DAEMON_INIT_MSG);
                 break;

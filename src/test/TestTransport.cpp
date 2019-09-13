@@ -36,8 +36,8 @@ TEST_F(TestTransport, checkPausePlay)
     ASSERT_TRUE(record());
     ASSERT_EQ(stateToStr(getState()), "Recording");
 
-    ASSERT_TRUE(pause());
-    ASSERT_EQ(stateToStr(getState()), "Paused");
+    ASSERT_TRUE(stop());
+    ASSERT_EQ(stateToStr(getState()), "Stopped");
 
     ASSERT_TRUE(play());
     ASSERT_EQ(stateToStr(getState()), "Playing");
@@ -61,9 +61,9 @@ TEST_F(TestTransport, invalid_controls)
 
     // Test invalid record
     ASSERT_TRUE(record());
+    ASSERT_FALSE(play());
     ASSERT_TRUE(stop());
     ASSERT_FALSE(record());
-
 }
 
 TEST_F(TestTransport, verify_tempfile_deletion)

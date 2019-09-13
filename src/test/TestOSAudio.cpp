@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <hlaudio/hlaudio.h>
 
+#include "TestCallback.h"
+
 using namespace hula;
 
 #define TEST_BUFFER_SIZE 0.2f
@@ -29,6 +31,11 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
         virtual void SetUp()
         {
             this->testDevice = new Device(DeviceID(), "Device", RECORD);
+            this->setActiveInputDevice(testDevice);
+
+            // Make sure buffer and callback list is accesible and empty
+            ASSERT_EQ(this->rbs.size(), 0);
+            ASSERT_EQ(this->cbs.size(), 0);
         }
 
         void capture()
@@ -38,6 +45,15 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
                 printf("Mock capturing...\n");
                 std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CAPTURE_TIME));
             }
+        }
+
+        /**
+         * Mock receiving data.
+         */
+        void sendData()
+        {
+            const SAMPLE *buffer = nullptr;
+            this->doCallbacks(buffer, 0);
         }
 
         static bool checkThreadCount(TestOSAudio *_this)
@@ -69,6 +85,7 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
 
         virtual void TearDown()
         {
+            delete this->testDevice;
         }
 };
 
@@ -80,7 +97,6 @@ class TestOSAudio : public OSAudio, public ::testing::Test {
  */
 TEST_F(TestOSAudio, null_does_not_switch)
 {
-    setActiveInputDevice(this->testDevice);
     setActiveInputDevice(nullptr);
     EXPECT_EQ(this->activeInputDevice->getName(), this->testDevice->getName());
 
@@ -95,10 +111,10 @@ TEST_F(TestOSAudio, null_does_not_switch)
  */
 TEST_F(TestOSAudio, wrong_type_does_not_switch)
 {
-    setActiveInputDevice(this->testDevice);
-
-    Device *d = new Device(DeviceID(), "Device", PLAYBACK);
-    setActiveInputDevice(d);
+    Device d(DeviceID(), "Device", PLAYBACK);
+    EXPECT_THROW({
+        bool success = setActiveInputDevice(&d);
+    }, AudioException);
 
     EXPECT_EQ(this->activeInputDevice->getName(), this->testDevice->getName());
 
@@ -118,9 +134,26 @@ TEST_F(TestOSAudio, init_does_not_block)
     EXPECT_EQ(this->outThreads.size(), 0);
 
     // This should come back immediately
-    this->endCapture.store(false);
-    TEST_TIMEOUT_BEGIN(backgroundCapture(this));
+    TEST_TIMEOUT_BEGIN(backgroundCapture());
     TEST_TIMEOUT_FAIL_AFTER(2 * MOCK_CAPTURE_TIME);
+}
+
+
+
+/*********************************************
+ *                 Buffers                   *
+ *********************************************/
+
+/**
+ * Add a nullptr buffer.
+ *
+ * EXPECTED:
+ *     Buffer should not be added.
+ */
+TEST_F(TestOSAudio, add_nullptr_buffer)
+{
+    this->addBuffer(nullptr);
+    ASSERT_EQ(this->rbs.size(), 0);
 }
 
 /**
@@ -129,27 +162,24 @@ TEST_F(TestOSAudio, init_does_not_block)
  * EXPECTED:
  *      Capture thread runs for at least a loop.
  */
-TEST_F(TestOSAudio, add_starts_thread)
+TEST_F(TestOSAudio, add_buffer_starts_thread)
 {
-    HulaRingBuffer *rb = new HulaRingBuffer(TEST_BUFFER_SIZE);
-    setActiveInputDevice(this->testDevice);
+    HulaRingBuffer rb(TEST_BUFFER_SIZE);
 
     // Wait for a cycle, then add buffer
     std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CAPTURE_TIME));
 
-    this->addBuffer(rb);
+    this->addBuffer(&rb);
 
     // This should be running infinitely
     // Succeed after ~two cycles
-    this->endCapture.store(false);
-    TEST_TIMEOUT_BEGIN(backgroundCapture(this));
+    TEST_TIMEOUT_BEGIN(backgroundCapture());
     TEST_TIMEOUT_SUCCESS_AFTER(2 * MOCK_CAPTURE_TIME);
 
     // OSAudio should have created a thread
     EXPECT_EQ(this->inThreads.size(), 1);
 
-    this->removeBuffer(rb);
-    delete rb;
+    this->removeBuffer(&rb);
 
     waitForThreadDeathBeforeDestruction();
 }
@@ -160,10 +190,11 @@ TEST_F(TestOSAudio, add_starts_thread)
  * EXPECTED:
  *      Capture thread stops after buffer is removed.
  */
-TEST_F(TestOSAudio, remove_kills_thread)
+TEST_F(TestOSAudio, remove_buffer_kills_thread)
 {
-    HulaRingBuffer *rb = new HulaRingBuffer(TEST_BUFFER_SIZE);
-    this->addBuffer(rb);
+    HulaRingBuffer rb(TEST_BUFFER_SIZE);
+
+    this->addBuffer(&rb);
 
     // Wait for a cycle, then remove buffer
     std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CAPTURE_TIME));
@@ -171,8 +202,7 @@ TEST_F(TestOSAudio, remove_kills_thread)
     // OSAudio should have created a thread
     EXPECT_EQ(this->inThreads.size(), 1);
 
-    this->removeBuffer(rb);
-    delete rb;
+    this->removeBuffer(&rb);
 
     waitForThreadDeathBeforeDestruction();
 
@@ -182,41 +212,184 @@ TEST_F(TestOSAudio, remove_kills_thread)
     EXPECT_EQ(this->inThreads.size(), 0);
 }
 
+
+
+/*********************************************
+ *                Callbacks                  *
+ *********************************************/
+
 /**
- * DISABLED: Disabled since this won't pass consistently.
- * The window in which we need to check if the thread vector is
- * empty is too small.
- *
- * Triggering a device switch should stop the capture thread.
+ * Add a single callback.
  *
  * EXPECTED:
- *      Capture thread stops after device switch is signaled.
+ *     The callback should be present and receive data.
  */
-/*
-TEST_F(TestOSAudio, switch_kills_thread)
+TEST_F(TestOSAudio, add_single_callback)
 {
-    HulaRingBuffer *rb = new HulaRingBuffer(TEST_BUFFER_SIZE);
-    this->addBuffer(rb);
+    TestCallback obj1;
 
-    // Wait for a cycle, then singal switch
+    // Add a single callback
+    this->addCallback(&obj1);
+    ASSERT_EQ(this->cbs.size(), 1);
+
+    // Make sure data gets delivered
+    this->sendData();
+    ASSERT_TRUE(obj1.dataReceived);
+
+    waitForThreadDeathBeforeDestruction();
+}
+
+/**
+ * Add two callbacks.
+ *
+ * EXPECTED:
+ *     Both callbacks should be present and receive data.
+ */
+TEST_F(TestOSAudio, add_two_callbacks)
+{
+    TestCallback obj1;
+    TestCallback obj2;
+
+    // Add callback 1
+    this->addCallback(&obj1);
+    ASSERT_EQ(this->cbs.size(), 1);
+
+    // Add callback 2
+    this->addCallback(&obj2);
+    ASSERT_EQ(this->cbs.size(), 2);
+
+    // Make sure data gets delivered
+    this->sendData();
+    ASSERT_TRUE(obj1.dataReceived);
+    ASSERT_TRUE(obj2.dataReceived);
+
+    waitForThreadDeathBeforeDestruction();
+}
+
+/**
+ * Add the same callback twice.
+ *
+ * EXPECTED:
+ *     Callback should not be duplicated.
+ */
+TEST_F(TestOSAudio, add_duplicate_callback)
+{
+    TestCallback obj1;
+
+    this->addCallback(&obj1);
+    this->addCallback(&obj1);
+    ASSERT_EQ(this->cbs.size(), 1);
+
+    waitForThreadDeathBeforeDestruction();
+}
+
+/**
+ * Add the nullptr callback.
+ *
+ * EXPECTED:
+ *     Callback should not be added.
+ */
+TEST_F(TestOSAudio, add_nullptr_callback)
+{
+    this->addCallback(nullptr);
+    ASSERT_EQ(this->cbs.size(), 0);
+}
+
+/**
+ * Try to remove a nonexistent callback.
+ *
+ * EXPECTED:
+ *     no crash and other callbacks remain
+ */
+TEST_F(TestOSAudio, remove_nonexistent_callback)
+{
+    TestCallback added;
+    TestCallback notAdded;
+
+    this->addCallback(&added);
+    ASSERT_EQ(this->cbs.size(), 1);
+
+    this->removeCallback(&notAdded);
+
+    ASSERT_EQ(this->cbs.size(), 1);
+    ASSERT_EQ(this->cbs[0], &added);
+
+    waitForThreadDeathBeforeDestruction();
+}
+
+/**
+ * Add two callbacks then remove the first.
+ *
+ * EXPECTED:
+ *     First callback is removed without disturbing the second.
+ */
+TEST_F(TestOSAudio, callback_nondisturbing_removal)
+{
+    TestCallback obj1;
+    TestCallback obj2;
+
+    this->addCallback(&obj1);
+    this->addCallback(&obj2);
+
+    this->removeCallback(&obj1);
+
+    ASSERT_EQ(this->cbs.size(), 1);
+    ASSERT_EQ(this->cbs[0], &obj2);
+
+    waitForThreadDeathBeforeDestruction();
+}
+
+/**
+ * Adding a callback should start a capture thread.
+ *
+ * EXPECTED:
+ *      Capture thread runs for at least a loop.
+ */
+TEST_F(TestOSAudio, add_callback_starts_thread)
+{
+    TestCallback obj1;
+
+    // Wait for a cycle, then add callback
+    std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CAPTURE_TIME));
+
+    this->addCallback(&obj1);
+
+    // This should be running infinitely
+    // Succeed after ~two cycles
+    TEST_TIMEOUT_BEGIN(backgroundCapture());
+    TEST_TIMEOUT_SUCCESS_AFTER(2 * MOCK_CAPTURE_TIME);
+
+    // OSAudio should have created a thread
+    EXPECT_EQ(this->inThreads.size(), 1);
+
+    this->removeCallback(&obj1);
+
+    waitForThreadDeathBeforeDestruction();
+}
+
+/**
+ * Removing a callback should stop the capture thread.
+ *
+ * EXPECTED:
+ *      Capture thread stops after buffer is removed.
+ */
+TEST_F(TestOSAudio, remove_callback_kills_thread)
+{
+    TestCallback obj1;
+    this->addCallback(&obj1);
+
+    // Wait for a cycle, then remove buffer
     std::this_thread::sleep_for(std::chrono::milliseconds(MOCK_CAPTURE_TIME));
 
     // OSAudio should have created a thread
     EXPECT_EQ(this->inThreads.size(), 1);
 
-    // Start checking before we go to switch
-    std::thread t(&checkThreadCount, this);
-
-    // Switch device
-    setActiveInputDevice(this->testDevice);
-
-    // Make sure the threads actually died
-    TEST_TIMEOUT_BEGIN(t.join());
-    TEST_TIMEOUT_FAIL_AFTER(2 * MOCK_CAPTURE_TIME);
-
-    this->removeBuffer(rb);
-    delete rb;
+    this->removeCallback(&obj1);
 
     waitForThreadDeathBeforeDestruction();
+
+    // Vector isn't cleared until all threads are joined
+    // Since we can't see the thread (unique ownership), use
+    // this assumption to check that the thread was joined
+    EXPECT_EQ(this->inThreads.size(), 0);
 }
-*/

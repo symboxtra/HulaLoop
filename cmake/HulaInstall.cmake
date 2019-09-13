@@ -34,8 +34,8 @@ if (WIN32 OR OSX)
     set (CPACK_IFW_PACKAGE_TITLE_COLOR "#f75c26")
 
     set (CPACK_IFW_PACKAGE_START_MENU_DIRECTORY "HulaLoop")
-    set (CPACK_IFW_TARGET_DIRECTORY "@HomeDir@/HulaLoop")
-    set (CPACK_IFW_ADMIN_TARGET_DIRECTORY "@HomeDir@/HulaLoop")
+    set (CPACK_IFW_TARGET_DIRECTORY "@ApplicationsDir@/HulaLoop")
+    set (CPACK_IFW_ADMIN_TARGET_DIRECTORY "@ApplicationsDir@/HulaLoop")
 
     set (CPACK_IFW_PACKAGE_CONTROL_SCRIPT ${PROJECT_SOURCE_DIR}/res/installer/ifwscript.qs)
     set (CPACK_IFW_PACKAGE_MAINTENANCE_TOOL_NAME "hulaloop-uninstaller")

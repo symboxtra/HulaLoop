@@ -59,12 +59,14 @@ void Record::recorder()
     // Add file_path to vector of files
     exportPaths.push_back(file_path);
 
+    int maxSize = 512;
+
     // Keep recording until recording is stopped
     while (!this->endRecord.load())
     {
         void *ptr[2] = {0};
         ring_buffer_size_t sizes[2] = {0};
-        samplesRead = this->rb->directRead(512, ptr + 0, sizes + 0, ptr + 1, sizes + 1);
+        samplesRead = this->rb->directRead(maxSize, ptr + 0, sizes + 0, ptr + 1, sizes + 1);
 
         if (samplesRead > 0)
         {
@@ -80,11 +82,14 @@ void Record::recorder()
                 }
             }
         }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds((maxSize / NUM_CHANNELS * 1000 / SAMPLE_RATE) - 1));
     }
 
 
-    sf_close(file);
     this->controller->removeBuffer(this->rb);
+    this->rb->clear();
+    sf_close(file);
 }
 
 /**

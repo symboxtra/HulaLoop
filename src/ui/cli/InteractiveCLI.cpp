@@ -81,7 +81,7 @@ void InteractiveCLI::start()
         arg = "";
         args.clear();
 
-        printf(HL_PROMPT);
+        printf(HL_PROMPT("%s"), this->t->stateToStr(this->t->getState()).c_str());
 
         // Get the whole line
         if (std::getline(std::cin, line))
@@ -279,6 +279,16 @@ HulaCliStatus InteractiveCLI::processCommand(const std::string &command, const s
         try
         {
             success = t->play();
+
+            // TODO: Once a callback for onplayend is added
+            // to Playback, this won't be needed
+            // For now, if we fail to play, try stopping and then
+            // playing
+            if (!success)
+            {
+                t->stop();
+                success = t->play();
+            }
         }
         catch(const ControlException &ce)
         {
@@ -304,6 +314,7 @@ HulaCliStatus InteractiveCLI::processCommand(const std::string &command, const s
         if (args.size() > 0)
         {
             t->exportFile(args[0]);
+            this->outputFilePath = args[0];
         }
         else if (this->outputFilePath.size() != 0)
         {
@@ -377,6 +388,7 @@ HulaCliStatus InteractiveCLI::processCommand(const std::string &command, const s
             if (ret)
             {
                 printf("\n%s\n", qPrintable(tr("Input device set to: %1").arg(device->getName().c_str())));
+                this->lastInputDevice = device->getName();
             }
             else
             {
@@ -428,6 +440,7 @@ HulaCliStatus InteractiveCLI::processCommand(const std::string &command, const s
             if (ret)
             {
                 printf("\n%s\n", qPrintable(tr("Output device set to: %1").arg(device->getName().c_str())));
+                this->lastOutputDevice = device->getName();
             }
             else
             {
@@ -455,6 +468,8 @@ HulaCliStatus InteractiveCLI::processCommand(const std::string &command, const s
         localSettings.delay = std::to_string(this->delay);
         localSettings.duration = std::to_string(this->duration);
         localSettings.outputFilePath = this->outputFilePath;
+        localSettings.inputDevice = this->lastInputDevice;
+        localSettings.outputDevice = this->lastOutputDevice;
 
         printSettings(localSettings);
     }

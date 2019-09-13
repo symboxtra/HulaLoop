@@ -7,6 +7,7 @@
 #include <QCoreApplication>
 
 #include "Record.h"
+#include "Playback.h"
 
 #define HL_INFINITE_RECORD -1
 #define HL_TRANSPORT_LOCKOUT_MS 200
@@ -41,9 +42,20 @@ namespace hula
             bool initRecordClicked;
 
         protected:
+            /**
+             * Instance of the Recorder class.
+             */
             Record *recorder;
 
+            /**
+             * Instance of the Playback class.
+             */
+            Playback *player;
+
         public:
+            /**
+             * Instance of the Controller class.
+             */
             Controller *controller;
 
         public:

@@ -1,8 +1,6 @@
 #ifndef HL_LINUX_AUDIO_H
 #define HL_LINUX_AUDIO_H
 
-#include <alsa/asoundlib.h>
-
 #include <stdlib.h>
 #include <cstdint>
 #include <thread>
@@ -11,11 +9,7 @@
 #include "hlaudio/internal/Device.h"
 #include "hlaudio/internal/OSAudio.h"
 
-#ifndef ALSA_PCM_NEW_HW_PARAMS_API
-    #define ALSA_PCM_NEW_HW_PARAMS_API
-#endif
-
-#define FRAME_TIME 512
+#define HL_LINUX_FRAMES_PER_BUFFER 512
 
 namespace hula
 {
@@ -29,10 +23,14 @@ namespace hula
             std::vector<Device *> iDevices;
             std::vector<Device *> oDevices;
 
+            std::vector<Device *> parsePulseAudioDevices();
+
         public:
             LinuxAudio();
             ~LinuxAudio();
+
             void capture();
+            void playback();
 
             bool setActiveInputDevice(Device *device);
             static void startPAVUControl();
