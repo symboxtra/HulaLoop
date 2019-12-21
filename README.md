@@ -98,11 +98,12 @@ python -m pip install recommonmark
 - Install [Qt](https://www.qt.io/download) (including Charts)
 - Install [libsndfile](http://www.mega-nerd.com/libsndfile/#Download)
 - Install [Chocolatey](https://chocolatey.org/docs/installation) (package manager for Windows)
-- Install Chocolatey packages from an Administrator PowerShell
+- Install Chocolatey packages from an Administrator PowerShell:
+
 ```powershell
-choco visualstudio2019-workload-vctools
+choco install visualstudio2019-workload-vctools
+choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
 choco install git
-choco install cmake
 choco install doxygen
 ```
 
