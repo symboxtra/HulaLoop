@@ -1,4 +1,5 @@
 [![Jenkins Server Status](https://img.shields.io/badge/dynamic/json.svg?label=Jenkins%20Server&url=http%3A%2F%2Fwww.symboxtra.tk%2Fstatus.php%3Fservers%3Djenkins&query=%24..jenkins&colorB=0b7cbd)](http://jenkins.symboxtra.dynu.net "Jenkins Server Status")
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsymboxtra%2FHulaLoop.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsymboxtra%2FHulaLoop?ref=badge_shield)
 [![](https://jenkins.symboxtra.dynu.net/job/HulaLoop/job/master/badge/icon)](https://jenkins.symboxtra.dynu.net/job/HulaLoop/job/master/ "Jenkins Build Status")
 [![codecov](https://codecov.io/gh/symboxtra/HulaLoop/branch/master/graph/badge.svg?token=okLfIHMeEf)](https://codecov.io/gh/symboxtra/HulaLoop "Code Coverage Status")
 [![CodeFactor](https://www.codefactor.io/repository/github/symboxtra/hulaloop/badge)](https://www.codefactor.io/repository/github/symboxtra/hulaloop "Code Factor Grade")
@@ -160,3 +161,7 @@ cd docs
 doxygen # Finds default Doxyfile
 cd build-doxygen/html
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsymboxtra%2FHulaLoop.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsymboxtra%2FHulaLoop?ref=badge_large)
