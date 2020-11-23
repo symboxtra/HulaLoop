@@ -194,7 +194,12 @@ if (WIN32 AND 64BIT)
 endif ()
 
 # Build and install portaudio to our build/lib folder
+# Clear the CMAKE_MODULE_PATH temporarily so that our
+# FindJACK.cmake does not conflict with PortAudio's
+set (SAVED_CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}")
+set (CMAKE_MODULE_PATH "")
 add_subdirectory (src/libs/portaudio)
+set (CMAKE_MODULE_PATH "${SAVED_CMAKE_MODULE_PATH}")
 
 # Add coverage flags for GCC after 3rd party libs are built
 set (CXX_FLAGS_NOCOV "${CMAKE_CXX_FLAGS}")
